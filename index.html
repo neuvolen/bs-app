@@ -1065,12 +1065,6 @@ async function loadAllData(){
   try {
     const r = await fetch(WEBAPP_URL+'?action=getBotCache');
     cache = await r.json();
-    // Фильтруем недавно удалённые встречи
-    if(cache.schedule && window._deletedMeetings && window._deletedMeetings.length){
-      cache.schedule = cache.schedule.filter(function(e){
-        return window._deletedMeetings.indexOf(e.res+'|'+e.date+'|'+e.time) < 0;
-      });
-    }
     try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
     renderAllPages();
   } catch(e){
@@ -1457,8 +1451,6 @@ async function submitEditMeeting(){
 
 function meetingDone(res, date, time){
   if(!confirm('Отметить встречу с '+res+' как проведённую?')) return;
-  if(!window._deletedMeetings) window._deletedMeetings = [];
-  window._deletedMeetings.push(res+'|'+date+'|'+time);
   if(cache.schedule){
     cache.schedule = cache.schedule.filter(function(e){
       return !(e.res===res && e.date===date && e.time===time);
@@ -1466,18 +1458,15 @@ function meetingDone(res, date, time){
     try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
   }
   closeDetail();
-  showToast('✅ Встреча отмечена как проведённая');
+  showToast('✅ Встреча проведена');
   renderAllPages();
   callAction('deleteSchedule', {res, date, time}).then(function(){
-    setTimeout(loadAllData, 3000);
+    setTimeout(loadAllData, 8000);
   });
 }
 
 function deleteMeetingConfirm(res, date, time){
   if(!confirm('Удалить встречу с '+res+' '+date+' '+time+'?')) return;
-  // Помечаем как удалённую (чтобы при loadAllData не вернулась)
-  if(!window._deletedMeetings) window._deletedMeetings = [];
-  window._deletedMeetings.push(res+'|'+date+'|'+time);
   // Удаляем из локального кэша
   if(cache.schedule){
     cache.schedule = cache.schedule.filter(function(e){
@@ -1486,14 +1475,19 @@ function deleteMeetingConfirm(res, date, time){
     try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
   }
   closeDetail();
-  showToast('✅ Встреча удалена');
+  showToast('✅ Удаляется...');
   renderAllPages();
-  // В фоне удаляем из таблицы
+  // Удаляем на сервере. Ждём 8 секунд чтобы серверный кэш обновился
   callAction('deleteSchedule', {res, date, time}).then(function(result){
-    // Ждём 3 секунды чтобы серверный кэш обновился, потом перезагружаем
-    setTimeout(function(){
-      loadAllData();
-    }, 3000);
+    if(result && result.ok){
+      showToast('✅ Встреча удалена');
+    } else if(result && result.error === 'Not found'){
+      showToast('✅ Удалено (запись уже отсутствовала)');
+    } else {
+      showToast('⚠️ Проверьте таблицу');
+    }
+    // НЕ перезагружаем сразу — пусть остаётся локальное состояние
+    setTimeout(loadAllData, 8000);
   });
 }
 
@@ -1886,14 +1880,18 @@ async function submitSchedule(){
   if(!selDate||!selTime){showToast('⚠️ Выберите дату и время');return;}
   // Проверка — нельзя в прошлом
   var parts = selDate.split('.');
-  var year = parseInt(parts[2]||new Date().getFullYear());
+  var day = parseInt(parts[0]);
+  var month = parseInt(parts[1])-1;
+  var year = parseInt(parts[2]);
+  if(!year || isNaN(year)) year = new Date().getFullYear();
   var tp = selTime.split(':');
-  var selDateTime = new Date(year, parseInt(parts[1])-1, parseInt(parts[0]), parseInt(tp[0]), parseInt(tp[1]));
+  var selHour = parseInt(tp[0]);
+  var selMin = parseInt(tp[1]||'0');
+  var selDateTime = new Date(year, month, day, selHour, selMin, 0);
   var nowDt = new Date();
-  console.log('Check past:', selDateTime, 'vs', nowDt, 'diff:', selDateTime - nowDt);
-  if(selDateTime.getTime() <= nowDt.getTime()){
+  if(isNaN(selDateTime.getTime()) || selDateTime.getTime() <= nowDt.getTime()){
     if(tg && tg.showAlert){
-      tg.showAlert('⚠️ Нельзя ставить встречу в прошлом!\n\nВыбрано: '+selDate+' '+selTime+'\nСейчас: '+nowDt.toLocaleString('ru-RU'));
+      tg.showAlert('⚠️ Нельзя ставить встречу в прошлом!');
     } else {
       alert('⚠️ Нельзя ставить встречу в прошлом!');
     }
