@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BS — Business Surgery</title>
+<link rel="manifest" href='data:application/manifest+json,{"name":"BS Business Surgery","short_name":"BS","start_url":"https://incandescent-kashata-f63422.netlify.app/","display":"standalone","background_color":"%230a0a0a","theme_color":"%230a0a0a","icons":[{"src":"https://incandescent-kashata-f63422.netlify.app/icon.png","sizes":"192x192","type":"image/png"}]}'>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="BS">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --g100: #f5f5f5;
+    --g200: #e8e8e8;
+    --g400: #999;
+    --g600: #555;
+    --bg: #0a0a0a;
+    --card: #141414;
+    --card2: #1a1a1a;
+    --border: #1f1f1f;
+    --red: #e57373;
+    --green: #4caf7d;
+    --yellow: #ffd54f;
+    --blue: #64b5f6;
+    --r: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-size: 14px; min-height: 100vh; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+
+  /* HEADER */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 16px 12px;
+  }
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-img {
+    height: 48px;
+    width: auto;
+    display: block;
+  }
+
+  .user-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .role-toggle {
+    display: none;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 3px;
+    font-size: 11px;
+  }
+  .role-toggle.show { display: inline-flex; }
+  .role-toggle button {
+    background: transparent;
+    border: none;
+    color: var(--g400);
+    padding: 5px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .role-toggle button.active {
+    background: var(--white);
+    color: var(--black);
+  }
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--card2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  /* TABS — горизонтальный скролл с индикатором */
+  .tabs-wrap {
+    position: relative;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding-bottom: 2px;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto;
+    padding: 9px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--g400);
+    cursor: pointer;
+    background: var(--card2);
+    border-radius: 20px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+  }
+  .tab.active {
+    background: var(--white);
+    color: var(--black);
+    font-weight: 600;
+  }
+  .tabs-fade {
+    position: absolute;
+    right: -16px;
+    top: 0;
+    bottom: 2px;
+    width: 24px;
+    background: linear-gradient(to right, transparent, var(--bg));
+    pointer-events: none;
+  }
+
+  /* PAGES */
+  .page { display: none; padding: 16px 16px calc(env(safe-area-inset-bottom) + 100px); animation: fade 0.2s; }
+  .page.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--g400);
+    margin-bottom: 10px;
+  }
+
+  /* METRIC */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .metric {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px;
+  }
+  .metric-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    line-height: 1;
+    letter-spacing: 0.5px;
+  }
+  .metric-lbl {
+    font-size: 10px;
+    color: var(--g400);
+    margin-top: 4px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  /* SECTION */
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 2px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+  .section-action {
+    font-size: 12px;
+    color: var(--white);
+    cursor: pointer;
+    background: var(--white);
+    color: var(--black);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .section-action:active { transform: scale(0.96); }
+
+  /* MEETING CARD */
+  .meeting {
+    background: linear-gradient(180deg, #1a1a1a, #141414);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 18px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .meeting:active { transform: scale(0.98); border-color: var(--g400); }
+  .meeting.upcoming { border-color: var(--white); }
+  .meeting::after {
+    content: '›';
+    position: absolute;
+    right: 14px;
+    top: 16px;
+    color: var(--g400);
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1;
+    z-index: 1;
+  }
+  .meeting-countdown {
+    display: inline-block;
+    background: var(--white);
+    color: var(--black);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .meeting-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .meeting-when {
+    font-size: 13px;
+    color: var(--g400);
+    margin-bottom: 12px;
+  }
+  .meeting-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--g400);
+    margin-bottom: 6px;
+  }
+  .meeting-row svg { flex-shrink: 0; }
+  .meeting-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  /* BUTTON */
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 100%;
+    margin-bottom: 8px;
+    font-family: inherit;
+    letter-spacing: 0.3px;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--white); color: var(--black); }
+  .btn-secondary { background: var(--card2); color: var(--white); border: 1px solid var(--border); }
+  .btn-danger { background: rgba(229,115,115,0.12); color: var(--red); border: 1px solid rgba(229,115,115,0.3); }
+  .btn-success { background: rgba(76,175,125,0.12); color: var(--green); border: 1px solid rgba(76,175,125,0.3); }
+
+  /* BADGE */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .b-green { background: rgba(76,175,125,0.15); color: var(--green); }
+  .b-red { background: rgba(229,115,115,0.15); color: var(--red); }
+  .b-yellow { background: rgba(255,213,79,0.15); color: var(--yellow); }
+  .b-gray { background: var(--card2); color: var(--g400); }
+
+  /* LIST */
+  .list-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .list-item:last-child { border: none; }
+  .list-item:active { opacity: 0.6; }
+  .list-avatar {
+    width: 38px;
+    height: 38px;
+    background: var(--card2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .list-content { flex: 1; min-width: 0; }
+  .list-name { font-weight: 600; font-size: 13px; }
+  .list-sub { font-size: 11px; color: var(--g400); margin-top: 2px; }
+  .list-right { text-align: right; flex-shrink: 0; align-self: center; }
+  .list-amount { font-weight: 600; font-size: 13px; }
+  .list-date { font-size: 10px; color: var(--g400); margin-top: 2px; }
+
+  /* RESIDENT CARD */
+  .res-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    padding: 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .res-card:active { transform: scale(0.98); background: #1a1a1a; }
+  .res-card::after {
+    content: '›';
+    position: absolute;
+    right: 14px;
+    top: 22px;
+    color: var(--g400);
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1;
+  }
+  .res-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .res-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+  }
+  .res-info { flex: 1; min-width: 0; }
+  .res-name { font-weight: 700; font-size: 15px; }
+  .res-niche { font-size: 11px; color: var(--g400); margin-top: 2px; }
+
+  .res-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .res-stat {
+    background: var(--card2);
+    border-radius: 8px;
+    padding: 8px;
+    text-align: center;
+  }
+  .res-stat .v {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    line-height: 1;
+  }
+  .res-stat .l {
+    font-size: 9px;
+    color: var(--g400);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .res-bio {
+    font-size: 12px;
+    color: var(--g400);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .res-links {
+    display: flex;
+    gap: 6px;
+  }
+  .res-link {
+    flex: 1;
+    padding: 8px;
+    background: var(--card2);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--g400);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  /* PROFILE FORM */
+  .profile-hero {
+    text-align: center;
+    padding: 24px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .profile-avatar-lg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 28px;
+    margin: 0 auto 12px;
+    background-size: cover;
+    background-position: center;
+  }
+  .profile-name-lg {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 1px;
+  }
+  .profile-niche {
+    font-size: 12px;
+    color: var(--g400);
+    margin-top: 4px;
+  }
+  .profile-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--g400);
+  }
+
+  .form-group { margin-bottom: 12px; }
+  .form-label {
+    font-size: 10px;
+    color: var(--g400);
+    margin-bottom: 6px;
+    display: block;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .form-input, .form-textarea, .form-select {
+    width: 100%;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--white);
+    font-size: 13px;
+    font-family: inherit;
+    appearance: none;
+  }
+  .form-select {
+    background: linear-gradient(135deg, #1f1f1f, #1a1a1a);
+    border: 1px solid #333;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23fff' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 32px;
+    font-weight: 500;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    outline: none;
+    border-color: var(--white);
+  }
+  .form-textarea { resize: vertical; min-height: 80px; }
+
+  /* MODAL */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    align-items: flex-end;
+    backdrop-filter: blur(4px);
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 20px 16px;
+    animation: up 0.25s ease;
+  }
+  @keyframes up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-handle {
+    width: 36px;
+    height: 4px;
+    background: #333;
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  /* GRID PICKER */
+  .picker {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .picker.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .picker.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .pick-btn {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--white);
+    font-family: inherit;
+  }
+  .pick-btn:active { transform: scale(0.96); }
+  .pick-btn.selected {
+    border-color: var(--white);
+    background: rgba(255,255,255,0.08);
+  }
+  .pick-btn .e { font-size: 16px; display: block; margin-bottom: 3px; }
+
+
+  /* Compact picker для дат */
+  #dateGrid .pick-btn { padding: 7px 4px; font-size: 11px; }
+  #dateGrid .pick-btn .e { font-size: 14px; margin-bottom: 2px; }
+  /* Крупнее для времени */
+  #timeGrid .pick-btn { padding: 12px 4px; font-size: 13px; font-weight: 600; }
+  /* LOADING */
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 50px;
+    gap: 12px;
+  }
+  .spinner {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--border);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* EMPTY */
+  .empty {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--g400);
+  }
+  .empty .em-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.5; }
+  .empty .em-title { color: var(--white); font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .empty .em-text { font-size: 12px; line-height: 1.5; }
+
+  /* PROFIT BAR */
+  .pbar {
+    background: var(--card2);
+    border-radius: 4px;
+    height: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  .pbar-fill {
+    height: 100%;
+    background: var(--white);
+    transition: width 0.6s ease;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--white);
+    color: var(--black);
+    padding: 12px 20px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 300;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    max-width: 90%;
+    text-align: center;
+  }
+  .toast.show { opacity: 1; }
+
+  /* DETAIL VIEW — iOS safe */
+  .detail-view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg);
+    z-index: 999;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: none;
+    animation: fade 0.2s;
+  }
+  .detail-view.show { display: block; }
+  .detail-header {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: calc(env(safe-area-inset-top) + 14px) 16px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10;
+  }
+  .detail-content-wrap {
+    padding: 16px 16px calc(env(safe-area-inset-bottom) + 40px);
+  }
+  .back-btn {
+    width: 36px;
+    height: 36px;
+    background: var(--card2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    color: var(--white);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-row">
+    <div class="logo">
+      <img src="data:image/png;base64,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" alt="BS" class="logo-img">
+    </div>
+    <div class="user-bar">
+      <div class="role-toggle" id="roleToggle">
+        <button id="roleAdmin" class="active" onclick="setRole('admin')">Админ</button>
+        <button id="roleResident" onclick="setRole('resident')">Резидент</button>
+      </div>
+    </div>
+  </div>
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs"></div>
+  </div>
+</div>
+
+<!-- ADMIN PAGES -->
+<div class="page active" id="page-dashboard"><div id="dashboardContent"><div class="loading"><div class="spinner"></div><div class="loading-text" style="color:#999;font-size:12px;margin-top:8px">Загрузка данных...</div></div></div></div>
+<div class="page" id="page-schedule"><div id="scheduleContent"><div class="loading"><div class="spinner"></div></div></div></div>
+<div class="page" id="page-reports"><div id="reportsContent"><div class="loading"><div class="spinner"></div></div></div></div>
+<div class="page" id="page-fines"><div id="finesContent"><div class="loading"><div class="spinner"></div></div></div></div>
+
+<!-- RESIDENT PAGES -->
+<div class="page" id="page-mystatus"><div id="mystatusContent"><div class="loading"><div class="spinner"></div></div></div></div>
+<div class="page" id="page-myprofile"><div id="myprofileContent"><div class="loading"><div class="spinner"></div></div></div></div>
+<div class="page" id="page-mymeetings"><div id="mymeetingsContent"><div class="loading"><div class="spinner"></div></div></div></div>
+
+<!-- SHARED -->
+<div class="page" id="page-residents"><div id="residentsContent"><div class="loading"><div class="spinner"></div></div></div></div>
+<div class="page" id="page-platform">
+  <div class="card" style="text-align:center;padding:40px 20px;margin-top:20px">
+    <div style="font-size:42px;margin-bottom:14px">🧬</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:8px">BS ПЛАТФОРМА</div>
+    <div style="font-size:12px;color:var(--g400);line-height:1.6;margin-bottom:18px">Экосистема предпринимателя в разработке. Здесь будут разборы, треккинг, материалы.</div>
+    <div class="badge b-yellow">Скоро</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Установить как приложение</div>
+    <div style="font-size:12px;color:var(--g400);line-height:1.5;margin-bottom:14px">Добавьте BS на главный экран телефона как обычное приложение для быстрого доступа.</div>
+    <button class="btn btn-primary" onclick="addToHomeScreen()">📲 Установить на главный экран</button>
+  </div>
+</div>
+
+<!-- DETAIL VIEW для встречи / резидента -->
+<div class="detail-view" id="detailView">
+  <div class="detail-header">
+    <button class="back-btn" onclick="closeDetail()">←</button>
+    <div class="logo-text" style="font-size:18px" id="detailTitle">Детали</div>
+  </div>
+  <div class="detail-content-wrap" id="detailContent"></div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-bg" id="fineModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Выставить штраф</div>
+    <div class="form-group">
+      <label class="form-label">Резидент</label>
+      <select class="form-select" id="fineResident"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Тип штрафа</label>
+      <div class="picker cols-3" id="fineTypeGrid"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Сумма (тг)</label>
+      <input class="form-input" type="number" id="fineAmount" value="10000">
+    </div>
+    <button class="btn btn-primary" onclick="submitFine()">Выставить</button>
+    <button class="btn btn-secondary" onclick="closeModal('fineModal')">Отмена</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="schedModal">
+  <div class="modal" style="padding:16px 12px 12px">
+    <div class="modal-handle" style="margin-bottom:10px"></div>
+    <div class="modal-title" style="margin-bottom:12px">Поставить расписание</div>
+    <div class="form-group" style="margin-bottom:8px">
+      <label class="form-label" style="margin-bottom:4px">Резидент</label>
+      <select class="form-select" id="schedResident" style="padding:9px 12px"></select>
+    </div>
+    <div class="form-group" style="margin-bottom:8px">
+      <label class="form-label" style="margin-bottom:4px">Дата</label>
+      <div class="picker cols-4" id="dateGrid" style="gap:4px"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label class="form-label" style="margin-bottom:4px">Время</label>
+      <div class="picker" id="timeGrid" style="grid-template-columns:repeat(4,1fr);gap:4px"></div>
+    </div>
+    <button class="btn btn-primary" onclick="submitSchedule()" style="margin-bottom:6px;padding:11px">Создать встречу</button>
+    <button class="btn btn-secondary" onclick="closeModal('schedModal')" style="padding:10px">Отмена</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="payModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Приход / Расход</div>
+    <div class="picker" style="grid-template-columns:1fr 1fr">
+      <button class="pick-btn selected" id="payTypeIncome" onclick="setPayType('income')">📈 Приход</button>
+      <button class="pick-btn" id="payTypeExpense" onclick="setPayType('expense')">📉 Расход</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Источник</label>
+      <select class="form-select" id="paySource" onchange="updatePayResidentVisibility()"></select>
+    </div>
+    <div class="form-group" id="payResidentGroup" style="display:none">
+      <label class="form-label">Резидент (от кого)</label>
+      <select class="form-select" id="payResident"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Сумма (тг)</label>
+      <input class="form-input" type="number" id="payAmount" placeholder="150000">
+    </div>
+    <div class="picker" style="grid-template-columns:1fr 1fr;margin-bottom:12px">
+      <button class="pick-btn selected" id="payCash" onclick="setPayMethod('cash')">💵 Наличные</button>
+      <button class="pick-btn" id="payBank" onclick="setPayMethod('bank')">🏦 Банк −4%</button>
+    </div>
+    <button class="btn btn-primary" onclick="submitPayment()">Записать</button>
+    <button class="btn btn-secondary" onclick="closeModal('payModal')">Отмена</button>
+  </div>
+</div>
+
+
+<div class="modal-bg" id="addResidentModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Добавить резидента</div>
+    <div class="form-group">
+      <label class="form-label">Имя</label>
+      <input class="form-input" id="arName" placeholder="Иван Иванов">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Тариф (встреч в месяц)</label>
+      <div class="picker" style="grid-template-columns:1fr 1fr">
+        <button class="pick-btn selected" id="arT3" onclick="setArVisits(3)">3 встречи</button>
+        <button class="pick-btn" id="arT4" onclick="setArVisits(4)">4 встречи</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Сумма к оплате (тг)</label>
+      <input class="form-input" type="number" id="arDebt" placeholder="78571" value="78571">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Источник</label>
+      <select class="form-select" id="arSource">
+        <option value="ЛБ Рустам">ЛБ Рустам</option>
+        <option value="ЛБ Береке">ЛБ Береке</option>
+        <option value="ЛБ Береке и Рустам">ЛБ Береке и Рустам</option>
+        <option value="Сарафанное радио">Сарафанное радио</option>
+        <option value="Экспресс разбор">Экспресс разбор</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Формат</label>
+      <div class="picker" style="grid-template-columns:1fr 1fr">
+        <button class="pick-btn selected" id="arFmtOff" onclick="setArFormat('Офлайн')">📍 Офлайн</button>
+        <button class="pick-btn" id="arFmtOn" onclick="setArFormat('Онлайн')">🌐 Онлайн</button>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="submitAddResident()">Добавить</button>
+    <button class="btn btn-secondary" onclick="closeModal('addResidentModal')">Отмена</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxAEaH7LmcKH6MN9yRv3ruoRp9eOn9DgPw83DcbMHvuAQv7Lt5pT-CS0W6LQ7kER9uK0Q/exec';
+const ADMIN_IDS = ['453800951','1285596249'];
+
+// ── Глобальные функции для onclick на карточках ──
+window.openResByIdx = function(idx){
+  var list = window._currentResidentsList || [];
+  var r = list[idx];
+  if(r && typeof openResidentProfile === 'function'){
+    openResidentProfile(r);
+  }
+};
+
+window.openMeetByIdx = function(idx){
+  var active = document.querySelector('.page.active');
+  var pageId = active ? active.id : '';
+  var meetList = pageId === 'page-mymeetings' 
+    ? (window._currentMyMeetingsList || [])
+    : (window._currentScheduleList || []);
+  var ev = meetList[idx];
+  if(ev && typeof showMeetingDetail === 'function'){
+    showMeetingDetail(ev);
+  }
+};
+
+
+
+const tg = window.Telegram?.WebApp;
+let user = null;
+let isRealAdmin = false;
+let viewAs = 'admin';
+let cache = {};
+let allResidents = [];
+let selFineType = 'Не сдан отчёт';
+let selDate = '';
+let selTime = '';
+let payType = 'income';
+let payMethod = 'cash';
+
+const ADMIN_TABS = [
+  {id:'dashboard', label:'Сводка'},
+  {id:'schedule', label:'Расписание'},
+  {id:'reports', label:'Отчёты'},
+  {id:'fines', label:'Штрафы'},
+  {id:'residents', label:'Резиденты'},
+  {id:'myprofile', label:'Мой профиль'},
+  {id:'platform', label:'Платформа'}
+];
+
+const RESIDENT_TABS = [
+  {id:'mystatus', label:'Статус'},
+  {id:'myprofile', label:'Профиль'},
+  {id:'mymeetings', label:'Встречи'},
+  {id:'residents', label:'Резиденты'},
+  {id:'platform', label:'Платформа'}
+];
+
+const FINE_TYPES = [
+  {label:'Отчёт', emoji:'📝', name:'Не сдан отчёт', amount:10000},
+  {label:'Опоздание', emoji:'⏰', name:'Опоздание', amount:10000},
+  {label:'Слово', emoji:'💬', name:'Цена слова', amount:100000},
+  {label:'Пропуск', emoji:'🚫', name:'Пропуск', amount:10000},
+  {label:'Нарушение', emoji:'⚠️', name:'Нарушение', amount:10000},
+  {label:'Прочее', emoji:'📋', name:'Прочее', amount:0}
+];
+
+const INCOME_SRC = ['БХ Трекинг продление','БХ Трекинг год','БХ Штраф','БХ Экспресс разбор','БХ МК/Завтрак','Прочие доходы'];
+const EXPENSE_SRC = ['SMM','Маркет.бюджет','Офис','Ассистент','CRM','IT','Прочие расходы'];
+
+
+// Глобальный обработчик кликов по карточкам резидентов
+document.body.addEventListener('click', function(e){
+  var card = e.target.closest('.res-card');
+  if(!card) return;
+  if(e.target.closest('a')) return;
+  var idx = parseInt(card.dataset.residx);
+  if(isNaN(idx)) return;
+  var list = window._currentResidentsList || [];
+  var r = list[idx];
+  if(r && typeof openResidentProfile === 'function'){
+    openResidentProfile(r);
+  }
+}, true);
+
+
+// ── Глобальный обработчик кликов по карточкам резидентов ──
+function handleGlobalClick(e){
+  var el = e.target;
+  while(el && el !== document.body){
+    if(el.classList && el.classList.contains('res-card')){
+      if(e.target.closest('a')) return;
+      var idx = parseInt(el.getAttribute('data-residx'));
+      if(isNaN(idx)) return;
+      var list = window._currentResidentsList || [];
+      var r = list[idx];
+      if(r && typeof openResidentProfile === 'function'){
+        e.preventDefault();
+        openResidentProfile(r);
+      }
+      return;
+    }
+    if(el.classList && el.classList.contains('meeting') && el.hasAttribute('data-meetidx')){
+      var midx = parseInt(el.getAttribute('data-meetidx'));
+      if(isNaN(midx)) return;
+      // Берём из текущего активного списка
+      var active = document.querySelector('.page.active');
+      var pageId = active ? active.id : '';
+      var meetList = pageId === 'page-mymeetings' 
+        ? (window._currentMyMeetingsList || [])
+        : (window._currentScheduleList || []);
+      var ev = meetList[midx];
+      if(ev && typeof showMeetingDetail === 'function'){
+        e.preventDefault();
+        showMeetingDetail(ev);
+      }
+      return;
+    }
+    el = el.parentElement;
+  }
+}
+
+document.addEventListener('click', handleGlobalClick);
+
+function init(){
+  try {
+    if(tg){
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor('#0a0a0a');
+      tg.setBackgroundColor('#0a0a0a');
+      user = tg.initDataUnsafe?.user;
+    }
+    isRealAdmin = user ? ADMIN_IDS.includes(String(user.id)) : false;
+    if(isRealAdmin){
+      var rt = document.getElementById('roleToggle');
+      if(rt) rt.classList.add('show');
+    }
+    renderTabs();
+    if(!isRealAdmin){
+      showPage('mystatus');
+    }
+    loadAllData();
+    // Автосохранение аватара из Telegram (для других пользователей)
+    if(user && user.photo_url && user.id){
+      setTimeout(function(){
+        callAction('saveAvatar', {chatId: String(user.id), avatar: user.photo_url});
+      }, 2000);
+    }
+  } catch(e){
+    console.error('init error:', e);
+    document.body.innerHTML = '<div style="padding:40px;color:#fff;text-align:center;font-family:sans-serif"><h2>Ошибка</h2><pre style="font-size:11px;color:#999;margin-top:10px;text-align:left;background:#222;padding:12px;border-radius:8px;overflow:auto">'+e.message+'\n'+(e.stack||'')+'</pre></div>';
+  }
+}
+
+function setRole(role){
+  viewAs = role;
+  document.getElementById('roleAdmin').classList.toggle('active', role==='admin');
+  document.getElementById('roleResident').classList.toggle('active', role==='resident');
+  renderTabs();
+  // Render current page
+  if(role==='admin') showPage('dashboard');
+  else showPage('mystatus');
+  // Refresh data view
+  if(cache.residents) renderAllPages();
+}
+
+function renderTabs(){
+  const tabs = (isRealAdmin && viewAs==='admin') ? ADMIN_TABS : RESIDENT_TABS;
+  const el = document.getElementById('tabs');
+  el.innerHTML = tabs.map((t,i) => `<div class="tab ${i===0?'active':''}" data-page="${t.id}" onclick="showPage('${t.id}')">${t.label}</div>`).join('');
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const p = document.getElementById('page-'+id);
+  if(p) p.classList.add('active');
+  const t = document.querySelector(`[data-page="${id}"]`);
+  if(t){
+    t.classList.add('active');
+    t.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  }
+}
+
+async function loadAllData(){
+  try {
+    var cached = localStorage.getItem('bs_cache');
+    if(cached){
+      cache = JSON.parse(cached);
+      renderAllPages();
+    }
+  } catch(e){}
+  try {
+    const r = await fetch(WEBAPP_URL+'?action=getBotCache');
+    cache = await r.json();
+    // Фильтруем недавно удалённые встречи
+    if(cache.schedule && window._deletedMeetings && window._deletedMeetings.length){
+      cache.schedule = cache.schedule.filter(function(e){
+        return window._deletedMeetings.indexOf(e.res+'|'+e.date+'|'+e.time) < 0;
+      });
+    }
+    try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
+    renderAllPages();
+  } catch(e){
+    console.error('loadAllData:', e);
+    if(!cache || !cache.residents){
+      cache = {residents:[], fines:[], logs:[], schedule:[], debet:{}};
+      renderAllPages();
+    }
+  }
+}
+
+function renderAllPages(){
+  try{renderDashboard();}catch(e){console.error('dashboard:',e);}
+  try{renderSchedule();}catch(e){console.error('schedule:',e);}
+  try{renderReports();}catch(e){console.error('reports:',e);}
+  try{renderFines();}catch(e){console.error('fines:',e);}
+  try{renderResidents();}catch(e){console.error('residents:',e);}
+  try{renderMyStatus();}catch(e){console.error('mystatus:',e);}
+  try{renderMyProfile();}catch(e){console.error('myprofile:',e);}
+  try{renderMyMeetings();}catch(e){console.error('mymeetings:',e);}
+}
+
+function renderDashboard(){
+  const d = cache.debet||{};
+  const residents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
+  const fines = cache.fines||[];
+  const unpaid = fines.filter(f=>f.status==='Не оплатил');
+  const unpaidSum = unpaid.reduce((s,f)=>s+(Number(f.amount)||0),0);
+  const logs = cache.logs||[];
+  const today = new Date().toLocaleDateString('ru-RU');
+  const todayReports = logs.filter(l=>l.date===today).length;
+  const rentab = d.rentab||0;
+
+  document.getElementById('dashboardContent').innerHTML = `
+    <div class="metric-grid">
+      <div class="metric"><div class="metric-val">${residents.length}</div><div class="metric-lbl">Резидентов</div></div>
+      <div class="metric"><div class="metric-val">${todayReports}</div><div class="metric-lbl">Отчётов сегодня</div></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="card-title" style="margin:0">Финансы месяца</div>
+        <span class="badge ${rentab>0?'b-green':'b-red'}">${rentab}%</span>
+      </div>
+      <div class="metric-grid" style="margin:0">
+        <div class="metric" style="background:var(--card2);border:none;padding:12px"><div class="metric-val" style="font-size:20px">${fmt(d.netProfit||0)}</div><div class="metric-lbl">Чистая прибыль</div></div>
+        <div class="metric" style="background:var(--card2);border:none;padding:12px"><div class="metric-val" style="font-size:20px">${fmt(d.residual||0)}</div><div class="metric-lbl">Остаток</div></div>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${Math.min(100,Math.max(0,rentab))}%"></div></div>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="card-title" style="margin:0">Штрафы к получению</div>
+        <span class="badge b-red">${unpaid.length} шт</span>
+      </div>
+      <div class="metric-val" style="font-size:24px">${fmt(unpaidSum)} тг</div>
+    </div>
+    <button class="btn btn-secondary" onclick="openModal('addResidentModal');initAddResident()">➕ Добавить резидента</button>
+    <button class="btn btn-secondary" onclick="openModal('fineModal');initFineModal()">⚠️ Выставить штраф</button>
+    <button class="btn btn-secondary" onclick="openModal('payModal');initPayModal()">💰 Приход / Расход</button>
+  `;
+}
+
+function renderSchedule(){
+  // Сортировка по дате+времени (раньше выше)
+  const list = (cache.schedule||[]).slice().sort(function(a,b){
+    var aKey = parseScheduleKey(a);
+    var bKey = parseScheduleKey(b);
+    return aKey - bKey;
+  });
+  window._currentScheduleList = list;
+  const el = document.getElementById('scheduleContent');
+  el.innerHTML = `
+    <div class="section-head">
+      <div class="section-title">Расписание</div>
+      <div class="section-action" onclick="openModal('schedModal');initSchedModal()">+ Добавить</div>
+    </div>
+  `;
+  if(!list.length){
+    el.innerHTML += `<div class="empty"><div class="em-icon">📅</div><div class="em-title">Встреч нет</div><div class="em-text">Нажмите кнопку выше</div></div>`;
+    return;
+  }
+  el.innerHTML += list.map((ev,i) => meetingCard(ev,i)).join('');
+}
+
+function meetingCard(ev, idx){
+  const isOnline = ev.link && ev.link.includes('meet');
+  const cd = countdownText(ev.date, ev.time);
+  return `
+    <div class="meeting ${cd.urgent?'upcoming':''}" data-meetidx="${idx}" onclick="openMeetByIdx(${idx})">
+      ${cd.urgent?`<div class="meeting-countdown">${cd.text}</div>`:''}
+      <div class="meeting-title">Трекинг • ${ev.res}</div>
+      <div class="meeting-when">${ev.date} ${ev.time||''}</div>
+      <div class="meeting-row">
+        ${isOnline?'🔗 Онлайн (Google Meet)':'📍 ' + (ev.link||'Адрес')}
+      </div>
+    </div>
+  `;
+}
+
+
+function parseScheduleKey(ev){
+  if(!ev || !ev.date) return 9999999999;
+  try {
+    var dp = ev.date.split('.');
+    var y = new Date().getFullYear();
+    var d = new Date(y, parseInt(dp[1])-1, parseInt(dp[0]));
+    if(ev.time){
+      var tp = ev.time.split(':');
+      d.setHours(parseInt(tp[0]), parseInt(tp[1]||0));
+    }
+    return d.getTime();
+  } catch(e){ return 9999999999; }
+}
+
+function countdownText(date, time){
+  if(!date) return {text:'', urgent:false};
+  try {
+    const [d,m] = date.split('.').map(Number);
+    const y = new Date().getFullYear();
+    const [h,min] = (time||'00:00').split(':').map(Number);
+    const dt = new Date(y, m-1, d, h, min);
+    const diff = dt - new Date();
+    if(diff < 0) return {text:'', urgent:false};
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    if(days === 0 && hours < 24){
+      if(hours < 1) return {text:'Скоро!', urgent:true};
+      return {text:`Через ${hours} ч`, urgent:true};
+    }
+    if(days < 7) return {text:`Через ${days} дн`, urgent:days<=2};
+    return {text:'', urgent:false};
+  } catch(e){ return {text:'', urgent:false}; }
+}
+
+function renderReports(){
+  const logs = cache.logs||[];
+  const residents = (cache.residents||[]).filter(r=>!r.isFired&&!r.isExcluded&&r.name!=='Тест'&&r.name!=='Тест2');
+  const today = new Date().toLocaleDateString('ru-RU');
+  const submitted = new Set(logs.filter(l=>l.date===today).map(l=>l.userId));
+  const done = residents.filter(r=>submitted.has(r.chatId));
+  const missing = residents.filter(r=>!submitted.has(r.chatId));
+
+  document.getElementById('reportsContent').innerHTML = `
+    <div class="section-head">
+      <div class="section-title">Отчёты</div>
+      <span class="badge b-gray">${today}</span>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div class="card-title" style="margin:0">Сдали сегодня</div>
+        <span class="badge b-green">${done.length} / ${residents.length}</span>
+      </div>
+      ${done.length?done.map(r=>`<div class="list-item">
+        <div class="list-avatar" style="background:rgba(76,175,125,0.2);color:var(--green)">${r.name[0]}</div>
+        <div class="list-content"><div class="list-name">${r.name}</div></div>
+        <div>✅</div>
+      </div>`).join(''):'<div class="list-sub" style="text-align:center;padding:12px">Пока никто</div>'}
+    </div>
+    ${missing.length?`<div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div class="card-title" style="margin:0">Не сдали</div>
+        <span class="badge b-red">${missing.length}</span>
+      </div>
+      ${missing.map(r=>`<div class="list-item">
+        <div class="list-avatar" style="background:rgba(229,115,115,0.2);color:var(--red)">${r.name[0]}</div>
+        <div class="list-content"><div class="list-name">${r.name}</div></div>
+        <div>❌</div>
+      </div>`).join('')}
+    </div>`:''}
+    <div class="card">
+      <div class="card-title">Последние отчёты</div>
+      ${logs.slice(0,10).map(l=>`<div class="list-item">
+        <div class="list-avatar">${(l.name||'U')[0]}</div>
+        <div class="list-content">
+          <div class="list-name">${l.name||l.username}</div>
+          <div class="list-sub">${(l.text||'').substring(0,80)}...</div>
+        </div>
+        <div class="list-right"><div class="list-date">${l.date} ${l.time||''}</div></div>
+      </div>`).join('')}
+    </div>
+  `;
+}
+
+function renderFines(){
+  const fines = (cache.fines||[]).filter(f=>f.status==='Не оплатил');
+  const el = document.getElementById('finesContent');
+  el.innerHTML = `
+    <div class="section-head">
+      <div class="section-title">Штрафы</div>
+      <div class="section-action" onclick="openModal('fineModal');initFineModal()">+ Выставить</div>
+    </div>
+  `;
+  if(!fines.length){
+    el.innerHTML += `<div class="empty"><div class="em-icon">✅</div><div class="em-title">Штрафов нет</div><div class="em-text">Все оплачены</div></div>`;
+    return;
+  }
+  el.innerHTML += '<div class="card">' + fines.map(f=>`
+    <div class="list-item">
+      <div class="list-avatar" style="background:rgba(229,115,115,0.2);color:var(--red)">⚠</div>
+      <div class="list-content">
+        <div class="list-name">${f.name}</div>
+        <div class="list-sub">${f.type}</div>
+      </div>
+      <div class="list-right">
+        <div class="list-amount">${fmt(f.amount)} тг</div>
+        <div class="list-date">${f.date}</div>
+      </div>
+    </div>
+  `).join('') + '</div>';
+}
+
+function renderResidents(){
+  allResidents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
+  const el = document.getElementById('residentsContent');
+  el.innerHTML = `
+    <div class="section-head">
+      <div class="section-title">Резиденты <span style="font-size:13px;color:var(--g400);font-family:'Inter';font-weight:400">(${allResidents.length})</span></div>
+    </div>
+    <input type="text" class="form-input" placeholder="🔍 Поиск..." style="margin-bottom:12px" oninput="filterRes(this.value)">
+    <div id="resList">${residentsHTML(allResidents)}</div>
+  `;
+}
+
+function residentsHTML(list){
+  if(!list.length) return '<div class="empty"><div class="em-text">Не найдено</div></div>';
+  window._currentResidentsList = list;
+  return list.map((r,idx)=>`
+    <div class="res-card${r.isAdmin?' is-admin':''}" data-residx="${idx}" onclick="openResByIdx(${idx})">
+      <div class="res-head">
+        <div class="res-avatar" ${r.avatar?`style="background-image:url('${r.avatar}')"`:''}>${r.avatar?'':r.name[0]}</div>
+        <div class="res-info">
+          <div class="res-name">${r.name}${r.isAdmin?' <span class="admin-badge">SURGEON</span>':''}</div>
+          <div class="res-niche">${r.niche||r.format||'Резидент BS'}</div>
+        </div>
+      </div>
+      ${r.bio?`<div class="res-bio">${r.bio.substring(0,100)}${r.bio.length>100?'...':''}</div>`:''}
+      ${r.instagram||r.phone?`<div class="res-links">
+        ${r.instagram?`<a class="res-link" href="https://instagram.com/${r.instagram.replace('@','')}" target="_blank" onclick="event.stopPropagation()">📸 ${r.instagram}</a>`:''}
+        ${r.phone?`<a class="res-link" href="tel:${r.phone}" onclick="event.stopPropagation()">📞 ${r.phone}</a>`:''}
+      </div>`:''}
+    </div>
+  `).join('');
+}
+
+
+
+function openResidentProfile(r){
+  document.getElementById('detailTitle').textContent = r.name;
+  document.getElementById('detailContent').innerHTML = `
+    <div class="profile-hero">
+      <div class="profile-avatar-lg" ${r.avatar?`style="background-image:url('${r.avatar}')"`:''}>${r.avatar?'':r.name[0]}</div>
+      <div class="profile-name-lg">${r.name}${r.isAdmin?' <span class="admin-badge">SURGEON</span>':''}</div>
+      <div class="profile-niche">${r.niche||'Резидент Business Surgery'}</div>
+    </div>
+    ${r.bio?`<div class="card">
+      <div class="card-title">О себе</div>
+      <div style="font-size:13px;line-height:1.6;white-space:pre-wrap">${r.bio}</div>
+    </div>`:''}
+    ${r.help?`<div class="card">
+      <div class="card-title">Чем может помочь</div>
+      <div style="font-size:13px;line-height:1.6;white-space:pre-wrap">${r.help}</div>
+    </div>`:''}
+    ${r.instagram||r.phone?`<div class="card">
+      <div class="card-title">Контакты</div>
+      ${r.instagram?`<a class="btn btn-secondary" href="https://instagram.com/${r.instagram.replace('@','')}" target="_blank">📸 ${r.instagram}</a>`:''}
+      ${r.phone?`<a class="btn btn-secondary" href="tel:${r.phone}">📞 ${r.phone}</a>`:''}
+    </div>`:''}
+    ${(!r.bio&&!r.help&&!r.instagram&&!r.phone)?`<div class="empty"><div class="em-icon">📝</div><div class="em-title">Профиль не заполнен</div><div class="em-text">Резидент пока не добавил информацию о себе</div></div>`:''}
+  `;
+  showDetail();
+}
+
+function filterRes(q){
+  const f = q ? allResidents.filter(r=>(r.name+(r.niche||'')+(r.bio||'')).toLowerCase().includes(q.toLowerCase())) : allResidents;
+  document.getElementById('resList').innerHTML = residentsHTML(f);
+}
+
+function showResidentDetail(name){
+  const r = allResidents.find(x=>x.name===name);
+  if(!r) return;
+  document.getElementById('detailTitle').textContent = r.name;
+  const isOnline = r.format==='Онлайн';
+  document.getElementById('detailContent').innerHTML = `
+    <div class="profile-hero">
+      <div class="profile-avatar-lg" ${r.avatar?`style="background-image:url('${r.avatar}')"`:''}>${r.avatar?'':r.name[0]}</div>
+      <div class="profile-name-lg">${r.name}</div>
+      <div class="profile-niche">${r.niche||'Резидент Business Surgery'}</div>
+      <div class="profile-status">${isOnline?'🌐 Онлайн':'📍 Офлайн'} · ${r.months||0} мес в BS</div>
+    </div>
+    ${r.bio?`<div class="card">
+      <div class="card-title">О резиденте</div>
+      <div style="font-size:13px;line-height:1.6">${r.bio}</div>
+    </div>`:''}
+    ${r.help?`<div class="card">
+      <div class="card-title">Чем может помочь</div>
+      <div style="font-size:13px;line-height:1.6">${r.help}</div>
+    </div>`:''}
+    ${r.instagram||r.phone?`<div class="card">
+      <div class="card-title">Контакты</div>
+      ${r.instagram?`<a class="btn btn-secondary" href="https://instagram.com/${r.instagram.replace('@','')}" target="_blank">📸 ${r.instagram}</a>`:''}
+      ${r.phone?`<a class="btn btn-secondary" href="tel:${r.phone}">📞 ${r.phone}</a>`:''}
+    </div>`:''}
+  `;
+  document.getElementById('detailView').classList.add('show');
+}
+
+function showMeetingDetail(ev){
+  const isOnline = ev.link && ev.link.includes('meet');
+  const cd = countdownText(ev.date, ev.time);
+  document.getElementById('detailTitle').textContent = 'Встреча';
+  var canEdit = isRealAdmin && viewAs === 'admin';
+  var confirmKey = 'confirmed_'+ev.res+'_'+ev.date+'_'+ev.time;
+  var alreadyConfirmed = localStorage.getItem(confirmKey);
+  document.getElementById('detailContent').innerHTML = `
+    <div class="meeting upcoming">
+      ${cd.text?`<div class="meeting-countdown">${cd.text}</div>`:''}
+      <div class="meeting-title">Трекинг</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;margin:8px 0">${ev.date}</div>
+      <div style="font-size:18px;color:var(--g400);margin-bottom:16px">${ev.time||''}</div>
+      <div class="meeting-row">${isOnline?'🌐 Формат: Онлайн':'📍 Формат: Офлайн'}</div>
+      <div class="meeting-row">👤 Резидент: ${ev.res}</div>
+      ${ev.link?`<div class="meeting-row" style="word-break:break-all">${isOnline?'🔗':'📍'} ${ev.link}</div>`:''}
+    </div>
+    ${isOnline&&ev.link?`<a class="btn btn-primary" href="${ev.link}" target="_blank">🎥 Подключиться к Meet</a>`:''}
+    ${!canEdit?`<button class="btn btn-success" onclick="confirmMeeting('${ev.res}','${ev.date}','${ev.time}')" ${alreadyConfirmed?'disabled style="opacity:0.6"':''}>${alreadyConfirmed?'✓ Подтверждено':'✅ Подтвердить участие'}</button>`:''}
+    ${!canEdit?`<button class="btn btn-secondary" onclick="addToCalendar('${ev.date}','${ev.time}','${ev.res}','${ev.link||''}')">📅 Добавить в календарь</button>`:''}
+    ${canEdit?`<button class="btn btn-success" onclick="meetingDone('${ev.res}','${ev.date}','${ev.time}')">✅ Встреча прошла</button>`:''}
+    ${canEdit?`<button class="btn btn-secondary" onclick="openEditMeeting('${ev.res}','${ev.date}','${ev.time}')">🔄 Перенести</button>`:''}
+    ${canEdit?`<button class="btn btn-danger" onclick="deleteMeetingConfirm('${ev.res}','${ev.date}','${ev.time}')">🗑 Удалить</button>`:''}
+  `;
+  showDetail();
+}
+
+// Изменить встречу
+function openEditMeeting(res, oldDate, oldTime){
+  // Сохраняем что меняем
+  window._editingMeeting = {res, oldDate, oldTime};
+  // Открываем модал расписания, но в режиме редактирования
+  openModal('schedModal');
+  initSchedModal();
+  // Меняем тексты
+  document.querySelector('#schedModal .modal-title').textContent = 'Изменить встречу';
+  document.getElementById('schedResident').value = res;
+  document.querySelector('#schedModal .btn-primary').textContent = 'Сохранить изменения';
+  document.querySelector('#schedModal .btn-primary').setAttribute('onclick','submitEditMeeting()');
+  closeDetail();
+}
+
+async function submitEditMeeting(){
+  var info = window._editingMeeting;
+  if(!info) return;
+  var newDate = selDate;
+  var newTime = selTime;
+  closeModal('schedModal');
+  showToast('🔄 Время изменено');
+  // Локально обновляем кэш
+  if(cache.schedule){
+    cache.schedule.forEach(function(e){
+      if(e.res===info.res && e.date===info.oldDate && e.time===info.oldTime){
+        // Преобразуем dd.MM.yyyy → dd.MM
+        var parts = newDate.split('.');
+        e.date = parts[0]+'.'+parts[1];
+        e.time = newTime;
+      }
+    });
+    try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
+  }
+  renderAllPages();
+  // Восстанавливаем модал в исходное
+  document.querySelector('#schedModal .modal-title').textContent = 'Поставить расписание';
+  document.querySelector('#schedModal .btn-primary').textContent = 'Создать встречу';
+  document.querySelector('#schedModal .btn-primary').setAttribute('onclick','submitSchedule()');
+  await callAction('updateMeeting', {
+    oldRes: info.res,
+    oldDate: info.oldDate,
+    oldTime: info.oldTime,
+    newDate: newDate,
+    newTime: newTime
+  });
+  window._editingMeeting = null;
+  loadAllData();
+}
+
+
+function meetingDone(res, date, time){
+  if(!confirm('Отметить встречу с '+res+' как проведённую?')) return;
+  if(!window._deletedMeetings) window._deletedMeetings = [];
+  window._deletedMeetings.push(res+'|'+date+'|'+time);
+  if(cache.schedule){
+    cache.schedule = cache.schedule.filter(function(e){
+      return !(e.res===res && e.date===date && e.time===time);
+    });
+    try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
+  }
+  closeDetail();
+  showToast('✅ Встреча отмечена как проведённая');
+  renderAllPages();
+  callAction('deleteSchedule', {res, date, time}).then(function(){
+    setTimeout(loadAllData, 3000);
+  });
+}
+
+function deleteMeetingConfirm(res, date, time){
+  if(!confirm('Удалить встречу с '+res+' '+date+' '+time+'?')) return;
+  // Помечаем как удалённую (чтобы при loadAllData не вернулась)
+  if(!window._deletedMeetings) window._deletedMeetings = [];
+  window._deletedMeetings.push(res+'|'+date+'|'+time);
+  // Удаляем из локального кэша
+  if(cache.schedule){
+    cache.schedule = cache.schedule.filter(function(e){
+      return !(e.res===res && e.date===date && e.time===time);
+    });
+    try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
+  }
+  closeDetail();
+  showToast('✅ Встреча удалена');
+  renderAllPages();
+  // В фоне удаляем из таблицы
+  callAction('deleteSchedule', {res, date, time}).then(function(result){
+    // Ждём 3 секунды чтобы серверный кэш обновился, потом перезагружаем
+    setTimeout(function(){
+      loadAllData();
+    }, 3000);
+  });
+}
+
+function confirmMeeting(res, date, time){
+  var key = 'confirmed_'+res+'_'+date+'_'+time;
+  if(localStorage.getItem(key)){
+    showToast('✓ Уже подтверждено');
+    return;
+  }
+  localStorage.setItem(key, '1');
+  showToast('✅ Участие подтверждено');
+  // Скрываем кнопку
+  var btn = document.querySelector('button[onclick*="confirmMeeting"]');
+  if(btn){
+    btn.disabled = true;
+    btn.innerHTML = '✓ Подтверждено';
+    btn.style.opacity = '0.6';
+  }
+  callAction('confirmMeeting', {res, date, time, userId: user?.id||''});
+}
+
+function addToCalendar(date, time, res, link){
+  const [d,m] = date.split('.').map(Number);
+  const [h,min] = (time||'00:00').split(':').map(Number);
+  const y = new Date().getFullYear();
+  const start = new Date(y, m-1, d, h, min);
+  const end = new Date(start.getTime() + 60*60*1000);
+  const fmt2 = (dt) => dt.toISOString().replace(/-|:|\.\d+/g,'').substring(0,15)+'Z';
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Трекинг — '+res)}&dates=${fmt2(start)}/${fmt2(end)}&details=${encodeURIComponent(link||'')}`;
+  window.open(url, '_blank');
+}
+
+function closeDetail(){
+  document.getElementById('detailView').classList.remove('show');
+}
+
+function showDetail(){
+  document.getElementById('detailView').classList.add('show');
+  if(tg&&tg.BackButton){
+    try{
+      tg.BackButton.show();
+      tg.BackButton.onClick(closeDetail);
+    }catch(e){}
+  }
+}
+
+// ─── RESIDENT VIEW ─────────────────────────────────────────────────────────
+function getMyData(){
+  const uid = String(user?.id||'');
+  const all = cache.residents||[];
+  if(viewAs==='resident' && isRealAdmin){
+    // Admin previewing — show first non-test resident
+    return all.find(r=>r.name!=='Тест'&&r.name!=='Тест2'&&!r.isFired) || all[0];
+  }
+  return all.find(r=>r.chatId===uid);
+}
+
+function renderMyStatus(){
+  const me = getMyData();
+  const el = document.getElementById('mystatusContent');
+  if(!me){
+    el.innerHTML = `<div class="empty"><div class="em-icon">🔒</div><div class="em-title">Не найден</div><div class="em-text">Обратитесь к админу</div></div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="profile-hero">
+      <div class="profile-avatar-lg" style="${(me.avatar||user?.photo_url)?`background-image:url('${me.avatar||user.photo_url}');background-size:cover;background-position:center`:''}">${(me.avatar||user?.photo_url)?'':me.name[0]}</div>
+      <div class="profile-name-lg">${me.name.split(' ')[0]}</div>
+      <div class="profile-niche">${me.niche||me.format||'Резидент BS'}</div>
+      <div class="profile-status">🗓 ${me.months||0} мес в BS</div>
+    </div>
+    <div class="metric-grid">
+      <div class="metric">
+        <div class="metric-val" style="color:${me.debt>0?'var(--red)':'var(--green)'}">${me.debt>0?fmt(me.debt):'0'}</div>
+        <div class="metric-lbl">Долг</div>
+      </div>
+      <div class="metric">
+        <div class="metric-val">${me.tariff?fmt(me.tariff):'—'}</div>
+        <div class="metric-lbl">Тариф</div>
+      </div>
+    </div>
+    ${me.debt>0?`<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank"><button class="btn btn-primary">💳 Оплатить через Kaspi</button></a>`:'<div class="card" style="text-align:center"><div style="font-size:32px;margin-bottom:6px">✅</div><div style="font-weight:600">Долгов нет</div></div>'}
+    <button class="btn btn-secondary" onclick="shareStory()">📸 Поделиться в Stories</button>
+  `;
+}
+
+function shareStory(){
+  var me = getMyData();
+  if(!me){showToast('⚠️ Профиль не найден');return;}
+  showToast('🎨 Создаём картинку...');
+  // Создаём canvas 1080x1920 (Instagram Stories формат)
+  var canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1920;
+  var ctx = canvas.getContext('2d');
+  // Чёрный фон
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, 1080, 1920);
+  // Градиентная подложка
+  var grad = ctx.createLinearGradient(0, 0, 0, 1920);
+  grad.addColorStop(0, '#1a1a1a');
+  grad.addColorStop(1, '#0a0a0a');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 1080, 1920);
+  // Логотип BS вверху
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 50px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('BUSINESS SURGERY', 540, 200);
+  ctx.font = '24px Inter, sans-serif';
+  ctx.fillStyle = '#999';
+  ctx.fillText('Хирургия бизнеса', 540, 240);
+  // Линия
+  ctx.fillStyle = '#333';
+  ctx.fillRect(440, 280, 200, 2);
+  // Имя огромным шрифтом
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 100px Inter, sans-serif';
+  ctx.fillText(me.name.split(' ')[0].toUpperCase(), 540, 800);
+  // Ниша
+  if(me.niche){
+    ctx.font = '36px Inter, sans-serif';
+    ctx.fillStyle = '#ccc';
+    var nicheLines = wrapText(ctx, me.niche, 900);
+    nicheLines.forEach(function(line, i){
+      ctx.fillText(line, 540, 900 + i*48);
+    });
+  }
+  // Статус Резидент BS
+  ctx.font = 'bold 32px Inter, sans-serif';
+  ctx.fillStyle = '#fff';
+  ctx.fillText('РЕЗИДЕНТ', 540, 1200);
+  ctx.font = '60px Inter, sans-serif';
+  ctx.fillStyle = '#fff';
+  ctx.fillText('BUSINESS SURGERY', 540, 1270);
+  // Месяцев в BS
+  if(me.months > 0){
+    ctx.font = 'bold 200px Inter, sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(me.months, 540, 1550);
+    ctx.font = '36px Inter, sans-serif';
+    ctx.fillStyle = '#999';
+    ctx.fillText('МЕСЯЦЕВ В КЛУБЕ', 540, 1610);
+  }
+  // Лого/подпись внизу
+  ctx.font = '24px Inter, sans-serif';
+  ctx.fillStyle = '#666';
+  ctx.fillText('@bsurgery_bot', 540, 1820);
+  // Конвертируем в Blob и шарим
+  canvas.toBlob(function(blob){
+    if(navigator.share && navigator.canShare && navigator.canShare({files:[new File([blob],'bs-story.png',{type:'image/png'})]})){
+      navigator.share({
+        files: [new File([blob], 'bs-story.png', {type: 'image/png'})],
+        title: 'Business Surgery'
+      }).then(function(){
+        showToast('✅ Поделились');
+      }).catch(function(){});
+    } else {
+      // Fallback: скачать картинку
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'bs-story.png';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('💾 Картинка скачана — загрузите в Stories');
+    }
+  }, 'image/png');
+}
+
+function wrapText(ctx, text, maxWidth){
+  var words = text.split(' ');
+  var lines = [];
+  var line = '';
+  for(var i = 0; i < words.length; i++){
+    var test = line + words[i] + ' ';
+    if(ctx.measureText(test).width > maxWidth && i > 0){
+      lines.push(line.trim());
+      line = words[i] + ' ';
+    } else {
+      line = test;
+    }
+  }
+  lines.push(line.trim());
+  return lines.slice(0, 3); // макс 3 строки
+}
+
+function renderMyProfile(){
+  const me = getMyData();
+  const el = document.getElementById('myprofileContent');
+  if(!me){
+    el.innerHTML = `<div class="empty"><div class="em-text">Не найден</div></div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="section-head">
+      <div class="section-title">Мой профиль</div>
+    </div>
+    <div class="profile-hero">
+      <div class="profile-avatar-lg" style="${(me.avatar||user?.photo_url)?`background-image:url('${me.avatar||user.photo_url}');background-size:cover;background-position:center`:''}">${(me.avatar||user?.photo_url)?'':me.name[0]}</div>
+      <div class="profile-name-lg">${me.name.split(' ')[0]}</div>
+      <div class="profile-niche">${me.niche||'Заполните профиль ниже'}</div>
+    </div>
+    <div class="card">
+      <div class="form-group" style="display:none">
+        <input id="pfAvatar" value="${me.avatar||''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ниша / деятельность</label>
+        <input class="form-input" id="pfNiche" value="${me.niche||''}" placeholder="Например: Маркетинг, Edu, IT">
+      </div>
+      <div class="form-group">
+        <label class="form-label">О себе</label>
+        <textarea class="form-textarea" id="pfBio" placeholder="Кратко о вашем бизнесе">${me.bio||''}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Чем могу помочь другим</label>
+        <textarea class="form-textarea" id="pfHelp" placeholder="Какие задачи можете решить">${me.help||''}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Instagram</label>
+        <input class="form-input" id="pfIG" value="${me.instagram||''}" placeholder="@username">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Телефон</label>
+        <input class="form-input" id="pfPhone" value="${me.phone||''}" placeholder="+7 700 000 0000">
+      </div>
+      <button class="btn btn-primary" onclick="saveProfile('${me.chatId}')">Сохранить профиль</button>
+    </div>
+  `;
+}
+
+async function saveProfile(chatId){
+  // Аватар автоматически из Telegram
+  const tgPhoto = user?.photo_url || '';
+  const existingAvatar = document.getElementById('pfAvatar')?.value || '';
+  const data = {
+    chatId: chatId || String(user?.id||''),
+    avatar: tgPhoto || existingAvatar,
+    niche: document.getElementById('pfNiche').value,
+    bio: document.getElementById('pfBio').value,
+    help: document.getElementById('pfHelp').value,
+    instagram: document.getElementById('pfIG').value,
+    phone: document.getElementById('pfPhone').value
+  };
+  await callAction('saveProfile', data);
+  showToast('✅ Профиль сохранён');
+  loadAllData();
+}
+
+function renderMyMeetings(){
+  const me = getMyData();
+  const el = document.getElementById('mymeetingsContent');
+  if(!me){
+    el.innerHTML = `<div class="empty"><div class="em-text">Не найден</div></div>`;
+    return;
+  }
+  const myMeetings = (cache.schedule||[]).filter(ev => ev.res === me.name);
+  el.innerHTML = `
+    <div class="section-head">
+      <div class="section-title">Мои встречи</div>
+    </div>
+  `;
+  if(!myMeetings.length){
+    el.innerHTML += `<div class="empty"><div class="em-icon">📅</div><div class="em-title">Встреч пока нет</div><div class="em-text">Свяжитесь с админом для записи</div></div>`;
+    return;
+  }
+  window._currentMyMeetingsList = myMeetings;
+  el.innerHTML += myMeetings.map((ev,i) => meetingCard(ev,i)).join('');
+}
+
+// ─── MODALS ────────────────────────────────────────────────────────────────
+function initFineModal(){
+  const residents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
+  document.getElementById('fineResident').innerHTML = residents.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
+  document.getElementById('fineTypeGrid').innerHTML = FINE_TYPES.map((t,i)=>`
+    <button class="pick-btn ${i===0?'selected':''}" data-name="${t.name}" data-amount="${t.amount}" onclick="selectFineType(this)">
+      <span class="e">${t.emoji}</span>${t.label}
+    </button>
+  `).join('');
+  selFineType = FINE_TYPES[0].name;
+  document.getElementById('fineAmount').value = FINE_TYPES[0].amount;
+}
+
+function selectFineType(btn){
+  document.querySelectorAll('#fineTypeGrid .pick-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selFineType = btn.dataset.name;
+  document.getElementById('fineAmount').value = btn.dataset.amount;
+}
+
+async function submitFine(){
+  const name = document.getElementById('fineResident').value;
+  const amount = document.getElementById('fineAmount').value;
+  if(!name||!amount){showToast('⚠️ Заполните все поля');return;}
+  // Оптимистично: закрываем модал и показываем успех СРАЗУ
+  closeModal('fineModal');
+  showToast('✅ Штраф выставлен: '+name+' — '+fmt(amount)+' тг');
+  // Запрос в фоне
+  callAction('addFine', {name, type: selFineType, amount}).then(function(result){
+    if(!result||!result.ok){
+      showToast('⚠️ Ошибка — проверьте таблицу');
+    }
+    loadAllData();
+  });
+}
+
+function initSchedModal(){
+  const residents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
+  document.getElementById('schedResident').innerHTML = residents.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
+  renderDateGrid(10);
+  // Перерисовываем время при смене даты
+  updateAvailableTimes();
+  selDate = new Date().toLocaleDateString('ru-RU');
+  const tg2 = document.getElementById('timeGrid');
+  const times = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00'];
+  tg2.innerHTML = times.map((t,i)=>`<button class="pick-btn ${i===0?'selected':''}" data-time="${t}" onclick="selectSchedTime(this)">${t}</button>`).join('');
+  selTime = '09:00';
+}
+
+
+function renderDateGrid(count){
+  const dg = document.getElementById('dateGrid');
+  const days = ['вс','пн','вт','ср','чт','пт','сб'];
+  let html = '';
+  for(let i=0; i<count; i++){
+    const d = new Date(); d.setDate(d.getDate()+i);
+    const ds = d.toLocaleDateString('ru-RU');
+    html += `<button class="pick-btn ${i===0?'selected':''}" data-date="${ds}" onclick="selectSchedDate(this)">
+      <span class="e">${d.getDate()}</span>${days[d.getDay()]}
+    </button>`;
+  }
+  if(count <= 10){
+    html += `<button class="pick-btn" style="grid-column:span 2;font-size:10px" onclick="renderDateGrid(20)">Ещё 10 →</button>`;
+  }
+  dg.innerHTML = html;
+}
+
+function selectSchedDate(btn){
+  document.querySelectorAll('#dateGrid .pick-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selDate = btn.dataset.date;
+  updateAvailableTimes();
+}
+
+function updateAvailableTimes(){
+  // Сегодня — отсекаем прошедшее время
+  var today = new Date().toLocaleDateString('ru-RU');
+  var isToday = selDate === today;
+  var nowMinutes = isToday ? (new Date().getHours()*60 + new Date().getMinutes()) : -1;
+  document.querySelectorAll('#timeGrid .pick-btn').forEach(function(btn){
+    var t = btn.dataset.time;
+    if(!t) return;
+    var tp = t.split(':');
+    var btnMin = parseInt(tp[0])*60 + parseInt(tp[1]);
+    if(isToday && btnMin <= nowMinutes){
+      btn.style.opacity = '0.3';
+      btn.style.pointerEvents = 'none';
+      btn.classList.remove('selected');
+    } else {
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+    }
+  });
+  // Если selTime в прошлом — выбираем первое доступное
+  if(isToday && selTime){
+    var tp = selTime.split(':');
+    var selMin = parseInt(tp[0])*60 + parseInt(tp[1]);
+    if(selMin <= nowMinutes){
+      var firstAvailable = document.querySelector('#timeGrid .pick-btn[style*="opacity: 1"]') 
+        || document.querySelector('#timeGrid .pick-btn:not([style*="opacity: 0.3"])');
+      if(firstAvailable){
+        document.querySelectorAll('#timeGrid .pick-btn').forEach(b=>b.classList.remove('selected'));
+        firstAvailable.classList.add('selected');
+        selTime = firstAvailable.dataset.time;
+      }
+    }
+  }
+}
+
+function selectSchedTime(btn){
+  document.querySelectorAll('#timeGrid .pick-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selTime = btn.dataset.time;
+}
+
+async function submitSchedule(){
+  const res = document.getElementById('schedResident').value;
+  if(!res){showToast('⚠️ Выберите резидента');return;}
+  if(!selDate||!selTime){showToast('⚠️ Выберите дату и время');return;}
+  // Проверка — нельзя в прошлом
+  var parts = selDate.split('.');
+  var year = parseInt(parts[2]||new Date().getFullYear());
+  var tp = selTime.split(':');
+  var selDateTime = new Date(year, parseInt(parts[1])-1, parseInt(parts[0]), parseInt(tp[0]), parseInt(tp[1]));
+  var nowDt = new Date();
+  console.log('Check past:', selDateTime, 'vs', nowDt, 'diff:', selDateTime - nowDt);
+  if(selDateTime.getTime() <= nowDt.getTime()){
+    if(tg && tg.showAlert){
+      tg.showAlert('⚠️ Нельзя ставить встречу в прошлом!\n\nВыбрано: '+selDate+' '+selTime+'\nСейчас: '+nowDt.toLocaleString('ru-RU'));
+    } else {
+      alert('⚠️ Нельзя ставить встречу в прошлом!');
+    }
+    return;
+  }
+  closeModal('schedModal');
+  if(!cache.schedule) cache.schedule = [];
+  cache.schedule.push({
+    res: res,
+    date: parts[0]+'.'+parts[1],
+    time: selTime,
+    link: ''
+  });
+  try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
+  renderAllPages();
+  showToast('✅ Встреча: '+res+' '+selDate+' '+selTime);
+  callAction('addSchedule', {res, date: selDate, time: selTime}).then(loadAllData);
+}
+
+function initPayModal(){
+  setPayType('income');
+  setPayMethod('cash');
+  document.getElementById('payAmount').value = '';
+  // Заполняем список резидентов
+  var residents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
+  document.getElementById('payResident').innerHTML = residents.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
+  updatePayResidentVisibility();
+}
+
+function updatePayResidentVisibility(){
+  var src = document.getElementById('paySource').value || '';
+  // Показываем выбор резидента только для категорий связанных с резидентами
+  var needsResident = src.indexOf('БХ Трекинг')>=0 || src.indexOf('БХ Штраф')>=0 || src.indexOf('Экспресс')>=0;
+  document.getElementById('payResidentGroup').style.display = (payType==='income'&&needsResident) ? 'block' : 'none';
+}
+
+function setPayType(type){
+  payType = type;
+  document.getElementById('payTypeIncome').classList.toggle('selected', type==='income');
+  document.getElementById('payTypeExpense').classList.toggle('selected', type==='expense');
+  const src = type==='income' ? INCOME_SRC : EXPENSE_SRC;
+  document.getElementById('paySource').innerHTML = src.map(s=>`<option value="${s}">${s}</option>`).join('');
+  if(typeof updatePayResidentVisibility==='function')updatePayResidentVisibility();
+}
+
+function setPayMethod(method){
+  payMethod = method;
+  document.getElementById('payCash').classList.toggle('selected', method==='cash');
+  document.getElementById('payBank').classList.toggle('selected', method==='bank');
+}
+
+async function submitPayment(){
+  const amount = document.getElementById('payAmount').value;
+  const src = document.getElementById('paySource').value;
+  const resName = document.getElementById('payResidentGroup').style.display!=='none' 
+    ? document.getElementById('payResident').value : '';
+  if(!amount){showToast('⚠️ Введите сумму');return;}
+  closeModal('payModal');
+  showToast('✅ Записано: '+fmt(amount)+' тг');
+  callAction('addPayment', {type: payType, src, amount, isCash: payMethod==='cash', resident: resName}).then(loadAllData);
+}
+
+
+let arFormat = 'Офлайн';
+let arVisits = 3;
+
+function initAddResident(){
+  document.getElementById('arName').value = '';
+  document.getElementById('arDebt').value = '78571';
+  arFormat = 'Офлайн';
+  arVisits = 3;
+  document.getElementById('arFmtOff').classList.add('selected');
+  document.getElementById('arFmtOn').classList.remove('selected');
+  document.getElementById('arT3').classList.add('selected');
+  document.getElementById('arT4').classList.remove('selected');
+}
+
+function setArFormat(fmt){
+  arFormat = fmt;
+  document.getElementById('arFmtOff').classList.toggle('selected', fmt==='Офлайн');
+  document.getElementById('arFmtOn').classList.toggle('selected', fmt==='Онлайн');
+}
+
+function setArVisits(n){
+  arVisits = n;
+  document.getElementById('arT3').classList.toggle('selected', n===3);
+  document.getElementById('arT4').classList.toggle('selected', n===4);
+}
+
+async function submitAddResident(){
+  var name = document.getElementById('arName').value.trim();
+  if(!name){showToast('⚠️ Введите имя');return;}
+  var debt = document.getElementById('arDebt').value || '78571';
+  var source = document.getElementById('arSource').value;
+  closeModal('addResidentModal');
+  showToast('✅ Резидент "'+name+'" добавлен');
+  callAction('addResident', {name, tariff: debt, debt, visits: arVisits, source, format: arFormat}).then(loadAllData);
+}
+
+
+function addToHomeScreen(){
+  var ua = navigator.userAgent.toLowerCase();
+  var isiOS = /iphone|ipad|ipod/.test(ua);
+  var msg = isiOS 
+    ? '📲 Как установить на iOS:\n\n1. Нажмите на ⋮ (три точки) сверху\n2. Выберите "Открыть в Safari"\n3. В Safari: кнопка Поделиться → "На экран Домой"'
+    : '📲 Как установить на Android:\n\n1. Нажмите на ⋮ (три точки) сверху\n2. Выберите "Открыть в браузере"\n3. В Chrome: меню → "Добавить на главный экран"';
+  if(tg && tg.showAlert){
+    tg.showAlert(msg);
+  } else {
+    alert(msg);
+  }
+}
+
+async function callAction(action, params){
+  try {
+    const url = WEBAPP_URL+'?action='+action+'&'+new URLSearchParams(params);
+    const r = await fetch(url);
+    return await r.json();
+  } catch(e){
+    console.error('callAction error:', e);
+    return {error: String(e)};
+  }
+}
+
+window.addEventListener('error', function(e){
+  console.error('JS Error:', e.message, 'at', e.filename, ':', e.lineno);
+});
+window.addEventListener('unhandledrejection', function(e){
+  console.error('Promise rejection:', e.reason);
+});
+
+function openModal(id){ document.getElementById(id).classList.add('show'); }
+function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+function showToast(text){
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+function fmt(n){ return Number(n).toLocaleString('ru-RU'); }
+
+document.querySelectorAll('.modal-bg').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('show'); });
+});
+
+init();
+</script>
+</body>
+</html>
