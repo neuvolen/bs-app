@@ -770,7 +770,7 @@
     </div>
     <div class="form-group">
       <label class="form-label">Сумма (тг)</label>
-      <input class="form-input" type="number" id="fineAmount" value="10000">
+      <input class="form-input money-input" type="text" inputmode="numeric" id="fineAmount" value="10 000" data-raw="10000">
     </div>
     <button class="btn btn-primary" onclick="submitFine()">Выставить</button>
     <button class="btn btn-secondary" onclick="closeModal('fineModal')">Отмена</button>
@@ -816,7 +816,7 @@
     </div>
     <div class="form-group">
       <label class="form-label">Сумма (тг)</label>
-      <input class="form-input" type="number" id="payAmount" placeholder="150000">
+      <input class="form-input money-input" type="text" inputmode="numeric" id="payAmount" placeholder="150 000">
     </div>
     <div class="picker" style="grid-template-columns:1fr 1fr;margin-bottom:12px">
       <button class="pick-btn selected" id="payCash" onclick="setPayMethod('cash')">💵 Наличные</button>
@@ -845,7 +845,7 @@
     </div>
     <div class="form-group">
       <label class="form-label">Сумма к оплате (тг)</label>
-      <input class="form-input" type="number" id="arDebt" placeholder="78571" value="78571">
+      <input class="form-input money-input" type="text" inputmode="numeric" id="arDebt" placeholder="78 571" value="78 571" data-raw="78571">
     </div>
     <div class="form-group">
       <label class="form-label">Источник</label>
@@ -1682,7 +1682,7 @@ function generateStory(template){
     });
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 44px Inter, sans-serif';
-    ctx.fillText('@bsurgery_bot', 540, 1450);
+    ctx.fillText('@business.surgery', 540, 1450);
     ctx.font = '28px Inter, sans-serif';
     ctx.fillStyle = '#999';
     ctx.fillText('Присоединяйся ↓', 540, 1500);
@@ -1707,29 +1707,51 @@ function generateStory(template){
     ctx.fillText('BUSINESS SURGERY', 540, 1430);
   }
 
-  // Подпись внизу
-  ctx.font = '24px Inter, sans-serif';
-  ctx.fillStyle = '#666';
-  ctx.fillText('@bsurgery_bot', 540, 1830);
+  // Подпись внизу — тэги для отметки
+  ctx.font = '22px Inter, sans-serif';
+  ctx.fillStyle = '#888';
+  ctx.fillText('@business.surgery', 540, 1810);
+  ctx.font = '18px Inter, sans-serif';
+  ctx.fillStyle = '#555';
+  ctx.fillText('@qabden  •  @erniyazov.bereke', 540, 1850);
 
   // Сохраняем и шарим
   canvas.toBlob(function(blob){
     var fileName='bs-story-'+template+'.png';
-    if(navigator.share && navigator.canShare && navigator.canShare({files:[new File([blob],fileName,{type:'image/png'})]})){
+    var file = new File([blob], fileName, {type: 'image/png'});
+    
+    // Пробуем Web Share API с файлом (включая Instagram)
+    if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
       navigator.share({
-        files: [new File([blob], fileName, {type: 'image/png'})],
+        files: [file],
         title: 'Business Surgery'
-      }).then(function(){showToast('✅ Открываем Instagram...');}).catch(function(){});
+      }).then(function(){
+        showToast('✅ Выберите Instagram → Stories');
+      }).catch(function(err){
+        // Если отказались — сохраняем
+        if(err.name !== 'AbortError'){
+          fallbackDownload(blob, fileName);
+        }
+      });
     } else {
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast('💾 Картинка сохранена');
+      // Android Chrome / десктоп — сохраняем + инструкция
+      fallbackDownload(blob, fileName);
     }
   }, 'image/png');
+}
+
+function fallbackDownload(blob, fileName){
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  URL.revokeObjectURL(url);
+  if(tg && tg.showAlert){
+    tg.showAlert('💾 Картинка сохранена в галерею\n\nОткройте Instagram → Stories → выберите эту картинку');
+  } else {
+    showToast('💾 Сохранено — откройте Instagram Stories');
+  }
 }
 
 function wrapText(ctx, text, maxWidth){
@@ -1855,7 +1877,7 @@ function selectFineType(btn){
 
 async function submitFine(){
   const name = document.getElementById('fineResident').value;
-  const amount = document.getElementById('fineAmount').value;
+  const amount = getMoneyValue('fineAmount');
   if(!name||!amount){showToast('⚠️ Заполните все поля');return;}
   // Оптимистично: закрываем модал и показываем успех СРАЗУ
   closeModal('fineModal');
@@ -2038,7 +2060,7 @@ function setPayMethod(method){
 }
 
 async function submitPayment(){
-  const amount = document.getElementById('payAmount').value;
+  const amount = getMoneyValue('payAmount');
   const src = document.getElementById('paySource').value;
   const resName = document.getElementById('payResidentGroup').style.display!=='none' 
     ? document.getElementById('payResident').value : '';
@@ -2078,7 +2100,7 @@ function setArVisits(n){
 async function submitAddResident(){
   var name = document.getElementById('arName').value.trim();
   if(!name){showToast('⚠️ Введите имя');return;}
-  var debt = document.getElementById('arDebt').value || '78571';
+  var debt = getMoneyValue('arDebt') || '78571';
   var source = document.getElementById('arSource').value;
   closeModal('addResidentModal');
   showToast('✅ Резидент "'+name+'" добавлен');
@@ -2098,6 +2120,38 @@ function addToHomeScreen(){
     alert(msg);
   }
 }
+
+
+function setupMoneyInputs(){
+  document.querySelectorAll('.money-input').forEach(function(inp){
+    if(inp._moneySetup) return;
+    inp._moneySetup = true;
+    var fmt = function(){
+      var raw = this.value.replace(/[^0-9]/g,'');
+      this.dataset.raw = raw;
+      if(raw){
+        this.value = parseInt(raw).toLocaleString('ru-RU').replace(/,/g,' ');
+      }
+    };
+    inp.addEventListener('input', fmt);
+    inp.addEventListener('blur', fmt);
+  });
+}
+function getMoneyValue(id){
+  var el = document.getElementById(id);
+  if(!el) return '';
+  return el.dataset.raw || el.value.replace(/[^0-9]/g,'');
+}
+
+// Перехватываем openModal чтобы запускать setupMoneyInputs
+(function(){
+  var origOpen = window.openModal;
+  window.openModal = function(id){
+    if(origOpen) origOpen(id);
+    else document.getElementById(id).classList.add('show');
+    setTimeout(setupMoneyInputs, 100);
+  };
+})();
 
 async function callAction(action, params){
   try {
