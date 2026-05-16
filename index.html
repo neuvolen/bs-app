@@ -1209,12 +1209,13 @@ function renderSchedule(){
   });
   window._currentScheduleList = list;
   const el = document.getElementById('scheduleContent');
+  var canManage = isRealAdmin && viewAs==='admin';
   el.innerHTML = `
     <div class="section-head">
       <div class="section-title">Расписание</div>
       <div class="section-action" onclick="openModal('schedModal');initSchedModal()">+ Добавить</div>
     </div>
-    ${(isRealAdmin && viewAs==='admin')?`<button class="btn btn-secondary" style="margin-bottom:12px" onclick="openOfflineGroupModal()">📅 Офлайн день (все резиденты)</button>`:''}
+    ${canManage?`<button class="btn btn-primary" style="margin-bottom:12px;background:#fff;color:#000" onclick="openOfflineGroupModal()">📅 Офлайн день — все офлайн-резиденты</button>`:''}
   `;
   if(!list.length){
     el.innerHTML += `<div class="empty"><div class="em-icon">📅</div><div class="em-title">Встреч нет</div><div class="em-text">Нажмите кнопку выше</div></div>`;
