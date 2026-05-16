@@ -1018,8 +1018,18 @@ function init(){
     if(tg){
       tg.ready();
       tg.expand();
-      tg.setHeaderColor('#0a0a0a');
-      tg.setBackgroundColor('#0a0a0a');
+      // Header/Background color — hex поддерживается с API 6.9+, иначе используем bg_color
+      try {
+        var ver = parseFloat(tg.version || '6.0');
+        if(ver >= 6.9){
+          tg.setHeaderColor('#0a0a0a');
+          tg.setBackgroundColor('#0a0a0a');
+        } else {
+          // Старые версии (macOS desktop 6.4) — только предопределённые ключи
+          tg.setHeaderColor('secondary_bg_color');
+          tg.setBackgroundColor('secondary_bg_color');
+        }
+      } catch(colorErr){ console.log('Color err:', colorErr); }
       user = tg.initDataUnsafe?.user;
     }
     isRealAdmin = user ? ADMIN_IDS.includes(String(user.id)) : false;
