@@ -1095,7 +1095,8 @@ async function loadAllData(){
   try {
     const r = await fetch(WEBAPP_URL+'?action=getBotCache');
     var serverData = await r.json();
-    // Сохраняем локальные изменения встреч (созданные оптимистично + помеченные удалёнными)
+    // Сохраняем локальные изменения встреч
+    var now = Date.now();
     var localPending = window._pendingMeetings || [];
     var localDeleted = window._deletedMeetingKeys || [];
     var serverSchedule = serverData.schedule || [];
@@ -1103,7 +1104,19 @@ async function loadAllData(){
     serverSchedule = serverSchedule.filter(function(s){
       return localDeleted.indexOf(s.res+'|'+s.date+'|'+s.time) < 0;
     });
-    // Добавляем pending (созданные но ещё не пришедшие с сервера)
+    // ВАЖНО: встречи моложе 60 сек НИКОГДА не пропадают (защита от гонки)
+    // Они могли быть созданы только что — сервер ещё не вернул их
+    var recentlyCreated = (cache && cache.schedule ? cache.schedule : []).filter(function(s){
+      return s._createdAt && (now - s._createdAt) < 60000;
+    });
+    // Берём union: serverSchedule + recentlyCreated (если их там нет)
+    recentlyCreated.forEach(function(rc){
+      var exists = serverSchedule.some(function(s){
+        return s.res===rc.res && s.date===rc.date && s.time===rc.time;
+      });
+      if(!exists) serverSchedule.push(rc);
+    });
+    // Также pending (могут быть и без _createdAt из предыдущих версий)
     localPending.forEach(function(p){
       var exists = serverSchedule.some(function(s){
         return s.res===p.res && s.date===p.date && s.time===p.time;
@@ -1995,30 +2008,20 @@ async function submitSchedule(){
   var selMin = parseInt(tp[1]||'0');
   var selDateTime = new Date(year, month, day, selHour, selMin, 0);
   var nowDt = new Date();
-  // === ПРОВЕРКА ПРОШЛОГО ===
-  var dbgMsg='ОТЛАДКА:\n'+
-    'selDate=['+selDate+']\n'+
-    'selTime=['+selTime+']\n'+
-    'parts='+JSON.stringify(parts)+'\n'+
-    'day='+day+' month='+(month+1)+' year='+year+'\n'+
-    'selHour='+selHour+' selMin='+selMin+'\n'+
-    'selDateTime='+selDateTime.toString()+'\n'+
-    'now='+nowDt.toString()+'\n'+
-    'diff(min)='+Math.round((selDateTime.getTime()-nowDt.getTime())/60000);
+  // Проверка — нельзя в прошлом
   if(isNaN(selDateTime.getTime())){
-    if(tg && tg.showAlert){tg.showAlert('⚠️ Неверная дата\n\n'+dbgMsg);}else{alert('⚠️ Неверная дата\n\n'+dbgMsg);}
+    if(tg && tg.showAlert){tg.showAlert('⚠️ Неверная дата');}else{alert('⚠️ Неверная дата');}
     return;
   }
-  // Запрет: если selDateTime <= сейчас (с буфером 1 мин)
   if(selDateTime.getTime() - nowDt.getTime() < 60000){
-    if(tg && tg.showAlert){tg.showAlert('⚠️ Нельзя в прошлом!\n\n'+dbgMsg);}else{alert('⚠️ Нельзя в прошлом!\n\n'+dbgMsg);}
+    if(tg && tg.showAlert){tg.showAlert('⚠️ Нельзя ставить встречу в прошлом');}else{alert('⚠️ Нельзя ставить встречу в прошлом');}
     return;
   }
   closeModal('schedModal');
-  var newMeeting = {res:res, date:parts[0]+'.'+parts[1], time:selTime, link:''};
+  var newMeeting = {res:res, date:parts[0]+'.'+parts[1], time:selTime, link:'', _createdAt: Date.now()};
   if(!cache.schedule) cache.schedule = [];
   cache.schedule.push(newMeeting);
-  // Сохраняем как pending — чтобы не исчезла при следующем loadAllData
+  // Сохраняем как pending с timestamp (защита от гонки loadAllData)
   if(!window._pendingMeetings) window._pendingMeetings = [];
   window._pendingMeetings.push(newMeeting);
   try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
