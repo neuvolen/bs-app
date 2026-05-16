@@ -845,7 +845,7 @@
     </div>
     <div class="form-group">
       <label class="form-label">Сумма к оплате (тг)</label>
-      <input class="form-input money-input" type="text" inputmode="numeric" id="arDebt" placeholder="78 571" value="78 571" data-raw="78571">
+      <input class="form-input money-input" type="text" inputmode="numeric" id="arDebt" placeholder="0" value="" data-raw="0">
     </div>
     <div class="form-group">
       <label class="form-label">Источник</label>
@@ -899,6 +899,22 @@
     <div class="pick-grid" id="offTimeGrid"></div>
     <button class="btn btn-primary" onclick="submitOfflineGroup()">Создать офлайн день</button>
     <button class="btn btn-secondary" onclick="closeModal('offlineGroupModal')">Отмена</button>
+  </div>
+</div>
+
+<style>
+.attend-item{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);cursor:pointer}
+.attend-item:hover{background:#1a1a1a}
+.attend-item input{width:20px;height:20px}
+.attend-item span{font-size:15px;font-weight:500}
+</style>
+<div class="modal-bg" id="attendModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Кто был на встрече?</div>
+    <div id="attendList" style="max-height:50vh;overflow-y:auto;margin-bottom:14px"></div>
+    <button class="btn btn-primary" onclick="submitAttendance()">✅ Отметить присутствующих</button>
+    <button class="btn btn-secondary" onclick="closeModal('attendModal')">Отмена</button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -1212,9 +1228,11 @@ function renderSchedule(){
   el.innerHTML = `
     <div class="section-head">
       <div class="section-title">Расписание</div>
-      <div class="section-action" onclick="openModal('schedModal');initSchedModal()">+ Добавить</div>
+      <div style="display:flex;gap:14px;align-items:center">
+        ${(isRealAdmin && viewAs==='admin')?`<div class="section-action" onclick="openOfflineGroupModal()">+ Offline</div>`:''}
+        <div class="section-action" onclick="openModal('schedModal');initSchedModal()">+ Добавить</div>
+      </div>
     </div>
-    ${(isRealAdmin && viewAs==='admin')?`<button class="btn btn-primary" style="margin-bottom:12px;background:#fff;color:#000;width:100%;padding:14px;font-weight:700" onclick="openOfflineGroupModal()">📅 Офлайн день — все офлайн-резиденты</button>`:''}
   `;
   if(!list.length){
     el.innerHTML += `<div class="empty"><div class="em-icon">📅</div><div class="em-title">Встреч нет</div><div class="em-text">Нажмите кнопку выше</div></div>`;
@@ -1334,20 +1352,24 @@ function renderFines(){
     return;
   }
   var canManageFines = isRealAdmin && viewAs==='admin';
-  el.innerHTML += '<div class="card">' + fines.map(function(f,i){
-    return `<div class="list-item" ${canManageFines?`onclick="openFineActions(${i})" style="cursor:pointer"`:''}>
-      <div class="list-avatar" style="background:rgba(229,115,115,0.2);color:var(--red)">⚠</div>
-      <div class="list-content">
-        <div class="list-name">${f.name}</div>
-        <div class="list-sub">${f.type}</div>
-      </div>
-      <div class="list-right">
-        <div class="list-amount">${fmt(f.amount)} тг</div>
-        <div class="list-date">${f.date}</div>
-      </div>
-    </div>`;
-  }).join('') + '</div>';
   window._currentFinesList = fines;
+  var finesHtml = '<div class="card">';
+  fines.forEach(function(f,i){
+    var clickAttr = canManageFines ? ('onclick="openFineActions('+i+')" style="cursor:pointer"') : '';
+    finesHtml += '<div class="list-item" '+clickAttr+'>'+
+      '<div class="list-avatar" style="background:rgba(229,115,115,0.2);color:var(--red)">⚠</div>'+
+      '<div class="list-content">'+
+        '<div class="list-name">'+f.name+'</div>'+
+        '<div class="list-sub">'+f.type+'</div>'+
+      '</div>'+
+      '<div class="list-right">'+
+        '<div class="list-amount">'+fmt(f.amount)+' тг</div>'+
+        '<div class="list-date">'+f.date+'</div>'+
+      '</div>'+
+    '</div>';
+  });
+  finesHtml += '</div>';
+  el.innerHTML += finesHtml;
 }
 
 function renderResidents(){
@@ -1377,7 +1399,7 @@ function residentsHTML(list){
       ${r.bio?`<div class="res-bio">${r.bio.substring(0,100)}${r.bio.length>100?'...':''}</div>`:''}
       ${r.instagram||r.phone?`<div class="res-links">
         ${r.instagram?`<a class="res-link" href="https://instagram.com/${r.instagram.replace('@','')}" target="_blank" onclick="event.stopPropagation()">📸 ${r.instagram}</a>`:''}
-        ${r.phone?`<a class="res-link" href="tel:${r.phone}" onclick="event.stopPropagation()">📞 ${r.phone}</a>`:''}
+        ${r.phone?`<a class="res-link" href="https://wa.me/${(r.phone||'').replace(/[^0-9]/g,'')}" target="_blank" onclick="event.stopPropagation()">💬 WhatsApp</a>`:''}
       </div>`:''}
     </div>
   `).join('');
@@ -1404,7 +1426,7 @@ function openResidentProfile(r){
     ${r.instagram||r.phone?`<div class="card">
       <div class="card-title">Контакты</div>
       ${r.instagram?`<a class="btn btn-secondary" href="https://instagram.com/${r.instagram.replace('@','')}" target="_blank">📸 ${r.instagram}</a>`:''}
-      ${r.phone?`<a class="btn btn-secondary" href="tel:${r.phone}">📞 ${r.phone}</a>`:''}
+      ${r.phone?`<a class="btn btn-secondary" href="https://wa.me/${(r.phone||'').replace(/[^0-9]/g,'')}" target="_blank">💬 WhatsApp</a>`:''}
     </div>`:''}
     ${(!r.bio&&!r.help&&!r.instagram&&!r.phone)?`<div class="empty"><div class="em-icon">📝</div><div class="em-title">Профиль не заполнен</div><div class="em-text">Резидент пока не добавил информацию о себе</div></div>`:''}
   `;
@@ -1439,7 +1461,7 @@ function showResidentDetail(name){
     ${r.instagram||r.phone?`<div class="card">
       <div class="card-title">Контакты</div>
       ${r.instagram?`<a class="btn btn-secondary" href="https://instagram.com/${r.instagram.replace('@','')}" target="_blank">📸 ${r.instagram}</a>`:''}
-      ${r.phone?`<a class="btn btn-secondary" href="tel:${r.phone}">📞 ${r.phone}</a>`:''}
+      ${r.phone?`<a class="btn btn-secondary" href="https://wa.me/${(r.phone||'').replace(/[^0-9]/g,'')}" target="_blank">💬 WhatsApp</a>`:''}
     </div>`:''}
   `;
   document.getElementById('detailView').classList.add('show');
@@ -1465,7 +1487,7 @@ function showMeetingDetail(ev){
     ${isOnline&&ev.link?`<a class="btn btn-primary" href="${ev.link}" target="_blank">🎥 Подключиться к Meet</a>`:''}
     ${!canEdit?`<button class="btn btn-success" onclick="confirmMeeting('${ev.res}','${ev.date}','${ev.time}')" ${alreadyConfirmed?'disabled style="opacity:0.6"':''}>${alreadyConfirmed?'✓ Подтверждено':'✅ Подтвердить участие'}</button>`:''}
     ${!canEdit?`<button class="btn btn-secondary" onclick="addToCalendar('${ev.date}','${ev.time}','${ev.res}','${ev.link||''}')">📅 Добавить в календарь</button>`:''}
-    ${canEdit?`<button class="btn btn-success" onclick="meetingDone('${ev.res}','${ev.date}','${ev.time}')">✅ Встреча прошла</button>`:''}
+    ${canEdit?`<button class="btn btn-success" onclick="onMeetingDoneClick('${ev.res}','${ev.date}','${ev.time}',${isOnline?'true':'false'})">✅ Встреча прошла</button>`:''}
     ${canEdit?`<button class="btn btn-secondary" onclick="openEditMeeting('${ev.res}','${ev.date}','${ev.time}')">🔄 Перенести</button>`:''}
     ${canEdit?`<button class="btn btn-danger" onclick="deleteMeetingConfirm('${ev.res}','${ev.date}','${ev.time}')">🗑 Удалить</button>`:''}
   `;
@@ -1651,7 +1673,84 @@ function renderMyStatus(){
     </div>
     ${me.debt>0?`<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank"><button class="btn btn-primary">💳 Оплатить через Kaspi</button></a>`:'<div class="card" style="text-align:center"><div style="font-size:32px;margin-bottom:6px">✅</div><div style="font-weight:600">Долгов нет</div></div>'}
     <button class="btn btn-secondary" onclick="shareStory()">📸 Поделиться в Stories</button>
+    <button class="btn btn-secondary" onclick="shareStoryInvite()">🚀 Пригласить друзей в BS</button>
   `;
+}
+
+
+
+function onMeetingDoneClick(res, date, time, isOnline){
+  // Если онлайн — сразу как раньше через meetingDone
+  if(isOnline){
+    meetingDone(res, date, time);
+    return;
+  }
+  // Если офлайн — открываем модал со списком офлайн-резидентов + галочки
+  openAttendanceModal(date, time);
+}
+
+async function openAttendanceModal(date, time){
+  showToast('⏳ Загружаем список...');
+  // Получаем список офлайн-резидентов
+  var r = await callAction('getOfflineResidents', {});
+  var list = (r && r.residents) || [];
+  if(!list.length){
+    showToast('⚠️ Нет офлайн-резидентов');
+    return;
+  }
+  window._attendDate = date;
+  window._attendTime = time;
+  // Заполняем checkboxes
+  var box = document.getElementById('attendList');
+  if(!box) return;
+  box.innerHTML = list.map(function(name,i){
+    return `<label class="attend-item">
+      <input type="checkbox" value="${name}" id="att_${i}" checked>
+      <span>${name}</span>
+    </label>`;
+  }).join('');
+  closeDetail();
+  openModal('attendModal');
+}
+
+async function submitAttendance(){
+  if(window._submittingAttend){return;}
+  window._submittingAttend = true;
+  setTimeout(function(){window._submittingAttend = false;}, 5000);
+  var checks = document.querySelectorAll('#attendList input[type=checkbox]:checked');
+  var names = Array.from(checks).map(function(c){return c.value;});
+  if(!names.length){
+    showToast('⚠️ Выберите хотя бы одного');
+    window._submittingAttend = false;
+    return;
+  }
+  closeModal('attendModal');
+  showToast('⏳ Отмечаем...');
+  // Оптимистично удаляем из cache.schedule встречи этих резидентов на дату
+  if(cache.schedule){
+    cache.schedule = cache.schedule.filter(function(e){
+      if(e.date !== window._attendDate) return true;
+      return names.indexOf(e.res) < 0;
+    });
+    try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
+  }
+  renderAllPages();
+  var result = await callAction('markAttendance', {
+    names: names.join('|'),
+    date: window._attendDate,
+    time: window._attendTime||''
+  });
+  if(result && result.ok){
+    showToast('✅ Отмечено: '+result.marked.length);
+  } else {
+    showToast('⚠️ Ошибка');
+  }
+  setTimeout(loadAllData, 3000);
+}
+
+function shareStoryInvite(){
+  // Открываем сразу сторис с шаблоном 'invite' без выбора
+  generateStory('invite');
 }
 
 function shareStory(){
@@ -2240,7 +2339,7 @@ function setArVisits(n){
 async function submitAddResident(){
   var name = document.getElementById('arName').value.trim();
   if(!name){showToast('⚠️ Введите имя');return;}
-  var debt = getMoneyValue('arDebt') || '78571';
+  var debt = getMoneyValue('arDebt') || '0';
   var source = document.getElementById('arSource').value;
   closeModal('addResidentModal');
   showToast('✅ Резидент "'+name+'" добавлен');
