@@ -1209,13 +1209,12 @@ function renderSchedule(){
   });
   window._currentScheduleList = list;
   const el = document.getElementById('scheduleContent');
-  var canManage = isRealAdmin && viewAs==='admin';
   el.innerHTML = `
     <div class="section-head">
       <div class="section-title">Расписание</div>
       <div class="section-action" onclick="openModal('schedModal');initSchedModal()">+ Добавить</div>
     </div>
-    ${canManage?`<button class="btn btn-primary" style="margin-bottom:12px;background:#fff;color:#000" onclick="openOfflineGroupModal()">📅 Офлайн день — все офлайн-резиденты</button>`:''}
+    ${(isRealAdmin && viewAs==='admin')?`<button class="btn btn-primary" style="margin-bottom:12px;background:#fff;color:#000;width:100%;padding:14px;font-weight:700" onclick="openOfflineGroupModal()">📅 Офлайн день — все офлайн-резиденты</button>`:''}
   `;
   if(!list.length){
     el.innerHTML += `<div class="empty"><div class="em-icon">📅</div><div class="em-title">Встреч нет</div><div class="em-text">Нажмите кнопку выше</div></div>`;
@@ -1334,8 +1333,9 @@ function renderFines(){
     el.innerHTML += `<div class="empty"><div class="em-icon">✅</div><div class="em-title">Штрафов нет</div><div class="em-text">Все оплачены</div></div>`;
     return;
   }
-  el.innerHTML += '<div class="card">' + fines.map(f=>`
-    <div class="list-item">
+  var canManageFines = isRealAdmin && viewAs==='admin';
+  el.innerHTML += '<div class="card">' + fines.map(function(f,i){
+    return `<div class="list-item" ${canManageFines?`onclick="openFineActions(${i})" style="cursor:pointer"`:''}>
       <div class="list-avatar" style="background:rgba(229,115,115,0.2);color:var(--red)">⚠</div>
       <div class="list-content">
         <div class="list-name">${f.name}</div>
@@ -1345,8 +1345,9 @@ function renderFines(){
         <div class="list-amount">${fmt(f.amount)} тг</div>
         <div class="list-date">${f.date}</div>
       </div>
-    </div>
-  `).join('') + '</div>';
+    </div>`;
+  }).join('') + '</div>';
+  window._currentFinesList = fines;
 }
 
 function renderResidents(){
@@ -2011,6 +2012,64 @@ function selectSchedTime(btn){
   selTime = btn.dataset.time;
 }
 
+
+
+function openFineActions(idx){
+  var f = (window._currentFinesList||[])[idx];
+  if(!f) return;
+  document.getElementById('detailTitle').textContent = 'Штраф: '+f.name;
+  document.getElementById('detailContent').innerHTML = `
+    <div class="card">
+      <div class="list-item">
+        <div class="list-avatar" style="background:rgba(229,115,115,0.2);color:var(--red)">⚠</div>
+        <div class="list-content">
+          <div class="list-name">${f.name}</div>
+          <div class="list-sub">${f.type}</div>
+        </div>
+        <div class="list-right">
+          <div class="list-amount">${fmt(f.amount)} тг</div>
+          <div class="list-date">${f.date}</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-success" onclick="markFinePaid('${f.name}','${f.date}','${f.type}',${f.amount})">✅ Отметить оплаченным</button>
+    <button class="btn btn-danger" onclick="deleteFine('${f.name}','${f.date}','${f.type}',${f.amount})">🗑 Удалить штраф</button>
+  `;
+  showDetail();
+}
+
+function markFinePaid(name, date, type, amount){
+  if(!confirm('Отметить штраф '+name+' '+date+' как оплаченный?')) return;
+  // Оптимистично — убираем из кэша
+  if(cache.fines){
+    cache.fines = cache.fines.filter(function(f){
+      return !(f.name===name && f.date===date && f.type===type && f.amount===amount);
+    });
+    try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
+  }
+  closeDetail();
+  showToast('✅ Отмечено оплаченным');
+  renderAllPages();
+  callAction('updateFine', {name:name, date:date, type:type, amount:amount, status:'Оплатил'}).then(function(){
+    setTimeout(loadAllData, 3000);
+  });
+}
+
+function deleteFine(name, date, type, amount){
+  if(!confirm('Удалить штраф '+name+' '+date+'?\n\nЭто удалит запись полностью из таблицы.')) return;
+  if(cache.fines){
+    cache.fines = cache.fines.filter(function(f){
+      return !(f.name===name && f.date===date && f.type===type && f.amount===amount);
+    });
+    try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
+  }
+  closeDetail();
+  showToast('🗑 Штраф удалён');
+  renderAllPages();
+  callAction('deleteFine', {name:name, date:date, type:type, amount:amount}).then(function(){
+    setTimeout(loadAllData, 3000);
+  });
+}
 
 var offSelDate='', offSelTime='';
 function openOfflineGroupModal(){
