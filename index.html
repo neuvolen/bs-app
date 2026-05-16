@@ -888,6 +888,19 @@
     <button class="btn btn-secondary" onclick="closeModal('storyTemplateModal')">Отмена</button>
   </div>
 </div>
+
+<div class="modal-bg" id="offlineGroupModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Офлайн день для всех</div>
+    <div class="form-label">Дата</div>
+    <div class="pick-grid" id="offDateGrid"></div>
+    <div class="form-label">Время начала</div>
+    <div class="pick-grid" id="offTimeGrid"></div>
+    <button class="btn btn-primary" onclick="submitOfflineGroup()">Создать офлайн день</button>
+    <button class="btn btn-secondary" onclick="closeModal('offlineGroupModal')">Отмена</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1201,6 +1214,7 @@ function renderSchedule(){
       <div class="section-title">Расписание</div>
       <div class="section-action" onclick="openModal('schedModal');initSchedModal()">+ Добавить</div>
     </div>
+    ${(isRealAdmin && viewAs==='admin')?`<button class="btn btn-secondary" style="margin-bottom:12px" onclick="openOfflineGroupModal()">📅 Офлайн день (все резиденты)</button>`:''}
   `;
   if(!list.length){
     el.innerHTML += `<div class="empty"><div class="em-icon">📅</div><div class="em-title">Встреч нет</div><div class="em-text">Нажмите кнопку выше</div></div>`;
@@ -1217,9 +1231,7 @@ function meetingCard(ev, idx){
       ${cd.urgent?`<div class="meeting-countdown">${cd.text}</div>`:''}
       <div class="meeting-title">Трекинг • ${ev.res}</div>
       <div class="meeting-when">${ev.date} ${ev.time||''}</div>
-      <div class="meeting-row">
-        ${isOnline?'🔗 Онлайн (Google Meet)':'📍 ' + (ev.link||'Адрес')}
-      </div>
+      ${ev.link?`<div class="meeting-row">${isOnline?'🔗 Онлайн (Google Meet)':'📍 '+ev.link}</div>`:`<div class="meeting-row" style="opacity:0.5">⏳ Загрузка...</div>`}
     </div>
   `;
 }
@@ -1510,7 +1522,7 @@ async function submitEditMeeting(){
 
 
 function meetingDone(res, date, time){
-  if(!confirm('Отметить встречу с '+res+' как проведённую?')) return;
+  if(!confirm('Встреча с '+res+' прошла? Будет отмечена как проведённая и удалена.')) return;
   if(!window._deletedMeetingKeys) window._deletedMeetingKeys = [];
   window._deletedMeetingKeys.push(res+'|'+date+'|'+time);
   if(cache.schedule){
@@ -1520,10 +1532,15 @@ function meetingDone(res, date, time){
     try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
   }
   closeDetail();
-  showToast('✅ Встреча проведена');
+  showToast('✅ Встреча отмечена как проведённая');
   renderAllPages();
-  callAction('deleteSchedule', {res, date, time}).then(function(){
-    setTimeout(loadAllData, 5000);
+  callAction('deleteSchedule', {res:res, date:date, time:time}).then(function(result){
+    if(result && result.ok){
+      showToast('✅ Удалено из таблицы');
+    } else {
+      showToast('⚠️ Не удалось удалить из таблицы');
+    }
+    setTimeout(loadAllData, 4000);
   });
 }
 
@@ -1991,6 +2008,56 @@ function selectSchedTime(btn){
   document.querySelectorAll('#timeGrid .pick-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
   selTime = btn.dataset.time;
+}
+
+
+var offSelDate='', offSelTime='';
+function openOfflineGroupModal(){
+  openModal('offlineGroupModal');
+  // Сетка дат
+  var dg = document.getElementById('offDateGrid');
+  var html = '';
+  for(let i=0; i<14; i++){
+    const d = new Date(); d.setDate(d.getDate()+i);
+    const ds = d.toLocaleDateString('ru-RU');
+    html += `<button class="pick-btn ${i===0?'selected':''}" data-date="${ds}" onclick="selectOffDate(this)">${d.getDate()}.${String(d.getMonth()+1).padStart(2,'0')}</button>`;
+  }
+  dg.innerHTML = html;
+  offSelDate = new Date().toLocaleDateString('ru-RU');
+  // Сетка времени (09:00 - 18:00 шаг 1 час)
+  var tg = document.getElementById('offTimeGrid');
+  var thtml = '';
+  for(let h=9; h<=18; h++){
+    var t = String(h).padStart(2,'0')+':00';
+    thtml += `<button class="pick-btn ${h===10?'selected':''}" data-time="${t}" onclick="selectOffTime(this)">${t}</button>`;
+  }
+  tg.innerHTML = thtml;
+  offSelTime = '10:00';
+}
+function selectOffDate(btn){
+  document.querySelectorAll('#offDateGrid .pick-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  offSelDate = btn.dataset.date;
+}
+function selectOffTime(btn){
+  document.querySelectorAll('#offTimeGrid .pick-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  offSelTime = btn.dataset.time;
+}
+async function submitOfflineGroup(){
+  if(!offSelDate || !offSelTime){showToast('⚠️ Выберите дату и время');return;}
+  if(window._creatingOffline){showToast('⏳ Уже создаём...');return;}
+  window._creatingOffline = true;
+  setTimeout(function(){window._creatingOffline = false;}, 5000);
+  closeModal('offlineGroupModal');
+  showToast('📅 Создаём офлайн день...');
+  var result = await callAction('addOfflineGroup', {date: offSelDate, time: offSelTime});
+  if(result && result.ok){
+    showToast('✅ Создано встреч: '+result.count);
+    setTimeout(loadAllData, 2000);
+  } else {
+    showToast('⚠️ '+(result && result.error || 'Ошибка'));
+  }
 }
 
 async function submitSchedule(){
