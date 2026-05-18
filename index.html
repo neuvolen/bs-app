@@ -1808,25 +1808,45 @@ function generateStory(template){
       ctx.fillText('МЕСЯЦЕВ В КЛУБЕ', 540, 1510);
     }
   } else if(template === 'invite'){
+    // Заголовок
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 80px Inter, sans-serif';
-    ctx.fillText('БИЗНЕС', 540, 600);
-    ctx.fillText('ТРЕБУЕТ', 540, 700);
+    ctx.font = 'bold 50px Inter, sans-serif';
+    ctx.fillText('Я приглашаю тебя', 540, 480);
+    ctx.font = 'bold 90px Inter, sans-serif';
+    ctx.fillText('В КЛУБ BS', 540, 600);
+    // Разделитель
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 110px Inter, sans-serif';
-    ctx.fillText('ХИРУРГИИ', 540, 840);
-    ctx.fillStyle = '#999';
-    ctx.font = '32px Inter, sans-serif';
-    var inviteLines = ['Я уже '+me.months+' мес в клубе','Точечные разборы каждую неделю','Среда предпринимателей','готовых расти'];
+    ctx.fillRect(440, 660, 200, 3);
+    // Описание — что внутри
+    ctx.fillStyle = '#ccc';
+    ctx.font = '34px Inter, sans-serif';
+    var inviteLines = [
+      'Бизнес-трекинг каждые 10 дней',
+      'Хирургическая точность',
+      'в работе с твоим бизнесом',
+      '',
+      'Среда предпринимателей',
+      'с прибылью 2-20 млн ₸',
+      '',
+      'х3 средний рост резидента'
+    ];
     inviteLines.forEach(function(line, i){
-      ctx.fillText(line, 540, 1050 + i*52);
+      ctx.fillText(line, 540, 760 + i*52);
     });
+    // CTA
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 44px Inter, sans-serif';
-    ctx.fillText('@business.surgery', 540, 1450);
+    ctx.font = 'bold 50px Inter, sans-serif';
+    ctx.fillText('@business.surgery', 540, 1330);
     ctx.font = '28px Inter, sans-serif';
-    ctx.fillStyle = '#999';
-    ctx.fillText('Присоединяйся ↓', 540, 1500);
+    ctx.fillStyle = '#bbb';
+    ctx.fillText('Напиши мне — расскажу подробнее', 540, 1380);
+    // От кого
+    ctx.font = 'bold 32px Inter, sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.fillText('— '+me.name.split(' ')[0], 540, 1480);
+    ctx.font = '22px Inter, sans-serif';
+    ctx.fillStyle = '#888';
+    ctx.fillText('резидент уже '+me.months+' '+(me.months===1?'месяц':(me.months>=2&&me.months<=4?'месяца':'месяцев')), 540, 1520);
   } else if(template === 'milestone'){
     ctx.fillStyle = '#999';
     ctx.font = '32px Inter, sans-serif';
@@ -1860,23 +1880,51 @@ function generateStory(template){
   canvas.toBlob(function(blob){
     var fileName='bs-story-'+template+'.png';
     var file = new File([blob], fileName, {type: 'image/png'});
+
+    // Попытка №1: Instagram Stories URL Scheme (только iOS, если Instagram установлен)
+    // Создаём dataURL для backgroundImage
+    var ua = navigator.userAgent.toLowerCase();
+    var isiOS = /iphone|ipad|ipod/.test(ua);
     
-    // Пробуем Web Share API с файлом (включая Instagram)
-    if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
-      navigator.share({
-        files: [file],
-        title: 'Business Surgery'
-      }).then(function(){
-        showToast('✅ Выберите Instagram → Stories');
-      }).catch(function(err){
-        // Если отказались — сохраняем
-        if(err.name !== 'AbortError'){
+    if(isiOS){
+      // На iOS — пробуем открыть Instagram Stories напрямую через URL scheme
+      var reader = new FileReader();
+      reader.onload = function(){
+        var dataUrl = reader.result;
+        // Сохраняем картинку в clipboard ИЛИ скачиваем как файл
+        // Так как URL scheme требует hosted image — лучше использовать Web Share с подсказкой
+        if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+          navigator.share({
+            files: [file],
+            title: 'BS Stories'
+          }).then(function(){
+            showToast('📸 Выберите Instagram → Stories');
+          }).catch(function(err){
+            if(err.name !== 'AbortError'){
+              fallbackDownload(blob, fileName);
+            }
+          });
+        } else {
           fallbackDownload(blob, fileName);
         }
-      });
+      };
+      reader.readAsDataURL(blob);
     } else {
-      // Android Chrome / десктоп — сохраняем + инструкция
-      fallbackDownload(blob, fileName);
+      // Android и десктоп — Web Share API
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({
+          files: [file],
+          title: 'BS Stories'
+        }).then(function(){
+          showToast('📸 Выберите Instagram → Stories');
+        }).catch(function(err){
+          if(err.name !== 'AbortError'){
+            fallbackDownload(blob, fileName);
+          }
+        });
+      } else {
+        fallbackDownload(blob, fileName);
+      }
     }
   }, 'image/png');
 }
@@ -1889,9 +1937,9 @@ function fallbackDownload(blob, fileName){
   a.click();
   URL.revokeObjectURL(url);
   if(tg && tg.showAlert){
-    tg.showAlert('💾 Картинка сохранена в галерею\n\nОткройте Instagram → Stories → выберите эту картинку');
+    tg.showAlert('💾 Картинка сохранена\n\nЧтобы поделиться в Stories:\n1. Открой Instagram\n2. Свайп вправо (или + сверху)\n3. Выбери "Stories"\n4. Загрузи эту картинку из галереи');
   } else {
-    showToast('💾 Сохранено — откройте Instagram Stories');
+    alert('💾 Картинка сохранена. Откройте Instagram → Stories → выберите её из галереи.');
   }
 }
 
@@ -2315,7 +2363,9 @@ let arVisits = 3;
 
 function initAddResident(){
   document.getElementById('arName').value = '';
-  document.getElementById('arDebt').value = '78571';
+  var arDebt = document.getElementById('arDebt');
+  arDebt.value = '';
+  arDebt.dataset.raw = '0';
   arFormat = 'Офлайн';
   arVisits = 3;
   document.getElementById('arFmtOff').classList.add('selected');
