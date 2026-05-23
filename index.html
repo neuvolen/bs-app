@@ -1375,6 +1375,114 @@ function renderFines(){
   el.innerHTML += finesHtml;
 }
 
+
+function renderSubscribers(){
+  var el=document.getElementById('page-subscribers');
+  if(!el)return;
+  if(!isRealAdmin||viewAs!=='admin'){el.innerHTML='';return;}
+
+  el.innerHTML = `
+    <div class="section-head">
+      <div class="section-title">Подписчики канала</div>
+      <div class="section-action" onclick="reloadSubscribers()">⟳ Обновить</div>
+    </div>
+    <div id="subscribersList"><div class="empty">Загрузка...</div></div>
+  `;
+  reloadSubscribers();
+}
+
+async function reloadSubscribers(){
+  var box=document.getElementById('subscribersList');
+  if(!box)return;
+  box.innerHTML='<div class="empty">Загрузка...</div>';
+  try{
+    var r=await callAction('getSubscribers', {});
+    var list=(r&&r.subscribers)||[];
+    window._subscribers=list;
+    if(!list.length){
+      box.innerHTML='<div class="empty">Пока нет подписчиков</div>';
+      return;
+    }
+    // Группируем по статусу
+    var groups={'Подписчик':[],'Записался на разбор':[],'Резидент':[],'Отказ':[]};
+    list.forEach(function(s){
+      var st=s.status||'Подписчик';
+      if(!groups[st])groups[st]=[];
+      groups[st].push(s);
+    });
+    var html='';
+    var order=['Записался на разбор','Подписчик','Резидент','Отказ'];
+    order.forEach(function(st){
+      if(!groups[st]||!groups[st].length)return;
+      html += '<div style="margin-top:14px;font-size:11px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;padding:0 4px 8px">'+st+' · '+groups[st].length+'</div>';
+      html += '<div class="card">';
+      groups[st].forEach(function(s,i){
+        var hasQual = s.niche || s.revenue || s.goal;
+        var subInfo = [s.niche, s.revenue?s.revenue+' млн':'', s.leadmagnet].filter(Boolean).join(' · ');
+        html += '<div class="list-item" onclick="openSubscriberDetail(\''+s.chatId+'\')" style="cursor:pointer">'+
+          '<div class="list-avatar" style="background:rgba(255,255,255,0.08);color:var(--white)">'+(s.name?s.name[0].toUpperCase():'?')+'</div>'+
+          '<div class="list-content">'+
+            '<div class="list-name">'+(s.name||'?')+(s.username?' @'+s.username:'')+'</div>'+
+            '<div class="list-sub">'+(subInfo||'Нет данных')+'</div>'+
+          '</div>'+
+          '<div class="list-right">'+
+            '<div class="list-date">'+s.date+'</div>'+
+            (hasQual?'<div class="list-amount" style="color:var(--green);font-size:11px">✓ КВАЛ</div>':'')+
+          '</div>'+
+        '</div>';
+      });
+      html += '</div>';
+    });
+    box.innerHTML=html;
+  }catch(e){
+    box.innerHTML='<div class="empty">Ошибка загрузки</div>';
+  }
+}
+
+function openSubscriberDetail(chatId){
+  var s=(window._subscribers||[]).find(function(x){return x.chatId===chatId});
+  if(!s)return;
+  document.getElementById('detailTitle').textContent=s.name||'Подписчик';
+  document.getElementById('detailContent').innerHTML = `
+    <div class="card">
+      <div class="profile-row"><span>Дата подписки</span><strong>${s.date||'-'}</strong></div>
+      <div class="profile-row"><span>Telegram</span><strong>${s.username?'@'+s.username:'-'}</strong></div>
+      <div class="profile-row"><span>Chat ID</span><strong>${s.chatId}</strong></div>
+      <div class="profile-row"><span>Источник</span><strong>${s.source||'-'}</strong></div>
+      <div class="profile-row"><span>Лид-магнит</span><strong>${s.leadmagnet||'-'}</strong></div>
+      <div class="profile-row"><span>Ниша</span><strong>${s.niche||'не указано'}</strong></div>
+      <div class="profile-row"><span>Доход (млн ₸)</span><strong>${s.revenue||'не указано'}</strong></div>
+      <div class="profile-row"><span>Цель</span><strong style="font-size:13px">${s.goal||'не указано'}</strong></div>
+      <div class="profile-row"><span>Статус</span><strong>${s.status||'Подписчик'}</strong></div>
+    </div>
+    ${s.username?`<a class="btn btn-secondary" href="https://t.me/${s.username}" target="_blank">💬 Написать в Telegram</a>`:''}
+    ${s.status!=='Резидент' ? `<button class="btn btn-primary" onclick="openConvertModal('${s.chatId}','${(s.name||'').replace(/'/g,'')}')">⬆️ Перевести в резиденты</button>` : ''}
+    ${s.status!=='Отказ' && s.status!=='Резидент' ? `<button class="btn btn-danger" onclick="markSubscriberRejected('${s.chatId}')">❌ Отметить отказ</button>` : ''}
+  `;
+  showDetail();
+}
+
+function openConvertModal(chatId, name){
+  // Открываем форму добавления резидента предзаполненную
+  closeDetail();
+  setTimeout(function(){
+    openModal('addResidentModal');
+    initAddResident();
+    document.getElementById('arName').value = name;
+    // Сохраняем chatId в скрытом поле — используем window
+    window._convertingChatId = chatId;
+    document.querySelector('#addResidentModal .modal-title').textContent = '⬆️ Перевод в резиденты';
+  }, 200);
+}
+
+async function markSubscriberRejected(chatId){
+  if(!confirm('Отметить отказ?'))return;
+  await callAction('updateSubscriber', {chatId:chatId, field:'Статус', value:'Отказ'});
+  closeDetail();
+  showToast('❌ Отмечено как отказ');
+  reloadSubscribers();
+}
+
 function renderResidents(){
   allResidents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
   const el = document.getElementById('residentsContent');
@@ -2395,6 +2503,17 @@ async function submitAddResident(){
   var debt = getMoneyValue('arDebt') || '0';
   var source = document.getElementById('arSource').value;
   closeModal('addResidentModal');
+  // Если это перевод подписчика — используем convertToResident
+  if(window._convertingChatId){
+    var chatId = window._convertingChatId;
+    window._convertingChatId = null;
+    showToast('✅ "'+name+'" переведён в резиденты');
+    callAction('convertToResident', {chatId:chatId, name:name, debt:debt, visits:arVisits, format:arFormat, tariff:debt}).then(function(){
+      reloadSubscribers();
+      loadAllData();
+    });
+    return;
+  }
   showToast('✅ Резидент "'+name+'" добавлен');
   callAction('addResident', {name, tariff: debt, debt, visits: arVisits, source, format: arFormat}).then(loadAllData);
 }
