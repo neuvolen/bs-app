@@ -735,6 +735,7 @@
 
 <!-- SHARED -->
 <div class="page" id="page-residents"><div id="residentsContent"><div class="loading"><div class="spinner"></div></div></div></div>
+<div class="page" id="page-subscribers"></div>
 <div class="page" id="page-platform">
   <div class="card" style="text-align:center;padding:40px 20px;margin-top:20px">
     <div style="font-size:42px;margin-bottom:14px">🧬</div>
@@ -967,6 +968,7 @@ const ADMIN_TABS = [
   {id:'reports', label:'Отчёты'},
   {id:'fines', label:'Штрафы'},
   {id:'residents', label:'Резиденты'},
+  {id:'subscribers', label:'Подписчики'},
   {id:'myprofile', label:'Мой профиль'},
   {id:'platform', label:'Платформа'}
 ];
@@ -1174,6 +1176,7 @@ function renderAllPages(){
   try{renderReports();}catch(e){console.error('reports:',e);}
   try{renderFines();}catch(e){console.error('fines:',e);}
   try{renderResidents();}catch(e){console.error('residents:',e);}
+  try{renderSubscribers();}catch(e){console.error('subscribers:',e);}
   try{renderMyStatus();}catch(e){console.error('mystatus:',e);}
   try{renderMyProfile();}catch(e){console.error('myprofile:',e);}
   try{renderMyMeetings();}catch(e){console.error('mymeetings:',e);}
