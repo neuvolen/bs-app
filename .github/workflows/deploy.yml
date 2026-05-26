@@ -17,16 +17,34 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Generate version
+        id: version
+        run: |
+          VERSION=$(date -u +'%Y%m%d%H%M')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
 
       - name: Prepare files
         run: |
           if [ -f "bs_miniapp.html" ]; then
             cp bs_miniapp.html index.html
           fi
+          cat > version.json << JSONEOF
+          {
+            "version": "${{ steps.version.outputs.version }}",
+            "deployed_at": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
+            "commit": "${{ github.sha }}"
+          }
+          JSONEOF
           touch .nojekyll
+          echo "Files prepared:"
+          ls -la
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -46,3 +64,21 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Notify Telegram on success
+        if: success()
+        run: |
+          MSG="✅ Mini App обновлён%0A%0AВерсия: ${{ needs.build.outputs.version }}%0AURL: https://neuvolen.github.io/bs-app/?v=${{ needs.build.outputs.version }}"
+          curl -sS "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage" \
+            -d "chat_id=${{ secrets.ADMIN_CHAT_ID }}" \
+            -d "text=$MSG" \
+            -d "disable_web_page_preview=true" || true
+
+      - name: Notify Telegram on failure
+        if: failure()
+        run: |
+          MSG="❌ Деплой Mini App упал%0A%0AЛоги: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -sS "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage" \
+            -d "chat_id=${{ secrets.ADMIN_CHAT_ID }}" \
+            -d "text=$MSG" \
+            -d "disable_web_page_preview=true" || true
