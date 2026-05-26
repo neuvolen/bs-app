@@ -2105,8 +2105,33 @@ function wrapText(ctx, text, maxWidth){
 }
 
 function renderMyProfile(){
-  const me = getMyData();
+  let me = getMyData();
   const el = document.getElementById('myprofileContent');
+  
+  // Для админа создаём профиль на основе данных из Telegram
+  if(!me && isRealAdmin){
+    me = {
+      chatId: String(user?.id || ''),
+      name: (user?.first_name || 'Админ') + (user?.last_name ? ' ' + user.last_name : ''),
+      niche: '',
+      bio: '',
+      help: '',
+      instagram: '',
+      phone: '',
+      avatar: user?.photo_url || ''
+    };
+    // Подгрузим существующий профиль если есть
+    const adminProfile = (cache.adminProfiles || []).find(p => String(p.chatId) === me.chatId);
+    if(adminProfile){
+      me.niche = adminProfile.niche || '';
+      me.bio = adminProfile.bio || '';
+      me.help = adminProfile.help || '';
+      me.instagram = adminProfile.instagram || '';
+      me.phone = adminProfile.phone || '';
+      me.avatar = adminProfile.avatar || me.avatar;
+    }
+  }
+  
   if(!me){
     el.innerHTML = `<div class="empty"><div class="em-text">Не найден</div></div>`;
     return;
