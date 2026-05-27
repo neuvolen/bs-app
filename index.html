@@ -777,8 +777,7 @@
       <label class="form-label">Сумма (тг)</label>
       <input class="form-input money-input" type="text" inputmode="numeric" id="fineAmount" value="10 000" data-raw="10000">
     </div>
-    <button class="btn btn-primary" onclick="submitFine()">Выставить</button>
-    <button class="btn btn-secondary" onclick="closeModal('fineModal')">Отмена</button>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="submitFine()">Выставить</button><button class="btn btn-secondary" onclick="closeModal('fineModal')">Отмена</button></div>
   </div>
 </div>
 
@@ -798,8 +797,7 @@
       <label class="form-label" style="margin-bottom:4px">Время</label>
       <div class="picker" id="timeGrid" style="grid-template-columns:repeat(4,1fr);gap:4px"></div>
     </div>
-    <button class="btn btn-primary" onclick="submitSchedule()" style="margin-bottom:6px;padding:11px">Создать встречу</button>
-    <button class="btn btn-secondary" onclick="closeModal('schedModal')" style="padding:10px">Отмена</button>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="submitSchedule()" style="margin-bottom:6px;padding:11px">Создать встречу</button><button class="btn btn-secondary" onclick="closeModal('schedModal')" style="padding:10px">Отмена</button></div>
   </div>
 </div>
 
@@ -827,8 +825,7 @@
       <button class="pick-btn selected" id="payCash" onclick="setPayMethod('cash')">💵 Наличные</button>
       <button class="pick-btn" id="payBank" onclick="setPayMethod('bank')">🏦 Банк −4%</button>
     </div>
-    <button class="btn btn-primary" onclick="submitPayment()">Записать</button>
-    <button class="btn btn-secondary" onclick="closeModal('payModal')">Отмена</button>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="submitPayment()">Записать</button><button class="btn btn-secondary" onclick="closeModal('payModal')">Отмена</button></div>
   </div>
 </div>
 
@@ -869,8 +866,7 @@
         <button class="pick-btn" id="arFmtOn" onclick="setArFormat('Онлайн')">🌐 Онлайн</button>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="submitAddResident()">Добавить</button>
-    <button class="btn btn-secondary" onclick="closeModal('addResidentModal')">Отмена</button>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="submitAddResident()">Добавить</button><button class="btn btn-secondary" onclick="closeModal('addResidentModal')">Отмена</button></div>
   </div>
 </div>
 
@@ -902,8 +898,7 @@
     <div class="pick-grid" id="offDateGrid"></div>
     <div class="form-label">Время начала</div>
     <div class="pick-grid" id="offTimeGrid"></div>
-    <button class="btn btn-primary" onclick="submitOfflineGroup()">Создать офлайн день</button>
-    <button class="btn btn-secondary" onclick="closeModal('offlineGroupModal')">Отмена</button>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="submitOfflineGroup()">Создать офлайн день</button><button class="btn btn-secondary" onclick="closeModal('offlineGroupModal')">Отмена</button></div>
   </div>
 </div>
 
@@ -912,14 +907,63 @@
 .attend-item:hover{background:#1a1a1a}
 .attend-item input{width:20px;height:20px}
 .attend-item span{font-size:15px;font-weight:500}
-</style>
+
+  /* Sticky footer для кнопок в модалках */
+  .modal {
+    max-height: 90vh !important;
+    padding-bottom: 80px !important;
+    position: relative;
+  }
+  .modal-actions {
+    position: sticky;
+    bottom: 0;
+    background: var(--card);
+    padding: 12px 0 8px;
+    margin: 12px -16px -20px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-top: 1px solid var(--border);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .modal-actions .btn {
+    width: 100%;
+  }
+
+  
+  /* === SCHEDULE CALENDAR === */
+  .view-toggle { display:flex; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:2px; gap:2px; }
+  .view-btn { background:transparent; border:none; color:var(--text-muted); padding:6px 10px; font-size:12px; border-radius:6px; cursor:pointer; }
+  .view-btn.active { background:var(--accent); color:#000; font-weight:600; }
+  .cal-wrap { margin-top:16px; }
+  .cal-nav { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding:0 4px; }
+  .cal-nav-btn { background:var(--card); border:1px solid var(--border); color:var(--text); width:32px; height:32px; border-radius:6px; cursor:pointer; font-size:14px; }
+  .cal-nav-btn:hover { background:var(--accent); color:#000; }
+  .cal-month-title { font-size:16px; font-weight:700; color:var(--text); text-transform:capitalize; }
+  .cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:4px; }
+  .cal-wd { text-align:center; font-size:10px; font-weight:600; color:var(--text-muted); padding:6px 0; letter-spacing:1px; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+  .cal-day { background:var(--card); border:1px solid var(--border); border-radius:6px; min-height:64px; padding:4px; display:flex; flex-direction:column; gap:2px; transition:all 0.15s; }
+  .cal-day-empty { background:transparent; border:none; }
+  .cal-day-num { font-size:11px; font-weight:600; color:var(--text-muted); }
+  .cal-today { border-color:var(--accent); border-width:2px; }
+  .cal-today .cal-day-num { color:var(--accent); font-weight:700; }
+  .cal-past .cal-day-num { opacity:0.4; }
+  .cal-has-meets { cursor:pointer; }
+  .cal-has-meets:hover { background:rgba(212,184,134,0.1); border-color:var(--accent); }
+  .cal-meet { background:var(--accent); color:#000; font-size:9px; padding:2px 4px; border-radius:3px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:600; }
+  .cal-meet-time { font-weight:800; }
+  .cal-meet-more { font-size:9px; color:var(--text-muted); padding-left:4px; font-weight:600; }
+
+  </style>
 <div class="modal-bg" id="attendModal">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Кто был на встрече?</div>
     <div id="attendList" style="max-height:50vh;overflow-y:auto;margin-bottom:14px"></div>
-    <button class="btn btn-primary" onclick="submitAttendance()">✅ Отметить присутствующих</button>
-    <button class="btn btn-secondary" onclick="closeModal('attendModal')">Отмена</button>
+    <div class="modal-actions"><button class="btn btn-primary" onclick="submitAttendance()">✅ Отметить присутствующих</button><button class="btn btn-secondary" onclick="closeModal('attendModal')">Отмена</button></div>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -1073,6 +1117,7 @@ function init(){
       if(rt) rt.classList.add('show');
     }
     renderTabs();
+    try{ window._scheduleViewMode = localStorage.getItem('bs_schedule_view') || 'list'; }catch(e){}
     
     // Deep-link: определяем начальную вкладку из параметра URL или Telegram startParam
     var initialPage = null;
@@ -1261,10 +1306,16 @@ function renderSchedule(){
   });
   window._currentScheduleList = list;
   const el = document.getElementById('scheduleContent');
+  const viewMode = window._scheduleViewMode || 'list'; // list | calendar
+  
   el.innerHTML = `
     <div class="section-head">
       <div class="section-title">Расписание</div>
-      <div style="display:flex;gap:14px;align-items:center">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div class="view-toggle">
+          <button class="view-btn ${viewMode==='list'?'active':''}" onclick="setScheduleView('list')">📋 Список</button>
+          <button class="view-btn ${viewMode==='calendar'?'active':''}" onclick="setScheduleView('calendar')">📅 Календарь</button>
+        </div>
         ${(isRealAdmin && viewAs==='admin')?`<div class="section-action" onclick="openOfflineGroupModal()">+ Offline</div>`:''}
         <div class="section-action" onclick="openModal('schedModal');initSchedModal()">+ Добавить</div>
       </div>
@@ -1274,7 +1325,126 @@ function renderSchedule(){
     el.innerHTML += `<div class="empty"><div class="em-icon">📅</div><div class="em-title">Встреч нет</div><div class="em-text">Нажмите кнопку выше</div></div>`;
     return;
   }
-  el.innerHTML += list.map((ev,i) => meetingCard(ev,i)).join('');
+  if(viewMode === 'calendar'){
+    el.innerHTML += renderScheduleCalendar(list);
+  } else {
+    el.innerHTML += list.map((ev,i) => meetingCard(ev,i)).join('');
+  }
+}
+
+function setScheduleView(mode){
+  window._scheduleViewMode = mode;
+  try{localStorage.setItem('bs_schedule_view', mode);}catch(e){}
+  renderSchedule();
+}
+
+function renderScheduleCalendar(list){
+  // Календарный вид: сетка 7×N клеток с днями
+  // Текущий месяц + следующий месяц (или 2 месяца если нужно)
+  var now = new Date();
+  // Берём смещение если пользователь листал
+  var monthOffset = window._calMonthOffset || 0;
+  var displayMonth = new Date(now.getFullYear(), now.getMonth() + monthOffset, 1);
+  
+  var year = displayMonth.getFullYear();
+  var month = displayMonth.getMonth();
+  var monthName = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'][month];
+  
+  // Группируем встречи по дате (dd.mm.yyyy)
+  var byDate = {};
+  list.forEach(function(ev){
+    var key = ev.date;
+    if(!byDate[key]) byDate[key] = [];
+    byDate[key].push(ev);
+  });
+  
+  // Начало месяца — какой день недели (0=вс, 1=пн... — в нашей сетке пн первый)
+  var firstDay = new Date(year, month, 1);
+  var weekStart = firstDay.getDay(); // 0=вс, 1=пн
+  weekStart = weekStart === 0 ? 6 : weekStart - 1; // переводим в 0=пн ... 6=вс
+  
+  var daysInMonth = new Date(year, month + 1, 0).getDate();
+  var todayStr = now.getDate() + '.' + (now.getMonth()+1) + '.' + now.getFullYear();
+  todayStr = (now.getDate()<10?'0':'') + now.getDate() + '.' + (now.getMonth()+1<10?'0':'') + (now.getMonth()+1) + '.' + now.getFullYear();
+  
+  var html = '<div class="cal-wrap">';
+  
+  // Хедер с навигацией
+  html += '<div class="cal-nav">';
+  html += '<button class="cal-nav-btn" onclick="calPrevMonth()">◀</button>';
+  html += '<div class="cal-month-title">' + monthName + ' ' + year + '</div>';
+  html += '<button class="cal-nav-btn" onclick="calNextMonth()">▶</button>';
+  html += '</div>';
+  
+  // Дни недели
+  html += '<div class="cal-weekdays">';
+  ['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС'].forEach(function(w){
+    html += '<div class="cal-wd">' + w + '</div>';
+  });
+  html += '</div>';
+  
+  // Сетка дней
+  html += '<div class="cal-grid">';
+  
+  // Пустые клетки до начала месяца
+  for(var i=0; i<weekStart; i++){
+    html += '<div class="cal-day cal-day-empty"></div>';
+  }
+  
+  // Дни месяца
+  for(var d=1; d<=daysInMonth; d++){
+    var dStr = (d<10?'0':'') + d + '.' + (month+1<10?'0':'') + (month+1) + '.' + year;
+    var dayMeets = byDate[dStr] || [];
+    var isToday = dStr === todayStr;
+    var isPast = (new Date(year, month, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate()));
+    
+    html += '<div class="cal-day ' + (isToday?'cal-today':'') + ' ' + (isPast?'cal-past':'') + ' ' + (dayMeets.length?'cal-has-meets':'') + '"';
+    if(dayMeets.length){
+      html += ' onclick="showDayMeetings(\''+ dStr +'\')"';
+    }
+    html += '>';
+    html += '<div class="cal-day-num">' + d + '</div>';
+    if(dayMeets.length){
+      // Покажем первых 2 встреч + счётчик
+      dayMeets.slice(0, 2).forEach(function(ev){
+        var name = (ev.res || '').split(' ')[0];
+        html += '<div class="cal-meet"><span class="cal-meet-time">' + (ev.time || '') + '</span> ' + name + '</div>';
+      });
+      if(dayMeets.length > 2){
+        html += '<div class="cal-meet-more">+' + (dayMeets.length-2) + '</div>';
+      }
+    }
+    html += '</div>';
+  }
+  
+  html += '</div></div>';
+  return html;
+}
+
+function calPrevMonth(){
+  window._calMonthOffset = (window._calMonthOffset||0) - 1;
+  renderSchedule();
+}
+function calNextMonth(){
+  window._calMonthOffset = (window._calMonthOffset||0) + 1;
+  renderSchedule();
+}
+function showDayMeetings(dateStr){
+  // Покажу все встречи дня — открыть первую через showDetail или показать список
+  var list = (window._currentScheduleList||[]).filter(function(ev){return ev.date === dateStr;});
+  if(list.length === 1){
+    showDetail(list[0]);
+  } else if(list.length > 1){
+    // Несколько встреч — открыть detail с первой, или показать выбор
+    // Простое решение: показать toast и переключиться на список
+    showToast('📅 ' + dateStr + ': ' + list.length + ' встреч');
+    setScheduleView('list');
+    // Прокрутим к первой встрече этой даты
+    setTimeout(function(){
+      var firstCard = document.querySelector('.meeting-card[data-date="' + dateStr + '"]');
+      if(firstCard) firstCard.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 300);
+  }
 }
 
 function meetingCard(ev, idx){
@@ -1690,7 +1860,7 @@ async function submitEditMeeting(){
 
 
 function meetingDone(res, date, time){
-  if(!confirm('Встреча с '+res+' прошла? Будет отмечена как проведённая и удалена.')) return;
+  if(!confirm('Встреча с '+res+' прошла?')) return;
   if(!window._deletedMeetingKeys) window._deletedMeetingKeys = [];
   window._deletedMeetingKeys.push(res+'|'+date+'|'+time);
   if(cache.schedule){
@@ -1700,15 +1870,16 @@ function meetingDone(res, date, time){
     try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
   }
   closeDetail();
-  showToast('✅ Встреча отмечена как проведённая');
+  showToast('✅ Отмечаем встречу...');
   renderAllPages();
-  callAction('deleteSchedule', {res:res, date:date, time:time}).then(function(result){
+  // Вызываем правильный action: confirmMeeting (ставит галочку, лог, удаляет из расписания)
+  callAction('confirmMeeting', {res:res, date:date, time:time, userId: user?.id||''}).then(function(result){
     if(result && result.ok){
-      showToast('✅ Удалено из таблицы');
+      showToast('✅ Встреча прошла, галочка поставлена');
     } else {
-      showToast('⚠️ Не удалось удалить из таблицы');
+      showToast('⚠️ Ошибка обработки');
     }
-    setTimeout(loadAllData, 4000);
+    setTimeout(loadAllData, 3000);
   });
 }
 
