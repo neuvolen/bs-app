@@ -964,17 +964,65 @@
   .cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:4px; }
   .cal-wd { text-align:center; font-size:10px; font-weight:600; color:var(--text-muted); padding:6px 0; letter-spacing:1px; }
   .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
-  .cal-day { background:var(--card); border:1px solid var(--border); border-radius:6px; min-height:64px; padding:4px; display:flex; flex-direction:column; gap:2px; transition:all 0.15s; }
-  .cal-day-empty { background:transparent; border:none; }
-  .cal-day-num { font-size:11px; font-weight:600; color:var(--text-muted); }
-  .cal-today { border-color:var(--accent); border-width:2px; }
-  .cal-today .cal-day-num { color:var(--accent); font-weight:700; }
-  .cal-past .cal-day-num { opacity:0.4; }
-  .cal-has-meets { cursor:pointer; }
-  .cal-has-meets:hover { background:rgba(212,184,134,0.1); border-color:var(--accent); }
-  .cal-meet { background:var(--accent); color:#000; font-size:9px; padding:2px 4px; border-radius:3px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:600; }
-  .cal-meet-time { font-weight:800; }
-  .cal-meet-more { font-size:9px; color:var(--text-muted); padding-left:4px; font-weight:600; }
+  .cal-day { 
+    background: rgba(255,255,255,0.04); 
+    border: 1px solid var(--border); 
+    border-radius: 6px; 
+    min-height: 64px; 
+    padding: 6px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 3px; 
+    transition: all 0.15s; 
+  }
+  .cal-day-empty { 
+    background: transparent; 
+    border: 1px dashed rgba(255,255,255,0.05); 
+  }
+  .cal-day-num { 
+    font-size: 12px; 
+    font-weight: 700; 
+    color: var(--text); 
+  }
+  .cal-today { 
+    border-color: var(--accent); 
+    border-width: 2px; 
+    background: rgba(212,184,134,0.08);
+  }
+  .cal-today .cal-day-num { 
+    color: var(--accent); 
+    font-weight: 900; 
+  }
+  .cal-past { opacity: 0.55; }
+  .cal-past .cal-day-num { color: var(--text-muted); }
+  .cal-has-meets { 
+    cursor: pointer; 
+    background: rgba(212,184,134,0.05);
+  }
+  .cal-has-meets:hover { 
+    background: rgba(212,184,134,0.15); 
+    border-color: var(--accent); 
+    transform: scale(1.02);
+  }
+  .cal-meet { 
+    background: var(--accent); 
+    color: #000; 
+    font-size: 9px; 
+    padding: 2px 4px; 
+    border-radius: 3px; 
+    line-height: 1.25; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    font-weight: 700; 
+  }
+  .cal-meet-time { font-weight: 800; }
+  .cal-meet-more { 
+    font-size: 10px; 
+    color: var(--accent); 
+    padding-left: 4px; 
+    font-weight: 700; 
+  }
 
   
   /* === Add menu === */
@@ -2951,24 +2999,46 @@ function openAddMenu(){
   var menu = document.createElement('div');
   menu.className = 'add-menu-overlay';
   menu.onclick = function(e){ if(e.target===menu) closeAddMenu(); };
-  menu.innerHTML = `
-    <div class="add-menu">
-      <div class="add-menu-title">Что добавить?</div>
-      <button class="add-menu-item" onclick="closeAddMenu();openModal('schedModal');initSchedModal();window._meetType='online'">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-        <div class="add-menu-item-text"><div class="add-menu-item-title">Онлайн встреча</div><div class="add-menu-item-sub">С резидентом, Google Meet</div></div>
-      </button>
-      <button class="add-menu-item" onclick="closeAddMenu();openOfflineGroupModal()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <div class="add-menu-item-text"><div class="add-menu-item-title">Офлайн день</div><div class="add-menu-item-sub">Группа резидентов в офисе BS</div></div>
-      </button>
-      <button class="add-menu-item" onclick="closeAddMenu();openEventMenu()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-        <div class="add-menu-item-text"><div class="add-menu-item-title">Мероприятие</div><div class="add-menu-item-sub">Съёмки, подкаст, другое</div></div>
-      </button>
-      <button class="add-menu-cancel" onclick="closeAddMenu()">Отмена</button>
-    </div>
-  `;
+  menu.innerHTML = 
+    '<div class="add-menu">' +
+      '<div class="add-menu-title">Что добавить?</div>' +
+      '<button class="add-menu-item" data-action="online">' +
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>' +
+        '<div class="add-menu-item-text"><div class="add-menu-item-title">Онлайн встреча</div><div class="add-menu-item-sub">С резидентом, Google Meet</div></div>' +
+      '</button>' +
+      '<button class="add-menu-item" data-action="offline">' +
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+        '<div class="add-menu-item-text"><div class="add-menu-item-title">Офлайн день</div><div class="add-menu-item-sub">Группа резидентов в офисе BS</div></div>' +
+      '</button>' +
+      '<button class="add-menu-item" data-action="event">' +
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>' +
+        '<div class="add-menu-item-text"><div class="add-menu-item-title">Мероприятие</div><div class="add-menu-item-sub">Съёмки, подкаст, другое</div></div>' +
+      '</button>' +
+      '<button class="add-menu-cancel" data-action="cancel">Отмена</button>' +
+    '</div>';
+  
+  // Привязываем обработчики через data-action
+  menu.querySelectorAll('[data-action]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var action = btn.getAttribute('data-action');
+      if(action === 'online'){
+        closeAddMenu();
+        setTimeout(function(){
+          openModal('schedModal');
+          initSchedModal();
+        }, 250);
+      } else if(action === 'offline'){
+        closeAddMenu();
+        setTimeout(function(){ openOfflineGroupModal(); }, 250);
+      } else if(action === 'event'){
+        openEventMenu();
+      } else if(action === 'cancel'){
+        closeAddMenu();
+      }
+    });
+  });
+  
   document.body.appendChild(menu);
   setTimeout(function(){menu.classList.add('show');}, 10);
 }
@@ -2982,33 +3052,47 @@ function closeAddMenu(){
 
 function openEventMenu(){
   // Подменю выбора типа мероприятия
-  var menu = document.createElement('div');
-  menu.className = 'add-menu-overlay';
-  menu.onclick = function(e){ if(e.target===menu) closeAddMenu(); };
-  menu.innerHTML = `
-    <div class="add-menu">
-      <div class="add-menu-title">Тип мероприятия</div>
-      <button class="add-menu-item" onclick="createEvent('Встреча')">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <div class="add-menu-item-text"><div class="add-menu-item-title">Встреча</div></div>
-      </button>
-      <button class="add-menu-item" onclick="createEvent('Съёмки')">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-        <div class="add-menu-item-text"><div class="add-menu-item-title">Съёмки</div></div>
-      </button>
-      <button class="add-menu-item" onclick="createEvent('Подкаст')">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-        <div class="add-menu-item-text"><div class="add-menu-item-title">Подкаст</div></div>
-      </button>
-      <button class="add-menu-item" onclick="createEvent('Другое')">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-        <div class="add-menu-item-text"><div class="add-menu-item-title">Другое</div><div class="add-menu-item-sub">Введёшь название</div></div>
-      </button>
-      <button class="add-menu-cancel" onclick="closeAddMenu()">Назад</button>
-    </div>
-  `;
   closeAddMenu();
   setTimeout(function(){
+    var menu = document.createElement('div');
+    menu.className = 'add-menu-overlay';
+    menu.onclick = function(e){ if(e.target===menu) closeAddMenu(); };
+    menu.innerHTML = 
+      '<div class="add-menu">' +
+        '<div class="add-menu-title">Тип мероприятия</div>' +
+        '<button class="add-menu-item" data-type="Встреча">' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' +
+          '<div class="add-menu-item-text"><div class="add-menu-item-title">Встреча</div></div>' +
+        '</button>' +
+        '<button class="add-menu-item" data-type="Съёмки">' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>' +
+          '<div class="add-menu-item-text"><div class="add-menu-item-title">Съёмки</div></div>' +
+        '</button>' +
+        '<button class="add-menu-item" data-type="Подкаст">' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>' +
+          '<div class="add-menu-item-text"><div class="add-menu-item-title">Подкаст</div></div>' +
+        '</button>' +
+        '<button class="add-menu-item" data-type="Другое">' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>' +
+          '<div class="add-menu-item-text"><div class="add-menu-item-title">Другое</div><div class="add-menu-item-sub">Введёшь название</div></div>' +
+        '</button>' +
+        '<button class="add-menu-cancel" data-cancel="1">Назад</button>' +
+      '</div>';
+    
+    menu.querySelectorAll('[data-type]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        var type = btn.getAttribute('data-type');
+        createEvent(type);
+      });
+    });
+    menu.querySelectorAll('[data-cancel]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        closeAddMenu();
+      });
+    });
+    
     document.body.appendChild(menu);
     setTimeout(function(){menu.classList.add('show');}, 10);
   }, 220);
