@@ -1119,6 +1119,34 @@
     font-size: 14px;
   }
 
+  
+  /* Поля для модалки мероприятия */
+  .field-group { margin-bottom: 14px; }
+  .field-label {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .field-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
   </style>
 <div class="modal-bg" id="attendModal">
   <div class="modal">
@@ -1470,32 +1498,55 @@ function renderSchedule(){
   const el = document.getElementById('scheduleContent');
   const viewMode = window._scheduleViewMode || 'list'; // list | calendar
   
-  el.innerHTML = `
-    <div class="section-head">
-      <div class="section-title">Расписание</div>
-      <div style="display:flex;gap:8px;align-items:center">
-        ${(isRealAdmin && viewAs==='admin') ? `
-          <button class="icon-btn" onclick="openAddMenu()" title="Добавить">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          </button>
-        ` : ''}
-        <button class="icon-btn" onclick="setScheduleView('${viewMode==='list'?'calendar':'list'}')" title="${viewMode==='list'?'Календарь':'Список'}">
-          ${viewMode==='list' 
-            ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
-            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>'
-          }
-        </button>
-      </div>
-    </div>
-  `;
+  // Шапка рисуется один раз, потом обновляется только содержимое
+  if(!el.querySelector('.sched-header')){
+    el.innerHTML = '';
+    var headerEl = document.createElement('div');
+    headerEl.className = 'sched-header section-head';
+    headerEl.innerHTML = 
+      '<div class="section-title">Расписание</div>' +
+      '<div style="display:flex;gap:8px;align-items:center">' +
+        ((isRealAdmin && viewAs==='admin') ? 
+          '<button class="icon-btn" id="schedAddBtn" title="Добавить">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
+          '</button>' 
+          : '') +
+        '<button class="icon-btn" id="schedViewBtn" title="Сменить вид"></button>' +
+      '</div>';
+    el.appendChild(headerEl);
+    
+    var bodyEl = document.createElement('div');
+    bodyEl.className = 'sched-body';
+    el.appendChild(bodyEl);
+    
+    // Обработчики кнопок
+    var addBtn = el.querySelector('#schedAddBtn');
+    if(addBtn) addBtn.addEventListener('click', openAddMenu);
+    var viewBtn = el.querySelector('#schedViewBtn');
+    if(viewBtn) viewBtn.addEventListener('click', function(){
+      setScheduleView(window._scheduleViewMode === 'list' ? 'calendar' : 'list');
+    });
+  }
+  
+  // Обновляем только иконку переключателя
+  var viewBtn = el.querySelector('#schedViewBtn');
+  if(viewBtn){
+    viewBtn.title = viewMode === 'list' ? 'Календарь' : 'Список';
+    viewBtn.innerHTML = viewMode === 'list' 
+      ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>';
+  }
+  
+  // Обновляем тело
+  var bodyEl = el.querySelector('.sched-body');
   if(!list.length){
-    el.innerHTML += `<div class="empty"><div class="em-icon">📅</div><div class="em-title">Встреч нет</div><div class="em-text">Нажмите кнопку выше</div></div>`;
+    bodyEl.innerHTML = '<div class="empty"><div class="em-icon">📅</div><div class="em-title">Встреч нет</div><div class="em-text">Нажмите кнопку выше</div></div>';
     return;
   }
   if(viewMode === 'calendar'){
-    el.innerHTML += renderScheduleCalendar(list);
+    bodyEl.innerHTML = renderScheduleCalendar(list);
   } else {
-    el.innerHTML += list.map((ev,i) => meetingCard(ev,i)).join('');
+    bodyEl.innerHTML = list.map(function(ev,i){ return meetingCard(ev,i); }).join('');
   }
 }
 
@@ -3100,24 +3151,73 @@ function openEventMenu(){
 
 function createEvent(type){
   closeAddMenu();
-  var name = type;
-  if(type === 'Другое'){
-    name = prompt('Название мероприятия:');
-    if(!name) return;
-  }
-  var date = prompt('Дата (ДД.ММ.ГГГГ):');
-  if(!date) return;
-  var time = prompt('Время (ЧЧ:ММ):');
-  if(!time) return;
-  showToast('Создаём мероприятие...');
-  callAction('createEvent', {type:type, name:name, date:date, time:time}).then(function(r){
-    if(r && r.ok){
-      showToast('✅ Мероприятие создано');
-      setTimeout(loadAllData, 2000);
-    } else {
-      showToast('❌ Ошибка: ' + (r && r.error || 'неизвестно'));
+  setTimeout(function(){ openEventCreateModal(type); }, 250);
+}
+
+function openEventCreateModal(type){
+  // Полноценная модалка с полями вместо prompt() (prompt в Telegram WebApp не работает)
+  var modal = document.createElement('div');
+  modal.className = 'add-menu-overlay show';
+  modal.onclick = function(e){ if(e.target===modal) modal.remove(); };
+  
+  var isOther = (type === 'Другое');
+  var nameField = isOther 
+    ? '<div class="field-group"><label class="field-label">Название</label><input type="text" id="evName" class="field-input" placeholder="Например, эфир с гостем"></div>'
+    : '';
+  
+  modal.innerHTML = 
+    '<div class="add-menu" style="max-height:90vh;overflow-y:auto">' +
+      '<div class="add-menu-title">Новое мероприятие: ' + type + '</div>' +
+      nameField +
+      '<div class="field-group">' +
+        '<label class="field-label">Дата</label>' +
+        '<input type="date" id="evDate" class="field-input">' +
+      '</div>' +
+      '<div class="field-group">' +
+        '<label class="field-label">Время</label>' +
+        '<input type="time" id="evTime" class="field-input" value="19:00">' +
+      '</div>' +
+      '<button class="btn btn-primary" id="evSubmit" style="width:100%;margin-top:8px">Создать мероприятие</button>' +
+      '<button class="add-menu-cancel" id="evCancel">Отмена</button>' +
+    '</div>';
+  
+  document.body.appendChild(modal);
+  
+  // Привязываем обработчики
+  modal.querySelector('#evCancel').addEventListener('click', function(){ modal.remove(); });
+  modal.querySelector('#evSubmit').addEventListener('click', function(){
+    var name = type;
+    if(isOther){
+      var nameInput = modal.querySelector('#evName');
+      if(!nameInput.value.trim()){ showToast('Введи название'); return; }
+      name = nameInput.value.trim();
     }
+    var dateRaw = modal.querySelector('#evDate').value; // YYYY-MM-DD
+    var timeRaw = modal.querySelector('#evTime').value; // HH:MM
+    if(!dateRaw){ showToast('Выбери дату'); return; }
+    if(!timeRaw){ showToast('Выбери время'); return; }
+    
+    // Конвертируем YYYY-MM-DD → DD.MM.YYYY
+    var dp = dateRaw.split('-');
+    var dateStr = dp[2] + '.' + dp[1] + '.' + dp[0];
+    
+    modal.remove();
+    showToast('Создаём мероприятие...');
+    callAction('createEvent', {type:type, name:name, date:dateStr, time:timeRaw}).then(function(r){
+      if(r && r.ok){
+        showToast('✅ Мероприятие создано в Google Calendar');
+        setTimeout(loadAllData, 2000);
+      } else {
+        showToast('❌ Ошибка: ' + (r && r.error || 'неизвестно'));
+      }
+    });
   });
+  
+  // Автофокус на нужное поле
+  setTimeout(function(){
+    var first = modal.querySelector(isOther ? '#evName' : '#evDate');
+    if(first) first.focus();
+  }, 100);
 }
 
 </script>
