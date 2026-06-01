@@ -713,8 +713,9 @@
     </div>
     <div class="user-bar">
       <div class="role-toggle" id="roleToggle">
-        <button id="roleAdmin" class="active" onclick="setRole('admin')">Админ</button>
-        <button id="roleResident" onclick="setRole('resident')">Резидент</button>
+        <button id="roleAdmin" class="active" data-role="admin">Админ</button>
+        <button id="roleResident" data-role="resident">Резидент</button>
+        <button id="roleLead" data-role="lead">Лид</button>
       </div>
     </div>
   </div>
@@ -738,6 +739,9 @@
 <div class="page" id="page-residents"><div id="residentsContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-subscribers"></div>
 <div class="page" id="page-todos"></div>
+<div class="page" id="page-about"></div>
+<div class="page" id="page-leadmagnets"></div>
+<div class="page" id="page-diagnostic"></div>
 <div class="page" id="page-platform">
   <div class="card" style="text-align:center;padding:40px 20px;margin-top:20px">
     <div style="font-size:42px;margin-bottom:14px">🧬</div>
@@ -1247,6 +1251,797 @@
     background: rgba(229,57,53,0.1);
   }
 
+  
+  /* === ГЛАВНАЯ СТРАНИЦА BS — минимализм === */
+  .about-min {
+    padding: 0 4px;
+    color: var(--text);
+  }
+  
+  /* HERO */
+  .hero-min {
+    margin: 8px 0 28px;
+  }
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #D4B886;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .hero-title {
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0 0 14px;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+  .hero-sub {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+  
+  /* CTA БОЛЬШАЯ КНОПКА */
+  .cta-button {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 18px 20px;
+    margin: 0 0 28px;
+    background: #D4B886;
+    color: #000;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+    font-family: inherit;
+    transition: transform 0.15s;
+  }
+  .cta-button:active { transform: scale(0.98); }
+  .cta-button-icon {
+    width: 40px;
+    height: 40px;
+    background: #000;
+    color: #D4B886;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .cta-button-text { flex: 1; min-width: 0; }
+  .cta-button-title {
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+  .cta-button-sub {
+    font-size: 12px;
+    margin-top: 3px;
+    opacity: 0.7;
+  }
+  .cta-button-arrow {
+    font-size: 24px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  
+  /* ЦИФРЫ */
+  .stats-min {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin: 0 0 32px;
+  }
+  .stat-min {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+  }
+  .stat-min-num {
+    font-size: 30px;
+    font-weight: 900;
+    color: #D4B886;
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .stat-min-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  
+  /* СЕКЦИЯ */
+  .section-min {
+    margin: 0 0 36px;
+  }
+  .section-min-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .section-min-title {
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1.15;
+    margin: 0 0 14px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .section-min-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  
+  /* ОРГАНЫ */
+  .organs-min {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .organ-min {
+    display: flex;
+    gap: 16px;
+    padding: 18px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    align-items: flex-start;
+  }
+  .organ-min-num {
+    font-size: 20px;
+    font-weight: 900;
+    color: #D4B886;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .organ-min-body { flex: 1; min-width: 0; }
+  .organ-min-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+  }
+  .organ-min-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+  .organ-quote {
+    padding: 14px 18px;
+    background: transparent;
+    border-left: 3px solid #D4B886;
+    font-style: italic;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  /* КЕЙСЫ-ЛОКЕД */
+  .cases-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .case-locked {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .case-locked::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, transparent 30%, rgba(0,0,0,0.04) 100%);
+    pointer-events: none;
+  }
+  .case-locked-num {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-muted);
+    width: 24px;
+    flex-shrink: 0;
+  }
+  .case-locked-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    width: 32px;
+    text-align: center;
+    filter: grayscale(0.3);
+  }
+  .case-locked-body { flex: 1; min-width: 0; }
+  .case-locked-niche {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .case-locked-result {
+    font-size: 14px;
+    font-weight: 700;
+    color: #D4B886;
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+  .case-locked-action {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .case-locked-icon-end {
+    color: var(--text-muted);
+    opacity: 0.4;
+    flex-shrink: 0;
+    margin-left: 4px;
+  }
+  .cases-unlock {
+    margin-top: 16px;
+    text-align: center;
+    padding: 12px;
+    color: #D4B886;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+  }
+  
+  /* YOUTUBE */
+  .youtube-card {
+    display: block;
+    position: relative;
+    padding: 28px 24px;
+    background: linear-gradient(135deg, #1a0000 0%, #330000 100%);
+    border-radius: 16px;
+    text-decoration: none;
+    color: #fff;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .youtube-card-bg {
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255,0,0,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .youtube-card-content { position: relative; z-index: 1; }
+  .youtube-icon {
+    width: 56px;
+    height: 56px;
+    color: #FF0000;
+    margin-bottom: 14px;
+  }
+  .youtube-card-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .youtube-card-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 16px;
+  }
+  .youtube-card-cta {
+    font-size: 13px;
+    font-weight: 700;
+    color: #D4B886;
+  }
+  
+  /* СОЦСЕТИ ПЛИТКАМИ */
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .social-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--text);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s;
+  }
+  .social-tile:active { transform: scale(0.97); }
+  .social-tile-icon {
+    width: 36px;
+    height: 36px;
+    color: #D4B886;
+    margin-bottom: 10px;
+  }
+  .social-tile-name {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 3px;
+  }
+  .social-tile-handle {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .social-tile-cta {
+    background: #25D366;
+    border-color: #25D366;
+    color: #fff;
+  }
+  .social-tile-cta .social-tile-icon { color: #fff; }
+  .social-tile-cta .social-tile-handle { color: rgba(255,255,255,0.85); }
+  
+  /* ЦИТАТА */
+  .quote-min {
+    margin: 32px 0 16px;
+    padding: 24px 22px;
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+    color: #fff;
+    border-radius: 16px;
+    text-align: center;
+  }
+  .quote-min-text {
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 12px;
+  }
+  .quote-min-author {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #D4B886;
+    font-weight: 700;
+  }
+  
+  /* ПЕРЕКЛЮЧАТЕЛЬ РОЛЕЙ — 3 кнопки */
+  .role-toggle {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2px;
+    gap: 0;
+  }
+  .role-toggle.show { display: inline-flex; }
+  .role-toggle button {
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .role-toggle button.active {
+    background: #D4B886;
+    color: #000;
+  }
+
+  
+  /* === МАТЕРИАЛЫ — минимализм === */
+  .lm-min { padding: 0 4px; }
+  .lm-min-head { margin: 8px 0 28px; }
+  .lm-section { margin-bottom: 32px; }
+  .lm-cards-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .lm-min-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+  }
+  .lm-min-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .lm-min-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .lm-min-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .lm-min-badge.taken {
+    background: rgba(38,166,154,0.15);
+    color: #26A69A;
+  }
+  .lm-min-badge.new {
+    background: rgba(212,184,134,0.15);
+    color: #D4B886;
+  }
+  .lm-min-title {
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .lm-min-hero {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .lm-min-metric {
+    font-size: 14px;
+    font-weight: 700;
+    color: #D4B886;
+    margin-bottom: 14px;
+  }
+  .lm-min-btn {
+    width: 100%;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.15s;
+  }
+  .lm-min-btn:active { 
+    transform: scale(0.98); 
+    background: #D4B886;
+    color: #000;
+    border-color: #D4B886;
+  }
+
+  
+  /* === ДИАГНОСТИКА === */
+  .diag-page { padding: 0 4px; }
+  .diag-hero { margin: 8px 0 24px; }
+  
+  .diag-orgs-preview {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .diag-org-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .diag-org-preview span:first-child { font-size: 20px; }
+  
+  .diag-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .diag-meta-item {
+    text-align: center;
+    padding: 14px 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .diag-meta-num {
+    font-size: 26px;
+    font-weight: 900;
+    color: #D4B886;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .diag-meta-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  
+  .diag-note {
+    margin-top: 20px;
+    padding: 16px 18px;
+    background: rgba(212,184,134,0.06);
+    border-left: 3px solid #D4B886;
+    border-radius: 8px;
+  }
+  .diag-note-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #D4B886;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .diag-note-text {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  
+  /* Экран вопроса */
+  .diag-question-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .diag-area-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .diag-progress {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  
+  .diag-progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .diag-progress-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+  
+  .diag-question {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 24px;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  
+  .diag-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .diag-answer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    font-family: inherit;
+  }
+  .diag-answer:active { transform: scale(0.98); }
+  .diag-answer-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 900;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .diag-answer-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: 600;
+    color: var(--text);
+  }
+  
+  .diag-back {
+    margin-top: 16px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Результат */
+  .diag-result-head { margin: 8px 0 20px; }
+  
+  .diag-total {
+    text-align: center;
+    padding: 28px 20px;
+    background: var(--card);
+    border: 2px solid;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .diag-total-pct {
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -2px;
+  }
+  .diag-total-label {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .diag-total-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  
+  .diag-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .diag-result-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .diag-result-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .diag-result-body { flex: 1; min-width: 0; }
+  .diag-result-organ {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .diag-result-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .diag-result-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .diag-result-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+  .diag-result-pct {
+    font-size: 18px;
+    font-weight: 900;
+    flex-shrink: 0;
+    min-width: 50px;
+    text-align: right;
+  }
+  
+  .diag-weakest {
+    padding: 20px;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    color: #fff;
+    border-radius: 16px;
+    margin-bottom: 12px;
+  }
+  .diag-weakest-label {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #E53935;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .diag-weakest-org {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+  .diag-weakest-name {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .diag-weakest-pct {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 2px;
+  }
+  .diag-weakest-text {
+    font-size: 13px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.75);
+  }
+  
+  .diag-restart {
+    margin-top: 12px;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   </style>
 <div class="modal-bg" id="attendModal">
   <div class="modal">
@@ -1298,6 +2093,8 @@ let payType = 'income';
 let payMethod = 'cash';
 
 const ADMIN_TABS = [
+  {id:'about', label:'BS'},
+  {id:'diagnostic', label:'Диагностика'},
   {id:'dashboard', label:'Сводка'},
   {id:'schedule', label:'Расписание'},
   {id:'todos', label:'Задачи'},
@@ -1305,15 +2102,26 @@ const ADMIN_TABS = [
   {id:'fines', label:'Штрафы'},
   {id:'residents', label:'Резиденты'},
   {id:'subscribers', label:'Подписчики'},
-  {id:'myprofile', label:'Мой профиль'},
+  {id:'leadmagnets', label:'Материалы'},
+  {id:'myprofile', label:'Профиль'},
   {id:'platform', label:'Платформа'}
 ];
 
+const LEAD_TABS = [
+  {id:'about', label:'BS'},
+  {id:'diagnostic', label:'Диагностика'},
+  {id:'leadmagnets', label:'Материалы'},
+  {id:'myprofile', label:'Профиль'}
+];
+
 const RESIDENT_TABS = [
+  {id:'about', label:'BS'},
+  {id:'diagnostic', label:'Диагностика'},
   {id:'mystatus', label:'Статус'},
-  {id:'myprofile', label:'Профиль'},
   {id:'mymeetings', label:'Встречи'},
   {id:'residents', label:'Резиденты'},
+  {id:'leadmagnets', label:'Материалы'},
+  {id:'myprofile', label:'Профиль'},
   {id:'platform', label:'Платформа'}
 ];
 
@@ -1403,9 +2211,36 @@ function init(){
       user = tg.initDataUnsafe?.user;
     }
     isRealAdmin = user ? ADMIN_IDS.includes(String(user.id)) : false;
-    if(isRealAdmin){
+    
+    // Определяем начальную роль (для НЕ-админов)
+    if(!isRealAdmin){
+      // Проверим, резидент это или лид
+      var savedRole = null;
+      try{ savedRole = localStorage.getItem('bs_view_as'); }catch(e){}
+      // По умолчанию resident — позже сервер скажет точнее
+      viewAs = savedRole || 'resident';
+    } else {
+      // Админ — восстановим сохранённый режим или admin по умолчанию
+      var adminSavedRole = null;
+      try{ adminSavedRole = localStorage.getItem('bs_view_as'); }catch(e){}
+      viewAs = adminSavedRole || 'admin';
+      
       var rt = document.getElementById('roleToggle');
-      if(rt) rt.classList.add('show');
+      if(rt){
+        rt.classList.add('show');
+        // Активируем правильную кнопку
+        rt.querySelectorAll('button').forEach(function(b){
+          b.classList.toggle('active', b.getAttribute('data-role') === viewAs);
+        });
+        // Привязываем обработчики (через data-role)
+        rt.querySelectorAll('button').forEach(function(b){
+          b.addEventListener('click', function(e){
+            e.stopPropagation();
+            try{ this.blur(); }catch(blurE){}
+            setRole(b.getAttribute('data-role'));
+          });
+        });
+      }
     }
     renderTabs();
     try{ window._scheduleViewMode = localStorage.getItem('bs_schedule_view') || 'list'; }catch(e){}
@@ -1456,18 +2291,36 @@ function init(){
 
 function setRole(role){
   viewAs = role;
-  document.getElementById('roleAdmin').classList.toggle('active', role==='admin');
-  document.getElementById('roleResident').classList.toggle('active', role==='resident');
+  // Обновляем active кнопку
+  const buttons = document.querySelectorAll('.role-toggle button');
+  buttons.forEach(b => {
+    if(b.getAttribute('data-role') === role){
+      b.classList.add('active');
+    } else {
+      b.classList.remove('active');
+    }
+  });
+  // Перерисовываем вкладки и переходим на первую
   renderTabs();
-  // Render current page
-  if(role==='admin') showPage('dashboard');
-  else showPage('mystatus');
-  // Refresh data view
-  if(cache.residents) renderAllPages();
+  setTimeout(() => {
+    let firstTab;
+    if(isRealAdmin && role === 'admin') firstTab = ADMIN_TABS[0].id;
+    else if(role === 'lead') firstTab = LEAD_TABS[0].id;
+    else firstTab = RESIDENT_TABS[0].id;
+    showPage(firstTab);
+  }, 50);
+  // Сохраняем выбор админа
+  try{ localStorage.setItem('bs_view_as', role); }catch(e){}
 }
 
+
 function renderTabs(){
-  const tabs = (isRealAdmin && viewAs==='admin') ? ADMIN_TABS : RESIDENT_TABS;
+  // Определяем какие вкладки показать в зависимости от viewAs
+  let tabs;
+  if(isRealAdmin && viewAs === 'admin') tabs = ADMIN_TABS;
+  else if(viewAs === 'lead') tabs = LEAD_TABS;
+  else tabs = RESIDENT_TABS; // resident по умолчанию
+  
   const el = document.getElementById('tabs');
   el.innerHTML = tabs.map((t,i) => `<div class="tab ${i===0?'active':''}" data-page="${t.id}" onclick="showPage('${t.id}')">${t.label}</div>`).join('');
 }
@@ -1537,6 +2390,9 @@ async function loadAllData(){
 }
 
 function renderAllPages(){
+  try{renderAbout();}catch(e){console.error('about:',e);}
+  try{renderLeadmagnets();}catch(e){console.error('lm:',e);}
+  try{renderDiagnostic();}catch(e){console.error('diag:',e);}
   try{renderDashboard();}catch(e){console.error('dashboard:',e);}
   try{renderSchedule();}catch(e){console.error('schedule:',e);}
   try{renderReports();}catch(e){console.error('reports:',e);}
@@ -3504,6 +4360,703 @@ function openAddTodoModal(){
     var inp = modal.querySelector('#todoTextInp');
     if(inp) inp.focus();
   }, 100);
+}
+
+
+function renderAbout(){
+  var el = document.getElementById('page-about');
+  if(!el) return;
+  
+  // 9 реальных кейсов резидентов (без имён, формат "разблокированный персонаж")
+  var cases = [
+    {ind:"01", icon:"💼", niche:"Услуги · Алматы", result:"С 200 000 ₸ до 2 000 000 ₸ чистыми", action:"Сменили целевую аудиторию, подняли средний чек, кэв-воронка продаж"},
+    {ind:"02", icon:"🐕", niche:"Услуги · Питомцы", result:"Чистая прибыль 15-20 млн ₸ / мес", action:"Статус Astana Hub, налог 1%, найм фин директора, оргструктура"},
+    {ind:"03", icon:"📦", niche:"Маркетплейс · Kaspi", result:"Чистая прибыль ×3", action:"Грант на новую нишу, автоматизация старой, икигай-смыслы"},
+    {ind:"04", icon:"💻", niche:"IT · Сайты", result:"Доход ×3, квартира в Астане", action:"Перешли от сайтов к системе привлечения клиентов, найм команды"},
+    {ind:"05", icon:"🎓", niche:"Образование", result:"3 филиала, новый опер директор", action:"Управление онлайн, обновили сайт и воронку, личный бренд"},
+    {ind:"06", icon:"🏫", niche:"Частная школа", result:"100 учеников с нуля", action:"Привлекли инвестиции, фин модель, школа под ключ, субсидии"},
+    {ind:"07", icon:"🛵", niche:"Аренда транспорта", result:"С 5 до 40 единиц, 2-2.5 млн чистыми", action:"Открыли бизнес работая в найме, упр учёт, личный бренд"},
+    {ind:"08", icon:"💰", niche:"B2B услуги", result:"Готовят новый продукт на LTV", action:"Внедрили упр учёт, нашли дыры в продажах, система найма"},
+    {ind:"09", icon:"🌐", niche:"3 бизнеса", result:"Выход на B2B рынок", action:"Разделили финансовые потоки, проработали 'кто если не я', найм"}
+  ];
+  
+  var casesHtml = cases.map(function(c){
+    return '<div class="case-locked">' +
+      '<div class="case-locked-num">' + c.ind + '</div>' +
+      '<div class="case-locked-icon">' + c.icon + '</div>' +
+      '<div class="case-locked-body">' +
+        '<div class="case-locked-niche">' + c.niche + '</div>' +
+        '<div class="case-locked-result">' + c.result + '</div>' +
+        '<div class="case-locked-action">' + c.action + '</div>' +
+      '</div>' +
+      '<div class="case-locked-icon-end">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  
+  // Заголовок для резидента vs лида/гостя
+  var greetingText = (viewAs === 'resident') 
+    ? 'Привет. Рад что ты с нами.' 
+    : 'Точная работа с бизнесом на уровне его ДНК';
+  
+  // CTA только для лидов и гостей
+  var ctaBlock = (viewAs !== 'resident' && viewAs !== 'admin') ? (
+    '<button class="cta-button" id="ctaDiagnostic">' +
+      '<div class="cta-button-icon">' +
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' +
+      '</div>' +
+      '<div class="cta-button-text">' +
+        '<div class="cta-button-title">Записаться на диагностику</div>' +
+        '<div class="cta-button-sub">За 1 час диагноз бизнеса и план задач</div>' +
+      '</div>' +
+      '<div class="cta-button-arrow">→</div>' +
+    '</button>'
+  ) : '';
+  
+  el.innerHTML = `
+    <div class="about-min">
+      <!-- HERO -->
+      <div class="hero-min">
+        <div class="hero-label">Business Surgery</div>
+        <h1 class="hero-title">${greetingText}</h1>
+        <div class="hero-sub">Каждые 10 дней — хирургически точный разбор бизнеса, стратегия развития и пошаговый план задач.</div>
+      </div>
+      
+      ${ctaBlock}
+      
+      <!-- ЦИФРЫ -->
+      <div class="stats-min">
+        <div class="stat-min"><div class="stat-min-num">700+</div><div class="stat-min-label">разборов</div></div>
+        <div class="stat-min"><div class="stat-min-num">20</div><div class="stat-min-label">резидентов</div></div>
+        <div class="stat-min"><div class="stat-min-num">×3</div><div class="stat-min-label">средний рост</div></div>
+        <div class="stat-min"><div class="stat-min-num">10+</div><div class="stat-min-label">лет в бизнесе</div></div>
+      </div>
+      
+      <!-- ОРГАНЫ БИЗНЕСА (4 как на сайте) -->
+      <div class="section-min">
+        <div class="section-min-label">Концепция</div>
+        <h2 class="section-min-title">Бизнес как живой организм</h2>
+        <div class="organs-min">
+          <div class="organ-min">
+            <div class="organ-min-num">01</div>
+            <div class="organ-min-body">
+              <div class="organ-min-title">Мозг</div>
+              <div class="organ-min-desc">Стратегия и видение. Куда идём и зачем</div>
+            </div>
+          </div>
+          <div class="organ-min">
+            <div class="organ-min-num">02</div>
+            <div class="organ-min-body">
+              <div class="organ-min-title">Руки и ноги</div>
+              <div class="organ-min-desc">Команда и продажи. Что делает бизнес каждый день</div>
+            </div>
+          </div>
+          <div class="organ-min">
+            <div class="organ-min-num">03</div>
+            <div class="organ-min-body">
+              <div class="organ-min-title">Кровь</div>
+              <div class="organ-min-desc">Финансы и цифры. Что течёт по сосудам бизнеса</div>
+            </div>
+          </div>
+          <div class="organ-min">
+            <div class="organ-min-num">04</div>
+            <div class="organ-min-body">
+              <div class="organ-min-title">ДНК</div>
+              <div class="organ-min-desc">Процессы и регламенты. На чём всё это держится</div>
+            </div>
+          </div>
+        </div>
+        <div class="organ-quote">Работаем с причиной на уровне ДНК, а не с симптомами.</div>
+      </div>
+      
+      <!-- ОКРУЖЕНИЕ -->
+      <div class="section-min">
+        <div class="section-min-label">Окружение</div>
+        <h2 class="section-min-title">9 резидентов прошли путь</h2>
+        <div class="section-min-sub">Деление на пятёрки. Каждая пятёрка — закрытое окружение предпринимателей которые понимают тебя изнутри.</div>
+        <div class="cases-list">
+          ${casesHtml}
+        </div>
+        ${viewAs !== 'resident' && viewAs !== 'admin' ? '<div class="cases-unlock">Стать одним из них →</div>' : ''}
+      </div>
+      
+      <!-- YOUTUBE -->
+      <div class="section-min">
+        <div class="section-min-label">YouTube канал</div>
+        <h2 class="section-min-title">Подкасты и разборы</h2>
+        <a href="https://www.youtube.com/@Businessurgery" target="_blank" class="youtube-card">
+          <div class="youtube-card-bg"></div>
+          <div class="youtube-card-content">
+            <div class="youtube-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </div>
+            <div class="youtube-card-title">@Businessurgery</div>
+            <div class="youtube-card-sub">Смотреть подкасты на канале</div>
+            <div class="youtube-card-cta">Открыть YouTube →</div>
+          </div>
+        </a>
+      </div>
+      
+      <!-- СОЦСЕТИ -->
+      <div class="section-min">
+        <div class="section-min-label">Контакты</div>
+        <h2 class="section-min-title">Где мы есть</h2>
+        <div class="social-grid">
+          <a href="https://bxclub.kz" target="_blank" class="social-tile">
+            <div class="social-tile-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3 Q7 7 7 12 Q7 17 12 21 Q17 17 17 12 Q17 7 12 3"/></svg>
+            </div>
+            <div class="social-tile-name">Сайт</div>
+            <div class="social-tile-handle">bxclub.kz</div>
+          </a>
+          <a href="https://instagram.com/business.surgery" target="_blank" class="social-tile">
+            <div class="social-tile-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+            </div>
+            <div class="social-tile-name">Instagram</div>
+            <div class="social-tile-handle">@business.surgery</div>
+          </a>
+          <a href="https://t.me/bsurgery_kz" target="_blank" class="social-tile">
+            <div class="social-tile-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            </div>
+            <div class="social-tile-name">Telegram</div>
+            <div class="social-tile-handle">@bsurgery_kz</div>
+          </a>
+          <a href="https://wa.me/77024035036" target="_blank" class="social-tile social-tile-cta">
+            <div class="social-tile-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+            </div>
+            <div class="social-tile-name">WhatsApp</div>
+            <div class="social-tile-handle">+7 702 403 50 36</div>
+          </a>
+        </div>
+      </div>
+      
+      <!-- ЦИТАТА -->
+      <div class="quote-min">
+        <div class="quote-min-text">«Здоровье является состоянием полного физического, душевного и социального благополучия, а не только отсутствием болезней и физических дефектов»</div>
+        <div class="quote-min-author">наша миссия</div>
+      </div>
+    </div>
+  `;
+  
+  // Привязка CTA для лидов
+  var ctaBtn = el.querySelector('#ctaDiagnostic');
+  if(ctaBtn){
+    ctaBtn.addEventListener('click', function(e){
+      try{ this.blur(); }catch(blurE){}
+      openDiagnosticModal();
+    });
+  }
+}
+
+function openDiagnosticModal(){
+  var modal = document.createElement('div');
+  modal.className = 'add-menu-overlay show';
+  modal.onclick = function(e){ if(e.target===modal) modal.remove(); };
+  
+  modal.innerHTML = 
+    '<div class="add-menu" style="max-height:90vh;overflow-y:auto">' +
+      '<div class="add-menu-title">Записаться на диагностику</div>' +
+      '<div class="field-group">' +
+        '<label class="field-label">Имя</label>' +
+        '<input type="text" id="diagName" class="field-input" placeholder="Как к тебе обращаться">' +
+      '</div>' +
+      '<div class="field-group">' +
+        '<label class="field-label">Телефон / WhatsApp</label>' +
+        '<input type="tel" id="diagPhone" class="field-input" placeholder="+7 ___ ___ __ __">' +
+      '</div>' +
+      '<div class="field-group">' +
+        '<label class="field-label">Чем занимается бизнес</label>' +
+        '<input type="text" id="diagNiche" class="field-input" placeholder="Ниша и кратко суть">' +
+      '</div>' +
+      '<div class="field-group">' +
+        '<label class="field-label">Главный запрос</label>' +
+        '<textarea id="diagRequest" class="field-input" rows="3" placeholder="Что хочешь узнать на диагностике"></textarea>' +
+      '</div>' +
+      '<button class="btn btn-primary" id="diagSubmit" style="width:100%;margin-top:8px">Отправить заявку</button>' +
+      '<button class="add-menu-cancel" id="diagCancel">Отмена</button>' +
+    '</div>';
+  
+  document.body.appendChild(modal);
+  
+  modal.querySelector('#diagCancel').addEventListener('click', function(){ modal.remove(); });
+  modal.querySelector('#diagSubmit').addEventListener('click', function(){
+    var name = modal.querySelector('#diagName').value.trim();
+    var phone = modal.querySelector('#diagPhone').value.trim();
+    var niche = modal.querySelector('#diagNiche').value.trim();
+    var request = modal.querySelector('#diagRequest').value.trim();
+    
+    if(!name){ showToast('Введи имя'); return; }
+    if(!phone){ showToast('Введи телефон'); return; }
+    
+    modal.remove();
+    showToast('Отправляю заявку...');
+    callAction('submitDiagnosticRequest', {name:name, phone:phone, niche:niche, request:request}).then(function(r){
+      if(r && r.ok){
+        showToast('✅ Заявка отправлена! Скоро свяжемся.');
+      } else {
+        showToast('❌ ' + (r && r.error || 'Ошибка'));
+      }
+    });
+  });
+  
+  setTimeout(function(){
+    var inp = modal.querySelector('#diagName');
+    if(inp) inp.focus();
+  }, 100);
+}
+
+
+function renderLeadmagnets(){
+  var el = document.getElementById('page-leadmagnets');
+  if(!el) return;
+  
+  el.innerHTML = `
+    <div class="lm-min">
+      <div class="lm-min-head">
+        <div class="hero-label">Материалы BS</div>
+        <h1 class="hero-title">Чек-листы и подкасты</h1>
+        <div class="hero-sub">Реальные кейсы резидентов с цифрами «было / стало». Концентрат того что мы делаем на разборах.</div>
+      </div>
+      
+      <div class="lm-section">
+        <div class="section-min-label">5 чек-листов</div>
+        <div class="lm-cards-list" id="lmCardsList">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+      </div>
+      
+      <div class="lm-section">
+        <div class="section-min-label">Подкасты</div>
+        <div class="section-min-sub">Разборы реальных бизнесов и интервью с предпринимателями.</div>
+        <a href="https://www.youtube.com/@Businessurgery" target="_blank" class="youtube-card">
+          <div class="youtube-card-bg"></div>
+          <div class="youtube-card-content">
+            <div class="youtube-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </div>
+            <div class="youtube-card-title">@Businessurgery</div>
+            <div class="youtube-card-sub">Смотреть все подкасты на YouTube канале</div>
+            <div class="youtube-card-cta">Открыть YouTube →</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  `;
+  
+  callAction('getLeadmagnetsList', {}).then(function(r){
+    var listEl = document.getElementById('lmCardsList');
+    if(!listEl) return;
+    if(!r || !r.ok || !r.items){
+      listEl.innerHTML = '<div class="empty"><div class="em-text">Не удалось загрузить</div></div>';
+      return;
+    }
+    var items = r.items.filter(function(x){ return x.fileId; });
+    if(items.length === 0){
+      listEl.innerHTML = '<div class="empty"><div class="em-icon">📚</div><div class="em-title">Скоро будут доступны</div></div>';
+      return;
+    }
+    
+    var emojiMap = {sales:'💉', unit:'🩺', delegate:'⚙️', hire:'👥', marketing:'📢'};
+    var colorMap = {sales:'#E53935', unit:'#D4B886', delegate:'#5C6BC0', hire:'#26A69A', marketing:'#AB47BC'};
+    var descMap = {
+      sales: {hero:'Дамир, маркетинговое агентство', metric:'6 → 14 млн ₸/мес'},
+      unit: {hero:'Айдар, барбершоп', metric:'2.3 → 4.2 млн ₸/мес'},
+      delegate: {hero:'Бауржан, строительство', metric:'Работает 7 часов в день'},
+      hire: {hero:'Жанна, ресторан', metric:'Текучка 120% → 35%'},
+      marketing: {hero:'Айгуль, онлайн-школа', metric:'200К → 4 млн ₸ без рекламы'}
+    };
+    
+    // Получим статус "забрал ли уже" из r.taken (или пусто)
+    var taken = r.taken || {};
+    
+    listEl.innerHTML = items.map(function(item){
+      var emoji = emojiMap[item.key] || '📄';
+      var color = colorMap[item.key] || '#1A3A5C';
+      var d = descMap[item.key] || {hero:'Кейс резидента', metric:'Реальные цифры'};
+      var isTaken = !!taken[item.key];
+      var badge = isTaken 
+        ? '<div class="lm-min-badge taken">✓ Забрал</div>' 
+        : '<div class="lm-min-badge new">Новый</div>';
+      var btnText = isTaken ? 'Получить ещё раз' : 'Получить в Telegram';
+      
+      return '<div class="lm-min-card">' +
+        '<div class="lm-min-card-head">' +
+          '<div class="lm-min-icon" style="background:' + color + '">' + emoji + '</div>' +
+          badge +
+        '</div>' +
+        '<div class="lm-min-title">' + item.title + '</div>' +
+        '<div class="lm-min-hero">' + d.hero + '</div>' +
+        '<div class="lm-min-metric">' + d.metric + '</div>' +
+        '<button class="lm-min-btn" data-key="' + item.key + '">' + btnText + ' →</button>' +
+      '</div>';
+    }).join('');
+    
+    listEl.querySelectorAll('.lm-min-btn').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        try{ this.blur(); }catch(blurE){}
+        var key = btn.getAttribute('data-key');
+        requestLeadmagnet(key);
+      });
+    });
+  });
+}
+
+function requestLeadmagnet(key){
+  showToast('Отправляю в Telegram...');
+  callAction('requestLeadmagnet', {key:key}).then(function(r){
+    if(r && r.ok){
+      showToast('✅ Открой Telegram. чек-лист отправлен');
+      // Обновим UI чтобы пометить как "забрал"
+      setTimeout(function(){ renderLeadmagnets(); }, 1000);
+      if(window.Telegram && Telegram.WebApp){
+        setTimeout(function(){ Telegram.WebApp.close(); }, 1500);
+      }
+    } else {
+      showToast('❌ ' + (r && r.error || 'Не удалось'));
+    }
+  });
+}
+
+
+function requestLeadmagnet(key){
+  showToast('Отправляю чек-лист в Telegram...');
+  callAction('requestLeadmagnet', {key:key}).then(function(r){
+    if(r && r.ok){
+      showToast('✅ Открой Telegram — чек-лист отправлен');
+      // Закрываем Mini App, чтобы открылся Telegram
+      if(window.Telegram && Telegram.WebApp){
+        setTimeout(function(){ Telegram.WebApp.close(); }, 1500);
+      }
+    } else {
+      showToast('❌ ' + (r && r.error || 'Не удалось'));
+    }
+  });
+}
+
+
+// === ДИАГНОСТИКА БИЗНЕСА ===
+const DIAGNOSTIC_AREAS = [
+  {
+    id: 'brain',
+    organ: 'Мозг',
+    label: 'Стратегия',
+    icon: '🧠',
+    color: '#5C6BC0',
+    intro: 'Куда ты идёшь и зачем. Это первый орган который проверяем — без него остальное не работает.',
+    questions: [
+      {
+        q: 'Есть ли у тебя письменный план развития бизнеса на 1 год вперёд?',
+        a: ['Да, расписан с целями и сроками', 'Есть в голове, но не зафиксирован', 'Нет']
+      },
+      {
+        q: 'Декомпозированы ли годовые цели до месячных и недельных задач?',
+        a: ['Да, есть конкретные KPI по месяцам', 'Есть общие ориентиры', 'Нет, живём как идёт']
+      },
+      {
+        q: 'Знаешь ли ты свою главную точку роста на ближайшие 3 месяца?',
+        a: ['Да, одна конкретная цель в фокусе', 'Есть 3-5 направлений', 'Нет, делаю много всего']
+      },
+      {
+        q: 'Сверяешь ли ты цифры с планом раз в месяц минимум?',
+        a: ['Да, есть регулярная стратегическая сессия', 'Иногда, когда вспомню', 'Нет']
+      },
+      {
+        q: 'Понимаешь ли ты ради чего лично ты строишь этот бизнес?',
+        a: ['Да, есть личный смысл и видение жизни', 'Раньше понимал, сейчас размыто', 'Нет, просто работаю']
+      }
+    ]
+  }
+  // Остальные 6 областей добавим после утверждения прототипа
+];
+
+let diagState = {
+  started: false,
+  finished: false,
+  currentArea: 0,
+  currentQuestion: 0,
+  answers: {} // {areaId: [3,1,0,3,1]} — баллы по каждому вопросу
+};
+
+function renderDiagnostic(){
+  var el = document.getElementById('page-diagnostic');
+  if(!el) return;
+  
+  if(!diagState.started && !diagState.finished){
+    // Стартовый экран
+    el.innerHTML = `
+      <div class="diag-page">
+        <div class="diag-hero">
+          <div class="hero-label">Диагностика бизнеса</div>
+          <h1 class="hero-title">Узнай слабые<br>органы за 5 минут</h1>
+          <div class="hero-sub">Без рекомендаций. Только точный замер по 7 областям бизнеса. После результата решаешь — приходить на разбор или нет.</div>
+        </div>
+        
+        <div class="diag-orgs-preview">
+          <div class="diag-org-preview"><span>🧠</span><span>Стратегия</span></div>
+          <div class="diag-org-preview"><span>🫀</span><span>Маркетинг</span></div>
+          <div class="diag-org-preview"><span>💪</span><span>Продажи</span></div>
+          <div class="diag-org-preview"><span>🦴</span><span>Команда</span></div>
+          <div class="diag-org-preview"><span>🩸</span><span>Финансы</span></div>
+          <div class="diag-org-preview"><span>🧬</span><span>Процессы</span></div>
+          <div class="diag-org-preview"><span>👁</span><span>Аналитика</span></div>
+        </div>
+        
+        <div class="diag-meta">
+          <div class="diag-meta-item">
+            <div class="diag-meta-num">${DIAGNOSTIC_AREAS.reduce((s,a)=>s+a.questions.length,0) * 7}</div>
+            <div class="diag-meta-label">вопросов всего</div>
+          </div>
+          <div class="diag-meta-item">
+            <div class="diag-meta-num">7</div>
+            <div class="diag-meta-label">областей бизнеса</div>
+          </div>
+          <div class="diag-meta-item">
+            <div class="diag-meta-num">5</div>
+            <div class="diag-meta-label">минут пройти</div>
+          </div>
+        </div>
+        
+        <button class="cta-button" id="diagStartBtn">
+          <div class="cta-button-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="cta-button-text">
+            <div class="cta-button-title">Начать диагностику</div>
+            <div class="cta-button-sub">Прототип. Сейчас доступна только 1 область из 7</div>
+          </div>
+          <div class="cta-button-arrow">→</div>
+        </button>
+        
+        <div class="diag-note">
+          <div class="diag-note-label">Что получишь в результате</div>
+          <div class="diag-note-text">% здоровья по каждому органу бизнеса и общий индекс. Покажем слабые места без конкретных решений. Решения разбираем на разборе вживую.</div>
+        </div>
+      </div>
+    `;
+    
+    var btn = el.querySelector('#diagStartBtn');
+    if(btn){
+      btn.addEventListener('click', function(){
+        try{ this.blur(); }catch(e){}
+        diagState.started = true;
+        diagState.currentArea = 0;
+        diagState.currentQuestion = 0;
+        diagState.answers = {};
+        DIAGNOSTIC_AREAS.forEach(function(area){
+          diagState.answers[area.id] = new Array(area.questions.length).fill(null);
+        });
+        renderDiagnostic();
+      });
+    }
+  } else if(diagState.started && !diagState.finished){
+    // Экран вопроса
+    var area = DIAGNOSTIC_AREAS[diagState.currentArea];
+    var question = area.questions[diagState.currentQuestion];
+    var totalInArea = area.questions.length;
+    var currentNum = diagState.currentQuestion + 1;
+    
+    el.innerHTML = `
+      <div class="diag-page">
+        <div class="diag-question-head">
+          <div class="diag-area-tag" style="background:${area.color}33;color:${area.color}">
+            <span style="font-size:18px">${area.icon}</span>
+            ${area.organ} · ${area.label}
+          </div>
+          <div class="diag-progress">${currentNum} / ${totalInArea}</div>
+        </div>
+        
+        <div class="diag-progress-bar">
+          <div class="diag-progress-fill" style="width:${(currentNum/totalInArea)*100}%;background:${area.color}"></div>
+        </div>
+        
+        <div class="diag-question">${question.q}</div>
+        
+        <div class="diag-answers">
+          <button class="diag-answer" data-score="3">
+            <div class="diag-answer-icon" style="background:#26A69A">✓</div>
+            <div class="diag-answer-text">${question.a[0]}</div>
+          </button>
+          <button class="diag-answer" data-score="1">
+            <div class="diag-answer-icon" style="background:#FBA52E">!</div>
+            <div class="diag-answer-text">${question.a[1]}</div>
+          </button>
+          <button class="diag-answer" data-score="0">
+            <div class="diag-answer-icon" style="background:#E53935">×</div>
+            <div class="diag-answer-text">${question.a[2]}</div>
+          </button>
+        </div>
+        
+        ${diagState.currentQuestion > 0 ? '<button class="diag-back" id="diagBackBtn">← Предыдущий вопрос</button>' : ''}
+      </div>
+    `;
+    
+    el.querySelectorAll('.diag-answer').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        try{ this.blur(); }catch(e){}
+        var score = parseInt(btn.getAttribute('data-score'));
+        diagState.answers[area.id][diagState.currentQuestion] = score;
+        
+        // Следующий вопрос или следующая область
+        if(diagState.currentQuestion < area.questions.length - 1){
+          diagState.currentQuestion++;
+          renderDiagnostic();
+        } else if(diagState.currentArea < DIAGNOSTIC_AREAS.length - 1){
+          diagState.currentArea++;
+          diagState.currentQuestion = 0;
+          renderDiagnostic();
+        } else {
+          // Конец — финал
+          diagState.finished = true;
+          finishDiagnostic();
+        }
+      });
+    });
+    
+    var backBtn = el.querySelector('#diagBackBtn');
+    if(backBtn){
+      backBtn.addEventListener('click', function(){
+        if(diagState.currentQuestion > 0){
+          diagState.currentQuestion--;
+          renderDiagnostic();
+        }
+      });
+    }
+  } else {
+    // Финал — показываем результаты
+    renderDiagnosticResult();
+  }
+}
+
+function finishDiagnostic(){
+  // Отправляем результат на сервер
+  showToast('Сохраняю результаты...');
+  callAction('saveDiagnosticResult', {
+    answers: JSON.stringify(diagState.answers)
+  }).then(function(r){
+    renderDiagnostic();
+  }).catch(function(e){
+    console.error(e);
+    renderDiagnostic();
+  });
+}
+
+function renderDiagnosticResult(){
+  var el = document.getElementById('page-diagnostic');
+  if(!el) return;
+  
+  // Считаем баллы по каждой области
+  var results = DIAGNOSTIC_AREAS.map(function(area){
+    var answers = diagState.answers[area.id] || [];
+    var maxScore = area.questions.length * 3;
+    var actualScore = answers.reduce(function(s,v){ return s + (v || 0); }, 0);
+    var pct = Math.round((actualScore / maxScore) * 100);
+    return {
+      id: area.id,
+      organ: area.organ,
+      label: area.label,
+      icon: area.icon,
+      color: area.color,
+      pct: pct,
+      score: actualScore,
+      maxScore: maxScore
+    };
+  });
+  
+  // Общий процент здоровья (по тем областям что прошёл)
+  var totalScore = results.reduce(function(s,r){ return s + r.score; }, 0);
+  var totalMax = results.reduce(function(s,r){ return s + r.maxScore; }, 0);
+  var totalPct = Math.round((totalScore / totalMax) * 100);
+  
+  // Самая слабая область
+  var weakest = results.slice().sort(function(a,b){ return a.pct - b.pct; })[0];
+  
+  // Цвет общего индекса
+  var totalColor = totalPct >= 70 ? '#26A69A' : (totalPct >= 40 ? '#FBA52E' : '#E53935');
+  var totalLabel = totalPct >= 70 ? 'Хороший уровень' : (totalPct >= 40 ? 'Средний уровень' : 'Требует внимания');
+  
+  var orgsHtml = results.map(function(r){
+    var statusColor = r.pct >= 70 ? '#26A69A' : (r.pct >= 40 ? '#FBA52E' : '#E53935');
+    return `
+      <div class="diag-result-row">
+        <div class="diag-result-icon" style="background:${r.color}22;color:${r.color}">${r.icon}</div>
+        <div class="diag-result-body">
+          <div class="diag-result-organ">${r.organ}</div>
+          <div class="diag-result-label">${r.label}</div>
+          <div class="diag-result-bar"><div class="diag-result-fill" style="width:${r.pct}%;background:${statusColor}"></div></div>
+        </div>
+        <div class="diag-result-pct" style="color:${statusColor}">${r.pct}%</div>
+      </div>
+    `;
+  }).join('');
+  
+  el.innerHTML = `
+    <div class="diag-page">
+      <div class="diag-result-head">
+        <div class="hero-label">Результат диагностики</div>
+        <h1 class="hero-title">Здоровье<br>твоего бизнеса</h1>
+      </div>
+      
+      <div class="diag-total" style="border-color:${totalColor}">
+        <div class="diag-total-pct" style="color:${totalColor}">${totalPct}%</div>
+        <div class="diag-total-label">${totalLabel}</div>
+        <div class="diag-total-sub">Общий индекс по ${results.length} ${results.length === 1 ? 'области' : 'областям'}</div>
+      </div>
+      
+      <div class="section-min-label" style="margin-top:24px">По органам бизнеса</div>
+      <div class="diag-results-list">
+        ${orgsHtml}
+      </div>
+      
+      <div class="diag-weakest">
+        <div class="diag-weakest-label">Самое слабое место</div>
+        <div class="diag-weakest-org">
+          <span style="font-size:32px">${weakest.icon}</span>
+          <div>
+            <div class="diag-weakest-name">${weakest.organ} · ${weakest.label}</div>
+            <div class="diag-weakest-pct">${weakest.pct}% здоровья</div>
+          </div>
+        </div>
+        <div class="diag-weakest-text">Это область которая тянет весь бизнес назад. На разборе мы детально разберём что с этим делать.</div>
+      </div>
+      
+      ${(viewAs !== 'resident' && viewAs !== 'admin') ? `
+      <button class="cta-button" id="diagCtaBtn" style="margin-top:24px">
+        <div class="cta-button-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div class="cta-button-text">
+          <div class="cta-button-title">Записаться на разбор</div>
+          <div class="cta-button-sub">Разберём что делать со слабыми местами</div>
+        </div>
+        <div class="cta-button-arrow">→</div>
+      </button>
+      ` : ''}
+      
+      <button class="diag-restart" id="diagRestartBtn">↺ Пройти заново</button>
+    </div>
+  `;
+  
+  var ctaBtn = el.querySelector('#diagCtaBtn');
+  if(ctaBtn){
+    ctaBtn.addEventListener('click', function(){
+      try{ this.blur(); }catch(e){}
+      openDiagnosticModal();
+    });
+  }
+  
+  var restartBtn = el.querySelector('#diagRestartBtn');
+  if(restartBtn){
+    restartBtn.addEventListener('click', function(){
+      try{ this.blur(); }catch(e){}
+      diagState = { started: false, finished: false, currentArea: 0, currentQuestion: 0, answers: {} };
+      renderDiagnostic();
+    });
+  }
 }
 
 </script>
