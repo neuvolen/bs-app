@@ -1655,142 +1655,33 @@
   .hero-logo-wrap {
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 18px;
+    gap: 12px;
+    margin-bottom: 22px;
     color: var(--text);
   }
-  .hero-logo {
-    width: 42px;
-    height: 42px;
+  .hero-logo-mark {
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
+    color: #D4B886;
   }
-  .hero-logo-text {
-    font-size: 16px;
+  .hero-logo-mark svg { width: 100%; height: 100%; }
+  .hero-logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+  .hero-logo-name {
+    font-size: 15px;
     font-weight: 800;
-    line-height: 1.1;
     letter-spacing: -0.3px;
+    color: var(--text);
+  }
+  .hero-logo-tag {
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 3px;
+    font-weight: 700;
   }
   
-  /* === YOUTUBE HERO красивая === */
-  .youtube-hero {
-    display: block;
-    position: relative;
-    background: #000;
-    border-radius: 20px;
-    overflow: hidden;
-    aspect-ratio: 16/9;
-    text-decoration: none;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.08);
-    -webkit-tap-highlight-color: transparent;
-  }
-  .youtube-hero-bg {
-    position: absolute;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse at 30% 40%, rgba(255,0,0,0.25) 0%, transparent 50%),
-      radial-gradient(ellipse at 70% 60%, rgba(212,184,134,0.15) 0%, transparent 50%),
-      linear-gradient(135deg, #0a0a0a 0%, #1a0606 100%);
-  }
-  .youtube-hero-bg::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: 
-      repeating-linear-gradient(45deg, transparent 0, transparent 20px, rgba(255,255,255,0.02) 20px, rgba(255,255,255,0.02) 40px);
-  }
-  .youtube-hero-inner {
-    position: relative;
-    z-index: 1;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 16px;
-  }
-  .youtube-hero-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-  .youtube-hero-channel {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .youtube-hero-avatar {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, #D4B886 0%, #B89968 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #000;
-  }
-  .youtube-hero-avatar svg { width: 22px; height: 22px; }
-  .youtube-hero-name {
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.1;
-  }
-  .youtube-hero-handle {
-    font-size: 11px;
-    color: rgba(255,255,255,0.55);
-    margin-top: 1px;
-  }
-  .youtube-hero-badge {
-    background: #FF0000;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-  }
-  .youtube-hero-play {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 64px;
-    height: 64px;
-    background: rgba(255, 0, 0, 0.95);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8px 30px rgba(255, 0, 0, 0.4);
-  }
-  .youtube-hero-play svg {
-    width: 26px;
-    height: 26px;
-    margin-left: 4px;
-  }
-  .youtube-hero-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 12px;
-  }
-  .youtube-hero-title {
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 1.3;
-    flex: 1;
-    color: #fff;
-  }
-  .youtube-hero-cta {
-    background: rgba(255, 255, 255, 0.95);
-    color: #000;
-    padding: 8px 14px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 800;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
   
   /* === Заблокированная вкладка === */
   .tab.locked {
@@ -2051,17 +1942,12 @@
     font-family: inherit;
   }
   .diag-answer:active { transform: scale(0.98); }
-  .diag-answer-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-weight: 900;
-    font-size: 16px;
+  .diag-answer-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
     flex-shrink: 0;
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
   }
   .diag-answer-text {
     flex: 1;
@@ -2084,26 +1970,63 @@
   }
   
 
-  /* === АНАТОМИЯ результата === */
+  /* === АНАТОМИЯ результата (сетка органов) === */
   .diag-anatomy-wrap {
-    margin: 20px auto 28px;
+    margin: 20px 0 24px;
     padding: 24px 16px;
     background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
     border-radius: 20px;
+  }
+  .anatomy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .anatomy-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+    padding: 8px 4px;
   }
-  .diag-body-svg {
+  .anatomy-progress {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+  }
+  .anatomy-svg {
     width: 100%;
-    max-width: 260px;
-    height: auto;
-    margin: 0 auto;
-    display: block;
+    height: 100%;
   }
-  .diag-organ-svg {
-    cursor: pointer;
-    transition: transform 0.3s;
+  .anatomy-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    line-height: 1;
   }
-  .diag-organ-svg:active { transform: scale(1.1); }
+  .anatomy-pct {
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+  .anatomy-name {
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+  }
+  .anatomy-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 2px;
+    letter-spacing: 0.3px;
+  }
+  
   
   /* === Общий процент === */
   .diag-total {
@@ -4720,11 +4643,16 @@ function renderAbout(){
       <!-- HERO -->
       <div class="hero-min">
         <div class="hero-logo-wrap">
-          <svg viewBox="0 0 100 100" class="hero-logo" fill="none">
-            <path d="M30 25 Q30 15 40 15 L60 15 Q70 15 70 25 L70 35 Q70 50 50 50 Q30 50 30 35 Z" stroke="currentColor" stroke-width="3.5" fill="none"/>
-            <path d="M30 75 Q30 85 40 85 L60 85 Q70 85 70 75 L70 65 Q70 50 50 50 Q30 50 30 65 Z" stroke="currentColor" stroke-width="3.5" fill="none"/>
-          </svg>
-          <div class="hero-logo-text">business<br>surgery</div>
+          <div class="hero-logo-mark">
+            <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="56" height="56" rx="14" stroke="currentColor" stroke-width="2.5"/>
+              <text x="30" y="40" text-anchor="middle" font-family="Manrope, sans-serif" font-size="26" font-weight="900" fill="currentColor" letter-spacing="-1">bs</text>
+            </svg>
+          </div>
+          <div class="hero-logo-text">
+            <div class="hero-logo-name">business surgery</div>
+            <div class="hero-logo-tag">бизнес-трекинг</div>
+          </div>
         </div>
         <h1 class="hero-title">${greetingText}</h1>
         <div class="hero-sub">Каждые 10 дней. хирургически точный разбор бизнеса, стратегия развития и пошаговый план задач.</div>
@@ -4792,32 +4720,40 @@ function renderAbout(){
       <div class="section-min">
         <div class="section-min-label">YouTube канал</div>
         <h2 class="section-min-title">Подкасты с предпринимателями</h2>
-        <a href="https://www.youtube.com/@Businessurgery" target="_blank" class="youtube-hero">
-          <div class="youtube-hero-bg"></div>
-          <div class="youtube-hero-inner">
-            <div class="youtube-hero-top">
-              <div class="youtube-hero-channel">
-                <div class="youtube-hero-avatar">
-                  <svg viewBox="0 0 100 100" fill="currentColor" style="color:#fff">
-                    <path d="M30 25 Q30 15 40 15 L60 15 Q70 15 70 25 L70 35 Q70 50 50 50 Q30 50 30 35 Z" stroke="currentColor" stroke-width="4" fill="none"/>
-                    <path d="M30 75 Q30 85 40 85 L60 85 Q70 85 70 75 L70 65 Q70 50 50 50 Q30 50 30 65 Z" stroke="currentColor" stroke-width="4" fill="none"/>
-                  </svg>
-                </div>
-                <div class="youtube-hero-meta">
-                  <div class="youtube-hero-name">Business Surgery</div>
-                  <div class="youtube-hero-handle">@Businessurgery</div>
-                </div>
-              </div>
-              <div class="youtube-hero-badge">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-              </div>
+        <a href="https://www.youtube.com/@Businessurgery" target="_blank" class="yt-card">
+          <!-- Превью видео -->
+          <div class="yt-card-thumb">
+            <div class="yt-thumb-grid">
+              <div class="yt-thumb-block one"></div>
+              <div class="yt-thumb-block two"></div>
+              <div class="yt-thumb-block three"></div>
+              <div class="yt-thumb-block four"></div>
             </div>
-            <div class="youtube-hero-play">
-              <svg viewBox="0 0 24 24" fill="#fff"><polygon points="6,4 20,12 6,20"/></svg>
+            <div class="yt-thumb-content">
+              <div class="yt-thumb-tag">Подкаст · Episode 12</div>
+              <div class="yt-thumb-title-overlay">Как Исфандияр<br>сделал ×10<br>за 4 месяца</div>
             </div>
-            <div class="youtube-hero-bottom">
-              <div class="youtube-hero-title">Подкасты и разборы реальных бизнесов</div>
-              <div class="youtube-hero-cta">Смотреть →</div>
+            <div class="yt-thumb-play">
+              <svg viewBox="0 0 24 24" fill="#fff"><polygon points="8,5 19,12 8,19"/></svg>
+            </div>
+            <div class="yt-thumb-duration">42:18</div>
+          </div>
+          
+          <!-- Метаданные канала -->
+          <div class="yt-card-meta">
+            <div class="yt-card-avatar">
+              <svg viewBox="0 0 60 60" fill="none">
+                <rect x="2" y="2" width="56" height="56" rx="14" fill="#D4B886"/>
+                <text x="30" y="40" text-anchor="middle" font-family="Manrope" font-size="24" font-weight="900" fill="#000">bs</text>
+              </svg>
+            </div>
+            <div class="yt-card-info">
+              <div class="yt-card-channel">Business Surgery</div>
+              <div class="yt-card-handle">@Businessurgery</div>
+            </div>
+            <div class="yt-card-subscribe">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+              Открыть канал
             </div>
           </div>
         </a>
@@ -5072,28 +5008,12 @@ const DIAGNOSTIC_AREAS = [
     label: 'Стратегия',
     icon: '🧠',
     color: '#5C6BC0',
-    body_pos: {x: 50, y: 14},
     questions: [
-      {
-        q: 'Есть ли у тебя письменный план развития бизнеса на 12 месяцев вперёд с конкретными цифрами выручки и прибыли?',
-        a: ['Да. План написан, цели по месяцам, KPI поставлены', 'Есть общее направление, но без жёстких цифр и сроков', 'Нет. Живём от месяца к месяцу']
-      },
-      {
-        q: 'Делаете ли вы стратегические сессии (собственник + ключевые сотрудники) хотя бы раз в квартал?',
-        a: ['Да. Регулярная квартальная сессия с пересмотром планов', 'Иногда собираемся обсудить, но без структуры', 'Нет. Стратегией занимаюсь сам, в голове']
-      },
-      {
-        q: 'Понимаешь ли ты на чём именно зарабатывает бизнес (какой продукт, ниша, сегмент даёт основной кэш)?',
-        a: ['Да. Знаю долю каждого продукта в выручке и марже', 'Примерно представляю, но точных цифр нет', 'Нет. Зарабатываем со всего понемногу']
-      },
-      {
-        q: 'Есть ли понимание твоей главной точки роста на ближайшие 3 месяца (одна ключевая инициатива)?',
-        a: ['Да. Один фокус, всё подчинено ему', 'Есть 3-5 направлений, распыляемся', 'Нет. Тушим пожары']
-      },
-      {
-        q: 'Понимаешь ли ты лично ради чего строишь этот бизнес (личное видение, смысл, цель жизни)?',
-        a: ['Да. Есть чёткое видение и понимание зачем', 'Когда то было, сейчас размылось', 'Нет. Работаю потому что работаю']
-      }
+      { q: 'Я могу одним предложением сформулировать главную цель бизнеса на ближайший год' },
+      { q: 'Решения о крупных вложениях я принимаю на основе цифр и расчётов, не интуиции' },
+      { q: 'У меня есть письменный план развития бизнеса с конкретными датами' },
+      { q: 'Каждую неделю я проверяю движение бизнеса относительно годового плана' },
+      { q: 'Я знаю чем мой бизнес отличается от конкурентов и почему клиенты выбирают меня' }
     ]
   },
   {
@@ -5102,28 +5022,12 @@ const DIAGNOSTIC_AREAS = [
     label: 'Маркетинг',
     icon: '🫀',
     color: '#E91E63',
-    body_pos: {x: 45, y: 32},
     questions: [
-      {
-        q: 'Знаешь ли ты точно своего идеального клиента (возраст, доход, боли, где обитает)?',
-        a: ['Да. Прописан портрет ICP с конкретикой', 'Примерно понимаю свою аудиторию', 'Нет. Продаём всем кто платит']
-      },
-      {
-        q: 'Знаешь ли ты CAC (стоимость привлечения клиента) и LTV (выручка с одного клиента за всё время)?',
-        a: ['Да. Считаю CAC и LTV по каждому каналу', 'Знаю одно из двух', 'Нет, не считаю']
-      },
-      {
-        q: 'Сколько каналов привлечения клиентов сейчас работают системно (а не разово)?',
-        a: ['3 и более каналов с понятным CPL', '1-2 канала, всё на них', 'Сарафан и удача']
-      },
-      {
-        q: 'Ведёшь ли ты личный бренд в соцсетях (выкладываешь контент регулярно)?',
-        a: ['Да. Есть контент-план, выходит 2+ раза в неделю', 'Иногда что то выкладываю', 'Нет. Соцсети не веду']
-      },
-      {
-        q: 'Есть ли в бизнесе работающая воронка прогрева (лид-магнит → касания → продажа)?',
-        a: ['Да. Воронка автоматизирована, конверсии посчитаны', 'Что то есть, но без замеров', 'Нет. Продажи только в лоб']
-      }
+      { q: 'Я знаю стоимость привлечения одного клиента (CAC) с точностью до тысячи тенге' },
+      { q: 'У моего бизнеса работают минимум 3 канала привлечения клиентов одновременно' },
+      { q: 'Я знаю портрет идеального клиента до уровня его болей, страхов и желаний' },
+      { q: 'Я веду личный бренд в соцсетях и публикую контент минимум раз в неделю' },
+      { q: 'Моя воронка прогрева работает на автомате, без моего участия' }
     ]
   },
   {
@@ -5132,28 +5036,12 @@ const DIAGNOSTIC_AREAS = [
     label: 'Продажи',
     icon: '💪',
     color: '#FB8C00',
-    body_pos: {x: 70, y: 42},
     questions: [
-      {
-        q: 'Есть ли в твоём бизнесе CRM-система где видны все заявки и сделки?',
-        a: ['Да. Все лиды и сделки идут через CRM, дисциплина у менеджеров', 'CRM есть, но менеджеры её игнорируют', 'Нет CRM. Всё в WhatsApp и голове']
-      },
-      {
-        q: 'Знаешь ли ты конверсии воронки (заявка → встреча → оплата) и где главная утечка?',
-        a: ['Да. Считаю недельно, вижу узкое место', 'Знаю общую, но не детально', 'Нет. Не считаю']
-      },
-      {
-        q: 'Прописаны ли скрипты продаж и есть ли по ним обучение менеджеров?',
-        a: ['Да. Скрипты есть, менеджеры обучены, контроль звонков', 'Скрипты есть, но никто по ним не работает', 'Скриптов нет']
-      },
-      {
-        q: 'Есть ли у тебя руководитель отдела продаж (или ты сам этим занимаешься)?',
-        a: ['Да. РОП есть, отвечает за результат', 'Один сильный продажник, но не РОП', 'Управляю продажами сам как умею']
-      },
-      {
-        q: 'Среднее время первого ответа на заявку клиенту?',
-        a: ['Менее 5 минут в рабочее время', 'До 1 часа', 'Час и более, бывает что забываем']
-      }
+      { q: 'Каждая заявка от клиента попадает в CRM и не теряется' },
+      { q: 'Я знаю конверсию воронки на каждом этапе (заявка, встреча, оплата)' },
+      { q: 'Менеджеры работают по прописанным скриптам и я проверяю их звонки' },
+      { q: 'Среднее время ответа на заявку клиента у меня меньше 15 минут' },
+      { q: 'В моём бизнесе продают другие люди, не только я лично' }
     ]
   },
   {
@@ -5162,28 +5050,12 @@ const DIAGNOSTIC_AREAS = [
     label: 'Команда',
     icon: '🦴',
     color: '#26A69A',
-    body_pos: {x: 50, y: 50},
     questions: [
-      {
-        q: 'Прописана ли организационная структура (кто кому подчиняется, кто за что отвечает)?',
-        a: ['Да. Оргсхема есть, у каждого зона ответственности', 'Примерно понимаем, но не записано', 'Все делают всё']
-      },
-      {
-        q: 'У каждого ключевого сотрудника прописаны KPI и регламент работы?',
-        a: ['Да. KPI и регламенты у всех ключевых ролей', 'Есть у нескольких', 'Нет регламентов и KPI']
-      },
-      {
-        q: 'Если ты уедешь на месяц, бизнес продолжит работать без потерь?',
-        a: ['Да. Команда сама принимает решения, есть замы', 'Будет тяжело, но выживет', 'Нет. Всё держится на мне']
-      },
-      {
-        q: 'Есть ли у тебя система найма (где брать, как фильтровать, как адаптировать)?',
-        a: ['Да. Воронка найма работает, есть HR процесс', 'Нанимаем когда припрёт, по знакомым', 'Нет системы найма']
-      },
-      {
-        q: 'Платишь ли ты лучшим сотрудникам выше рынка (или они уходят к конкурентам)?',
-        a: ['Да. Сильные получают сильно выше рынка', 'Платим по рынку', 'Платим как можем, лучшие уходят']
-      }
+      { q: 'У каждого сотрудника прописаны должностные обязанности и KPI' },
+      { q: 'Я могу уехать на месяц и бизнес продолжит работать без потерь' },
+      { q: 'У меня есть прозрачная система найма: где искать, как фильтровать, как адаптировать' },
+      { q: 'Лучшие сотрудники получают зарплату выше рынка и я не боюсь их потерять' },
+      { q: 'Раз в квартал я провожу один на один с каждым ключевым сотрудником' }
     ]
   },
   {
@@ -5192,28 +5064,12 @@ const DIAGNOSTIC_AREAS = [
     label: 'Финансы',
     icon: '🩸',
     color: '#E53935',
-    body_pos: {x: 50, y: 58},
     questions: [
-      {
-        q: 'Ведёшь ли ты ОПиУ (отчёт о прибылях и убытках) ежемесячно?',
-        a: ['Да. ОПиУ закрывается до 5 числа каждого месяца', 'Иногда смотрим, без жёсткой регулярности', 'Нет. Считаю прибыль в голове']
-      },
-      {
-        q: 'Ведёшь ли ты ДДС (отчёт о движении денежных средств) и видишь ли кассовые разрывы заранее?',
-        a: ['Да. ДДС с прогнозом на 30+ дней вперёд', 'Знаю остатки на счёте на сегодня', 'Нет. Узнаю про кассовый разрыв когда он уже случился']
-      },
-      {
-        q: 'Знаешь ли ты маржинальность по каждому продукту/услуге отдельно?',
-        a: ['Да. Маржа считается по каждому SKU', 'Знаю среднюю по бизнесу', 'Нет. Не разделяю']
-      },
-      {
-        q: 'Отделены ли личные деньги собственника от денег бизнеса?',
-        a: ['Да. Получаю фиксированную ЗП и дивиденды из бизнеса', 'Беру по необходимости из бизнеса', 'Касса бизнеса = мой карман']
-      },
-      {
-        q: 'Знаешь ли ты точку безубыточности (минимальную выручку чтобы выйти в ноль)?',
-        a: ['Да. Сверяюсь с ней каждый месяц', 'Примерно представляю', 'Нет. Не считал']
-      }
+      { q: 'Я закрываю ОПиУ до 5 числа каждого месяца и знаю чистую прибыль точно' },
+      { q: 'Я веду ДДС с прогнозом денежного потока на 30 дней вперёд' },
+      { q: 'Я знаю маржинальность по каждому продукту или услуге отдельно' },
+      { q: 'Я получаю фиксированную зарплату из бизнеса и не беру деньги хаотично' },
+      { q: 'Я знаю точку безубыточности своего бизнеса в рублях выручки' }
     ]
   },
   {
@@ -5222,28 +5078,12 @@ const DIAGNOSTIC_AREAS = [
     label: 'Процессы',
     icon: '🧬',
     color: '#7B1FA2',
-    body_pos: {x: 30, y: 42},
     questions: [
-      {
-        q: 'Есть ли у тебя прописанные SOP (стандартные операционные процедуры) на ключевые процессы?',
-        a: ['Да. SOP есть у каждого процесса, обновляются', 'На некоторые процессы есть', 'Всё в голове, регламенты не пишем']
-      },
-      {
-        q: 'Автоматизированы ли рутинные задачи (учёт, рассылки, отчёты, напоминания)?',
-        a: ['Да. Автоматизация на всех рутинных задачах', 'Кое что автоматизировано', 'Всё руками']
-      },
-      {
-        q: 'Сколько часов в день ты лично тратишь на операционку (не стратегию, а рутину)?',
-        a: ['Меньше 2 часов в день, остальное стратегия и развитие', '4-6 часов в день на операционке', 'Весь день в операционке и пожарах']
-      },
-      {
-        q: 'Когда последний раз ты улучшал какой то процесс в бизнесе?',
-        a: ['В этом месяце, есть план улучшений', 'Несколько месяцев назад', 'Не помню. Делаем как делали']
-      },
-      {
-        q: 'Есть ли у тебя в команде ответственный за бизнес процессы (опер директор/COO/HR)?',
-        a: ['Да. Есть опер директор', 'Один из заместителей частично занят этим', 'Нет. Этим занимаюсь я']
-      }
+      { q: 'Ключевые процессы в бизнесе описаны регламентом и доступны команде' },
+      { q: 'Я трачу меньше 2 часов в день на операционные вопросы' },
+      { q: 'Рутинные задачи автоматизированы (отчёты, рассылки, напоминания)' },
+      { q: 'В этом месяце я внедрил минимум одно улучшение в процессах' },
+      { q: 'У меня есть человек который отвечает за операционную эффективность' }
     ]
   },
   {
@@ -5252,30 +5092,23 @@ const DIAGNOSTIC_AREAS = [
     label: 'Аналитика',
     icon: '👁',
     color: '#00897B',
-    body_pos: {x: 50, y: 8},
     questions: [
-      {
-        q: 'Есть ли у тебя дашборд (хотя бы в Excel/Sheets) с ключевыми метриками бизнеса?',
-        a: ['Да. Дашборд обновляется автоматически', 'Сводка есть, обновляю руками', 'Нет дашборда']
-      },
-      {
-        q: 'Знаешь ли ты прямо сейчас (без проверки) свою выручку, прибыль и средний чек за прошлый месяц?',
-        a: ['Да. Эти цифры всегда в голове', 'Знаю выручку, остальное надо посмотреть', 'Надо смотреть бухгалтера']
-      },
-      {
-        q: 'Принимаешь ли ты крупные решения (найм, инвестиции, новые направления) опираясь на цифры?',
-        a: ['Да. Каждое решение на цифрах с расчётом окупаемости', 'Цифры смотрю, но больше по интуиции', 'Решаю на ощущениях']
-      },
-      {
-        q: 'Видишь ли ты воронку маркетинга и продаж в одном месте (от показа до оплаты)?',
-        a: ['Да. Всё стянуто в одну воронку с конверсиями', 'Частично. По разным сервисам', 'Нет. Анализ только постфактум']
-      },
-      {
-        q: 'Есть ли регулярный разбор результатов недели/месяца с командой?',
-        a: ['Да. Понедельная планёрка с цифрами', 'Иногда обсуждаем', 'Нет. Сам подвожу итоги в голове']
-      }
+      { q: 'У меня есть дашборд с ключевыми метриками который обновляется автоматически' },
+      { q: 'Прямо сейчас я могу назвать выручку, прибыль и средний чек прошлого месяца' },
+      { q: 'Все мои решения о найме и инвестициях опираются на расчёт окупаемости' },
+      { q: 'Я вижу путь клиента от первого касания до оплаты в одном месте' },
+      { q: 'Каждую неделю я провожу разбор результатов с командой по цифрам' }
     ]
   }
+];
+
+// 5 вариантов ответа в стиле Likert scale (Gallup/Oxford методология)
+const ANSWER_SCALE = [
+  { score: 4, label: 'Полностью согласен', short: 'Так и есть', color: '#26A69A', emoji: '●' },
+  { score: 3, label: 'Скорее согласен', short: 'Скорее да', color: '#66BB6A', emoji: '●' },
+  { score: 2, label: 'Затрудняюсь ответить', short: 'Не уверен', color: '#FBC02D', emoji: '●' },
+  { score: 1, label: 'Скорее не согласен', short: 'Скорее нет', color: '#FF8A65', emoji: '●' },
+  { score: 0, label: 'Полностью не согласен', short: 'Это не про меня', color: '#E53935', emoji: '●' }
 ];
 
 let diagState = {
@@ -5336,7 +5169,7 @@ function renderDiagnostic(){
         
         <div class="diag-meta">
           <div class="diag-meta-item">
-            <div class="diag-meta-num">${DIAGNOSTIC_AREAS.reduce((s,a)=>s+a.questions.length,0) * 7}</div>
+            <div class="diag-meta-num">${DIAGNOSTIC_AREAS.reduce((s,a)=>s+a.questions.length,0)}</div>
             <div class="diag-meta-label">вопросов всего</div>
           </div>
           <div class="diag-meta-item">
@@ -5405,18 +5238,12 @@ function renderDiagnostic(){
         <div class="diag-question">${question.q}</div>
         
         <div class="diag-answers">
-          <button class="diag-answer" data-score="3">
-            <div class="diag-answer-icon" style="background:#26A69A">✓</div>
-            <div class="diag-answer-text">${question.a[0]}</div>
-          </button>
-          <button class="diag-answer" data-score="1">
-            <div class="diag-answer-icon" style="background:#FBA52E">!</div>
-            <div class="diag-answer-text">${question.a[1]}</div>
-          </button>
-          <button class="diag-answer" data-score="0">
-            <div class="diag-answer-icon" style="background:#E53935">×</div>
-            <div class="diag-answer-text">${question.a[2]}</div>
-          </button>
+          ${ANSWER_SCALE.map(function(opt){
+            return '<button class="diag-answer" data-score="' + opt.score + '">' +
+              '<div class="diag-answer-dot" style="background:' + opt.color + '"></div>' +
+              '<div class="diag-answer-text">' + opt.label + '</div>' +
+            '</button>';
+          }).join('')}
         </div>
         
         ${diagState.currentQuestion > 0 ? '<button class="diag-back" id="diagBackBtn">← Предыдущий вопрос</button>' : ''}
@@ -5479,7 +5306,7 @@ function renderDiagnosticResult(){
   
   var results = DIAGNOSTIC_AREAS.map(function(area){
     var answers = diagState.answers[area.id] || [];
-    var maxScore = area.questions.length * 3;
+    var maxScore = area.questions.length * 4;
     var actualScore = answers.reduce(function(s,v){ return s + (v || 0); }, 0);
     var pct = Math.round((actualScore / maxScore) * 100);
     return {
@@ -5629,63 +5456,43 @@ function renderDiagnosticResult(){
 }
 
 function renderBodyAnatomy(results){
-  // Возвращает SVG с фигурой человека и подсвеченными органами
   function getColor(pct){
     if(pct >= 70) return '#26A69A';
     if(pct >= 40) return '#FB8C00';
     return '#E53935';
   }
   
-  // Позиции органов на фигуре (viewBox 100x150)
-  var organMap = {
-    brain:  {cx:50, cy:14, r:9, label:'🧠'},
-    eyes:   {cx:50, cy:22, r:5, label:'👁'},
-    heart:  {cx:45, cy:46, r:7, label:'🫀'},
-    blood:  {cx:55, cy:58, r:6, label:'🩸'},
-    spine:  {cx:50, cy:68, r:5, label:'🦴'},
-    dna:    {cx:32, cy:54, r:6, label:'🧬'},
-    hands:  {cx:72, cy:54, r:6, label:'💪'}
-  };
-  
-  var bodyPath = `
-    <!-- Голова -->
-    <ellipse cx="50" cy="16" rx="11" ry="13" stroke="rgba(255,255,255,0.15)" stroke-width="0.6" fill="rgba(255,255,255,0.02)"/>
-    <!-- Шея -->
-    <path d="M 46 28 L 46 32 L 54 32 L 54 28" stroke="rgba(255,255,255,0.15)" stroke-width="0.6" fill="rgba(255,255,255,0.02)"/>
-    <!-- Торс -->
-    <path d="M 38 33 Q 32 35 30 50 L 28 78 Q 28 82 32 82 L 42 82 L 42 95 Q 42 98 44 98 L 48 98 Q 50 96 50 92 Q 50 96 52 98 L 56 98 Q 58 98 58 95 L 58 82 L 68 82 Q 72 82 72 78 L 70 50 Q 68 35 62 33 Z"
-          stroke="rgba(255,255,255,0.15)" stroke-width="0.6" fill="rgba(255,255,255,0.02)"/>
-    <!-- Руки -->
-    <path d="M 30 36 Q 22 48 18 65 Q 17 72 20 75" stroke="rgba(255,255,255,0.15)" stroke-width="0.6" fill="none"/>
-    <path d="M 70 36 Q 78 48 82 65 Q 83 72 80 75" stroke="rgba(255,255,255,0.15)" stroke-width="0.6" fill="none"/>
-    <!-- Ноги (продолжение фигуры) -->
-    <path d="M 42 98 L 41 130" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
-    <path d="M 58 98 L 59 130" stroke="rgba(255,255,255,0.15)" stroke-width="0.6"/>
-  `;
-  
-  var organs = '';
-  results.forEach(function(r){
-    var pos = organMap[r.id];
-    if(!pos) return;
+  // Каждый орган-карточка с круговым прогрессом
+  var organHtml = results.map(function(r, idx){
     var color = getColor(r.pct);
-    organs += `
-      <g class="diag-organ-svg" data-organ="${r.id}">
-        <!-- Свечение -->
-        <circle cx="${pos.cx}" cy="${pos.cy}" r="${pos.r+4}" fill="${color}" opacity="0.18"/>
-        <circle cx="${pos.cx}" cy="${pos.cy}" r="${pos.r+2}" fill="${color}" opacity="0.3"/>
-        <!-- Орган -->
-        <circle cx="${pos.cx}" cy="${pos.cy}" r="${pos.r}" fill="${color}" stroke="#fff" stroke-width="0.5"/>
-        <!-- Процент -->
-        <text x="${pos.cx}" y="${pos.cy+1.5}" font-size="4.5" font-weight="900" fill="#fff" text-anchor="middle" font-family="Manrope, sans-serif">${r.pct}</text>
-      </g>
+    var circumference = 2 * Math.PI * 36;
+    var dashOffset = circumference * (1 - r.pct/100);
+    
+    return `
+      <div class="anatomy-card" data-organ="${r.id}">
+        <div class="anatomy-progress">
+          <svg viewBox="0 0 84 84" class="anatomy-svg">
+            <circle cx="42" cy="42" r="36" stroke="rgba(255,255,255,0.08)" stroke-width="5" fill="none"/>
+            <circle cx="42" cy="42" r="36" stroke="${color}" stroke-width="5" fill="none"
+                    stroke-dasharray="${circumference}"
+                    stroke-dashoffset="${dashOffset}"
+                    stroke-linecap="round"
+                    transform="rotate(-90 42 42)"
+                    style="transition: stroke-dashoffset 0.8s ease ${idx * 0.1}s"/>
+          </svg>
+          <div class="anatomy-icon">${r.icon}</div>
+        </div>
+        <div class="anatomy-pct" style="color:${color}">${r.pct}%</div>
+        <div class="anatomy-name">${r.organ}</div>
+        <div class="anatomy-label">${r.label}</div>
+      </div>
     `;
-  });
+  }).join('');
   
   return `
-    <svg viewBox="0 0 100 135" class="diag-body-svg" xmlns="http://www.w3.org/2000/svg">
-      ${bodyPath}
-      ${organs}
-    </svg>
+    <div class="anatomy-grid">
+      ${organHtml}
+    </div>
   `;
 }
 
