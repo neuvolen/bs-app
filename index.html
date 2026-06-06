@@ -2308,6 +2308,79 @@
     white-space: nowrap;
   }
   
+
+
+  /* === Чек-листы: поиск и фильтры === */
+  .lm-search-row {
+    margin: 14px 0 12px;
+  }
+  .lm-search-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+  }
+  .lm-search-input::placeholder { color: rgba(255,255,255,0.4); }
+  .lm-search-input:focus {
+    border-color: rgba(212,184,134,0.5);
+    background: rgba(212,184,134,0.06);
+  }
+  .lm-filters {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    margin: 0 -16px 12px;
+    padding-left: 16px;
+    padding-right: 16px;
+    scrollbar-width: none;
+  }
+  .lm-filters::-webkit-scrollbar { display: none; }
+  .lm-filter {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    color: rgba(255,255,255,0.65);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lm-filter.active {
+    background: #D4B886;
+    color: #000;
+    border-color: #D4B886;
+  }
+  .lm-empty-result {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+  }
+
+  .lm-min-edit {
+    margin-top: 8px;
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: rgba(255,255,255,0.65);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
 </style>
 <div class="modal-bg" id="attendModal">
   <div class="modal">
@@ -2479,11 +2552,46 @@ function init(){
     
     // Определяем начальную роль (для НЕ-админов)
     if(!isRealAdmin){
-      // Проверим, резидент это или лид
-      var savedRole = null;
-      try{ savedRole = localStorage.getItem('bs_view_as'); }catch(e){}
-      // По умолчанию resident. позже сервер скажет точнее
-      viewAs = savedRole || 'resident';
+      // По умолчанию ЛИД (безопаснее), потом сервер уточнит
+      viewAs = 'lead';
+      
+      // Асинхронно проверим у сервера, является ли резидентом
+      if(user && user.id){
+        try{
+          callAction('checkUserRole', {}).then(function(res){
+            if(res && res.role){
+              var oldRole = viewAs;
+              viewAs = res.role;
+              if(oldRole !== viewAs){
+                try{ localStorage.setItem('bs_view_as', viewAs); }catch(e){}
+                renderTabs();
+                renderAllPages();
+                // Попробуем применить deep-link с учётом новой роли
+                var newPage = null;
+                if(typeof _resolveInitialPage === 'function' && initialPage){
+                  newPage = _resolveInitialPage(initialPage, viewAs);
+                }
+                if(newPage){
+                  showPage(newPage);
+                  return;
+                }
+                // Иначе. проверяем активную вкладку и при необходимости переключаемся на дефолт
+                var activeTab = document.querySelector('.tab.active');
+                var currentPage = activeTab ? activeTab.getAttribute('data-page') : null;
+                var availableTabs = viewAs === 'lead' ? LEAD_TABS : RESIDENT_TABS;
+                var availablePageIds = availableTabs.map(function(t){return t.id;});
+                if(!currentPage || availablePageIds.indexOf(currentPage) < 0){
+                  // Дефолтная страница для роли
+                  if(viewAs === 'lead') showPage('diagnostic');
+                  else showPage('mystatus');
+                }
+              }
+            }
+          }).catch(function(err){
+            console.log('checkUserRole failed:', err);
+          });
+        }catch(checkE){ console.log('checkUserRole error:', checkE); }
+      }
     } else {
       // Админ. восстановим сохранённый режим или admin по умолчанию
       var adminSavedRole = null;
@@ -2528,18 +2636,72 @@ function init(){
       }
     } catch(e){ console.log('deep-link parse:', e); }
     
-    // Проверим что страница существует и валидна для текущей роли
-    var validPages = (isRealAdmin && viewAs==='admin') 
-      ? ADMIN_TABS.map(function(t){return t.id;})
-      : RESIDENT_TABS.map(function(t){return t.id;});
+    // Алиасы для глубоких ссылок: какая вкладка показывается для какой роли
+    // Например, ссылка "schedule" для админа = вкладка "schedule", для резидента = "mymeetings"
+    var PAGE_ALIASES = {
+      // Расписание встреч
+      'schedule':     {admin:'schedule',    resident:'mymeetings',  lead:'about'},
+      'meetings':     {admin:'schedule',    resident:'mymeetings',  lead:'about'},
+      'mymeetings':   {admin:'schedule',    resident:'mymeetings',  lead:'about'},
+      // Отчёты
+      'reports':      {admin:'reports',     resident:'mystatus',    lead:'about'},
+      // Штрафы
+      'fines':        {admin:'fines',       resident:'mystatus',    lead:'about'},
+      // Резиденты
+      'residents':    {admin:'residents',   resident:'residents',   lead:'about'},
+      'subscribers':  {admin:'subscribers', resident:'about',       lead:'about'},
+      // Дашборд / сводка
+      'dashboard':    {admin:'dashboard',   resident:'mystatus',    lead:'about'},
+      'mystatus':     {admin:'dashboard',   resident:'mystatus',    lead:'about'},
+      // Профиль
+      'myprofile':    {admin:'myprofile',   resident:'myprofile',   lead:'myprofile'},
+      'profile':      {admin:'myprofile',   resident:'myprofile',   lead:'myprofile'},
+      // Материалы / чек-листы
+      'leadmagnets':  {admin:'leadmagnets', resident:'leadmagnets', lead:'leadmagnets'},
+      'materials':    {admin:'leadmagnets', resident:'leadmagnets', lead:'leadmagnets'},
+      // Диагностика
+      'diagnostic':   {admin:'diagnostic',  resident:'about',       lead:'diagnostic'},
+      // Задачи (только админ)
+      'todos':        {admin:'todos',       resident:'about',       lead:'about'},
+      'tasks':        {admin:'todos',       resident:'about',       lead:'about'},
+      // BS главная
+      'about':        {admin:'about',       resident:'about',       lead:'about'},
+      'main':         {admin:'about',       resident:'about',       lead:'about'},
+      // Платформа
+      'platform':     {admin:'platform',    resident:'platform',    lead:'about'}
+    };
     
-    if (initialPage && validPages.indexOf(initialPage) >= 0) {
-      console.log('Deep-link to page:', initialPage);
-      showPage(initialPage);
-    } else if (!isRealAdmin) {
-      showPage('mystatus');
+    function _resolveInitialPage(rawPage, role){
+      if(!rawPage) return null;
+      var aliases = PAGE_ALIASES[String(rawPage).toLowerCase()];
+      if(aliases && aliases[role]) return aliases[role];
+      // Если алиас не найден, проверим что такая страница есть в доступных
+      var availableIds;
+      if(role === 'admin') availableIds = ADMIN_TABS.map(function(t){return t.id;});
+      else if(role === 'lead') availableIds = LEAD_TABS.map(function(t){return t.id;});
+      else availableIds = RESIDENT_TABS.map(function(t){return t.id;});
+      if(availableIds.indexOf(rawPage) >= 0) return rawPage;
+      return null;
     }
-    // Для админа стартовая по умолчанию. dashboard (первая)
+    
+    // Эффективная роль для маршрутизации
+    var effectiveRole = (isRealAdmin && viewAs === 'admin') ? 'admin' : viewAs;
+    var resolvedPage = _resolveInitialPage(initialPage, effectiveRole);
+    
+    if (resolvedPage) {
+      console.log('Deep-link', initialPage, '→', resolvedPage, '(role:', effectiveRole, ')');
+      showPage(resolvedPage);
+    } else {
+      // Стартовая по умолчанию для каждой роли
+      if (effectiveRole === 'admin') {
+        // showPage('about') чтобы лог карточек был сразу видим. Можно поменять на dashboard
+        // По умолчанию админ открывается на первой вкладке (about)
+      } else if (effectiveRole === 'lead') {
+        showPage('diagnostic');
+      } else {
+        showPage('mystatus');
+      }
+    }
     
     loadAllData();
     // Автосохранение аватара из Telegram (для других пользователей)
@@ -4580,43 +4742,136 @@ function renderTodos(){
   var bodyEl = el.querySelector('.todos-body');
   bodyEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   
-  callAction('getTodos', {}).then(function(r){
-    if(!r || !r.ok){
-      bodyEl.innerHTML = '<div class="empty"><div class="em-text">Не удалось загрузить</div></div>';
-      return;
-    }
-    var tasks = r.tasks || [];
-    if(!tasks.length){
+  // Сначала показываем из кеша моментально
+  function _renderTodosUI(tasks){
+    if(!tasks || !tasks.length){
       bodyEl.innerHTML = '<div class="empty"><div class="em-icon">✅</div><div class="em-title">Нет задач</div><div class="em-text">Нажми + чтобы добавить</div></div>';
       return;
     }
-    // Сортировка: open сверху, done внизу
     tasks.sort(function(a,b){
       if(a.status === b.status) return 0;
       return a.status === 'done' ? 1 : -1;
     });
     bodyEl.innerHTML = tasks.map(function(t){ return todoCard(t); }).join('');
-    // Привязка кликов
+    
+    // Чекбокс
     bodyEl.querySelectorAll('.todo-check').forEach(function(box){
       box.addEventListener('click', function(e){
         e.stopPropagation();
         var id = box.getAttribute('data-id');
         var newStatus = box.getAttribute('data-status') === 'done' ? 'open' : 'done';
+        // Оптимистично обновляем UI
+        var card = box.closest('.todo-item');
+        if(card) card.classList.toggle('done', newStatus === 'done');
+        box.setAttribute('data-status', newStatus);
         callAction('toggleTodo', {id:id, status:newStatus}).then(function(rr){
-          if(rr && rr.ok) renderTodos();
+          if(rr && rr.ok){
+            // Обновим кеш
+            try{
+              var c = JSON.parse(localStorage.getItem('bs_todos_cache')||'[]');
+              for(var i=0;i<c.length;i++) if(String(c[i].id)===String(id)) c[i].status = newStatus;
+              localStorage.setItem('bs_todos_cache', JSON.stringify(c));
+            }catch(e){}
+          }
         });
       });
     });
+    
+    // Удаление
     bodyEl.querySelectorAll('.todo-del').forEach(function(btn){
       btn.addEventListener('click', function(e){
         e.stopPropagation();
         var id = btn.getAttribute('data-id');
         if(!confirm('Удалить задачу?')) return;
+        // Оптимистично убираем
+        var card = btn.closest('.todo-item');
+        if(card) card.style.display = 'none';
         callAction('deleteTodo', {id:id}).then(function(rr){
-          if(rr && rr.ok) renderTodos();
+          if(rr && rr.ok){
+            try{
+              var c = JSON.parse(localStorage.getItem('bs_todos_cache')||'[]');
+              c = c.filter(function(t){ return String(t.id) !== String(id); });
+              localStorage.setItem('bs_todos_cache', JSON.stringify(c));
+            }catch(e){}
+            renderTodos();
+          }
         });
       });
     });
+    
+    // Inline редактирование (клик по тексту)
+    bodyEl.querySelectorAll('.todo-text').forEach(function(span){
+      span.addEventListener('click', function(e){
+        e.stopPropagation();
+        if(span.querySelector('input')) return;
+        var id = span.getAttribute('data-id');
+        var oldText = span.textContent.trim();
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.value = oldText;
+        input.className = 'todo-edit-input';
+        input.style.cssText = 'width:100%;padding:8px 10px;font-size:15px;font-weight:600;color:#fff;background:rgba(255,255,255,0.08);border:1px solid #D4B886;border-radius:8px;outline:none;font-family:inherit;';
+        span.textContent = '';
+        span.appendChild(input);
+        input.focus();
+        input.select();
+        
+        function save(){
+          var newText = input.value.trim();
+          if(!newText || newText === oldText){
+            span.textContent = oldText;
+            return;
+          }
+          span.textContent = newText;
+          callAction('updateTodo', {id:id, text:newText}).then(function(rr){
+            if(rr && rr.ok){
+              try{
+                var c = JSON.parse(localStorage.getItem('bs_todos_cache')||'[]');
+                for(var i=0;i<c.length;i++) if(String(c[i].id)===String(id)) c[i].text = newText;
+                localStorage.setItem('bs_todos_cache', JSON.stringify(c));
+              }catch(e){}
+              showToast('Сохранено');
+            } else {
+              span.textContent = oldText;
+              showToast('Ошибка сохранения');
+            }
+          });
+        }
+        
+        input.addEventListener('blur', save);
+        input.addEventListener('keydown', function(ke){
+          if(ke.key === 'Enter'){ ke.preventDefault(); input.blur(); }
+          else if(ke.key === 'Escape'){ span.textContent = oldText; }
+        });
+      });
+    });
+  }
+  
+  // 1) Показываем из кеша сразу
+  try{
+    var cached = JSON.parse(localStorage.getItem('bs_todos_cache')||'[]');
+    if(cached.length){
+      _renderTodosUI(cached);
+    } else {
+      bodyEl.innerHTML = '<div class="empty"><div class="em-text">Загрузка...</div></div>';
+    }
+  }catch(e){
+    bodyEl.innerHTML = '<div class="empty"><div class="em-text">Загрузка...</div></div>';
+  }
+  
+  // 2) Запрашиваем свежие задачи с сервера и обновляем UI + кеш
+  callAction('getTodos', {}).then(function(r){
+    if(!r || !r.ok){
+      // Если кеш пустой и сервер не отвечает. покажем ошибку
+      try{
+        var c2 = JSON.parse(localStorage.getItem('bs_todos_cache')||'[]');
+        if(!c2.length) bodyEl.innerHTML = '<div class="empty"><div class="em-text">Не удалось загрузить</div></div>';
+      }catch(e){}
+      return;
+    }
+    var tasks = r.tasks || [];
+    try{ localStorage.setItem('bs_todos_cache', JSON.stringify(tasks)); }catch(e){}
+    _renderTodosUI(tasks);
   });
 }
 
@@ -4638,7 +4893,7 @@ function todoCard(t){
         : '') +
     '</div>' +
     '<div class="todo-content">' +
-      '<div class="todo-text">' + escapeHtml(t.text) + '</div>' +
+      '<div class="todo-text" data-id="' + t.id + '" title="Кликни чтобы редактировать" style="cursor:pointer;">' + escapeHtml(t.text) + '</div>' +
       deadlineText +
     '</div>' +
     '<button class="todo-del" data-id="' + t.id + '" title="Удалить">' +
@@ -4952,7 +5207,25 @@ function renderLeadmagnets(){
       </div>
       
       <div class="lm-section">
-        <div class="section-min-label">5 чек-листов</div>
+        <div class="section-min-label" id="lmCountLabel">Чек-листы</div>
+        
+        <!-- Поиск -->
+        <div class="lm-search-row">
+          <input type="text" id="lmSearch" class="lm-search-input" placeholder="🔍 Найти чек-лист..."/>
+        </div>
+        
+        <!-- Категории-фильтры (7 органов) -->
+        <div class="lm-filters" id="lmFilters">
+          <button class="lm-filter active" data-cat="all">Все</button>
+          <button class="lm-filter" data-cat="brain">🧠 Стратегия</button>
+          <button class="lm-filter" data-cat="heart">🫀 Маркетинг</button>
+          <button class="lm-filter" data-cat="hands">💪 Продажи</button>
+          <button class="lm-filter" data-cat="spine">🦴 Команда</button>
+          <button class="lm-filter" data-cat="blood">🩸 Финансы</button>
+          <button class="lm-filter" data-cat="dna">🧬 Процессы</button>
+          <button class="lm-filter" data-cat="eyes">👁 Аналитика</button>
+        </div>
+        
         <div class="lm-cards-list" id="lmCardsList">
           <div class="loading"><div class="spinner"></div></div>
         </div>
@@ -5025,7 +5298,64 @@ function renderLeadmagnets(){
     // Получим статус "забрал ли уже" из r.taken (или пусто)
     var taken = r.taken || {};
     
-    listEl.innerHTML = items.map(function(item){
+    // Сохраняем все элементы для фильтрации
+    window._allLeadmagnets = items;
+    window._lmFilter = window._lmFilter || 'all';
+    window._lmSearch = window._lmSearch || '';
+    
+    // Привязка фильтров (один раз)
+    var filtersEl = document.getElementById('lmFilters');
+    if(filtersEl && !filtersEl.getAttribute('data-bound')){
+      filtersEl.setAttribute('data-bound','1');
+      filtersEl.querySelectorAll('.lm-filter').forEach(function(fb){
+        fb.addEventListener('click', function(){
+          filtersEl.querySelectorAll('.lm-filter').forEach(function(b){ b.classList.remove('active'); });
+          fb.classList.add('active');
+          window._lmFilter = fb.getAttribute('data-cat');
+          _redrawLeadmagnets();
+        });
+      });
+    }
+    var searchEl = document.getElementById('lmSearch');
+    if(searchEl && !searchEl.getAttribute('data-bound')){
+      searchEl.setAttribute('data-bound','1');
+      searchEl.addEventListener('input', function(){
+        window._lmSearch = String(searchEl.value || '').toLowerCase().trim();
+        _redrawLeadmagnets();
+      });
+    }
+    
+    function _redrawLeadmagnets(){
+      var all = window._allLeadmagnets || [];
+      var cat = window._lmFilter || 'all';
+      var q = window._lmSearch || '';
+      var filtered = all.filter(function(it){
+        // По категории (берём из item.category, если задан)
+        if(cat !== 'all'){
+          var itemCat = String(it.category || '').toLowerCase();
+          if(itemCat !== cat) return false;
+        }
+        // По поиску
+        if(q){
+          var hay = ((it.title||'') + ' ' + (it.key||'') + ' ' + (it.description||'')).toLowerCase();
+          if(hay.indexOf(q) < 0) return false;
+        }
+        return true;
+      });
+      
+      // Обновим счётчик
+      var lbl = document.getElementById('lmCountLabel');
+      if(lbl) lbl.textContent = filtered.length + ' чек-' + (filtered.length === 1 ? 'лист' : (filtered.length<5 && filtered.length>0 ? 'листа' : 'листов'));
+      
+      if(!filtered.length){
+        listEl.innerHTML = '<div class="lm-empty-result">Ничего не найдено</div>';
+        return;
+      }
+      _renderLmList(filtered);
+    }
+    
+    function _renderLmList(items){
+      listEl.innerHTML = items.map(function(item){
       var emoji = emojiMap[item.key] || '📄';
       var color = colorMap[item.key] || '#1A3A5C';
       var d = descMap[item.key] || {hero:'Кейс резидента', metric:'Реальные цифры'};
@@ -5035,6 +5365,9 @@ function renderLeadmagnets(){
         : '<div class="lm-min-badge new">Новый</div>';
       var btnText = isTaken ? 'Получить ещё раз' : 'Получить в Telegram';
       
+      var adminBtn = (isRealAdmin && viewAs === 'admin') 
+        ? '<button class="lm-min-edit" data-key="' + item.key + '" title="Редактировать">✏️ Редактировать</button>'
+        : '';
       return '<div class="lm-min-card">' +
         '<div class="lm-min-card-head">' +
           '<div class="lm-min-icon" style="background:' + color + '">' + emoji + '</div>' +
@@ -5044,6 +5377,7 @@ function renderLeadmagnets(){
         '<div class="lm-min-hero">' + d.hero + '</div>' +
         '<div class="lm-min-metric">' + d.metric + '</div>' +
         '<button class="lm-min-btn" data-key="' + item.key + '">' + btnText + ' →</button>' +
+        adminBtn +
       '</div>';
     }).join('');
     
@@ -5055,40 +5389,68 @@ function renderLeadmagnets(){
         requestLeadmagnet(key);
       });
     });
+    listEl.querySelectorAll('.lm-min-edit').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.stopPropagation();
+        try{ this.blur(); }catch(blurE){}
+        var key = btn.getAttribute('data-key');
+        var item = (window._allLeadmagnets || []).filter(function(it){return it.key===key;})[0];
+        if(item) _openEditLeadmagnet(item);
+      });
+    });
+    }
+    
+    // Первичный рендер
+    _redrawLeadmagnets();
   });
 }
 
 function requestLeadmagnet(key){
-  showToast('Отправляю в Telegram...');
+  // Найдём кнопку и покажем что отправляем
+  var btn = document.querySelector('.lm-min-btn[data-key="'+key+'"]');
+  if(btn){
+    btn.textContent = 'Отправляем...';
+    btn.disabled = true;
+  }
   callAction('requestLeadmagnet', {key:key}).then(function(r){
     if(r && r.ok){
-      showToast('✅ Открой Telegram. чек-лист отправлен');
-      // Обновим UI чтобы пометить как "забрал"
-      setTimeout(function(){ renderLeadmagnets(); }, 1000);
-      if(window.Telegram && Telegram.WebApp){
-        setTimeout(function(){ Telegram.WebApp.close(); }, 1500);
-      }
+      _showLeadmagnetSentModal(key, r.fileName || 'Чек-лист');
+      setTimeout(function(){ renderLeadmagnets(); }, 500);
     } else {
+      if(btn){ btn.disabled = false; btn.textContent = 'Получить →'; }
       showToast('❌ ' + (r && r.error || 'Не удалось'));
     }
   });
 }
 
-
-function requestLeadmagnet(key){
-  showToast('Отправляю чек-лист в Telegram...');
-  callAction('requestLeadmagnet', {key:key}).then(function(r){
-    if(r && r.ok){
-      showToast('✅ Открой Telegram. чек-лист отправлен');
-      // Закрываем Mini App, чтобы открылся Telegram
-      if(window.Telegram && Telegram.WebApp){
-        setTimeout(function(){ Telegram.WebApp.close(); }, 1500);
-      }
-    } else {
-      showToast('❌ ' + (r && r.error || 'Не удалось'));
-    }
+function _showLeadmagnetSentModal(key, fileName){
+  // Большой явный modal: бот отправил PDF в Telegram
+  var existing = document.getElementById('lmSentModal');
+  if(existing) existing.remove();
+  
+  var modal = document.createElement('div');
+  modal.id = 'lmSentModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(8px);';
+  
+  modal.innerHTML = 
+    '<div style="background:linear-gradient(135deg,#1a1a1a,#0a0a0a);border:2px solid rgba(212,184,134,0.4);border-radius:24px;padding:36px 28px;max-width:380px;width:100%;text-align:center;">' +
+      '<div style="font-size:64px;margin-bottom:18px;">📩</div>' +
+      '<div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:10px;">Чек-лист отправлен</div>' +
+      '<div style="font-size:15px;color:rgba(255,255,255,0.7);line-height:1.5;margin-bottom:24px;">Бот прислал тебе PDF файл прямо в чат Telegram. Открой чат с ботом чтобы посмотреть.</div>' +
+      '<button id="lmOpenBot" style="width:100%;padding:16px 20px;background:#D4B886;color:#000;border:none;border-radius:14px;font-size:16px;font-weight:900;cursor:pointer;margin-bottom:10px;">Открыть чат с ботом →</button>' +
+      '<button id="lmStay" style="width:100%;padding:14px 20px;background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.15);border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;">Остаться здесь</button>' +
+    '</div>';
+  
+  document.body.appendChild(modal);
+  
+  document.getElementById('lmOpenBot').addEventListener('click', function(){
+    if(window.Telegram && Telegram.WebApp){ Telegram.WebApp.close(); }
+  });
+  document.getElementById('lmStay').addEventListener('click', function(){
+    modal.remove();
   });
 }
+
 
 
 // === ДИАГНОСТИКА БИЗНЕСА ===
@@ -5617,6 +5979,71 @@ function renderBodyAnatomy(results){
   `;
 }
 
+
+function _openEditLeadmagnet(item){
+  var existing = document.getElementById('lmEditModal');
+  if(existing) existing.remove();
+  
+  var CATEGORIES = [
+    {id:'brain', label:'🧠 Стратегия'},
+    {id:'heart', label:'🫀 Маркетинг'},
+    {id:'hands', label:'💪 Продажи'},
+    {id:'spine', label:'🦴 Команда'},
+    {id:'blood', label:'🩸 Финансы'},
+    {id:'dna',   label:'🧬 Процессы'},
+    {id:'eyes',  label:'👁 Аналитика'}
+  ];
+  
+  var optionsHtml = CATEGORIES.map(function(c){
+    var sel = (item.category === c.id) ? ' selected' : '';
+    return '<option value="'+c.id+'"'+sel+'>'+c.label+'</option>';
+  }).join('');
+  
+  var modal = document.createElement('div');
+  modal.id = 'lmEditModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);';
+  
+  modal.innerHTML = 
+    '<div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;max-width:420px;width:100%;">' +
+      '<div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:18px;">Редактировать чек-лист</div>' +
+      
+      '<label style="display:block;font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:6px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Название</label>' +
+      '<input type="text" id="lmEditTitle" value="'+(item.title||'').replace(/"/g,'&quot;')+'" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:15px;font-family:inherit;margin-bottom:16px;outline:none;"/>' +
+      
+      '<label style="display:block;font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:6px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Описание</label>' +
+      '<textarea id="lmEditDesc" rows="3" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:14px;font-family:inherit;margin-bottom:16px;outline:none;resize:vertical;">'+(item.description||'')+'</textarea>' +
+      
+      '<label style="display:block;font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:6px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Категория</label>' +
+      '<select id="lmEditCat" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:15px;font-family:inherit;margin-bottom:22px;outline:none;">' + optionsHtml + '</select>' +
+      
+      '<div style="display:flex;gap:10px;">' +
+        '<button id="lmEditSave" style="flex:1;padding:14px;background:#D4B886;color:#000;border:none;border-radius:12px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;">Сохранить</button>' +
+        '<button id="lmEditCancel" style="padding:14px 18px;background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.15);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Отмена</button>' +
+      '</div>' +
+    '</div>';
+  
+  document.body.appendChild(modal);
+  
+  document.getElementById('lmEditCancel').addEventListener('click', function(){ modal.remove(); });
+  document.getElementById('lmEditSave').addEventListener('click', function(){
+    var newTitle = document.getElementById('lmEditTitle').value.trim();
+    var newDesc = document.getElementById('lmEditDesc').value.trim();
+    var newCat = document.getElementById('lmEditCat').value;
+    if(!newTitle){ showToast('Введи название'); return; }
+    
+    callAction('updateLeadmagnet', {
+      key: item.key, title: newTitle, description: newDesc, category: newCat
+    }).then(function(rr){
+      if(rr && rr.ok){
+        showToast('Сохранено');
+        modal.remove();
+        renderLeadmagnets();
+      } else {
+        showToast('Ошибка: ' + (rr && rr.error || ''));
+      }
+    });
+  });
+}
 </script>
 </body>
 </html>
