@@ -2384,10 +2384,11 @@
 
   .tab.tab-highlight {
     background: linear-gradient(135deg, rgba(212,184,134,0.18) 0%, rgba(212,184,134,0.08) 100%);
-    border: 1.5px solid rgba(212,184,134,0.5);
+    border: 1px solid rgba(212,184,134,0.5);
     color: #D4B886;
     font-weight: 800;
     position: relative;
+    box-sizing: border-box;
   }
   .tab.tab-highlight::before {
     content: "★";
@@ -2402,6 +2403,11 @@
   }
   .tab.tab-highlight.active::before {
     color: #000;
+  }
+  /* Все обычные табы тоже с border 1px чтобы высота совпадала */
+  .tab {
+    border: 1px solid transparent;
+    box-sizing: border-box;
   }
 
   .lm-cat-wrap { position: relative; margin: 0 0 16px; }
@@ -3155,12 +3161,27 @@ function renderDashboard(){
   const todayReports = logs.filter(l=>l.date===today).length;
   const rentab = d.rentab||0;
   
-  // Запросим месячные данные если их ещё нет
+  // Кеш: моментально подставим последние сохранённые данные
   if(!window._monthlyPL){
+    try{
+      var cached = localStorage.getItem('bs_monthly_pl');
+      if(cached) window._monthlyPL = JSON.parse(cached);
+    }catch(e){}
+  }
+  // На фоне запросим свежие
+  if(!window._plLoading){
+    window._plLoading = true;
     callAction('getMonthlyPL', {}).then(function(r){
+      window._plLoading = false;
       if(r && r.ok){
+        var prevSerialized = JSON.stringify(window._monthlyPL||{});
+        var newSerialized = JSON.stringify(r);
         window._monthlyPL = r;
-        renderDashboard(); // перерисуем с данными
+        try{ localStorage.setItem('bs_monthly_pl', newSerialized); }catch(e){}
+        // Перерисовываем только если данные изменились
+        if(prevSerialized !== newSerialized){
+          renderDashboard();
+        }
       }
     });
   }
