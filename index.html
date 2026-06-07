@@ -104,7 +104,7 @@
     font-size: 12px;
   }
 
-  /* TABS — горизонтальный скролл с индикатором */
+  /* TABS - горизонтальный скролл с индикатором */
   .tabs-wrap {
     position: relative;
   }
@@ -661,7 +661,7 @@
   }
   .toast.show { opacity: 1; }
 
-  /* DETAIL VIEW — iOS safe */
+  /* DETAIL VIEW - iOS safe */
   .detail-view {
     position: fixed;
     top: 0;
@@ -1252,7 +1252,7 @@
   }
 
   
-  /* === ГЛАВНАЯ СТРАНИЦА BS — минимализм === */
+  /* === ГЛАВНАЯ СТРАНИЦА BS - минимализм === */
   .about-min {
     padding: 0 4px;
     color: var(--text);
@@ -1623,7 +1623,7 @@
     font-weight: 700;
   }
   
-  /* ПЕРЕКЛЮЧАТЕЛЬ РОЛЕЙ — 3 кнопки */
+  /* ПЕРЕКЛЮЧАТЕЛЬ РОЛЕЙ - 3 кнопки */
   .role-toggle {
     display: none;
     background: var(--card);
@@ -1698,7 +1698,7 @@
     margin-right: auto;
   }
 
-    /* === МАТЕРИАЛЫ — минимализм === */
+    /* === МАТЕРИАЛЫ - минимализм === */
   .lm-min { padding: 0 4px; }
   .lm-min-head { margin: 8px 0 28px; }
   .lm-section { margin-bottom: 32px; }
@@ -2521,11 +2521,12 @@
     margin-bottom: 4px;
   }
   .pl-main-val {
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 900;
     color: #D4B886;
     letter-spacing: -1px;
     line-height: 1.1;
+    word-break: break-word;
   }
   .pl-main-val.neg {
     color: #E53935;
@@ -2678,9 +2679,9 @@ let payType = 'income';
 let payMethod = 'cash';
 
 const ADMIN_TABS = [
+  {id:'dashboard', label:'Сводка'},
   {id:'about', label:'BS'},
   {id:'diagnostic', label:'Диагностика'},
-  {id:'dashboard', label:'Сводка'},
   {id:'schedule', label:'Расписание'},
   {id:'todos', label:'Задачи'},
   {id:'reports', label:'Отчёты'},
@@ -3195,9 +3196,15 @@ function renderDashboard(){
           <div class="pl-card-margin ${m.margin>=0?'pos':'neg'}">${m.margin>=0?'+':''}${m.margin}%</div>
         </div>
         
-        <div class="pl-card-main">
-          <div class="pl-main-lbl">Чистая прибыль</div>
-          <div class="pl-main-val ${m.profit<0?'neg':''}">${m.profit>=0?'':'−'}${fmt(Math.abs(m.profit))} ₸</div>
+        <div class="pl-card-main" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div>
+            <div class="pl-main-lbl">Чистая прибыль</div>
+            <div class="pl-main-val ${m.profit<0?'neg':''}">${m.profit>=0?'':'−'}${fmt(Math.abs(m.profit))}</div>
+          </div>
+          <div>
+            <div class="pl-main-lbl">Дивиденды</div>
+            <div class="pl-main-val" style="color:#fff;">${fmt(m.dividends||0)}</div>
+          </div>
         </div>
         
         <div class="pl-row">
@@ -6362,6 +6369,19 @@ function _openEditLeadmagnet(item){
       '<label style="display:block;font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:6px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Категория</label>' +
       '<select id="lmEditCat" style="width:100%;padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:15px;font-family:inherit;margin-bottom:22px;outline:none;">' + optionsHtml + '</select>' +
       
+      // Блок: тест и swap файлы
+      '<div style="margin-bottom:18px;padding:14px;background:rgba(229,57,53,0.06);border:1px solid rgba(229,57,53,0.25);border-radius:12px;">' +
+        '<div style="font-size:11px;color:#E53935;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;">Если перепутан файл</div>' +
+        '<button id="lmTestSelf" style="width:100%;padding:11px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;">📨 Прислать мне для проверки</button>' +
+        '<select id="lmSwapTarget" style="width:100%;padding:11px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:13px;font-family:inherit;margin-bottom:8px;outline:none;">' + 
+          '<option value="">Поменять файл с...</option>' +
+          (window._allLeadmagnets||[]).filter(function(it){return it.key !== item.key;}).map(function(it){
+            return '<option value="'+it.key+'">'+ (it.title||it.key) +'</option>';
+          }).join('') +
+        '</select>' +
+        '<button id="lmDoSwap" style="width:100%;padding:11px;background:#E53935;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;">🔄 Поменять файлы местами</button>' +
+      '</div>' +
+      
       '<div style="display:flex;gap:10px;">' +
         '<button id="lmEditSave" style="flex:1;padding:14px;background:#D4B886;color:#000;border:none;border-radius:12px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;">Сохранить</button>' +
         '<button id="lmEditCancel" style="padding:14px 18px;background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.15);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Отмена</button>' +
@@ -6371,6 +6391,49 @@ function _openEditLeadmagnet(item){
   document.body.appendChild(modal);
   
   document.getElementById('lmEditCancel').addEventListener('click', function(){ modal.remove(); });
+  
+  // Тест: прислать себе для проверки
+  document.getElementById('lmTestSelf').addEventListener('click', function(){
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Отправляем в Telegram...';
+    callAction('testLeadmagnet', {key:item.key}).then(function(rr){
+      if(rr && rr.ok){
+        btn.textContent = '✅ Отправлено! Проверь в чате с ботом';
+        setTimeout(function(){
+          btn.disabled = false;
+          btn.textContent = '📨 Прислать мне для проверки';
+        }, 4000);
+      } else {
+        btn.disabled = false;
+        btn.textContent = '📨 Прислать мне для проверки';
+        showToast('Ошибка: ' + (rr && rr.error || ''));
+      }
+    });
+  });
+  
+  // Swap: поменять fileId с другим чек-листом
+  document.getElementById('lmDoSwap').addEventListener('click', function(){
+    var sel = document.getElementById('lmSwapTarget');
+    var targetKey = sel.value;
+    if(!targetKey){ showToast('Выбери второй чек-лист'); return; }
+    var targetName = sel.options[sel.selectedIndex].text;
+    if(!confirm('Поменять файлы:\n\n«'+item.title+'» ↔ «'+targetName+'»\n\nПодтверди.')) return;
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Меняю...';
+    callAction('swapLeadmagnetFiles', {keyA:item.key, keyB:targetKey}).then(function(rr){
+      if(rr && rr.ok){
+        showToast('Файлы поменяны местами');
+        modal.remove();
+        renderLeadmagnets();
+      } else {
+        btn.disabled = false;
+        btn.textContent = '🔄 Поменять файлы местами';
+        showToast('Ошибка: ' + (rr && rr.error || ''));
+      }
+    });
+  });
   document.getElementById('lmEditSave').addEventListener('click', function(){
     var newTitle = document.getElementById('lmEditTitle').value.trim();
     var newDesc = document.getElementById('lmEditDesc').value.trim();
