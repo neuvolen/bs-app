@@ -2381,6 +2381,252 @@
     width: 100%;
     -webkit-tap-highlight-color: transparent;
   }
+
+  .tab.tab-highlight {
+    background: linear-gradient(135deg, rgba(212,184,134,0.18) 0%, rgba(212,184,134,0.08) 100%);
+    border: 1.5px solid rgba(212,184,134,0.5);
+    color: #D4B886;
+    font-weight: 800;
+    position: relative;
+  }
+  .tab.tab-highlight::before {
+    content: "★";
+    margin-right: 6px;
+    color: #D4B886;
+    font-size: 13px;
+  }
+  .tab.tab-highlight.active {
+    background: #D4B886;
+    color: #000;
+    border-color: #D4B886;
+  }
+  .tab.tab-highlight.active::before {
+    color: #000;
+  }
+
+  .lm-cat-wrap { position: relative; margin: 0 0 16px; }
+  .lm-cat-trigger {
+    display: flex; align-items: center; gap: 12px;
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(212,184,134,0.08);
+    border: 1.5px solid rgba(212,184,134,0.35);
+    border-radius: 14px;
+    color: #fff;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+  .lm-cat-trigger:active { background: rgba(212,184,134,0.14); }
+  .lm-cat-icon { font-size: 18px; }
+  .lm-cat-current { flex: 1; text-align: left; color: #fff; }
+  .lm-cat-chevron {
+    color: #D4B886;
+    font-size: 14px;
+    transition: transform 0.2s;
+  }
+  .lm-cat-wrap.open .lm-cat-chevron { transform: rotate(180deg); }
+  .lm-cat-menu {
+    position: absolute;
+    top: calc(100% + 6px); left: 0; right: 0;
+    background: #1a1a1a;
+    border: 1px solid rgba(212,184,134,0.3);
+    border-radius: 14px;
+    overflow: hidden;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  }
+  .lm-cat-item {
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lm-cat-item:last-child { border-bottom: none; }
+  .lm-cat-item:active { background: rgba(212,184,134,0.12); }
+  .lm-cat-item.active {
+    background: rgba(212,184,134,0.16);
+    color: #D4B886;
+  }
+
+  /* === PL месячная карточка === */
+  .pl-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    border: 1px solid rgba(212,184,134,0.15);
+    border-radius: 18px;
+    padding: 20px;
+    margin: 0 0 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pl-card::before {
+    content: "";
+    position: absolute;
+    top: 0; right: 0;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(212,184,134,0.08), transparent 70%);
+    pointer-events: none;
+  }
+  .pl-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .pl-card-month {
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  .pl-card-year {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+  .pl-card-margin {
+    font-size: 14px;
+    font-weight: 800;
+    padding: 5px 11px;
+    border-radius: 16px;
+    letter-spacing: 0.5px;
+  }
+  .pl-card-margin.pos {
+    background: rgba(38,166,154,0.15);
+    color: #26A69A;
+  }
+  .pl-card-margin.neg {
+    background: rgba(229,57,53,0.15);
+    color: #E53935;
+  }
+  .pl-card-main {
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .pl-main-lbl {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .pl-main-val {
+    font-size: 30px;
+    font-weight: 900;
+    color: #D4B886;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+  .pl-main-val.neg {
+    color: #E53935;
+  }
+  .pl-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .pl-row-item {
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .pl-row-lbl {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .pl-row-val {
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .pl-row-val.pos { color: #fff; }
+  .pl-row-val.neg { color: rgba(255,255,255,0.7); }
+  
+  .pl-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    padding: 8px 0 4px;
+    height: 96px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 12px;
+  }
+  .pl-bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .pl-bar {
+    width: 100%;
+    max-width: 16px;
+    background: rgba(212,184,134,0.4);
+    border-radius: 3px 3px 0 0;
+    transition: all 0.2s;
+  }
+  .pl-bar.active {
+    background: #D4B886;
+    box-shadow: 0 0 12px rgba(212,184,134,0.5);
+  }
+  .pl-bar.empty {
+    background: rgba(255,255,255,0.08);
+  }
+  .pl-bar.neg {
+    background: rgba(229,57,53,0.5);
+  }
+  .pl-bar.neg.active {
+    background: #E53935;
+  }
+  .pl-bar-lbl {
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  .pl-bar-lbl.active {
+    color: #D4B886;
+  }
+  
+  .pl-year-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .pl-year-lbl {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .pl-year-val {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+  .pl-year-val.pos { color: #D4B886; }
+  .pl-year-val.neg { color: #E53935; }
 </style>
 <div class="modal-bg" id="attendModal">
   <div class="modal">
@@ -2752,7 +2998,9 @@ function renderTabs(){
   el.innerHTML = tabs.map((t,i) => {
     const isLocked = isTabLocked(t);
     const lockedCls = isLocked ? ' locked' : '';
-    return `<div class="tab ${i===0?'active':''}${lockedCls}" data-page="${t.id}" onclick="showPage('${t.id}')">${t.label}</div>`;
+    // Выделяем "Сводку" (dashboard) золотым акцентом
+    const highlightCls = (t.id === 'dashboard' && isRealAdmin && viewAs === 'admin') ? ' tab-highlight' : '';
+    return `<div class="tab ${i===0?'active':''}${lockedCls}${highlightCls}" data-page="${t.id}" onclick="showPage('${t.id}')">${t.label}</div>`;
   }).join('');
 }
 
@@ -2905,8 +3153,79 @@ function renderDashboard(){
   const today = new Date().toLocaleDateString('ru-RU');
   const todayReports = logs.filter(l=>l.date===today).length;
   const rentab = d.rentab||0;
+  
+  // Запросим месячные данные если их ещё нет
+  if(!window._monthlyPL){
+    callAction('getMonthlyPL', {}).then(function(r){
+      if(r && r.ok){
+        window._monthlyPL = r;
+        renderDashboard(); // перерисуем с данными
+      }
+    });
+  }
 
+  // Месячная аналитика
+  const mp = window._monthlyPL;
+  let monthlyHtml = '';
+  if(mp && mp.months){
+    const curIdx = (window._selectedMonth!=null) ? window._selectedMonth : mp.currentMonthIdx;
+    const m = mp.months[curIdx] || mp.months[0];
+    
+    // Бар-чарт: 12 столбцов прибыли
+    const profits = mp.months.map(x=>x.profit);
+    const maxAbs = Math.max(1, ...profits.map(Math.abs));
+    const barsHtml = mp.months.map((mm,i)=>{
+      const h = Math.abs(mm.profit) / maxAbs * 64;
+      const isNeg = mm.profit < 0;
+      const isCur = i === curIdx;
+      const cls = isCur ? 'pl-bar active' : (mm.hasData ? 'pl-bar' : 'pl-bar empty');
+      return `<div class="pl-bar-wrap" onclick="selectMonth(${i})">
+        <div class="${cls}${isNeg?' neg':''}" style="height:${Math.max(3,h)}px"></div>
+        <div class="pl-bar-lbl${isCur?' active':''}">${mm.short.toLowerCase()}</div>
+      </div>`;
+    }).join('');
+    
+    monthlyHtml = `
+      <div class="pl-card">
+        <div class="pl-card-head">
+          <div>
+            <div class="pl-card-month">${m.name}</div>
+            <div class="pl-card-year">2026</div>
+          </div>
+          <div class="pl-card-margin ${m.margin>=0?'pos':'neg'}">${m.margin>=0?'+':''}${m.margin}%</div>
+        </div>
+        
+        <div class="pl-card-main">
+          <div class="pl-main-lbl">Чистая прибыль</div>
+          <div class="pl-main-val ${m.profit<0?'neg':''}">${m.profit>=0?'':'−'}${fmt(Math.abs(m.profit))} ₸</div>
+        </div>
+        
+        <div class="pl-row">
+          <div class="pl-row-item">
+            <div class="pl-row-lbl">Доход</div>
+            <div class="pl-row-val pos">${fmt(m.revenue)} ₸</div>
+          </div>
+          <div class="pl-row-item">
+            <div class="pl-row-lbl">Расход</div>
+            <div class="pl-row-val neg">${fmt(m.expenses)} ₸</div>
+          </div>
+        </div>
+        
+        <div class="pl-chart">
+          ${barsHtml}
+        </div>
+        
+        <div class="pl-year-row">
+          <div class="pl-year-lbl">Итого за год</div>
+          <div class="pl-year-val ${mp.year.profit<0?'neg':'pos'}">${mp.year.profit>=0?'+':'−'}${fmt(Math.abs(mp.year.profit))} ₸</div>
+        </div>
+      </div>
+    `;
+  }
+  
   document.getElementById('dashboardContent').innerHTML = `
+    ${monthlyHtml}
+    
     <div class="metric-grid">
       <div class="metric"><div class="metric-val">${residents.length}</div><div class="metric-lbl">Резидентов</div></div>
       <div class="metric"><div class="metric-val">${todayReports}</div><div class="metric-lbl">Отчётов сегодня</div></div>
@@ -5214,16 +5533,23 @@ function renderLeadmagnets(){
           <input type="text" id="lmSearch" class="lm-search-input" placeholder="🔍 Найти чек-лист..."/>
         </div>
         
-        <!-- Категории-фильтры (7 органов) -->
-        <div class="lm-filters" id="lmFilters">
-          <button class="lm-filter active" data-cat="all">Все</button>
-          <button class="lm-filter" data-cat="brain">🧠 Стратегия</button>
-          <button class="lm-filter" data-cat="heart">🫀 Маркетинг</button>
-          <button class="lm-filter" data-cat="hands">💪 Продажи</button>
-          <button class="lm-filter" data-cat="spine">🦴 Команда</button>
-          <button class="lm-filter" data-cat="blood">🩸 Финансы</button>
-          <button class="lm-filter" data-cat="dna">🧬 Процессы</button>
-          <button class="lm-filter" data-cat="eyes">👁 Аналитика</button>
+        <!-- Категории-фильтры (dropdown с явным индикатором) -->
+        <div class="lm-cat-wrap">
+          <button class="lm-cat-trigger" id="lmCatTrigger" type="button">
+            <span class="lm-cat-icon">📂</span>
+            <span class="lm-cat-current" id="lmCatCurrent">Все категории</span>
+            <span class="lm-cat-chevron">▾</span>
+          </button>
+          <div class="lm-cat-menu" id="lmCatMenu" style="display:none;">
+            <div class="lm-cat-item active" data-cat="all">📂 Все категории</div>
+            <div class="lm-cat-item" data-cat="brain">🧠 Стратегия</div>
+            <div class="lm-cat-item" data-cat="heart">🫀 Маркетинг</div>
+            <div class="lm-cat-item" data-cat="hands">💪 Продажи</div>
+            <div class="lm-cat-item" data-cat="spine">🦴 Команда</div>
+            <div class="lm-cat-item" data-cat="blood">🩸 Финансы</div>
+            <div class="lm-cat-item" data-cat="dna">🧬 Процессы</div>
+            <div class="lm-cat-item" data-cat="eyes">👁 Аналитика</div>
+          </div>
         </div>
         
         <div class="lm-cards-list" id="lmCardsList">
@@ -5303,15 +5629,35 @@ function renderLeadmagnets(){
     window._lmFilter = window._lmFilter || 'all';
     window._lmSearch = window._lmSearch || '';
     
-    // Привязка фильтров (один раз)
-    var filtersEl = document.getElementById('lmFilters');
-    if(filtersEl && !filtersEl.getAttribute('data-bound')){
-      filtersEl.setAttribute('data-bound','1');
-      filtersEl.querySelectorAll('.lm-filter').forEach(function(fb){
-        fb.addEventListener('click', function(){
-          filtersEl.querySelectorAll('.lm-filter').forEach(function(b){ b.classList.remove('active'); });
-          fb.classList.add('active');
-          window._lmFilter = fb.getAttribute('data-cat');
+    // Привязка dropdown категорий (один раз)
+    var triggerEl = document.getElementById('lmCatTrigger');
+    var menuEl = document.getElementById('lmCatMenu');
+    var wrapEl = triggerEl && triggerEl.parentElement;
+    if(triggerEl && menuEl && !triggerEl.getAttribute('data-bound')){
+      triggerEl.setAttribute('data-bound','1');
+      triggerEl.addEventListener('click', function(e){
+        e.stopPropagation();
+        var isOpen = menuEl.style.display === 'block';
+        menuEl.style.display = isOpen ? 'none' : 'block';
+        if(wrapEl) wrapEl.classList.toggle('open', !isOpen);
+      });
+      // Закрытие по клику вне меню
+      document.addEventListener('click', function(){
+        menuEl.style.display = 'none';
+        if(wrapEl) wrapEl.classList.remove('open');
+      });
+      menuEl.querySelectorAll('.lm-cat-item').forEach(function(it){
+        it.addEventListener('click', function(e){
+          e.stopPropagation();
+          menuEl.querySelectorAll('.lm-cat-item').forEach(function(i){ i.classList.remove('active'); });
+          it.classList.add('active');
+          window._lmFilter = it.getAttribute('data-cat');
+          // Обновим текст в кнопке
+          var currentEl = document.getElementById('lmCatCurrent');
+          if(currentEl) currentEl.textContent = it.textContent.replace(/^[^а-яА-Яa-zA-Z]+/, '').trim() || it.textContent;
+          // Закроем меню
+          menuEl.style.display = 'none';
+          if(wrapEl) wrapEl.classList.remove('open');
           _redrawLeadmagnets();
         });
       });
@@ -6043,6 +6389,11 @@ function _openEditLeadmagnet(item){
       }
     });
   });
+}
+
+function selectMonth(idx){
+  window._selectedMonth = idx;
+  renderDashboard();
 }
 </script>
 </body>
