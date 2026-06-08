@@ -3694,7 +3694,7 @@ function openSubscriberDetail(chatId){
     </div>
     ${s.username?`<a class="btn btn-secondary" href="https://t.me/${s.username}" target="_blank">💬 Написать в Telegram</a>`:''}
     ${s.status!=='Резидент' ? `<button class="btn btn-primary" onclick="openConvertModal('${s.chatId}','${(s.name||'').replace(/'/g,'')}')">⬆️ Перевести в резиденты</button>` : ''}
-    ${s.status!=='Отказ' && s.status!=='Резидент' ? `<button class="btn btn-danger" onclick="markSubscriberRejected('${s.chatId}')">❌ Отметить отказ</button>` : ''}
+    ${s.status!=='Резидент' ? `<button class="btn btn-danger" onclick="banSubscriberFromChannel('${s.chatId}', '${(s.name||'').replace(/'/g,'')}')">🚫 Удалить с канала</button>` : ''}
   `;
   showDetail();
 }
@@ -3712,12 +3712,16 @@ function openConvertModal(chatId, name){
   }, 200);
 }
 
-async function markSubscriberRejected(chatId){
-  if(!confirm('Отметить отказ?'))return;
-  await callAction('updateSubscriber', {chatId:chatId, field:'Статус', value:'Отказ'});
-  closeDetail();
-  showToast('❌ Отмечено как отказ');
-  reloadSubscribers();
+async function banSubscriberFromChannel(chatId, name){
+  if(!confirm('Удалить ' + (name||'пользователя') + ' с канала?\n\nПосле бана он не сможет вернуться без разблокировки.'))return;
+  var res = await callAction('banFromChannel', {chatId:chatId});
+  if(res && res.ok){
+    closeDetail();
+    showToast('🚫 Удалён с канала');
+    reloadSubscribers();
+  } else {
+    showToast('Ошибка: ' + (res && res.error || 'не удалось'));
+  }
 }
 
 function renderResidents(){
