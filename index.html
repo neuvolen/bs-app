@@ -2500,19 +2500,30 @@
     margin-top: 4px;
   }
   .pl-card-margin {
-    font-size: 14px;
-    font-weight: 800;
-    padding: 5px 11px;
+    display: none;
+  }
+  .pl-sheets-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #D4B886;
+    color: #000;
+    border: none;
+    padding: 8px 14px;
     border-radius: 16px;
+    font-size: 12px;
+    font-weight: 800;
     letter-spacing: 0.5px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
   }
-  .pl-card-margin.pos {
-    background: rgba(38,166,154,0.15);
-    color: #26A69A;
+  .pl-sheets-btn:hover {
+    background: #c4a874;
+    transform: translateY(-1px);
   }
-  .pl-card-margin.neg {
-    background: rgba(229,57,53,0.15);
-    color: #E53935;
+  .pl-sheets-btn:active {
+    transform: translateY(0);
   }
   .pl-card-main {
     margin-bottom: 16px;
@@ -2686,8 +2697,6 @@ let payMethod = 'cash';
 
 const ADMIN_TABS = [
   {id:'dashboard', label:'Сводка'},
-  {id:'about', label:'BS'},
-  {id:'diagnostic', label:'Диагностика'},
   {id:'schedule', label:'Расписание'},
   {id:'todos', label:'Задачи'},
   {id:'reports', label:'Отчёты'},
@@ -2696,7 +2705,9 @@ const ADMIN_TABS = [
   {id:'subscribers', label:'Подписчики'},
   {id:'leadmagnets', label:'Материалы'},
   {id:'myprofile', label:'Профиль'},
-  {id:'platform', label:'Платформа'}
+  {id:'platform', label:'Платформа'},
+  {id:'about', label:'BS'},
+  {id:'diagnostic', label:'Диагностика'}
 ];
 
 const LEAD_TABS = [
@@ -3214,17 +3225,24 @@ function renderDashboard(){
             <div class="pl-card-month">${m.name}</div>
             <div class="pl-card-year">2026</div>
           </div>
-          <div class="pl-card-margin ${m.margin>=0?'pos':'neg'}">${m.margin>=0?'+':''}${m.margin}%</div>
+          <button class="pl-sheets-btn" onclick="window.open('https://docs.google.com/spreadsheets/d/${'1D-D4P5G9cmX1tdyluWe88sNTVGGqJqQWA4NvrvTbrYE'}/edit', '_blank')">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 3h6m-6 4h6m-6 4h6M3 3v8m0-8h8v8H3" stroke="#000" stroke-width="1.5" stroke-linecap="round"/></svg>
+            BS - Finance
+          </button>
         </div>
         
-        <div class="pl-card-main" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="pl-card-main" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
           <div>
-            <div class="pl-main-lbl">Чистая прибыль</div>
-            <div class="pl-main-val ${m.profit<0?'neg':''}">${m.profit>=0?'':'−'}${fmt(Math.abs(m.profit))}</div>
+            <div class="pl-main-lbl">Прибыль</div>
+            <div class="pl-main-val ${m.profit<0?'neg':''}" style="font-size:22px;">${m.profit>=0?'':'−'}${fmt(Math.abs(m.profit))}</div>
           </div>
           <div>
             <div class="pl-main-lbl">Дивиденды</div>
-            <div class="pl-main-val" style="color:#fff;">${fmt(m.dividends||0)}</div>
+            <div class="pl-main-val" style="color:#fff;font-size:22px;">${fmt(m.dividends||0)}</div>
+          </div>
+          <div>
+            <div class="pl-main-lbl">Остаток</div>
+            <div class="pl-main-val" style="color:#D4B886;font-size:22px;">${m.saldo===null?'-':fmt(m.saldo)}</div>
           </div>
         </div>
         
@@ -4724,15 +4742,23 @@ function setPayMethod(method){
   document.getElementById('payBank').classList.toggle('selected', method==='bank');
 }
 
-async function submitPayment(){
+async let _submitPaymentInFlight = false;
+function submitPayment(){
+  if(_submitPaymentInFlight){
+    console.log('submitPayment: dedup, ещё обрабатывается');
+    return;
+  }
   const amount = getMoneyValue('payAmount');
   const src = document.getElementById('paySource').value;
   const resName = document.getElementById('payResidentGroup').style.display!=='none' 
     ? document.getElementById('payResident').value : '';
   if(!amount){showToast('⚠️ Введите сумму');return;}
+  _submitPaymentInFlight = true;
   closeModal('payModal');
   showToast('✅ Записано: '+fmt(amount)+' тг');
-  callAction('addPayment', {type: payType, src, amount, isCash: payMethod==='cash', resident: resName}).then(loadAllData);
+  callAction('addPayment', {type: payType, src, amount, isCash: payMethod==='cash', resident: resName})
+    .then(loadAllData)
+    .finally(() => { setTimeout(() => { _submitPaymentInFlight = false; }, 3000); });
 }
 
 
