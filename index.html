@@ -3226,23 +3226,23 @@ function renderDashboard(){
             <div class="pl-card-year">2026</div>
           </div>
           <button class="pl-sheets-btn" onclick="window.open('https://docs.google.com/spreadsheets/d/${'1D-D4P5G9cmX1tdyluWe88sNTVGGqJqQWA4NvrvTbrYE'}/edit', '_blank')">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 3h6m-6 4h6m-6 4h6M3 3v8m0-8h8v8H3" stroke="#000" stroke-width="1.5" stroke-linecap="round"/></svg>
-            BS - Finance
+            Таблица
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M14 3h7v7m0-7L10 14M21 14v5a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h5" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         </div>
         
-        <div class="pl-card-main" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+        <div class="pl-card-main" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
           <div>
             <div class="pl-main-lbl">Прибыль</div>
-            <div class="pl-main-val ${m.profit<0?'neg':''}" style="font-size:22px;">${m.profit>=0?'':'−'}${fmt(Math.abs(m.profit))}</div>
+            <div class="pl-main-val ${m.profit<0?'neg':''}" style="font-size:17px;">${m.profit>=0?'':'−'}${fmt(Math.abs(m.profit))}</div>
           </div>
           <div>
             <div class="pl-main-lbl">Дивиденды</div>
-            <div class="pl-main-val" style="color:#fff;font-size:22px;">${fmt(m.dividends||0)}</div>
+            <div class="pl-main-val" style="color:#fff;font-size:17px;">${fmt(m.dividends||0)}</div>
           </div>
           <div>
-            <div class="pl-main-lbl">Остаток</div>
-            <div class="pl-main-val" style="color:#D4B886;font-size:22px;">${m.saldo===null?'-':fmt(m.saldo)}</div>
+            <div class="pl-main-lbl">На кассе</div>
+            <div class="pl-main-val" style="color:#D4B886;font-size:17px;">${m.saldo===null?'-':fmt(m.saldo)}</div>
           </div>
         </div>
         
