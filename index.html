@@ -4742,8 +4742,8 @@ function setPayMethod(method){
   document.getElementById('payBank').classList.toggle('selected', method==='bank');
 }
 
-async let _submitPaymentInFlight = false;
-function submitPayment(){
+let _submitPaymentInFlight = false;
+async function submitPayment(){
   if(_submitPaymentInFlight){
     console.log('submitPayment: dedup, ещё обрабатывается');
     return;
