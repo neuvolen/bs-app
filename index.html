@@ -736,6 +736,14 @@
 <div class="page" id="page-mymeetings"><div id="mymeetingsContent"><div class="loading"><div class="spinner"></div></div></div></div>
 
 <!-- SHARED -->
+<div class="page" id="page-custdev">
+  <div class="section-head">
+    <div class="section-title">CustDev</div>
+    <div style="font-size:13px;color:var(--text-muted);font-weight:600">Ответы на NPS опрос</div>
+  </div>
+  <div id="custdevContent"></div>
+</div>
+
 <div class="page" id="page-residents"><div id="residentsContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-subscribers"></div>
 <div class="page" id="page-todos"></div>
@@ -869,6 +877,15 @@
       <div class="picker" style="grid-template-columns:1fr 1fr">
         <button class="pick-btn selected" id="arFmtOff" onclick="setArFormat('Офлайн')">📍 Офлайн</button>
         <button class="pick-btn" id="arFmtOn" onclick="setArFormat('Онлайн')">🌐 Онлайн</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Партнёр (одна Meet ссылка на двоих)</label>
+      <select class="form-select" id="arPartner">
+        <option value="">- нет -</option>
+      </select>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.4">
+        Если резидент работает в паре - выберите второго. Тогда у обоих будет одна ссылка Meet.
       </div>
     </div>
     <div class="modal-actions"><button class="btn btn-primary" onclick="submitAddResident()">Добавить</button><button class="btn btn-secondary" onclick="closeModal('addResidentModal')">Отмена</button></div>
@@ -2701,6 +2718,7 @@ const ADMIN_TABS = [
   {id:'todos', label:'Задачи'},
   {id:'reports', label:'Отчёты'},
   {id:'fines', label:'Штрафы'},
+  {id:'custdev', label:'CustDev'},
   {id:'residents', label:'Резиденты'},
   {id:'subscribers', label:'Подписчики'},
   {id:'leadmagnets', label:'Материалы'},
@@ -3153,6 +3171,7 @@ function renderAllPages(){
   try{renderSchedule();}catch(e){console.error('schedule:',e);}
   try{renderReports();}catch(e){console.error('reports:',e);}
   try{renderFines();}catch(e){console.error('fines:',e);}
+  try{renderCustdev();}catch(e){console.error('custdev:',e);}
   try{renderResidents();}catch(e){console.error('residents:',e);}
   try{renderSubscribers();}catch(e){console.error('subscribers:',e);}
   try{renderTodos();}catch(e){console.error('todos:',e);}
@@ -3629,6 +3648,156 @@ function renderFines(){
   finesHtml += '</div>';
   el.innerHTML += finesHtml;
 }
+
+let _custdevCache = null;
+
+async function renderCustdev(){
+  const el = document.getElementById('custdevContent');
+  if(!el) return;
+  
+  // Показываем загрузку только если нет кэша
+  if(!_custdevCache){
+    el.innerHTML = '<div class="card" style="text-align:center;padding:40px"><div style="font-size:14px;color:var(--text-muted)">Загружаем ответы...</div></div>';
+  }
+  
+  try{
+    const res = await callAction('getCustdevResponses', {});
+    _custdevCache = res || {responses:[], byResident:{}};
+  }catch(e){
+    el.innerHTML = '<div class="card"><div style="color:var(--red)">Ошибка загрузки: '+e.message+'</div></div>';
+    return;
+  }
+  
+  const responses = _custdevCache.responses || [];
+  const byRes = _custdevCache.byResident || {};
+  
+  // Получаем список всех резидентов из кэша для отображения тех у кого нет ответов
+  const allResidents = (cache.residents || []).filter(r => r && r.name && !r.isAdmin && !r.isTeam);
+  
+  // Подсчёт общей статистики
+  const totalRes = allResidents.length;
+  const responded = Object.keys(byRes).length;
+  const responseRate = totalRes > 0 ? Math.round(responded * 100 / totalRes) : 0;
+  
+  let html = '';
+  
+  // Карточка общей статистики + аналитика
+  html += '<div class="card" style="margin-bottom:14px">';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">';
+  html += '<div><div style="font-size:22px;font-weight:900;color:var(--gold)">'+totalRes+'</div><div style="font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase">Резидентов</div></div>';
+  html += '<div><div style="font-size:22px;font-weight:900;color:#fff">'+responded+'</div><div style="font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase">Ответили</div></div>';
+  html += '<div><div style="font-size:22px;font-weight:900;color:'+(responseRate>=50?'#26A69A':'#E53935')+'">'+responseRate+'%</div><div style="font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase">Конверсия</div></div>';
+  html += '</div>';
+  
+  // Аналитика от AI (заглушка с реальным разбором текста)
+  if(responses.length > 0){
+    const analysis = analyzeCustdevResponses(responses);
+    html += '<div style="padding:14px;background:rgba(212,184,134,0.06);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;margin-top:10px">';
+    html += '<div style="font-size:11px;font-weight:800;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">Аналитика</div>';
+    html += '<div style="font-size:13px;color:#fff;font-weight:600;line-height:1.5">'+analysis+'</div>';
+    html += '</div>';
+  }
+  
+  html += '<button class="btn btn-secondary" style="margin-top:14px;width:100%" onclick="triggerNPS()">📋 Запустить новый опрос</button>';
+  html += '</div>';
+  
+  // Карточки резидентов с ответами
+  if(allResidents.length === 0){
+    html += '<div class="card" style="text-align:center;padding:30px"><div style="color:var(--text-muted)">Нет резидентов</div></div>';
+  } else {
+    allResidents.forEach(function(r){
+      const myResp = byRes[r.name] || [];
+      const hasResp = myResp.length > 0;
+      
+      html += '<div class="card" style="margin-bottom:10px;padding:0;overflow:hidden;cursor:pointer" onclick="toggleCustdevRes(this)">';
+      html += '<div style="padding:16px 18px;display:flex;align-items:center;gap:14px">';
+      html += '<div style="width:44px;height:44px;border-radius:50%;background:'+(hasResp?'#26A69A':'rgba(255,255,255,0.06)')+';color:'+(hasResp?'#000':'var(--text-muted)')+';display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0">'+(r.name||'?')[0]+'</div>';
+      html += '<div style="flex:1;min-width:0">';
+      html += '<div style="font-weight:800;color:#fff;font-size:15px">'+escapeHtml(r.name||'')+'</div>';
+      html += '<div style="font-size:12px;color:var(--text-muted);margin-top:2px">'+(hasResp ? myResp.length+' ответов · последний '+myResp[myResp.length-1].date : 'Нет ответов')+'</div>';
+      html += '</div>';
+      html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2.5" stroke-linecap="round" class="custdev-arrow"><polyline points="6 9 12 15 18 9"/></svg>';
+      html += '</div>';
+      
+      if(hasResp){
+        html += '<div class="custdev-responses" style="display:none;padding:0 18px 16px 18px;border-top:1px solid rgba(255,255,255,0.06)">';
+        myResp.forEach(function(resp){
+          html += '<div style="margin-top:14px;padding:14px 16px;background:rgba(0,0,0,0.3);border-radius:10px">';
+          html += '<div style="font-size:11px;color:var(--gold);font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">'+resp.date+'</div>';
+          html += '<div style="font-size:14px;color:#fff;font-weight:600;line-height:1.5;white-space:pre-wrap">'+escapeHtml(resp.text)+'</div>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+      html += '</div>';
+    });
+  }
+  
+  el.innerHTML = html;
+}
+
+function toggleCustdevRes(card){
+  const resp = card.querySelector('.custdev-responses');
+  const arrow = card.querySelector('.custdev-arrow');
+  if(!resp) return;
+  const isOpen = resp.style.display === 'block';
+  resp.style.display = isOpen ? 'none' : 'block';
+  if(arrow) arrow.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+function escapeHtml(s){
+  if(!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function analyzeCustdevResponses(responses){
+  // Простая аналитика: ищем повторяющиеся темы, тон, частые слова
+  if(!responses || !responses.length) return 'Пока нет данных для анализа.';
+  
+  const totalChars = responses.reduce((s,r) => s + (r.text||'').length, 0);
+  const avgLen = Math.round(totalChars / responses.length);
+  
+  // Топ слов (упрощённая ключевая аналитика)
+  const allText = responses.map(r => (r.text||'').toLowerCase()).join(' ');
+  const stopWords = new Set(['это','что','как','для','при','без','над','под','или','тоже','еще','уже','если','когда','очень','может','чтобы','свой','свою','свои','свое','моя','мой','мое','мои','наш','наша','наше','наши','ваш','ваша','ваше','ваши','быть','есть','была','были','будет','будем','будут','этого','этому','этим','этой','тебя','тебе','меня','мне','нет','да','же','ну','вот','так','тут','там','где','куда','откуда']);
+  const words = allText.split(/[^а-яёa-z0-9]+/i).filter(w => w.length >= 4 && !stopWords.has(w));
+  const wordCount = {};
+  words.forEach(w => wordCount[w] = (wordCount[w]||0) + 1);
+  const topWords = Object.entries(wordCount).sort((a,b) => b[1]-a[1]).slice(0,5).filter(([w,c]) => c >= 2);
+  
+  // Тон ответов (простой: позитивные vs негативные ключи)
+  const positive = ['хорошо','супер','отлично','полезно','помогло','круто','спасибо','рад','довол','нрав','прекрасно','лучш','рост','прибыль','прорыв','прогресс'];
+  const negative = ['плохо','не понял','непонятно','сложно','тяжело','устал','не успева','хуже','разочаров','не вижу','зря','скучно'];
+  let pos = 0, neg = 0;
+  responses.forEach(r => {
+    const t = (r.text||'').toLowerCase();
+    positive.forEach(k => { if(t.indexOf(k) >= 0) pos++; });
+    negative.forEach(k => { if(t.indexOf(k) >= 0) neg++; });
+  });
+  const tone = pos > neg*2 ? '👍 Преимущественно позитивный' : (neg > pos ? '⚠️ Есть негативные сигналы' : '🤝 Сбалансированный');
+  
+  let txt = responses.length + ' ответ' + (responses.length>1?'ов':'') + ' · средняя длина ' + avgLen + ' симв.';
+  txt += '\n' + tone;
+  if(topWords.length) txt += '\nЧастые темы: ' + topWords.map(([w,c]) => w+' ('+c+')').join(', ');
+  
+  return txt;
+}
+
+async function triggerNPS(){
+  if(!confirm('Запустить NPS опрос для всех резидентов?\n\nЗащита от спама: повторный запуск возможен раз в 30 дней.')) return;
+  showToast('⏳ Отправляем опрос...');
+  try{
+    const res = await callAction('runNPS', {});
+    if(res && res.ok){
+      showToast('✅ Опрос отправлен');
+    } else {
+      showToast('⚠️ ' + (res && res.error || 'Не удалось отправить'));
+    }
+  }catch(e){
+    showToast('❌ ' + e.message);
+  }
+}
+
 
 
 function renderSubscribers(){
@@ -4776,6 +4945,24 @@ function initAddResident(){
   document.getElementById('arFmtOn').classList.remove('selected');
   document.getElementById('arT3').classList.add('selected');
   document.getElementById('arT4').classList.remove('selected');
+
+  // Заполняем список партнёров (другие резиденты)
+  try{
+    var sel = document.getElementById('arPartner');
+    if(sel){
+      sel.innerHTML = '<option value="">- нет -</option>';
+      var residents = (cache.residents || []).filter(function(r){
+        return r && r.name && !r.isAdmin && !r.isTeam;
+      });
+      residents.sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+      residents.forEach(function(r){
+        var opt = document.createElement('option');
+        opt.value = r.name;
+        opt.textContent = r.name;
+        sel.appendChild(opt);
+      });
+    }
+  }catch(prtErr){console.log('partner list err:', prtErr);}
 }
 
 function setArFormat(fmt){
@@ -4795,20 +4982,22 @@ async function submitAddResident(){
   if(!name){showToast('⚠️ Введите имя');return;}
   var debt = getMoneyValue('arDebt') || '0';
   var source = document.getElementById('arSource').value;
+  var partnerSel = document.getElementById('arPartner');
+  var partner = partnerSel ? partnerSel.value : '';
   closeModal('addResidentModal');
   // Если это перевод подписчика. используем convertToResident
   if(window._convertingChatId){
     var chatId = window._convertingChatId;
     window._convertingChatId = null;
     showToast('✅ "'+name+'" переведён в резиденты');
-    callAction('convertToResident', {chatId:chatId, name:name, debt:debt, visits:arVisits, format:arFormat, tariff:debt}).then(function(){
+    callAction('convertToResident', {chatId:chatId, name:name, debt:debt, visits:arVisits, format:arFormat, tariff:debt, partner:partner}).then(function(){
       reloadSubscribers();
       loadAllData();
     });
     return;
   }
   showToast('✅ Резидент "'+name+'" добавлен');
-  callAction('addResident', {name, tariff: debt, debt, visits: arVisits, source, format: arFormat}).then(loadAllData);
+  callAction('addResident', {name, tariff: debt, debt, visits: arVisits, source, format: arFormat, partner:partner}).then(loadAllData);
 }
 
 
