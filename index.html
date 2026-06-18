@@ -3182,7 +3182,7 @@ function renderAllPages(){
 
 function renderDashboard(){
   const d = cache.debet||{};
-  const residents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
+  const residents = (cache.residents||[]).filter(r=>!r.isFired&&!r.isAdmin&&!r.isTeam&&r.name!=='Тест'&&r.name!=='Тест2');
   const fines = cache.fines||[];
   const unpaid = fines.filter(f=>f.status==='Не оплатил');
   const unpaidSum = unpaid.reduce((s,f)=>s+(Number(f.amount)||0),0);
@@ -3296,15 +3296,11 @@ function renderDashboard(){
       <div class="metric"><div class="metric-val">${todayReports}</div><div class="metric-lbl">Отчётов сегодня</div></div>
     </div>
     <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div class="card-title" style="margin:0">Финансы месяца</div>
-        <span class="badge ${rentab>0?'b-green':'b-red'}">${rentab}%</span>
-      </div>
+      <div class="card-title" style="margin-bottom:10px">Финансы месяца</div>
       <div class="metric-grid" style="margin:0">
         <div class="metric" style="background:var(--card2);border:none;padding:12px"><div class="metric-val" style="font-size:20px">${fmt(d.netProfit||0)}</div><div class="metric-lbl">Чистая прибыль</div></div>
-        <div class="metric" style="background:var(--card2);border:none;padding:12px"><div class="metric-val" style="font-size:20px">${fmt(d.residual||0)}</div><div class="metric-lbl">Остаток</div></div>
+        <div class="metric" style="background:var(--card2);border:none;padding:12px"><div class="metric-val" style="font-size:20px;color:var(--gold)">${fmt(d.residual||0)}</div><div class="metric-lbl">На кассе</div></div>
       </div>
-      <div class="pbar"><div class="pbar-fill" style="width:${Math.min(100,Math.max(0,rentab))}%"></div></div>
     </div>
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
@@ -3808,11 +3804,32 @@ function renderSubscribers(){
   el.innerHTML = `
     <div class="section-head">
       <div class="section-title">Подписчики канала</div>
-      <div class="section-action" onclick="reloadSubscribers()">⟳ Обновить</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="section-action" onclick="checkChannelMembership()" style="font-size:12px">📡 Проверить канал</div>
+        <div class="section-action" onclick="reloadSubscribers()">⟳ Обновить</div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);padding:0 4px 14px;line-height:1.45">
+      Проверка канала: Telegram сверяет каждый Chat ID с реальным членством в @bsurgery_kz. Кто вышел или забанен - исчезнут из списка.
     </div>
     <div id="subscribersList"><div class="empty">Загрузка...</div></div>
   `;
   reloadSubscribers();
+}
+
+async function checkChannelMembership(){
+  showToast('⏳ Проверяем подписчиков...');
+  try{
+    var r = await callAction('checkChannelMembership', {});
+    if(r && r.ok){
+      showToast('✅ Проверено '+r.checked+' · в канале '+r.member+' · вышло '+r.left);
+      reloadSubscribers();
+    } else {
+      showToast('⚠️ Ошибка проверки');
+    }
+  }catch(e){
+    showToast('❌ '+e.message);
+  }
 }
 
 async function reloadSubscribers(){
@@ -4211,6 +4228,41 @@ function renderMyStatus(){
         <div class="metric-lbl">Тариф</div>
       </div>
     </div>
+    
+    <!-- Сводка по встречам (как у админа) -->
+    ${(me.visitsTariff||me.visitsTotal) ? `
+    <div class="card">
+      <div class="card-title" style="margin-bottom:12px">Встречи</div>
+      <div class="metric-grid" style="margin:0">
+        <div class="metric" style="background:var(--card2);border:none;padding:12px">
+          <div class="metric-val" style="font-size:22px;color:var(--gold)">${me.visitsLeft||0}</div>
+          <div class="metric-lbl">Осталось</div>
+        </div>
+        <div class="metric" style="background:var(--card2);border:none;padding:12px">
+          <div class="metric-val" style="font-size:22px">${me.visitsChecked||0} / ${me.visitsTotal||0}</div>
+          <div class="metric-lbl">Использовано</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:var(--card2);border-radius:8px;font-size:13px;color:var(--text-muted);line-height:1.5">
+        Тариф: ${me.visitsTariff||0} встреч/мес · Циклов оплачено: ${me.cyclesPaid||1}
+        ${me.partner ? '<br>🤝 Партнёр: <b style="color:#fff">'+me.partner+'</b> (одна Meet ссылка на двоих)' : ''}
+      </div>
+    </div>
+    ` : ''}
+    
+    <!-- Ближайшая встреча -->
+    ${(function(){
+      var myMeets = (cache.schedule||[]).filter(ev => ev.res === me.name);
+      myMeets.sort((a,b) => parseScheduleKey(a) - parseScheduleKey(b));
+      var next = myMeets[0];
+      if(!next) return '';
+      return `<div class="card">
+        <div class="card-title" style="margin-bottom:10px">Ближайшая встреча</div>
+        <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:6px">${next.date} ${next.time||''}</div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">${(next.link||'').includes('meet')?'🔗 Онлайн (Google Meet)':'📍 '+(next.link||'Уточнить место')}</div>
+        ${(next.link||'').includes('meet') ? '<a href="'+next.link+'" target="_blank"><button class="btn btn-primary" style="width:100%">Открыть Google Meet</button></a>' : ''}
+      </div>`;
+    })()}
     ${me.debt>0?`<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank"><button class="btn btn-primary">💳 Оплатить через Kaspi</button></a>`:'<div class="card" style="text-align:center"><div style="font-size:32px;margin-bottom:6px">✅</div><div style="font-weight:600">Долгов нет</div></div>'}
     <button class="btn btn-secondary" onclick="shareStory()">📸 Поделиться в Stories</button>
     <button class="btn btn-secondary" onclick="shareStoryInvite()">🚀 Пригласить друзей в BS</button>
@@ -4611,7 +4663,7 @@ function renderMyMeetings(){
 
 // ─── MODALS ────────────────────────────────────────────────────────────────
 function initFineModal(){
-  const residents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
+  const residents = (cache.residents||[]).filter(r=>!r.isFired&&!r.isAdmin&&!r.isTeam&&r.name!=='Тест'&&r.name!=='Тест2');
   document.getElementById('fineResident').innerHTML = residents.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
   document.getElementById('fineTypeGrid').innerHTML = FINE_TYPES.map((t,i)=>`
     <button class="pick-btn ${i===0?'selected':''}" data-name="${t.name}" data-amount="${t.amount}" onclick="selectFineType(this)">
@@ -4646,7 +4698,7 @@ async function submitFine(){
 }
 
 function initSchedModal(){
-  const residents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
+  const residents = (cache.residents||[]).filter(r=>!r.isFired&&!r.isAdmin&&!r.isTeam&&r.name!=='Тест'&&r.name!=='Тест2');
   document.getElementById('schedResident').innerHTML = residents.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
   renderDateGrid(10);
   // Перерисовываем время при смене даты
