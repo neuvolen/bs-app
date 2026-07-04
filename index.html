@@ -738,6 +738,14 @@
 <!-- RESIDENT PAGES -->
 <div class="page" id="page-mystatus"><div id="mystatusContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-myprofile"><div id="myprofileContent"><div class="loading"><div class="spinner"></div></div></div></div>
+<div class="page" id="page-wheel">
+  <div class="section-head">
+    <div class="section-title" style="color:#D4B886">Колесо баланса</div>
+    <div class="section-action" onclick="openWheelForm()">✏️ Оценить</div>
+  </div>
+  <div id="wheelContent"><div class="empty">Загрузка...</div></div>
+</div>
+
 <div class="page" id="page-mymeetings"><div id="mymeetingsContent"><div class="loading"><div class="spinner"></div></div></div></div>
 
 <!-- SHARED -->
@@ -816,6 +824,18 @@
       <div class="picker" id="timeGrid" style="grid-template-columns:repeat(4,1fr);gap:4px"></div>
     </div>
     <div class="modal-actions"><button class="btn btn-primary" onclick="submitSchedule()" style="margin-bottom:6px;padding:11px">Создать встречу</button><button class="btn btn-secondary" onclick="closeModal('schedModal')" style="padding:10px">Отмена</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="wheelModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="wheelModalTitle">Колесо</div>
+    <div id="wheelFormBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="wheelSubmitBtn" onclick="submitWheelForm()">Дальше</button>
+      <button class="btn btn-secondary" onclick="closeModal('wheelModal')">Отмена</button>
+    </div>
   </div>
 </div>
 
@@ -2749,6 +2769,7 @@ const LEAD_TABS = [
 const RESIDENT_TABS = [
   {id:'about', label:'BS'},
   {id:'mystatus', label:'Статус'},
+  {id:'wheel', label:'Колесо'},
   {id:'mymeetings', label:'Встречи'},
   {id:'residents', label:'Резиденты'},
   {id:'leadmagnets', label:'Материалы'},
@@ -3215,6 +3236,7 @@ function renderAllPages(){
   try{renderSubscribers();}catch(e){console.error('subscribers:',e);}
   try{renderTodos();}catch(e){console.error('todos:',e);}
   try{renderMyStatus();}catch(e){console.error('mystatus:',e);}
+  try{renderWheel();}catch(e){console.error('wheel:',e);}
   try{renderMyProfile();}catch(e){console.error('myprofile:',e);}
   try{renderMyMeetings();}catch(e){console.error('mymeetings:',e);}
 }
@@ -4025,8 +4047,44 @@ function openResidentProfile(r){
       ${r.phone?`<a class="btn btn-secondary" href="https://wa.me/${(r.phone||'').replace(/[^0-9]/g,'')}" target="_blank">💬 WhatsApp</a>`:''}
     </div>`:''}
     ${(!r.bio&&!r.help&&!r.instagram&&!r.phone)?`<div class="empty"><div class="em-icon">📝</div><div class="em-title">Профиль не заполнен</div><div class="em-text">Резидент пока не добавил информацию о себе</div></div>`:''}
+    <div id="resWheelBlock"></div>
   `;
   showDetail();
+  // Колесо резидента (для админа): подгружаем асинхронно
+  if(isRealAdmin && !r.isAdmin){
+    loadResidentWheel(r.name);
+  }
+}
+
+async function loadResidentWheel(name){
+  const el = document.getElementById('resWheelBlock');
+  if(!el) return;
+  el.innerHTML = '<div class="card"><div style="font-size:13px;color:#888;text-align:center;padding:10px">Загружаем колесо...</div></div>';
+  try{
+    const d = await callAction('getWheel', {name: name});
+    const dna = (d.dna && d.dna[0]) || null;
+    const dnaPrev = (d.dna && d.dna[1]) || null;
+    const life = (d.life && d.life[0]) || null;
+    const lifePrev = (d.life && d.life[1]) || null;
+    if(!dna && !life){
+      el.innerHTML = '<div class="card"><div class="card-title" style="color:#D4B886">Колесо баланса</div><div style="font-size:13px;color:#888;padding:8px 0">Резидент ещё не делал замеров</div></div>';
+      return;
+    }
+    let h = '';
+    if(dna){
+      h += '<div class="card" style="margin-bottom:12px"><div class="card-title" style="color:#D4B886;font-weight:900">🧬 ДНК бизнеса</div>';
+      h += '<div style="font-size:12px;color:#888;margin-bottom:8px">'+dna.date+' · средний: <b style="color:#D4B886">'+wheelAvg(dna.values)+'</b></div>';
+      h += drawRadar(WHEEL_DNA_AXES, dna.values, dnaPrev ? dnaPrev.values : null, '#D4B886') + '</div>';
+    }
+    if(life){
+      h += '<div class="card"><div class="card-title" style="color:#D4B886;font-weight:900">☀️ Колесо баланса</div>';
+      h += '<div style="font-size:12px;color:#888;margin-bottom:8px">'+life.date+' · средний: <b style="color:#D4B886">'+wheelAvg(life.values)+'</b></div>';
+      h += drawRadar(WHEEL_LIFE_AXES, life.values, lifePrev ? lifePrev.values : null, '#4caf7d') + '</div>';
+    }
+    el.innerHTML = h;
+  }catch(e){
+    el.innerHTML = '';
+  }
 }
 
 function filterRes(q){
@@ -4244,6 +4302,197 @@ function getMyData(){
   return all.find(r=>r.chatId===uid);
 }
 
+// ══════════ КОЛЕСО БАЛАНСА ══════════
+const WHEEL_DNA_AXES = ["Стратегия","Финансы","Команда","Процессы","Продажи","Маркетинг","Продукт","Делегирование"];
+const WHEEL_LIFE_AXES = ["Бизнес","Здоровье","Семья","Окружение","Личные финансы","Развитие","Отдых","Смысл"];
+let _wheelData = null;
+let _wheelFormType = 'dna';
+
+function drawRadar(axes, current, previous, color){
+  // SVG радар-чарт. current/previous - массивы значений 1-10 или null
+  const size = 320, cx = size/2, cy = size/2, maxR = 105;
+  const n = axes.length;
+  const angle = i => (Math.PI * 2 * i / n) - Math.PI/2;
+  const pt = (i, val) => {
+    const r = maxR * val / 10;
+    return [cx + r * Math.cos(angle(i)), cy + r * Math.sin(angle(i))];
+  };
+  let svg = `<svg viewBox="0 0 ${size} ${size}" style="width:100%;max-width:360px;display:block;margin:0 auto">`;
+  // Сетка: кольца 2,4,6,8,10
+  for(let ring = 2; ring <= 10; ring += 2){
+    let pts = [];
+    for(let i = 0; i < n; i++) pts.push(pt(i, ring).join(','));
+    svg += `<polygon points="${pts.join(' ')}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+  }
+  // Лучи
+  for(let i = 0; i < n; i++){
+    const [x, y] = pt(i, 10);
+    svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+  }
+  // Предыдущий замер (серый контур)
+  if(previous && previous.length === n){
+    let pts = [];
+    for(let i = 0; i < n; i++) pts.push(pt(i, previous[i]).join(','));
+    svg += `<polygon points="${pts.join(' ')}" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  }
+  // Текущий замер
+  if(current && current.length === n){
+    let pts = [];
+    for(let i = 0; i < n; i++) pts.push(pt(i, current[i]).join(','));
+    svg += `<polygon points="${pts.join(' ')}" fill="${color}22" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    // Точки со значениями
+    for(let i = 0; i < n; i++){
+      const [x, y] = pt(i, current[i]);
+      svg += `<circle cx="${x}" cy="${y}" r="4" fill="${color}"/>`;
+    }
+  }
+  // Подписи осей
+  for(let i = 0; i < n; i++){
+    const [x, y] = pt(i, 13.2);
+    const a = angle(i);
+    let anchor = 'middle';
+    if(Math.cos(a) > 0.3) anchor = 'start';
+    else if(Math.cos(a) < -0.3) anchor = 'end';
+    const val = current && current[i] !== undefined ? current[i] : '';
+    svg += `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="11" font-weight="700" fill="rgba(255,255,255,0.75)">${axes[i]}</text>`;
+    if(val !== ''){
+      svg += `<text x="${x}" y="${y+13}" text-anchor="${anchor}" font-size="11" font-weight="900" fill="${color}">${val}</text>`;
+    }
+  }
+  svg += '</svg>';
+  return svg;
+}
+
+function wheelAvg(values){
+  if(!values || !values.length) return 0;
+  return Math.round(values.reduce((a,b)=>a+b,0) / values.length * 10) / 10;
+}
+
+async function renderWheel(){
+  const el = document.getElementById('wheelContent');
+  if(!el) return;
+  const me = getMyData();
+  if(!me){ el.innerHTML = '<div class="empty">Профиль не найден</div>'; return; }
+
+  try{
+    _wheelData = await callAction('getWheel', {name: me.name});
+  }catch(e){
+    el.innerHTML = '<div class="card"><div style="color:var(--red)">Ошибка загрузки</div></div>';
+    return;
+  }
+
+  const d = _wheelData || {};
+  const dna = (d.dna && d.dna[0]) || null;
+  const dnaPrev = (d.dna && d.dna[1]) || null;
+  const life = (d.life && d.life[0]) || null;
+  const lifePrev = (d.life && d.life[1]) || null;
+
+  let h = '';
+
+  // ── ДНК бизнеса ──
+  h += '<div class="card" style="margin-bottom:14px">';
+  h += '<div class="card-title" style="color:#D4B886;font-weight:900;letter-spacing:0.5px;margin-bottom:4px">🧬 ДНК бизнеса</div>';
+  if(dna){
+    h += '<div style="font-size:12px;color:#888;margin-bottom:10px">Замер: '+dna.date+(dnaPrev?' · пунктир: '+dnaPrev.date:'')+' · средний балл: <b style="color:#D4B886">'+wheelAvg(dna.values)+'</b></div>';
+    h += drawRadar(WHEEL_DNA_AXES, dna.values, dnaPrev ? dnaPrev.values : null, '#D4B886');
+  } else {
+    h += '<div style="font-size:13px;color:#888;padding:20px 0;text-align:center">Ещё нет замеров.<br>Нажми "Оценить" и поставь первые оценки.</div>';
+  }
+  h += '</div>';
+
+  // ── Личное колесо ──
+  h += '<div class="card">';
+  h += '<div class="card-title" style="color:#D4B886;font-weight:900;letter-spacing:0.5px;margin-bottom:4px">☀️ Колесо баланса</div>';
+  if(life){
+    h += '<div style="font-size:12px;color:#888;margin-bottom:10px">Замер: '+life.date+(lifePrev?' · пунктир: '+lifePrev.date:'')+' · средний балл: <b style="color:#D4B886">'+wheelAvg(life.values)+'</b></div>';
+    h += drawRadar(WHEEL_LIFE_AXES, life.values, lifePrev ? lifePrev.values : null, '#4caf7d');
+    h += '<div style="margin-top:10px;padding:10px 12px;background:var(--card2);border-radius:8px;font-size:12px;color:#888;line-height:1.4">Ось <b style="color:#fff">Бизнес</b> считается автоматически. это средний балл твоего ДНК бизнеса.</div>';
+  } else {
+    h += '<div style="font-size:13px;color:#888;padding:20px 0;text-align:center">Ещё нет замеров.<br>Сначала оцени ДНК бизнеса, потом личное колесо.</div>';
+  }
+  h += '</div>';
+
+  el.innerHTML = h;
+}
+
+function openWheelForm(){
+  _wheelFormType = 'dna';
+  renderWheelForm();
+  openModal('wheelModal');
+}
+
+function renderWheelForm(){
+  const isDna = _wheelFormType === 'dna';
+  const axes = isDna ? WHEEL_DNA_AXES : WHEEL_LIFE_AXES.slice(1); // life: без Бизнеса (авто)
+  const titleEl = document.getElementById('wheelModalTitle');
+  const bodyEl = document.getElementById('wheelFormBody');
+  if(titleEl) titleEl.textContent = isDna ? '🧬 ДНК бизнеса (1 из 2)' : '☀️ Колесо баланса (2 из 2)';
+
+  // Предзаполнение последними значениями
+  const last = isDna
+    ? (_wheelData && _wheelData.dna && _wheelData.dna[0] ? _wheelData.dna[0].values : null)
+    : (_wheelData && _wheelData.life && _wheelData.life[0] ? _wheelData.life[0].values.slice(1) : null);
+
+  let h = '<div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.4">' +
+    (isDna ? 'Оцени каждую зону бизнеса от 1 до 10. Честно, как есть сейчас.' : 'Теперь про тебя лично. Ось Бизнес добавится автоматически.') + '</div>';
+
+  axes.forEach((ax, i) => {
+    const val = last && last[i] ? last[i] : 5;
+    h += `<div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+        <span style="font-size:14px;font-weight:700;color:#fff">${ax}</span>
+        <span id="wv_${i}" style="font-size:15px;font-weight:900;color:#D4B886">${val}</span>
+      </div>
+      <input type="range" min="1" max="10" value="${val}" data-axis="${i}"
+        style="width:100%;accent-color:#D4B886;height:26px"
+        oninput="document.getElementById('wv_'+this.dataset.axis).textContent=this.value">
+    </div>`;
+  });
+  if(bodyEl) bodyEl.innerHTML = h;
+
+  const btnEl = document.getElementById('wheelSubmitBtn');
+  if(btnEl) btnEl.textContent = isDna ? 'Дальше →' : 'Сохранить';
+}
+
+let _wheelSaveInFlight = false;
+async function submitWheelForm(){
+  if(_wheelSaveInFlight) return;
+  const me = getMyData();
+  if(!me){ showToast('⚠️ Профиль не найден'); return; }
+
+  const inputs = document.querySelectorAll('#wheelFormBody input[type=range]');
+  const values = Array.from(inputs).map(inp => inp.value).join(',');
+
+  _wheelSaveInFlight = true;
+  try{
+    if(_wheelFormType === 'dna'){
+      const r = await callAction('saveWheel', {name: me.name, type: 'dna', values: values});
+      if(r && r.ok){
+        // Обновим кэш чтобы Бизнес в life посчитался от свежего ДНК
+        _wheelData = await callAction('getWheel', {name: me.name});
+        _wheelFormType = 'life';
+        renderWheelForm();
+        showToast('✅ ДНК сохранено. Теперь про тебя');
+      } else {
+        showToast('⚠️ ' + (r && r.error || 'Ошибка'));
+      }
+    } else {
+      const r = await callAction('saveWheel', {name: me.name, type: 'life', values: values});
+      closeModal('wheelModal');
+      if(r && r.ok){
+        showToast('✅ Колесо обновлено');
+        renderWheel();
+      } else {
+        showToast('⚠️ ' + (r && r.error || 'Ошибка'));
+      }
+    }
+  }catch(e){
+    showToast('❌ ' + e.message);
+  }finally{
+    setTimeout(() => { _wheelSaveInFlight = false; }, 1500);
+  }
+}
+
 function renderMyStatus(){
   const me = getMyData();
   const el = document.getElementById('mystatusContent');
@@ -4269,13 +4518,12 @@ function renderMyStatus(){
       </div>
     </div>
     
-    <!-- Сводка по встречам (как у админа) -->
-    ${(me.visitsTariff||me.visitsTotal) ? `
+    <!-- Сводка по встречам - всегда показывается -->
     <div class="card">
-      <div class="card-title" style="margin-bottom:12px;color:var(--gold);font-weight:900;letter-spacing:0.5px">Встречи</div>
+      <div class="card-title" style="margin-bottom:12px;color:#D4B886;font-weight:900;letter-spacing:0.5px">Встречи</div>
       <div class="metric-grid" style="margin:0">
         <div class="metric" style="background:var(--card2);border:none;padding:12px">
-          <div class="metric-val" style="font-size:22px;color:var(--gold)">${me.visitsLeft||0}</div>
+          <div class="metric-val" style="font-size:22px;color:#D4B886">${me.visitsLeft||0}</div>
           <div class="metric-lbl">Осталось</div>
         </div>
         <div class="metric" style="background:var(--card2);border:none;padding:12px">
@@ -4283,12 +4531,11 @@ function renderMyStatus(){
           <div class="metric-lbl">Использовано</div>
         </div>
       </div>
-      <div style="margin-top:12px;padding:12px;background:var(--card2);border-radius:8px;font-size:13px;color:var(--text-muted);line-height:1.5">
+      <div style="margin-top:12px;padding:12px;background:var(--card2);border-radius:8px;font-size:13px;color:#888;line-height:1.5">
         Тариф: ${me.visitsTariff||0} встреч/мес · Циклов оплачено: ${me.cyclesPaid||1}
         ${me.partner ? '<br>🤝 Партнёр: <b style="color:#fff">'+me.partner+'</b> (одна Meet ссылка на двоих)' : ''}
       </div>
     </div>
-    ` : ''}
     
     <!-- Ближайшая встреча -->
     ${(function(){
@@ -4297,7 +4544,7 @@ function renderMyStatus(){
       var next = myMeets[0];
       if(!next) return '';
       return `<div class="card">
-        <div class="card-title" style="margin-bottom:10px;color:var(--gold);font-weight:900;letter-spacing:0.5px">Ближайшая встреча</div>
+        <div class="card-title" style="margin-bottom:10px;color:#D4B886;font-weight:900;letter-spacing:0.5px">Ближайшая встреча</div>
         <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:6px">${next.date} ${next.time||''}</div>
         <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">${(next.link||'').includes('meet')?'🔗 Онлайн (Google Meet)':'📍 '+(next.link||'Уточнить место')}</div>
         ${(next.link||'').includes('meet') ? '<a href="'+next.link+'" target="_blank"><button class="btn btn-primary" style="width:100%">Открыть Google Meet</button></a>' : ''}
