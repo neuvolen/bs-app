@@ -3260,6 +3260,7 @@ function renderAllPages(){
   try{renderSubscribers();}catch(e){console.error('subscribers:',e);}
   try{renderTodos();}catch(e){console.error('todos:',e);}
   try{renderMyStatus();}catch(e){console.error('mystatus:',e);}
+  try{if(viewAs==='resident')loadMyTasks();}catch(e){console.error('mytasks:',e);}
   try{renderWheel();}catch(e){console.error('wheel:',e);}
   try{renderMyProfile();}catch(e){console.error('myprofile:',e);}
   try{renderMyMeetings();}catch(e){console.error('mymeetings:',e);}
@@ -4071,13 +4072,92 @@ function openResidentProfile(r){
       ${r.phone?`<a class="btn btn-secondary" href="https://wa.me/${(r.phone||'').replace(/[^0-9]/g,'')}" target="_blank">💬 WhatsApp</a>`:''}
     </div>`:''}
     ${(!r.bio&&!r.help&&!r.instagram&&!r.phone)?`<div class="empty"><div class="em-icon">📝</div><div class="em-title">Профиль не заполнен</div><div class="em-text">Резидент пока не добавил информацию о себе</div></div>`:''}
+    <div id="resTasksBlock"></div>
     <div id="resWheelBlock"></div>
   `;
   showDetail();
-  // Колесо резидента (для админа): подгружаем асинхронно
+  // Задачи и колесо резидента (для админа): подгружаем асинхронно
   if(isRealAdmin && !r.isAdmin){
+    loadResidentTasks(r.name);
     loadResidentWheel(r.name);
   }
+}
+
+async function loadResidentTasks(name){
+  const el = document.getElementById('resTasksBlock');
+  if(!el) return;
+  el.innerHTML = '<div class="card"><div style="font-size:13px;color:#888;text-align:center;padding:8px">Загружаем задачи...</div></div>';
+  try{
+    const r = await callAction('getResTasks', {name: name});
+    const tasks = (r && r.tasks) || [];
+    let h = '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">';
+    h += '<div class="card-title" style="margin:0;color:#D4B886;font-weight:900">📌 Задачи</div>';
+    h += `<div class="section-action" onclick="promptAddTask('${name.replace(/'/g,"\\'")}')">+ Задача</div></div>`;
+    
+    if(!tasks.length){
+      h += '<div style="font-size:13px;color:#888;padding:4px 0">Задач нет. Добавь после встречи.</div>';
+    } else {
+      const active = tasks.filter(t => t.status !== 'Принята');
+      const doneCount = tasks.length - active.length;
+      active.forEach(t => {
+        const onCheck = t.status === 'На проверке';
+        const isReturned = t.status === 'Возвращена';
+        h += `<div style="padding:12px 14px;margin-bottom:8px;background:var(--card2);border-radius:10px;border-left:3px solid ${onCheck?'#ffd54f':(isReturned?'#e57373':'#D4B886')}">
+          <div style="font-size:14px;color:#fff;font-weight:600;line-height:1.45">${t.task}</div>
+          <div style="font-size:11px;color:#888;margin-top:4px">${t.date} · ${t.status}</div>
+          ${onCheck ? `<div style="display:flex;gap:8px;margin-top:10px">
+            <button onclick="adminTaskAction(${t.row},'Принята','${name.replace(/'/g,"\\'")}')" style="flex:1;background:rgba(76,175,125,0.15);border:1px solid #4caf7d;color:#4caf7d;padding:8px;border-radius:8px;font-size:12px;font-weight:800;font-family:inherit">✅ Принять</button>
+            <button onclick="adminTaskReturn(${t.row},'${name.replace(/'/g,"\\'")}')" style="flex:1;background:rgba(229,115,115,0.12);border:1px solid #e57373;color:#e57373;padding:8px;border-radius:8px;font-size:12px;font-weight:800;font-family:inherit">↩️ Вернуть</button>
+          </div>` : ''}
+        </div>`;
+      });
+      if(doneCount) h += '<div style="font-size:11px;color:#4caf7d;font-weight:800">✅ Принято: ' + doneCount + '</div>';
+    }
+    h += '</div>';
+    el.innerHTML = h;
+  }catch(e){
+    el.innerHTML = '';
+  }
+}
+
+function promptAddTask(name){
+  const task = prompt('Задача для ' + name + ':');
+  if(!task || !task.trim()) return;
+  showToast('⏳ Создаём...');
+  callAction('addResTask', {name: name, task: task.trim(), author: (user && user.first_name) || 'Админ'}).then(function(r){
+    if(r && r.ok){
+      showToast('✅ Задача создана. Резидент уведомлён');
+      loadResidentTasks(name);
+    } else {
+      showToast('⚠️ ' + (r && r.error || 'Ошибка'));
+    }
+  });
+}
+
+function adminTaskAction(row, status, name){
+  showToast('⏳ ...');
+  callAction('setResTaskStatus', {row: row, status: status}).then(function(r){
+    if(r && r.ok){
+      showToast(status === 'Принята' ? '✅ Принята. Резидент уведомлён' : '✅ Готово');
+      loadResidentTasks(name);
+    } else {
+      showToast('⚠️ ' + (r && r.error || 'Ошибка'));
+    }
+  });
+}
+
+function adminTaskReturn(row, name){
+  const comment = prompt('Что доработать? (комментарий резиденту)');
+  if(comment === null) return;
+  showToast('⏳ ...');
+  callAction('setResTaskStatus', {row: row, status: 'Возвращена', comment: comment || ''}).then(function(r){
+    if(r && r.ok){
+      showToast('↩️ Возвращена. Резидент уведомлён');
+      loadResidentTasks(name);
+    } else {
+      showToast('⚠️ ' + (r && r.error || 'Ошибка'));
+    }
+  });
 }
 
 async function loadResidentWheel(name){
@@ -4394,6 +4474,77 @@ function wheelAvg(values){
   return Math.round(values.reduce((a,b)=>a+b,0) / values.length * 10) / 10;
 }
 
+// ══════════ ЗАДАЧИ РЕЗИДЕНТА ══════════
+async function loadMyTasks(){
+  const el = document.getElementById('myTasksList');
+  if(!el) return;
+  const me = getMyData();
+  if(!me) return;
+  try{
+    const r = await callAction('getResTasks', {name: me.name});
+    const tasks = (r && r.tasks) || [];
+    const active = tasks.filter(t => t.status !== 'Принята');
+    const done = tasks.filter(t => t.status === 'Принята');
+    if(!tasks.length){
+      el.innerHTML = '<div style="color:#888;font-size:13px;padding:6px 0">Задач пока нет. Появятся после трекинг-встречи.</div>';
+      return;
+    }
+    let h = '';
+    active.forEach(t => {
+      const isReturned = t.status === 'Возвращена';
+      const onCheck = t.status === 'На проверке';
+      h += `<div style="padding:12px 14px;margin-bottom:8px;background:var(--card2);border-radius:10px;border-left:3px solid ${isReturned?'#e57373':(onCheck?'#ffd54f':'#D4B886')}">
+        <div style="font-size:14px;color:#fff;font-weight:600;line-height:1.45">${t.task}</div>
+        ${t.comment && isReturned ? '<div style="font-size:12px;color:#e57373;margin-top:6px">💬 '+t.comment+'</div>' : ''}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+          <span style="font-size:11px;color:#888">${t.date}${isReturned?' · возвращена':''}${onCheck?' · на проверке':''}</span>
+          ${!onCheck ? `<button onclick="submitTaskForReview(${t.row})" style="background:rgba(212,184,134,0.15);border:1px solid #D4B886;color:#D4B886;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:800;font-family:inherit">Сдать на проверку</button>` : '<span style="font-size:12px;color:#ffd54f;font-weight:700">⏳ Ждёт трекера</span>'}
+        </div>
+      </div>`;
+    });
+    if(done.length){
+      h += '<div style="font-size:11px;color:#4caf7d;font-weight:800;margin-top:6px">✅ Принято задач: ' + done.length + '</div>';
+    }
+    el.innerHTML = h;
+  }catch(e){
+    el.innerHTML = '<div style="color:#888;font-size:13px">Не удалось загрузить</div>';
+  }
+}
+
+let _taskSubmitInFlight = false;
+async function submitTaskForReview(row){
+  if(_taskSubmitInFlight) return;
+  _taskSubmitInFlight = true;
+  showToast('⏳ Отправляем на проверку...');
+  try{
+    const r = await callAction('setResTaskStatus', {row: row, status: 'На проверке'});
+    if(r && r.ok){
+      showToast('✅ Сдано. Трекер проверит');
+      loadMyTasks();
+    } else {
+      showToast('⚠️ ' + (r && r.error || 'Ошибка'));
+    }
+  }catch(e){ showToast('❌ ' + e.message); }
+  finally{ setTimeout(()=>{ _taskSubmitInFlight = false; }, 1500); }
+}
+
+function copyReferralLink(){
+  const me = getMyData();
+  const myId = user && user.id ? String(user.id) : '';
+  if(!myId){ showToast('⚠️ Не удалось определить твой ID'); return; }
+  const link = 'https://t.me/bsurgery_bot?start=ref_' + myId;
+  const text = 'Привет! Я в Business Surgery. это системная работа с бизнесом каждые 10 дней, не курс и не клуб. Мне зашло. Начни с разбора твоего бизнеса, вот ссылка: ' + link;
+  try{
+    navigator.clipboard.writeText(text).then(function(){
+      showToast('✅ Приглашение скопировано. Отправь другу');
+    }, function(){
+      prompt('Скопируй вручную:', text);
+    });
+  }catch(e){
+    prompt('Скопируй вручную:', text);
+  }
+}
+
 async function renderWheel(){
   const el = document.getElementById('wheelContent');
   if(!el) return;
@@ -4555,6 +4706,12 @@ function renderWheelDetail(){
     h += '<div style="margin-top:16px;padding:12px;background:rgba(76,175,125,0.08);border-radius:10px;font-size:13px;color:#4caf7d;font-weight:700;text-align:center">Все зоны выше 5. Сильно! 💪</div>';
   }
 
+  // Блок прибыли (только для ДНК): график + добавление
+  if(isDna){
+    h += '<div id="profitBlock" style="margin-top:18px"><div style="font-size:12px;color:#888;text-align:center">Загружаем прибыль...</div></div>';
+    setTimeout(loadProfitChart, 50);
+  }
+
   // История: все замеры, ничего не удаляется
   if(rows.length > 1){
     h += '<div style="margin-top:18px"><div style="font-size:11px;font-weight:800;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">История замеров (' + rows.length + ')</div>';
@@ -4569,6 +4726,87 @@ function renderWheelDetail(){
   }
 
   body.innerHTML = h;
+}
+
+// ── График прибыли (в детальном ДНК) ──
+async function loadProfitChart(){
+  const el = document.getElementById('profitBlock');
+  if(!el) return;
+  const me = getMyData();
+  if(!me){ el.innerHTML=''; return; }
+  try{
+    const r = await callAction('getProfit', {name: me.name});
+    const recs = (r && r.records) || [];
+    let h = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">';
+    h += '<div style="font-size:11px;font-weight:800;color:#D4B886;letter-spacing:1.5px;text-transform:uppercase">💰 Прибыль по месяцам</div>';
+    h += '<div class="section-action" style="font-size:12px" onclick="promptAddProfit()">+ Месяц</div></div>';
+    
+    if(!recs.length){
+      h += '<div style="font-size:13px;color:#888;padding:8px 0">Добавь первый замер: выручка и прибыль за месяц. График покажет твой рост в BS.</div>';
+    } else {
+      h += drawProfitChart(recs);
+      const last = recs[recs.length-1];
+      let sub = 'Последний: ' + last.date + ' · прибыль <b style="color:#D4B886">' + fmt(last.profit) + '</b>';
+      if(recs.length >= 2){
+        const first = recs[0];
+        if(first.profit > 0){
+          const growth = Math.round((last.profit - first.profit) / first.profit * 100);
+          sub += ' · с первого замера ' + (growth >= 0 ? '<b style="color:#4caf7d">+' + growth + '%</b>' : '<b style="color:#e57373">' + growth + '%</b>');
+        }
+      }
+      h += '<div style="font-size:12px;color:#888;margin-top:6px">' + sub + '</div>';
+    }
+    el.innerHTML = h;
+  }catch(e){ el.innerHTML = ''; }
+}
+
+function drawProfitChart(recs){
+  // Простой SVG line-chart: прибыль по замерам
+  const W = 380, H = 150, padL = 8, padR = 8, padT = 14, padB = 22;
+  const vals = recs.map(r => r.profit);
+  const maxV = Math.max(...vals, 1);
+  const minV = Math.min(...vals, 0);
+  const range = (maxV - minV) || 1;
+  const n = recs.length;
+  const x = i => n === 1 ? W/2 : padL + (W - padL - padR) * i / (n - 1);
+  const y = v => padT + (H - padT - padB) * (1 - (v - minV) / range);
+  
+  let svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block">`;
+  // Нулевая линия если есть минус
+  if(minV < 0){
+    svg += `<line x1="${padL}" y1="${y(0)}" x2="${W-padR}" y2="${y(0)}" stroke="rgba(229,115,115,0.4)" stroke-width="1" stroke-dasharray="3 3"/>`;
+  }
+  // Линия
+  let path = '';
+  recs.forEach((r, i) => { path += (i === 0 ? 'M' : 'L') + x(i) + ',' + y(r.profit) + ' '; });
+  svg += `<path d="${path}" fill="none" stroke="#D4B886" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  // Точки + подписи дат
+  recs.forEach((r, i) => {
+    svg += `<circle cx="${x(i)}" cy="${y(r.profit)}" r="4" fill="#D4B886"/>`;
+    if(n <= 8 || i === 0 || i === n-1 || i % Math.ceil(n/6) === 0){
+      svg += `<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.5)">${r.date.substring(0,5)}</text>`;
+    }
+  });
+  svg += '</svg>';
+  return svg;
+}
+
+function promptAddProfit(){
+  const rev = prompt('Выручка за месяц (тг):');
+  if(rev === null) return;
+  const prof = prompt('Прибыль за месяц (тг):');
+  if(prof === null) return;
+  const me = getMyData();
+  if(!me) return;
+  showToast('⏳ Сохраняем...');
+  callAction('saveProfit', {name: me.name, revenue: rev, profit: prof}).then(function(r){
+    if(r && r.ok){
+      showToast('✅ Записано');
+      loadProfitChart();
+    } else {
+      showToast('⚠️ ' + (r && r.error || 'Ошибка'));
+    }
+  });
 }
 
 // ── Редактор личных осей ──
@@ -4724,6 +4962,20 @@ function renderMyStatus(){
       </div>
     </div>
     
+    ${me.reportStreak>0?`<div class="card" style="display:flex;align-items:center;gap:14px;padding:14px 18px">
+      <div style="font-size:28px">🔥</div>
+      <div>
+        <div style="font-size:18px;font-weight:900;color:#fff">${me.reportStreak} ${(function(n){var d=n%10,h=n%100;if(h>=11&&h<=14)return 'дней';if(d===1)return 'день';if(d>=2&&d<=4)return 'дня';return 'дней';})(me.reportStreak)} подряд</div>
+        <div style="font-size:12px;color:#888">Отчёты без пропусков. Так держать</div>
+      </div>
+    </div>`:''}
+
+    <!-- Задачи от трекера -->
+    <div class="card" id="myTasksCard">
+      <div class="card-title" style="margin-bottom:12px;color:#D4B886;font-weight:900;letter-spacing:0.5px">Задачи</div>
+      <div id="myTasksList" style="font-size:13px;color:#888">Загрузка...</div>
+    </div>
+
     <!-- Сводка по встречам - всегда показывается -->
     <div class="card">
       <div class="card-title" style="margin-bottom:12px;color:#D4B886;font-weight:900;letter-spacing:0.5px">Встречи</div>
@@ -4756,6 +5008,13 @@ function renderMyStatus(){
         ${(next.link||'').includes('meet') ? '<a href="'+next.link+'" target="_blank"><button class="btn btn-primary" style="width:100%">Открыть Google Meet</button></a>' : ''}
       </div>`;
     })()}
+
+    <!-- Пригласи предпринимателя (реферальная программа) -->
+    <div class="card" style="border:1px solid rgba(212,184,134,0.25)">
+      <div class="card-title" style="margin-bottom:8px;color:#D4B886;font-weight:900;letter-spacing:0.5px">🤝 Пригласи предпринимателя</div>
+      <div style="font-size:13px;color:#888;line-height:1.5;margin-bottom:12px">Приведи знакомого предпринимателя. Он попадёт на разбор, а ты получишь <b style="color:#D4B886">100 000 ₸</b> когда он станет резидентом.</div>
+      <button class="btn btn-primary" style="width:100%" onclick="copyReferralLink()">Скопировать приглашение</button>
+    </div>
     ${me.debt>0?`<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank"><button class="btn btn-primary">💳 Оплатить через Kaspi</button></a>`:'<div class="card" style="text-align:center"><div style="font-size:32px;margin-bottom:6px">✅</div><div style="font-weight:600">Долгов нет</div></div>'}
     <button class="btn btn-secondary" onclick="shareStory()">📸 Поделиться в Stories</button>
     <button class="btn btn-secondary" onclick="shareStoryInvite()">🚀 Пригласить друзей в BS</button>
