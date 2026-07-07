@@ -757,6 +757,17 @@
   <div id="custdevContent"></div>
 </div>
 
+<div class="page" id="page-wheeladmin">
+  <div class="section-head">
+    <div class="section-title" style="color:#D4B886">Колесо клуба</div>
+    <div class="section-action" onclick="renderWheelAdmin()">⟳</div>
+  </div>
+  <div style="font-size:12px;color:#888;padding:0 4px 14px;line-height:1.45">
+    Последние замеры каждого резидента. Клик по резиденту открывает его колёса и всю историю.
+  </div>
+  <div id="wheelAdminList"><div class="empty">Загрузка...</div></div>
+</div>
+
 <div class="page" id="page-residents"><div id="residentsContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-subscribers"></div>
 <div class="page" id="page-todos"></div>
@@ -2774,6 +2785,7 @@ const ADMIN_TABS = [
   {id:'reports', label:'Отчёты'},
   {id:'fines', label:'Штрафы'},
   {id:'custdev', label:'CustDev'},
+  {id:'wheeladmin', label:'Колесо'},
   {id:'residents', label:'Резиденты'},
   {id:'subscribers', label:'Подписчики'},
   {id:'leadmagnets', label:'Материалы'},
@@ -3256,6 +3268,7 @@ function renderAllPages(){
   try{renderReports();}catch(e){console.error('reports:',e);}
   try{renderFines();}catch(e){console.error('fines:',e);}
   try{renderCustdev();}catch(e){console.error('custdev:',e);}
+  try{if(isRealAdmin)renderWheelAdmin();}catch(e){console.error('wheeladmin:',e);}
   try{renderResidents();}catch(e){console.error('residents:',e);}
   try{renderSubscribers();}catch(e){console.error('subscribers:',e);}
   try{renderTodos();}catch(e){console.error('todos:',e);}
@@ -4559,30 +4572,36 @@ async function renderWheel(){
   }
 
   const d = _wheelData || {};
-  const dna = (d.dna && d.dna[0]) || null;
-  const dnaPrev = (d.dna && d.dna[1]) || null;
+  const businesses = d.businesses || [];
   const life = (d.life && d.life[0]) || null;
   const lifePrev = (d.life && d.life[1]) || null;
   const lifeAxes = d.lifeAxes || WHEEL_LIFE_AXES;
 
   let h = '';
 
-  // ── ДНК бизнеса ──
-  h += '<div class="card" style="margin-bottom:14px;cursor:pointer" onclick="openWheelDetail(\'dna\')">';
-  h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
-  h += '<div class="card-title" style="color:#D4B886;font-weight:900;letter-spacing:0.5px;margin:0">🧬 ДНК бизнеса</div>';
-  h += (dna?'<div style="font-size:12px;color:#888">Подробнее ›</div>':'');
-  h += '</div>';
-  if(dna){
-    h += '<div style="font-size:12px;color:#888;margin-bottom:8px">Замер: '+dna.date.split(' ')[0]+(dnaPrev?' · пунктир: '+dnaPrev.date.split(' ')[0]:'')+' · средний: <b style="color:#D4B886">'+wheelAvg(dna.values)+'</b></div>';
-    h += drawRadar(WHEEL_DNA_AXES, dna.values, dnaPrev ? dnaPrev.values : null, '#D4B886');
-  } else {
+  // ── ДНК: карточка на каждый бизнес ──
+  if(!businesses.length){
+    h += '<div class="card" style="margin-bottom:14px">';
+    h += '<div class="card-title" style="color:#D4B886;font-weight:900;letter-spacing:0.5px;margin-bottom:4px">🧬 ДНК бизнеса</div>';
     h += '<div style="font-size:13px;color:#888;padding:20px 0;text-align:center">Ещё нет замеров.<br>Нажми "Оценить" и поставь первые оценки.</div>';
+    h += '</div>';
+  } else {
+    businesses.forEach(function(biz, bi){
+      const cur = biz.rows[0];
+      const prev = biz.rows[1] || null;
+      h += '<div class="card" style="margin-bottom:14px;cursor:pointer" onclick="openWheelDetail(\'dna\', \''+biz.name.replace(/'/g,"\\'")+'\')">';
+      h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
+      h += '<div class="card-title" style="color:#D4B886;font-weight:900;letter-spacing:0.5px;margin:0">🧬 ДНК: '+biz.name+'</div>';
+      h += '<div style="font-size:12px;color:#888">Подробнее ›</div>';
+      h += '</div>';
+      h += '<div style="font-size:12px;color:#888;margin-bottom:8px">Замер: '+cur.date.split(' ')[0]+(prev?' · пунктир: '+prev.date.split(' ')[0]:'')+' · средний: <b style="color:#D4B886">'+wheelAvg(cur.values)+'</b></div>';
+      h += drawRadar(WHEEL_DNA_AXES, cur.values, prev ? prev.values : null, '#D4B886');
+      h += '</div>';
+    });
   }
-  h += '</div>';
 
   // ── Личное колесо ──
-  h += '<div class="card" style="cursor:pointer" onclick="openWheelDetail(\'life\')">';
+  h += '<div class="card" style="cursor:pointer" onclick="openWheelDetail(\'life\', \'\')">';
   h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
   h += '<div class="card-title" style="color:#D4B886;font-weight:900;letter-spacing:0.5px;margin:0">☀️ Колесо баланса</div>';
   h += '<div style="display:flex;gap:12px;align-items:center">';
@@ -4592,13 +4611,105 @@ async function renderWheel(){
   if(life){
     h += '<div style="font-size:12px;color:#888;margin-bottom:8px">Замер: '+life.date.split(' ')[0]+(lifePrev?' · пунктир: '+lifePrev.date.split(' ')[0]:'')+' · средний: <b style="color:#D4B886">'+wheelAvg(life.values)+'</b></div>';
     h += drawRadar(lifeAxes, life.values, lifePrev ? lifePrev.values : null, '#4caf7d');
-    h += '<div style="margin-top:10px;padding:10px 12px;background:var(--card2);border-radius:8px;font-size:12px;color:#888;line-height:1.4">Ось <b style="color:#fff">Бизнес</b> считается автоматически из ДНК. Нажми ⚙️ чтобы переименовать остальные оси под себя.</div>';
+    h += '<div style="margin-top:10px;padding:10px 12px;background:var(--card2);border-radius:8px;font-size:12px;color:#888;line-height:1.4">Ось <b style="color:#fff">Бизнес</b> считается сама: среднее всех твоих направлений ДНК. Нажми ⚙️ чтобы переименовать остальные оси.</div>';
   } else {
     h += '<div style="font-size:13px;color:#888;padding:20px 0;text-align:center">Ещё нет замеров.<br>Сначала оцени ДНК бизнеса, потом личное колесо.</div>';
   }
   h += '</div>';
 
   el.innerHTML = h;
+}
+
+// ══════════ КОЛЕСО У АДМИНА: все резиденты ══════════
+async function renderWheelAdmin(){
+  const el = document.getElementById('wheelAdminList');
+  if(!el) return;
+  el.innerHTML = '<div class="empty">Загрузка...</div>';
+  let summary = [];
+  try{
+    const r = await callAction('getWheelSummary', {});
+    summary = (r && r.summary) || [];
+  }catch(e){
+    el.innerHTML = '<div class="card"><div style="color:var(--red)">Ошибка загрузки</div></div>';
+    return;
+  }
+  
+  // Все активные резиденты (включая тех кто ещё не делал замеров)
+  const allRes = (cache.residents||[]).filter(r=>!r.isFired&&!r.isAdmin&&!r.isTeam&&r.name!=='Тест'&&r.name!=='Тест2');
+  const byName = {};
+  summary.forEach(s => byName[s.name] = s);
+  
+  // Средние по клубу
+  const withDna = summary.filter(s => s.dnaAvg !== null);
+  const withLife = summary.filter(s => s.lifeAvg !== null);
+  const clubDna = withDna.length ? Math.round(withDna.reduce((a,s)=>a+s.dnaAvg,0)/withDna.length*10)/10 : null;
+  const clubLife = withLife.length ? Math.round(withLife.reduce((a,s)=>a+s.lifeAvg,0)/withLife.length*10)/10 : null;
+  
+  let h = '';
+  h += '<div class="card" style="margin-bottom:14px"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">';
+  h += '<div><div style="font-size:22px;font-weight:900;color:#D4B886">'+(clubDna!==null?clubDna:'-')+'</div><div style="font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase">ДНК клуба</div></div>';
+  h += '<div><div style="font-size:22px;font-weight:900;color:#4caf7d">'+(clubLife!==null?clubLife:'-')+'</div><div style="font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase">Баланс клуба</div></div>';
+  h += '<div><div style="font-size:22px;font-weight:900;color:#fff">'+withDna.length+'/'+allRes.length+'</div><div style="font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase">Заполнили</div></div>';
+  h += '</div></div>';
+  
+  allRes.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  allRes.forEach(r => {
+    const s = byName[r.name];
+    const has = !!s;
+    h += `<div class="card" style="margin-bottom:10px;cursor:pointer;padding:14px 16px" onclick="openAdminResWheel('${r.name.replace(/'/g,"\\'")}')">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:44px;height:44px;border-radius:50%;background:${has?'rgba(212,184,134,0.15)':'rgba(255,255,255,0.05)'};color:${has?'#D4B886':'#555'};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0">${(r.name||'?')[0]}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:800;color:#fff;font-size:15px">${r.name}</div>
+          <div style="font-size:12px;color:#888;margin-top:2px">${has ? (s.total+' замеров · последний '+(s.dnaDate||s.lifeDate)) : 'Ещё не заполнял колесо'}</div>
+        </div>
+        <div style="display:flex;gap:14px;flex-shrink:0">
+          <div style="text-align:center"><div style="font-size:17px;font-weight:900;color:${has&&s.dnaAvg!==null?'#D4B886':'#444'}">${has&&s.dnaAvg!==null?s.dnaAvg:'-'}</div><div style="font-size:9px;color:#888;letter-spacing:1px">ДНК${has&&s.dnaCount>1?' ×'+s.dnaCount:''}</div></div>
+          <div style="text-align:center"><div style="font-size:17px;font-weight:900;color:${has&&s.lifeAvg!==null?'#4caf7d':'#444'}">${has&&s.lifeAvg!==null?s.lifeAvg:'-'}</div><div style="font-size:9px;color:#888;letter-spacing:1px">ЛИЧНОЕ</div></div>
+        </div>
+      </div>
+    </div>`;
+  });
+  
+  el.innerHTML = h;
+}
+
+async function openAdminResWheel(name){
+  // Просмотр колёс резидента админом: выбор что смотреть
+  let d;
+  try{
+    showToast('⏳ Загружаем...');
+    d = await callAction('getWheel', {name: name});
+  }catch(e){ showToast('❌ Ошибка'); return; }
+  
+  const businesses = (d && d.businesses) || [];
+  const hasLife = d && d.life && d.life.length;
+  
+  if(!businesses.length && !hasLife){
+    showToast(name + ' ещё не заполнял колесо');
+    return;
+  }
+  
+  // Если один вариант - открываем сразу. Иначе выбор
+  const options = [];
+  businesses.forEach(b => options.push({type:'dna', biz:b.name, label:'🧬 ДНК: '+b.name}));
+  if(hasLife) options.push({type:'life', biz:'', label:'☀️ Колесо баланса'});
+  
+  if(options.length === 1){
+    openWheelDetail(options[0].type, options[0].biz, name);
+    return;
+  }
+  
+  // Мини-выбор через модалку detail: покажем кнопки выбора
+  openModal('wheelDetailModal');
+  const titleEl = document.getElementById('wheelDetailTitle');
+  if(titleEl) titleEl.textContent = name;
+  const body = document.getElementById('wheelDetailBody');
+  let h = '<div style="font-size:12px;color:#888;margin-bottom:14px">Что посмотреть:</div>';
+  options.forEach(o => {
+    h += `<div onclick="openWheelDetail('${o.type}','${o.biz.replace(/'/g,"\\'")}','${name.replace(/'/g,"\\'")}')" style="padding:14px 16px;margin-bottom:8px;background:var(--card2);border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;color:#fff">${o.label} ›</div>`;
+  });
+  body.innerHTML = h;
 }
 
 // ── Рекомендации по осям ──
@@ -4626,19 +4737,27 @@ function wheelTip(axis){
 
 // ── Детальный просмотр колеса ──
 let _wheelDetailType = 'dna';
+let _wheelDetailBiz = '';
+let _wheelDetailName = null; // null = текущий пользователь; имя = просмотр админом
 let _wheelHistory = null;
 let _wheelHistoryIdx = 0;
 
-async function openWheelDetail(type){
+async function openWheelDetail(type, biz, resName){
   _wheelDetailType = type;
+  _wheelDetailBiz = biz || '';
+  _wheelDetailName = resName || null;
   _wheelHistoryIdx = 0;
-  const me = getMyData();
-  if(!me) return;
+  let targetName = resName;
+  if(!targetName){
+    const me = getMyData();
+    if(!me) return;
+    targetName = me.name;
+  }
   openModal('wheelDetailModal');
   const body = document.getElementById('wheelDetailBody');
   body.innerHTML = '<div style="text-align:center;padding:30px;color:#888;font-size:13px">Загружаем историю...</div>';
   try{
-    _wheelHistory = await callAction('getWheel', {name: me.name, history: '1'});
+    _wheelHistory = await callAction('getWheel', {name: targetName, history: '1'});
   }catch(e){
     body.innerHTML = '<div style="color:var(--red);padding:20px">Ошибка загрузки</div>';
     return;
@@ -4650,10 +4769,23 @@ function renderWheelDetail(){
   const d = _wheelHistory || {};
   const isDna = _wheelDetailType === 'dna';
   const axes = isDna ? (d.dnaAxes || WHEEL_DNA_AXES) : (d.lifeAxes || WHEEL_LIFE_AXES);
-  const rows = (isDna ? d.dna : d.life) || [];
+  let rows;
+  if(isDna){
+    // Мульти-бизнес: история конкретного направления
+    const businesses = d.businesses || [];
+    let biz = businesses.find(b => b.name === _wheelDetailBiz);
+    if(!biz && businesses.length) biz = businesses[0];
+    rows = biz ? biz.rows : [];
+  } else {
+    rows = d.life || [];
+  }
   const color = isDna ? '#D4B886' : '#4caf7d';
   const titleEl = document.getElementById('wheelDetailTitle');
-  if(titleEl) titleEl.textContent = isDna ? '🧬 ДНК бизнеса' : '☀️ Колесо баланса';
+  if(titleEl){
+    let t = isDna ? ('🧬 ДНК' + (_wheelDetailBiz ? ': ' + _wheelDetailBiz : ' бизнеса')) : '☀️ Колесо баланса';
+    if(_wheelDetailName) t = _wheelDetailName + ' · ' + t;
+    titleEl.textContent = t;
+  }
 
   const body = document.getElementById('wheelDetailBody');
   if(!rows.length){
@@ -4706,8 +4838,8 @@ function renderWheelDetail(){
     h += '<div style="margin-top:16px;padding:12px;background:rgba(76,175,125,0.08);border-radius:10px;font-size:13px;color:#4caf7d;font-weight:700;text-align:center">Все зоны выше 5. Сильно! 💪</div>';
   }
 
-  // Блок прибыли (только для ДНК): график + добавление
-  if(isDna){
+  // Блок прибыли (только для ДНК и только своё колесо)
+  if(isDna && !_wheelDetailName){
     h += '<div id="profitBlock" style="margin-top:18px"><div style="font-size:12px;color:#888;text-align:center">Загружаем прибыль...</div></div>';
     setTimeout(loadProfitChart, 50);
   }
@@ -4849,6 +4981,7 @@ async function submitAxesEditor(){
 
 function openWheelForm(){
   _wheelFormType = 'dna';
+  window._wheelFormBiz = null; // сброс: возьмётся первый бизнес
   renderWheelForm();
   openModal('wheelModal');
 }
@@ -4875,14 +5008,39 @@ function renderWheelForm(){
       <button onclick="switchWheelForm('life')" style="flex:1;padding:10px;border-radius:10px;border:1.5px solid ${!isDna?'#4caf7d':'var(--border)'};background:${!isDna?'rgba(76,175,125,0.12)':'transparent'};color:${!isDna?'#4caf7d':'#888'};font-weight:800;font-size:13px;font-family:inherit">☀️ Личное</button>`;
   }
 
-  // Предзаполнение последними значениями
-  const last = isDna
-    ? (d.dna && d.dna[0] ? d.dna[0].values : null)
-    : (d.life && d.life[0] ? d.life[0].values.slice(1) : null);
+  // Мульти-бизнес: текущий выбранный бизнес формы
+  const businesses = d.businesses || [];
+  if(isDna && !window._wheelFormBiz){
+    window._wheelFormBiz = businesses.length ? businesses[0].name : 'Основной';
+  }
+
+  // Предзаполнение последними значениями выбранного бизнеса
+  let last = null;
+  if(isDna){
+    const curBiz = businesses.find(b => b.name === window._wheelFormBiz);
+    last = curBiz && curBiz.rows[0] ? curBiz.rows[0].values : null;
+  } else {
+    last = d.life && d.life[0] ? d.life[0].values.slice(1) : null;
+  }
 
   const accent = isDna ? '#D4B886' : '#4caf7d';
-  let h = '<div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.4">' +
-    (isDna ? 'Оцени каждую зону бизнеса от 1 до 10. Честно, как есть сейчас.' : 'Теперь про тебя лично. Ось Бизнес добавится автоматически из ДНК.') + '</div>';
+  let h = '';
+
+  // Селектор бизнеса (только для ДНК)
+  if(isDna){
+    h += '<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:800;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Направление</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap">';
+    const allBiz = businesses.length ? businesses.map(b=>b.name) : ['Основной'];
+    allBiz.forEach(bn => {
+      const sel = bn === window._wheelFormBiz;
+      h += `<button onclick="window._wheelFormBiz='${bn.replace(/'/g,"\\'")}';renderWheelForm()" style="padding:8px 14px;border-radius:10px;border:1.5px solid ${sel?'#D4B886':'var(--border)'};background:${sel?'rgba(212,184,134,0.12)':'transparent'};color:${sel?'#D4B886':'#888'};font-weight:800;font-size:13px;font-family:inherit">${bn}</button>`;
+    });
+    h += '<button onclick="addNewBusiness()" style="padding:8px 14px;border-radius:10px;border:1.5px dashed var(--border);background:transparent;color:#888;font-weight:800;font-size:13px;font-family:inherit">+ Бизнес</button>';
+    h += '</div></div>';
+  }
+
+  h += '<div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.4">' +
+    (isDna ? 'Оцени каждую зону бизнеса от 1 до 10. Честно, как есть сейчас.' : 'Теперь про тебя лично. Ось Бизнес добавится автоматически: среднее всех твоих направлений.') + '</div>';
 
   axes.forEach((ax, i) => {
     const val = last && last[i] ? last[i] : 5;
@@ -4902,6 +5060,14 @@ function renderWheelForm(){
   if(btnEl) btnEl.textContent = isDna ? 'Сохранить ДНК' : 'Сохранить Личное';
 }
 
+function addNewBusiness(){
+  const name = prompt('Название направления (например: Кофейня, Опт, Онлайн-школа):');
+  if(!name || !name.trim()) return;
+  window._wheelFormBiz = name.trim().substring(0, 30);
+  renderWheelForm();
+  showToast('Оцени зоны и нажми Сохранить');
+}
+
 let _wheelSaveInFlight = false;
 async function submitWheelForm(){
   if(_wheelSaveInFlight) return;
@@ -4914,7 +5080,7 @@ async function submitWheelForm(){
 
   _wheelSaveInFlight = true;
   try{
-    const r = await callAction('saveWheel', {name: me.name, type: type, values: values});
+    const r = await callAction('saveWheel', {name: me.name, type: type, values: values, bizName: (type==='dna' ? (window._wheelFormBiz || 'Основной') : '')});
     if(r && r.ok){
       // Обновим кэш (чтобы Бизнес в life считался от свежего ДНК)
       _wheelData = await callAction('getWheel', {name: me.name});
