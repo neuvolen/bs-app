@@ -854,11 +854,11 @@
 <div class="modal-bg" id="wheelDetailModal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title" id="wheelDetailTitle" style="color:#D4B886">Колесо</div>
-    <div id="wheelDetailBody"></div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal('wheelDetailModal')">Закрыть</button>
+    <div style="position:sticky;top:-20px;z-index:50;background:var(--card);margin:-20px -16px 8px;padding:16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)">
+      <div class="modal-title" id="wheelDetailTitle" style="color:#D4B886;margin:0">Колесо</div>
+      <div onclick="closeModal('wheelDetailModal')" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;cursor:pointer">✕</div>
     </div>
+    <div id="wheelDetailBody"></div>
   </div>
 </div>
 
@@ -5044,9 +5044,13 @@ function renderWheelForm(){
 
   axes.forEach((ax, i) => {
     const val = last && last[i] ? last[i] : 5;
+    // В личном колесе название оси кликабельно: тап = переименовать (интуитивно, прямо в форме)
+    const axLabel = isDna
+      ? `<span style="font-size:14px;font-weight:700;color:#fff">${ax}</span>`
+      : `<span onclick="renameAxisInline(${i})" style="font-size:14px;font-weight:700;color:#fff;border-bottom:1px dashed rgba(255,255,255,0.3);padding-bottom:1px">${ax} <span style="font-size:11px;opacity:0.5">✏️</span></span>`;
     h += `<div style="margin-bottom:14px">
       <div style="display:flex;justify-content:space-between;margin-bottom:6px">
-        <span style="font-size:14px;font-weight:700;color:#fff">${ax}</span>
+        ${axLabel}
         <span id="wv_${i}" style="font-size:15px;font-weight:900;color:${accent}">${val}</span>
       </div>
       <input type="range" min="1" max="10" value="${val}" data-axis="${i}"
@@ -5054,10 +5058,49 @@ function renderWheelForm(){
         oninput="document.getElementById('wv_'+this.dataset.axis).textContent=this.value">
     </div>`;
   });
+  if(!isDna){
+    h += '<div style="font-size:11px;color:#666;margin-top:2px;margin-bottom:6px">Нажми на название оси чтобы переименовать под себя</div>';
+  }
   if(bodyEl) bodyEl.innerHTML = h;
 
   const btnEl = document.getElementById('wheelSubmitBtn');
   if(btnEl) btnEl.textContent = isDna ? 'Сохранить ДНК' : 'Сохранить Личное';
+}
+
+async function renameAxisInline(idx){
+  // Переименование оси личного колеса прямо в форме оценки
+  const me = getMyData();
+  if(!me) return;
+  const d = _wheelData || {};
+  const lifeAxes = (d.lifeAxes || WHEEL_LIFE_AXES).slice(1); // без Бизнеса
+  const current = lifeAxes[idx] || '';
+  const newName = prompt('Новое название оси:', current);
+  if(!newName || !newName.trim() || newName.trim() === current) return;
+  
+  // Запомним текущие значения слайдеров чтобы не сбросились
+  const savedVals = Array.from(document.querySelectorAll('#wheelFormBody input[type=range]')).map(inp => inp.value);
+  
+  lifeAxes[idx] = newName.trim().substring(0, 20);
+  try{
+    const r = await callAction('saveWheelAxes', {name: me.name, axes: lifeAxes.join('|')});
+    if(r && r.ok){
+      // Обновим локальный кэш и перерисуем форму
+      if(_wheelData) _wheelData.lifeAxes = ['Бизнес'].concat(lifeAxes);
+      renderWheelForm();
+      // Восстановим значения слайдеров
+      const inputs = document.querySelectorAll('#wheelFormBody input[type=range]');
+      inputs.forEach((inp, i) => {
+        if(savedVals[i] !== undefined){
+          inp.value = savedVals[i];
+          const wv = document.getElementById('wv_' + i);
+          if(wv) wv.textContent = savedVals[i];
+        }
+      });
+      showToast('✅ Переименовано');
+    } else {
+      showToast('⚠️ ' + (r && r.error || 'Ошибка'));
+    }
+  }catch(e){ showToast('❌ ' + e.message); }
 }
 
 function addNewBusiness(){
@@ -5174,16 +5217,18 @@ function renderMyStatus(){
         ${(next.link||'').includes('meet') ? '<a href="'+next.link+'" target="_blank"><button class="btn btn-primary" style="width:100%">Открыть Google Meet</button></a>' : ''}
       </div>`;
     })()}
-
-    <!-- Пригласи предпринимателя (реферальная программа) -->
-    <div class="card" style="border:1px solid rgba(212,184,134,0.25)">
-      <div class="card-title" style="margin-bottom:8px;color:#D4B886;font-weight:900;letter-spacing:0.5px">🤝 Пригласи предпринимателя</div>
-      <div style="font-size:13px;color:#888;line-height:1.5;margin-bottom:12px">Приведи знакомого предпринимателя. Он попадёт на разбор, а ты получишь <b style="color:#D4B886">100 000 ₸</b> когда он станет резидентом.</div>
-      <button class="btn btn-primary" style="width:100%" onclick="copyReferralLink()">Скопировать приглашение</button>
-    </div>
     ${me.debt>0?`<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank"><button class="btn btn-primary">💳 Оплатить через Kaspi</button></a>`:'<div class="card" style="text-align:center"><div style="font-size:32px;margin-bottom:6px">✅</div><div style="font-weight:600">Долгов нет</div></div>'}
     <button class="btn btn-secondary" onclick="shareStory()">📸 Поделиться в Stories</button>
-    <button class="btn btn-secondary" onclick="shareStoryInvite()">🚀 Пригласить друзей в BS</button>
+    <div class="card" style="border:1.5px solid rgba(212,184,134,0.35);background:linear-gradient(135deg, rgba(212,184,134,0.08), rgba(212,184,134,0.02));margin-top:12px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="font-size:26px">🤝</div>
+        <div>
+          <div style="font-size:15px;font-weight:900;color:#D4B886;letter-spacing:0.3px">Пригласить друзей в BS</div>
+          <div style="font-size:12px;color:#888;margin-top:2px">Бонус <b style="color:#D4B886">100 000 ₸</b> когда друг станет резидентом</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%" onclick="copyReferralLink()">Скопировать приглашение</button>
+    </div>
   `;
 }
 
