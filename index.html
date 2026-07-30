@@ -2823,7 +2823,7 @@ const FINE_TYPES = [
 ];
 
 const INCOME_SRC = ['БХ Трекинг продление','БХ Трекинг год','БХ Штраф','БХ Экспресс разбор','БХ МК/Завтрак','Прочие доходы'];
-const EXPENSE_SRC = ['SMM','Маркет.бюджет','Таргетолог','Tilda + домен','CRM','Canva','Съемки проф','Съемки доп','HH объявление','Симка тариф','Оборудование','Офис','Ассистент','Бухгалтер','Юрист','IT','Комиссия + налог','Прочие расходы'];
+const EXPENSE_SRC = ['SMM','Маркет.бюджет','Таргетолог','Tilda + домен','CRM','Canva','Съемки проф','Съемки доп','HH объявление','Симка тариф','Оборудование','Офис','Ассистент','Бухгалтер','Юрист','IT','Комиссия+налог','Прочие расходы:'];
 
 
 // Глобальный обработчик кликов по карточкам резидентов
@@ -5950,9 +5950,18 @@ async function submitPayment(){
   if(!amount){showToast('⚠️ Введите сумму');return;}
   _submitPaymentInFlight = true;
   closeModal('payModal');
-  showToast('✅ Записано: '+fmt(amount)+' тг');
+  showToast('⏳ Записываем '+fmt(amount)+' тг...');
   callAction('addPayment', {type: payType, src, amount, isCash: payMethod==='cash', resident: resName})
-    .then(loadAllData)
+    .then(function(r){
+      if(r && r.deduplicated){
+        showToast('⚠️ Такая запись уже есть за сегодня. Дубль не создан');
+      } else if(r && r.ok){
+        showToast('✅ Записано: '+fmt(amount)+' тг');
+      } else {
+        showToast('❌ ' + ((r && r.error) || 'Ошибка записи'));
+      }
+      return loadAllData();
+    })
     .finally(() => { setTimeout(() => { _submitPaymentInFlight = false; }, 3000); });
 }
 
