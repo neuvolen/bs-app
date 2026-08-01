@@ -3431,8 +3431,8 @@ function renderDashboard(){
             <div class="pl-main-val" style="color:#fff;font-size:17px;">${fmt(m.dividends||0)}</div>
           </div>
           <div>
-            <div class="pl-main-lbl">На кассе</div>
-            <div class="pl-main-val" style="color:#D4B886;font-size:17px;">${m.saldo===null?'-':fmt(m.saldo)}</div>
+            <div class="pl-main-lbl">Остаток</div>
+            <div class="pl-main-val ${m.saldo<0?'neg':''}" style="color:${(m.saldo!==null&&m.saldo<0)?'#e57373':'#D4B886'};font-size:17px;">${m.saldo===null?'-':((m.saldo<0?'−':'')+fmt(Math.abs(m.saldo)))}</div>
           </div>
         </div>
         
@@ -3446,6 +3446,13 @@ function renderDashboard(){
             <div class="pl-row-val neg">${fmt(m.expenses)} ₸</div>
           </div>
         </div>
+        
+        ${m.kassa!==null&&m.kassa!==undefined?`<div class="pl-row" style="border-top:1px solid var(--border);padding-top:10px;margin-top:2px">
+          <div class="pl-row-item" style="flex:1">
+            <div class="pl-row-lbl">На кассе накопительно</div>
+            <div class="pl-row-val" style="color:${m.kassa<0?'#e57373':'#D4B886'};font-weight:900">${(m.kassa<0?'−':'')+fmt(Math.abs(m.kassa))} ₸</div>
+          </div>
+        </div>`:''}
         
         <div class="pl-chart">
           ${barsHtml}
