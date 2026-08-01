@@ -2930,18 +2930,30 @@ function init(){
     
     // Определяем начальную роль (для НЕ-админов)
     if(!isRealAdmin){
-      // По умолчанию ЛИД (безопаснее), потом сервер уточнит
+      // 1) МГНОВЕННО из локального кеша данных: если чат ID есть в списке резидентов. это резидент
+      // (раньше ждали ответ сервера и резидент видел интерфейс лида, иногда минутами)
       viewAs = 'lead';
+      try{
+        var cachedRaw = localStorage.getItem('bs_cache');
+        if(cachedRaw && user && user.id){
+          var cachedData = JSON.parse(cachedRaw);
+          var myUid = String(user.id);
+          var meCached = (cachedData.residents||[]).find(function(r){
+            return String(r.chatId||'') === myUid;
+          });
+          if(meCached && !meCached.isFired) viewAs = 'resident';
+        }
+      }catch(e){}
       
-      // Асинхронно проверим у сервера, является ли резидентом
+      // 2) Сервер подтверждает/уточняет (подстраховка на случай нового резидента без кеша)
       if(user && user.id){
         try{
           callAction('checkUserRole', {}).then(function(res){
             if(res && res.role){
               var oldRole = viewAs;
               viewAs = res.role;
+              try{ localStorage.setItem('bs_view_as', viewAs); }catch(e){}
               if(oldRole !== viewAs){
-                try{ localStorage.setItem('bs_view_as', viewAs); }catch(e){}
                 renderTabs();
                 renderAllPages();
                 // Попробуем применить deep-link с учётом новой роли
@@ -3082,6 +3094,7 @@ function init(){
     }
     
     loadAllData();
+    setupAutoRefresh();
     // Автосохранение аватара из Telegram (для других пользователей)
     if(user && user.photo_url && user.id){
       setTimeout(function(){
@@ -3207,6 +3220,42 @@ function showPage(id){
   }
 }
 
+// ══════════ АВТООБНОВЛЕНИЕ ДАННЫХ ══════════
+// Раньше приходилось ждать и вручную перезагружать страницу. теперь свежие данные приходят сами
+let _lastDataLoad = 0;
+let _autoRefreshTimer = null;
+
+function setupAutoRefresh(){
+  // 1) Возврат в приложение (свернул/развернул, переключил вкладку) → обновляем если данные старше 10 сек
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'visible' && Date.now() - _lastDataLoad > 10000){
+      loadAllData();
+    }
+  });
+  window.addEventListener('focus', function(){
+    if(Date.now() - _lastDataLoad > 10000) loadAllData();
+  });
+  
+  // 2) Периодическое обновление каждые 30 секунд пока приложение открыто
+  if(_autoRefreshTimer) clearInterval(_autoRefreshTimer);
+  _autoRefreshTimer = setInterval(function(){
+    if(document.visibilityState === 'visible') loadAllData();
+  }, 30000);
+  
+  // 3) Свайп вниз на верху страницы = принудительное обновление
+  let touchStartY = 0;
+  document.addEventListener('touchstart', function(e){
+    touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if(dy > 90 && window.scrollY < 5){
+      showToast('⟳ Обновляем...');
+      loadAllData();
+    }
+  }, {passive:true});
+}
+
 async function loadAllData(){
   try {
     var cached = localStorage.getItem('bs_cache');
@@ -3249,6 +3298,29 @@ async function loadAllData(){
     serverData.schedule = serverSchedule;
     cache = serverData;
     try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
+    
+    _lastDataLoad = Date.now();
+    
+    // Пересчёт роли по свежим данным: если человек есть в резидентах. даём доступ немедленно
+    // (решает случай "резидент видит интерфейс лида")
+    if(!isRealAdmin && user && user.id){
+      var myUid2 = String(user.id);
+      var meFresh = (cache.residents||[]).find(function(r){ return String(r.chatId||'') === myUid2; });
+      var freshRole = (meFresh && !meFresh.isFired) ? 'resident' : 'lead';
+      if(freshRole !== viewAs){
+        viewAs = freshRole;
+        try{ localStorage.setItem('bs_view_as', viewAs); }catch(e){}
+        renderTabs();
+        var actTab = document.querySelector('.tab.active');
+        var curPage = actTab ? actTab.getAttribute('data-page') : null;
+        var availTabs = viewAs === 'lead' ? LEAD_TABS : RESIDENT_TABS;
+        var availIds = availTabs.map(function(t){return t.id;});
+        if(!curPage || availIds.indexOf(curPage) < 0){
+          showPage(viewAs === 'lead' ? 'diagnostic' : 'mystatus');
+        }
+      }
+    }
+    
     renderAllPages();
   } catch(e){
     console.error('loadAllData:', e);
