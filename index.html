@@ -1065,7 +1065,13 @@
       <label class="form-label">Ссылка на материал</label>
       <input class="form-input" type="text" id="smmLink" placeholder="Canva, Drive, готовый пост">
     </div>
-    <div style="height:14px"></div>
+    <div id="smmActionsRow" style="display:none;gap:8px;margin-bottom:12px">
+      <button class="btn btn-secondary" style="flex:1;margin:0;font-size:13px" onclick="generateSmmImage()">🎨 Картинка</button>
+      <button class="btn btn-secondary" style="flex:1;margin:0;font-size:13px" onclick="copySmmText()">📋 Копировать</button>
+    </div>
+    <div id="smmPublishRow" style="display:none;margin-bottom:12px">
+      <button class="btn btn-primary" style="width:100%;margin:0" onclick="publishSmmNow()">📢 Опубликовать в канал BS</button>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-primary" onclick="submitSmm()">Сохранить</button>
       <button class="btn btn-secondary" onclick="closeModal('smmModal')">Закрыть</button>
@@ -3602,6 +3608,24 @@ function init(){
     
     loadAllData();
     setupAutoRefresh();
+    setTimeout(preloadBsLogo, 800);
+    setTimeout(function(){
+      // Аватар из Telegram в память, чтобы Stories собирались мгновенно
+      try{
+        var au = (user && user.photo_url) || '';
+        if(au && !window._bsAvatarImg){
+          var ai = new Image();
+          ai.crossOrigin = 'anonymous';
+          ai.onload = function(){ window._bsAvatarImg = ai; };
+          ai.onerror = function(){
+            var a2 = new Image();
+            a2.onload = function(){ window._bsAvatarImg = a2; };
+            a2.src = au;
+          };
+          ai.src = au;
+        }
+      }catch(e){}
+    }, 900);
     // Автосохранение аватара из Telegram (для других пользователей)
     if(user && user.photo_url && user.id){
       setTimeout(function(){
@@ -3926,6 +3950,20 @@ function silentSync(){
   setTimeout(function(){ loadAllData({fresh: true}); }, 400);
 }
 
+// Логотип BS держим готовым в памяти: Stories собирается без ожидания
+window._bsLogoImg = null;
+function preloadBsLogo(){
+  try{
+    var li = document.querySelector('.hero-logo-real img');
+    var src = (li && li.src) || window._bsLogoSrc;
+    if(!src) return;
+    window._bsLogoSrc = src;
+    var im = new Image();
+    im.onload = function(){ window._bsLogoImg = im; };
+    im.src = src;
+  }catch(e){}
+}
+
 function refreshData(){
   showToast('⟳ Обновляем...');
   loadAllData({fresh: true, force: true});
@@ -4119,12 +4157,12 @@ function renderSchedule(){
       b.id = 'schedAddBtn';
       b.title = 'Добавить встречу';
       b.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
-      b.onclick = function(ev){ ev.stopPropagation(); openModal('schedModal'); initSchedModal(); };
+      b.onclick = function(ev){ ev.stopPropagation(); ev.preventDefault(); openAddMenu(); };
       box.insertBefore(b, box.firstChild);
     } else if(!shouldShow && existing){
       existing.remove();
     } else if(shouldShow && existing){
-      existing.onclick = function(ev){ ev.stopPropagation(); openModal('schedModal'); initSchedModal(); };
+      existing.onclick = function(ev){ ev.stopPropagation(); ev.preventDefault(); openAddMenu(); };
     }
   })();
   
@@ -4584,6 +4622,21 @@ function renderContentPlan(){
       '<div style="border-left:1px solid rgba(255,255,255,0.07)"><div style="font-size:22px;font-weight:900;color:#fff;line-height:1">' + sent.length + '</div>' +
       '<div style="font-size:10px;color:#888;letter-spacing:0.5px;margin-top:4px">ОПУБЛИКОВАНО</div></div></div>';
 
+    // График чек-листов: они уходят в Полезное по понедельникам
+    var clSched = cache.checklistSchedule || [];
+    if(clSched.length){
+      h += '<div style="font-size:11px;color:#D4B886;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin:4px 0 10px">Чек-листы по понедельникам</div>';
+      h += '<div class="card" style="padding:8px 16px 12px;margin-bottom:16px">';
+      clSched.forEach(function(cl){
+        h += '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,0.05)">' +
+          '<div style="min-width:0"><div style="font-size:13.5px;color:' + (cl.next ? '#D4B886' : '#fff') + ';font-weight:' + (cl.next ? '800' : '600') + ';line-height:1.35">' + cl.name + '</div>' +
+          (cl.next ? '<div style="font-size:11px;color:#888;margin-top:2px">следующий</div>' : '') + '</div>' +
+          '<span style="font-size:12px;color:#888;flex-shrink:0;font-weight:700">' + cl.date + '</span></div>';
+      });
+      h += '<div style="font-size:11.5px;color:#666;margin-top:10px;line-height:1.4">Отправляются автоматически. Порядок по кругу, загрузить новые можно во вкладке Материалы.</div>';
+      h += '</div>';
+    }
+
     if(waiting.length <= 3){
       h += '<div class="card" style="padding:12px 14px;margin-bottom:14px;border:1px solid rgba(229,115,115,0.3);background:rgba(229,115,115,0.05);font-size:12.5px;color:#e57373;line-height:1.45">' +
         'Очередь заканчивается. Система добавит новые посты автоматически, либо нажмите + чтобы написать свой.</div>';
@@ -4687,11 +4740,18 @@ async function deleteContentPost(row){
 }
 
 // ══════════ СММ ══════════
+var _smmFilter = 'all';
+function setSmmFilter(f){
+  _smmFilter = f;
+  renderSmm();
+}
+
 function renderSmm(){
   var el = document.getElementById('smmBox');
   if(!el) return;
   try{
-    var items = (cache.smm && cache.smm.items) || [];
+    var allItems = (cache.smm && cache.smm.items) || [];
+    var items = _smmFilter === 'all' ? allItems : allItems.filter(function(i){ return i.platform === _smmFilter; });
 
     var byStatus = {'Идея': [], 'В работе': [], 'Готово': [], 'Опубликовано': []};
     items.forEach(function(it){
@@ -4699,7 +4759,18 @@ function renderSmm(){
       byStatus[it.status].push(it);
     });
 
-    var h = '<div class="card" style="padding:14px 16px;margin-bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center">';
+    var h = '';
+    // Площадки
+    var platforms = [['all','Все'],['Instagram','Instagram'],['Threads','Threads'],['Telegram','Telegram'],['TikTok','TikTok']];
+    h += '<div style="display:flex;gap:7px;overflow-x:auto;padding:0 0 12px;margin:0 -16px 4px;padding-left:16px;padding-right:16px;scrollbar-width:none">';
+    platforms.forEach(function(p){
+      var act = _smmFilter === p[0];
+      var cnt = p[0] === 'all' ? allItems.length : allItems.filter(function(i){ return i.platform === p[0]; }).length;
+      h += '<button onclick="setSmmFilter(\'' + p[0] + '\')" style="flex:0 0 auto;padding:8px 14px;border-radius:20px;border:1.5px solid ' + (act ? '#D4B886' : 'var(--border)') + ';background:' + (act ? 'rgba(212,184,134,0.13)' : 'transparent') + ';color:' + (act ? '#D4B886' : '#888') + ';font-size:12.5px;font-weight:800;font-family:inherit;white-space:nowrap">' + p[1] + (cnt ? ' · ' + cnt : '') + '</button>';
+    });
+    h += '</div>';
+
+    h += '<div class="card" style="padding:14px 16px;margin-bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center">';
     [['Идея','#888'],['В работе','#ffd54f'],['Готово','#4caf7d'],['Опубликовано','#D4B886']].forEach(function(s, i){
       h += '<div' + (i ? ' style="border-left:1px solid rgba(255,255,255,0.07)"' : '') + '>' +
         '<div style="font-size:19px;font-weight:900;color:' + s[1] + ';line-height:1">' + (byStatus[s[0]] || []).length + '</div>' +
@@ -4736,6 +4807,145 @@ function renderSmm(){
 }
 
 var _smmEditRow = 0;
+// Картинка для поста в стиле BS: 1080x1350 для Instagram, 1080x1920 для Stories
+async function generateSmmImage(){
+  var title = document.getElementById('smmTitle').value.trim();
+  var text = document.getElementById('smmText').value.trim();
+  var rubric = document.getElementById('smmRubric').value;
+  var platform = document.getElementById('smmPlatform').value;
+  if(!title){ showToast('⚠️ Нужен заголовок'); return; }
+
+  var W = 1080, H = (platform === 'Instagram' || platform === 'Threads') ? 1350 : 1920;
+  var canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  var ctx = canvas.getContext('2d');
+  var GOLD = '#D4B886';
+
+  var grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#141312');
+  grad.addColorStop(0.5, '#0a0a0a');
+  grad.addColorStop(1, '#000000');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+  var glow = ctx.createRadialGradient(540, H*0.3, 40, 540, H*0.3, 700);
+  glow.addColorStop(0, 'rgba(212,184,134,0.14)');
+  glow.addColorStop(1, 'rgba(212,184,134,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+
+  // Спираль ДНК справа
+  ctx.save();
+  ctx.globalAlpha = 0.1; ctx.strokeStyle = GOLD; ctx.lineWidth = 3;
+  for(var s = 0; s < 2; s++){
+    ctx.beginPath();
+    for(var y = 0; y <= H; y += 8){
+      var x = 1000 + Math.sin((y/150) + s*Math.PI) * 50;
+      if(y === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // Логотип
+  ctx.textAlign = 'center';
+  var logoEl = window._bsLogoImg || document.querySelector('.hero-logo-real img');
+  var top = 150;
+  if(logoEl && logoEl.complete && logoEl.naturalWidth){
+    try{
+      var lw = 240, lh = lw * (logoEl.naturalHeight/logoEl.naturalWidth);
+      ctx.drawImage(logoEl, 540 - lw/2, 90, lw, lh);
+      top = 90 + lh + 50;
+    }catch(e){}
+  } else {
+    ctx.fillStyle = '#fff'; ctx.font = '800 40px Inter, Arial, sans-serif';
+    ctx.letterSpacing = '5px'; ctx.fillText('BUSINESS SURGERY', 540, 150);
+    ctx.letterSpacing = '0px'; top = 200;
+  }
+
+  // Рубрика
+  ctx.fillStyle = GOLD; ctx.font = '700 24px Inter, Arial, sans-serif';
+  ctx.letterSpacing = '4px';
+  ctx.fillText(rubric.toUpperCase(), 540, top);
+  ctx.letterSpacing = '0px';
+
+  // Заголовок
+  ctx.fillStyle = '#ffffff';
+  var titleSize = title.length > 60 ? 52 : (title.length > 35 ? 62 : 74);
+  ctx.font = '900 ' + titleSize + 'px Inter, Arial, sans-serif';
+  var titleLines = wrapText(ctx, title, 880);
+  var ty = top + 110;
+  titleLines.slice(0, 5).forEach(function(line, i){
+    ctx.fillText(line, 540, ty + i * (titleSize + 14));
+  });
+  var afterTitle = ty + titleLines.slice(0,5).length * (titleSize + 14);
+
+  // Текст
+  if(text){
+    ctx.fillStyle = 'rgba(255,255,255,0.68)';
+    ctx.font = '400 34px Inter, Arial, sans-serif';
+    var maxLines = H > 1500 ? 12 : 7;
+    var bodyLines = wrapText(ctx, text.replace(/\n+/g, ' '), 860);
+    bodyLines.slice(0, maxLines).forEach(function(line, i){
+      ctx.fillText(line, 540, afterTitle + 60 + i * 48);
+    });
+  }
+
+  // Подвал
+  ctx.fillStyle = 'rgba(255,255,255,0.18)';
+  ctx.fillRect(140, H - 190, 800, 1);
+  ctx.fillStyle = GOLD; ctx.font = '700 28px Inter, Arial, sans-serif';
+  ctx.fillText('Разбор бизнеса за 60 минут', 540, H - 130);
+  ctx.fillStyle = '#ffffff'; ctx.font = '800 36px Inter, Arial, sans-serif';
+  ctx.fillText('BXCLUB.KZ', 540, H - 80);
+  ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.font = '400 24px Inter, Arial, sans-serif';
+  ctx.fillText('@business.surgery', 540, H - 40);
+
+  canvas.toBlob(async function(blob){
+    try{
+      if(navigator.canShare){
+        var file = new File([blob], 'bs_post.png', {type:'image/png'});
+        if(navigator.canShare({files:[file]})){
+          await navigator.share({files:[file], text: title});
+          return;
+        }
+      }
+    }catch(e){ if(e && e.name === 'AbortError') return; }
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'bs_post_' + platform.toLowerCase() + '.png';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+    showToast('✅ Картинка ' + W + 'x' + H + ' сохранена');
+  }, 'image/png');
+}
+
+function copySmmText(){
+  var title = document.getElementById('smmTitle').value.trim();
+  var text = document.getElementById('smmText').value.trim();
+  var full = (title ? title + '\n\n' : '') + text;
+  if(!full){ showToast('⚠️ Пусто'); return; }
+  try{
+    navigator.clipboard.writeText(full).then(function(){
+      showToast('✅ Текст скопирован');
+    }, function(){ prompt('Скопируйте:', full); });
+  }catch(e){ prompt('Скопируйте:', full); }
+}
+
+async function publishSmmNow(){
+  if(!_smmEditRow){ showToast('⚠️ Сначала сохраните'); return; }
+  if(!confirm('Опубликовать пост в канал BS прямо сейчас?')) return;
+  showToast('⏳ Публикуем...');
+  try{
+    var r = await callAction('publishSmm', {row: _smmEditRow});
+    if(r && r.ok){
+      showToast('✅ Опубликовано в канале');
+      closeModal('smmModal');
+      silentSync();
+    } else {
+      showToast('⚠️ ' + ((r && r.error) || 'Ошибка'));
+    }
+  }catch(e){ showToast('❌ ' + e.message); }
+}
+
 function openSmmModal(){
   _smmEditRow = 0;
   ['smmTitle','smmText','smmLink'].forEach(function(id){ var e = document.getElementById(id); if(e) e.value = ''; });
@@ -4746,6 +4956,8 @@ function openSmmModal(){
   var st = document.getElementById('smmStatus'); if(st) st.value = 'Идея';
   document.getElementById('smmModalTitle').textContent = 'Новая публикация';
   var dr = document.getElementById('smmDeleteRow'); if(dr) dr.style.display = 'none';
+  var ar0 = document.getElementById('smmActionsRow'); if(ar0) ar0.style.display = 'none';
+  var pr0 = document.getElementById('smmPublishRow'); if(pr0) pr0.style.display = 'none';
   openModal('smmModal');
 }
 
@@ -4762,6 +4974,9 @@ function editSmm(row){
   document.getElementById('smmStatus').value = it.status;
   document.getElementById('smmModalTitle').textContent = 'Публикация';
   var dr2 = document.getElementById('smmDeleteRow'); if(dr2) dr2.style.display = 'block';
+  var ar = document.getElementById('smmActionsRow'); if(ar) ar.style.display = 'flex';
+  var pr = document.getElementById('smmPublishRow');
+  if(pr) pr.style.display = (it.platform === 'Telegram') ? 'block' : 'none';
   openModal('smmModal');
 }
 
@@ -6627,8 +6842,8 @@ function shareStoryInvite(){
 }
 
 function shareStory(){
-  // Сначала показываем выбор шаблона
-  openModal('storyTemplateModal');
+  // Один шаблон, без промежуточных окон. картинка собирается сразу
+  generateStory('classic');
 }
 
 async function generateStory(template){
@@ -6683,16 +6898,16 @@ async function generateStory(template){
   // Логотип: берём из вкладки BS, если она ещё не отрисована. грузим напрямую
   var logoDrawn = false;
   var headBottom = 175;
-  var logoEl = document.querySelector('.hero-logo-real img');
+  var logoEl = window._bsLogoImg || document.querySelector('.hero-logo-real img');
   if(!logoEl || !logoEl.complete || !logoEl.naturalWidth){
     try{
       if(window._bsLogoSrc){
         logoEl = await new Promise(function(res, rej){
           var im = new Image();
-          im.onload = function(){ res(im); };
+          im.onload = function(){ window._bsLogoImg = im; res(im); };
           im.onerror = rej;
           im.src = window._bsLogoSrc;
-          setTimeout(rej, 2500);
+          setTimeout(rej, 2000);
         });
       }
     }catch(e){ logoEl = null; }
@@ -6726,7 +6941,16 @@ async function generateStory(template){
   // Пробуем оба источника и оба режима загрузки
   var avatarUrl = (user && user.photo_url) || me.avatar || '';
   var drewAvatar = false;
-  if(avatarUrl){
+  if(window._bsAvatarImg){
+    try{
+      ctx.save();
+      ctx.beginPath(); ctx.arc(540, 520, 165, 0, Math.PI*2); ctx.closePath(); ctx.clip();
+      ctx.drawImage(window._bsAvatarImg, 375, 355, 330, 330);
+      ctx.restore();
+      drewAvatar = true;
+    }catch(e){}
+  }
+  if(!drewAvatar && avatarUrl){
     try{
       var img = await new Promise(function(res, rej){
         var tries = 0;
@@ -6751,6 +6975,7 @@ async function generateStory(template){
       ctx.drawImage(img, 375, 355, 330, 330);
       ctx.restore();
       drewAvatar = true;
+      window._bsAvatarImg = img;
     }catch(e){}
   }
   if(!drewAvatar){
@@ -7533,7 +7758,10 @@ window.addEventListener('unhandledrejection', function(e){
   console.error('Promise rejection:', e.reason);
 });
 
-function openModal(id){ document.getElementById(id).classList.add('show'); }
+function openModal(id){
+  // Если открыто меню выбора. закрываем его, чтобы не было двух слоёв
+  var am = document.querySelector('.add-menu-overlay');
+  if(am && id === 'schedModal'){ /* меню закроется своим обработчиком */ } document.getElementById(id).classList.add('show'); }
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 function showToast(text){
   const t = document.getElementById('toast');
@@ -7551,6 +7779,8 @@ init();
 
 function openAddMenu(){
   // Меню добавления: онлайн встреча / офлайн встреча / мероприятие
+  // Защита от повторного открытия (двойной клик, две кнопки на экране)
+  if(document.querySelector('.add-menu-overlay')) return;
   var menu = document.createElement('div');
   menu.className = 'add-menu-overlay';
   menu.onclick = function(e){ if(e.target===menu) closeAddMenu(); };
