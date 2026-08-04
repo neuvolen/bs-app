@@ -37,7 +37,7 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-size: 14px; min-height: 100vh; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+  html, body { background: var(--bg); color: var(--white); font-family: 'Inter', sans-serif; font-size: 14px; min-height: 100vh; min-height: 100dvh; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
 
   /* HEADER */
   .header {
@@ -46,7 +46,7 @@
     z-index: 100;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
-    padding: 14px 16px 12px;
+    padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 12px;
   }
   .header-row {
     display: flex;
@@ -116,8 +116,13 @@
     overflow-x: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding-bottom: 2px;
+    padding: 0 16px 2px;
+    margin: 0 -16px;
+    scroll-padding: 0 16px;
+    -webkit-overflow-scrolling: touch;
   }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs .tab:last-child { margin-right: 8px; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
     flex: 0 0 auto;
@@ -149,7 +154,7 @@
   }
 
   /* PAGES */
-  .page { display: none; padding: 16px 16px calc(env(safe-area-inset-bottom) + 100px); animation: fade 0.2s; }
+  .page { display: none; padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 130px); animation: fade 0.2s; }
   .page.active { display: block; }
   @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -770,7 +775,8 @@
 
 <div class="page" id="page-residents"><div id="residentsContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-subscribers"></div>
-<div class="page" id="page-todos"></div>
+<div class="page" id="page-todos">
+  <div id="allResTasksBox"></div></div>
 <div class="page" id="page-about"></div>
 <div class="page" id="page-leadmagnets"></div>
 <div class="page" id="page-diagnostic"></div>
@@ -838,6 +844,26 @@
   </div>
 </div>
 
+<div class="modal-bg" id="addResTaskModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Задача резиденту</div>
+    <div class="form-group">
+      <label class="form-label">Резидент</label>
+      <select class="form-select" id="resTaskResident"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Что нужно сделать</label>
+      <textarea class="form-input" id="resTaskText" rows="4" placeholder="Например: посчитать юнит-экономику по двум продуктам и прислать до пятницы" style="resize:vertical;min-height:90px"></textarea>
+    </div>
+    <div style="height:14px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="submitAddResTask()">Поставить</button>
+      <button class="btn btn-secondary" onclick="closeModal('addResTaskModal')">Отмена</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="wheelModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -894,10 +920,14 @@
       <label class="form-label">Сумма (тг)</label>
       <input class="form-input money-input" type="text" inputmode="numeric" id="payAmount" placeholder="150 000">
     </div>
-    <div class="picker" style="grid-template-columns:1fr 1fr;margin-bottom:12px">
-      <button class="pick-btn selected" id="payCash" onclick="setPayMethod('cash')">💵 Наличные</button>
-      <button class="pick-btn" id="payBank" onclick="setPayMethod('bank')">🏦 Банк −4%</button>
+    <div class="form-group" id="payMethodGroup">
+      <label class="form-label">Способ</label>
+      <div class="picker" style="grid-template-columns:1fr 1fr">
+        <button class="pick-btn selected" id="payCash" onclick="setPayMethod('cash')">💵 Наличные</button>
+        <button class="pick-btn" id="payBank" onclick="setPayMethod('bank')">🏦 Банк −4%</button>
+      </div>
     </div>
+    <div style="height:22px"></div>
     <div class="modal-actions"><button class="btn btn-primary" onclick="submitPayment()">Записать</button><button class="btn btn-secondary" onclick="closeModal('payModal')">Отмена</button></div>
   </div>
 </div>
@@ -1052,65 +1082,91 @@
   .cal-weekdays { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:4px; }
   .cal-wd { text-align:center; font-size:10px; font-weight:600; color:var(--text-muted); padding:6px 0; letter-spacing:1px; }
   .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
-  .cal-day { 
-    background: rgba(255,255,255,0.04); 
-    border: 1px solid var(--border); 
-    border-radius: 6px; 
-    min-height: 64px; 
-    padding: 6px; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 3px; 
-    transition: all 0.15s; 
+  .cal-day {
+    background: #161616;
+    border: 1px solid #262626;
+    border-radius: 8px;
+    min-height: 72px;
+    padding: 6px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    transition: all 0.12s;
+    cursor: pointer;
   }
-  .cal-day-empty { 
-    background: transparent; 
-    border: 1px dashed rgba(255,255,255,0.05); 
+  .cal-day:active { transform: scale(0.96); }
+  .cal-day-empty {
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: default;
   }
-  .cal-day-num { 
-    font-size: 12px; 
-    font-weight: 700; 
-    color: var(--text); 
+  .cal-day-num {
+    font-size: 13px;
+    font-weight: 800;
+    color: #e8e8e8;
+    line-height: 1;
   }
-  .cal-today { 
-    border-color: var(--accent); 
-    border-width: 2px; 
-    background: rgba(212,184,134,0.08);
+  .cal-today {
+    border-color: #D4B886;
+    border-width: 2px;
+    background: rgba(212,184,134,0.12);
   }
-  .cal-today .cal-day-num { 
-    color: var(--accent); 
-    font-weight: 900; 
+  .cal-today .cal-day-num { color: #D4B886; font-weight: 900; }
+  .cal-past { opacity: 0.4; }
+  .cal-past .cal-day-num { color: #777; }
+  .cal-has-meets { background: #1c1c1c; border-color: #333; }
+  .cal-has-meets:active { background: #242424; }
+  /* Формат встречи: офлайн красный, онлайн синий, не указан жёлтый */
+  .cal-meet {
+    font-size: 9.5px;
+    padding: 2.5px 4px;
+    border-radius: 4px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 700;
+    border-left: 3px solid;
   }
-  .cal-past { opacity: 0.55; }
-  .cal-past .cal-day-num { color: var(--text-muted); }
-  .cal-has-meets { 
-    cursor: pointer; 
-    background: rgba(212,184,134,0.05);
+  .cal-meet-offline {
+    background: rgba(229,115,115,0.18);
+    border-left-color: #e57373;
+    color: #ffb4b4;
   }
-  .cal-has-meets:hover { 
-    background: rgba(212,184,134,0.15); 
-    border-color: var(--accent); 
-    transform: scale(1.02);
+  .cal-meet-online {
+    background: rgba(100,181,246,0.18);
+    border-left-color: #64b5f6;
+    color: #b3dcff;
   }
-  .cal-meet { 
-    background: var(--accent); 
-    color: #000; 
-    font-size: 9px; 
-    padding: 2px 4px; 
-    border-radius: 3px; 
-    line-height: 1.25; 
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    font-weight: 700; 
+  .cal-meet-unknown {
+    background: rgba(255,213,79,0.16);
+    border-left-color: #ffd54f;
+    color: #ffe9a8;
   }
-  .cal-meet-time { font-weight: 800; }
-  .cal-meet-more { 
-    font-size: 10px; 
-    color: var(--accent); 
-    padding-left: 4px; 
-    font-weight: 700; 
+  .cal-meet-time { font-weight: 900; }
+  .cal-meet-more {
+    font-size: 9.5px;
+    color: #999;
+    padding-left: 3px;
+    font-weight: 800;
   }
+  /* Легенда */
+  .cal-legend {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    padding: 12px 0 4px;
+    flex-wrap: wrap;
+  }
+  .cal-leg-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #999;
+    font-weight: 600;
+  }
+  .cal-leg-dot { width: 9px; height: 9px; border-radius: 2px; }
 
   
   /* === Add menu === */
@@ -2660,25 +2716,27 @@
   .pl-chart {
     display: flex;
     align-items: flex-end;
-    gap: 4px;
+    gap: 2px;
     padding: 8px 0 4px;
-    height: 96px;
+    height: 100px;
     border-top: 1px solid rgba(255,255,255,0.05);
     margin-bottom: 12px;
+    overflow: visible;
   }
   .pl-bar-wrap {
-    flex: 1;
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     cursor: pointer;
     height: 100%;
     justify-content: flex-end;
   }
   .pl-bar {
     width: 100%;
-    max-width: 16px;
+    max-width: 14px;
     background: rgba(212,184,134,0.4);
     border-radius: 3px 3px 0 0;
     transition: all 0.2s;
@@ -2697,11 +2755,14 @@
     background: #E53935;
   }
   .pl-bar-lbl {
-    font-size: 9px;
-    color: rgba(255,255,255,0.4);
+    font-size: 8.5px;
+    color: rgba(255,255,255,0.42);
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
+    letter-spacing: 0;
+    white-space: nowrap;
+    text-align: center;
+    line-height: 1;
   }
   .pl-bar-lbl.active {
     color: #D4B886;
@@ -2823,7 +2884,7 @@ const FINE_TYPES = [
 ];
 
 const INCOME_SRC = ['БХ Трекинг продление','БХ Трекинг год','БХ Штраф','БХ Экспресс разбор','БХ МК/Завтрак','Прочие доходы'];
-const EXPENSE_SRC = ['SMM','Маркет.бюджет','Таргетолог','Tilda + домен','CRM','Canva','Съемки проф','Съемки доп','HH объявление','Симка тариф','Оборудование','Офис','Ассистент','Бухгалтер','Юрист','IT','Комиссия+налог','Прочие расходы:'];
+const EXPENSE_SRC = ['Комиссия+налог','Маркет.бюджет','SMM','Таргетолог','Tilda + домен','CRM','Canva','Съемки проф','Съемки доп','HH объявление','Симка тариф','Оборудование','Офис','Ассистент','Бухгалтер','Юрист','IT','Прочие расходы:'];
 
 
 // Глобальный обработчик кликов по карточкам резидентов
@@ -3344,6 +3405,7 @@ function renderAllPages(){
   try{renderResidents();}catch(e){console.error('residents:',e);}
   try{renderSubscribers();}catch(e){console.error('subscribers:',e);}
   try{renderTodos();}catch(e){console.error('todos:',e);}
+  try{if(isRealAdmin)renderAllResTasks();}catch(e){console.error('restasks:',e);}
   try{renderMyStatus();}catch(e){console.error('mystatus:',e);}
   try{if(viewAs==='resident')loadMyTasks();}catch(e){console.error('mytasks:',e);}
   try{renderWheel();}catch(e){console.error('wheel:',e);}
@@ -3404,7 +3466,7 @@ function renderDashboard(){
       const cls = isCur ? 'pl-bar active' : (mm.hasData ? 'pl-bar' : 'pl-bar empty');
       return `<div class="pl-bar-wrap" onclick="selectMonth(${i})">
         <div class="${cls}${isNeg?' neg':''}" style="height:${Math.max(3,h)}px"></div>
-        <div class="pl-bar-lbl${isCur?' active':''}">${mm.short.toLowerCase()}</div>
+        <div class="pl-bar-lbl${isCur?' active':''}">${String(mm.short||'').toLowerCase().substring(0,3)}</div>
       </div>`;
     }).join('');
     
@@ -3447,11 +3509,15 @@ function renderDashboard(){
           </div>
         </div>
         
-        ${m.kassa!==null&&m.kassa!==undefined?`<div class="pl-row" style="border-top:1px solid var(--border);padding-top:10px;margin-top:2px">
-          <div class="pl-row-item" style="flex:1">
-            <div class="pl-row-lbl">На кассе накопительно</div>
+        ${(m.kassaStart!==null&&m.kassaStart!==undefined)||(m.kassa!==null&&m.kassa!==undefined)?`<div class="pl-row" style="border-top:1px solid var(--border);padding-top:10px;margin-top:2px">
+          ${m.kassaStart!==null&&m.kassaStart!==undefined?`<div class="pl-row-item">
+            <div class="pl-row-lbl">На начало месяца</div>
+            <div class="pl-row-val" style="color:${m.kassaStart<0?'#e57373':'#aaa'};font-weight:800">${(m.kassaStart<0?'−':'')+fmt(Math.abs(m.kassaStart))} ₸</div>
+          </div>`:''}
+          ${m.kassa!==null&&m.kassa!==undefined?`<div class="pl-row-item">
+            <div class="pl-row-lbl">На конец месяца</div>
             <div class="pl-row-val" style="color:${m.kassa<0?'#e57373':'#D4B886'};font-weight:900">${(m.kassa<0?'−':'')+fmt(Math.abs(m.kassa))} ₸</div>
-          </div>
+          </div>`:''}
         </div>`:''}
         
         <div class="pl-chart">
@@ -3470,13 +3536,19 @@ function renderDashboard(){
     ${monthlyHtml}
     
     <div class="metric-grid">
-      <div class="metric"><div class="metric-val">${residents.length}</div><div class="metric-lbl">Резидентов</div></div>
-      <div class="metric"><div class="metric-val">${todayReports}</div><div class="metric-lbl">Отчётов сегодня</div></div>
+      <div class="metric" style="cursor:pointer" onclick="showPage('residents')">
+        <div class="metric-val">${residents.length}</div>
+        <div class="metric-lbl">Резидентов ›</div>
+      </div>
+      <div class="metric" style="cursor:pointer" onclick="showPage('reports')">
+        <div class="metric-val">${todayReports}</div>
+        <div class="metric-lbl">Отчётов сегодня ›</div>
+      </div>
     </div>
 
-    <div class="card">
+    <div class="card" style="cursor:pointer" onclick="showPage('fines')">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div class="card-title" style="margin:0">Штрафы к получению</div>
+        <div class="card-title" style="margin:0">Штрафы к получению ›</div>
         <span class="badge b-red">${unpaid.length} шт</span>
       </div>
       <div class="metric-val" style="font-size:24px">${fmt(unpaidSum)} тг</div>
@@ -3628,26 +3700,78 @@ function renderScheduleCalendar(list){
     var isPast = (new Date(year, month, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate()));
     
     html += '<div class="cal-day ' + (isToday?'cal-today':'') + ' ' + (isPast?'cal-past':'') + ' ' + (dayMeets.length?'cal-has-meets':'') + '"';
-    if(dayMeets.length){
-      html += ' onclick="showDayMeetings(\''+ dStr +'\')"';
-    }
+    // Клик работает на ЛЮБОМ дне: есть встречи. показываем их, нет. предлагаем создать
+    html += ' onclick="calDayClick(\''+ dStr +'\')"';
     html += '>';
     html += '<div class="cal-day-num">' + d + '</div>';
     if(dayMeets.length){
-      // Покажем первых 2 встреч + счётчик
       dayMeets.slice(0, 2).forEach(function(ev){
         var name = (ev.res || '').split(' ')[0];
-        html += '<div class="cal-meet"><span class="cal-meet-time">' + (ev.time || '') + '</span> ' + name + '</div>';
+        var fmtCls = meetFormatClass(ev);
+        html += '<div class="cal-meet ' + fmtCls + '"><span class="cal-meet-time">' + (ev.time || '') + '</span> ' + name + '</div>';
       });
       if(dayMeets.length > 2){
-        html += '<div class="cal-meet-more">+' + (dayMeets.length-2) + '</div>';
+        html += '<div class="cal-meet-more">+' + (dayMeets.length-2) + ' ещё</div>';
       }
     }
     html += '</div>';
   }
   
-  html += '</div></div>';
+  html += '</div>';
+  
+  // Легенда форматов
+  html += '<div class="cal-legend">' +
+    '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#e57373"></span> Офлайн</div>' +
+    '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#64b5f6"></span> Онлайн</div>' +
+    '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#ffd54f"></span> Не указан</div>' +
+    '</div>';
+  
+  html += '</div>';
   return html;
+}
+
+function meetFormatClass(ev){
+  // Определяем формат встречи по ссылке/адресу
+  var link = String(ev.link || ev.meet || '').toLowerCase();
+  if(link.indexOf('meet.google') >= 0 || link.indexOf('zoom') >= 0) return 'cal-meet-online';
+  if(link && link.indexOf('http') < 0) return 'cal-meet-offline'; // указан адрес
+  if(!link) return 'cal-meet-unknown';
+  return 'cal-meet-online';
+}
+
+function calDayClick(dStr){
+  // Клик по дню календаря: есть встречи. показать список, иначе. создать встречу на эту дату
+  var list = (cache.schedule || []);
+  var parts = dStr.split('.');
+  var key = parts[0] + '.' + parts[1];
+  var dayMeets = list.filter(function(ev){
+    var s = String(ev.date || '');
+    var m = s.match(/^(\d{1,2})\.(\d{1,2})/);
+    if(!m) return false;
+    return (m[1].padStart(2,'0') + '.' + m[2].padStart(2,'0')) === key;
+  });
+  if(dayMeets.length){
+    showDayMeetings(dStr);
+  } else if(isRealAdmin){
+    // Открываем форму создания с подставленной датой
+    openModal('schedModal');
+    initSchedModal();
+    setTimeout(function(){
+      var btns = document.querySelectorAll('#dateGrid .pick-btn[data-date]');
+      var found = false;
+      btns.forEach(function(b){
+        var bd = b.dataset.date || '';
+        if(bd === dStr || bd.substring(0,5) === key){
+          btns.forEach(function(x){x.classList.remove('selected');});
+          b.classList.add('selected');
+          selDate = bd;
+          found = true;
+          if(typeof updateAvailableTimes === 'function') updateAvailableTimes();
+        }
+      });
+      if(!found) showToast('Выбери дату в списке выше');
+    }, 100);
+  }
 }
 
 function calPrevMonth(){
@@ -4189,21 +4313,18 @@ async function loadResidentTasks(name){
     if(!tasks.length){
       h += '<div style="font-size:13px;color:#888;padding:4px 0">Задач нет. Добавь после встречи.</div>';
     } else {
-      const active = tasks.filter(t => t.status !== 'Принята');
+      const active = tasks.filter(t => t.status !== 'Выполнена');
       const doneCount = tasks.length - active.length;
       active.forEach(t => {
-        const onCheck = t.status === 'На проверке';
-        const isReturned = t.status === 'Возвращена';
-        h += `<div style="padding:12px 14px;margin-bottom:8px;background:var(--card2);border-radius:10px;border-left:3px solid ${onCheck?'#ffd54f':(isReturned?'#e57373':'#D4B886')}">
-          <div style="font-size:14px;color:#fff;font-weight:600;line-height:1.45">${t.task}</div>
-          <div style="font-size:11px;color:#888;margin-top:4px">${t.date} · ${t.status}</div>
-          ${onCheck ? `<div style="display:flex;gap:8px;margin-top:10px">
-            <button onclick="adminTaskAction(${t.row},'Принята','${name.replace(/'/g,"\\'")}')" style="flex:1;background:rgba(76,175,125,0.15);border:1px solid #4caf7d;color:#4caf7d;padding:8px;border-radius:8px;font-size:12px;font-weight:800;font-family:inherit">✅ Принять</button>
-            <button onclick="adminTaskReturn(${t.row},'${name.replace(/'/g,"\\'")}')" style="flex:1;background:rgba(229,115,115,0.12);border:1px solid #e57373;color:#e57373;padding:8px;border-radius:8px;font-size:12px;font-weight:800;font-family:inherit">↩️ Вернуть</button>
-          </div>` : ''}
+        h += `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,0.05)">
+          <div style="width:17px;height:17px;border:2px solid #555;border-radius:4px;flex-shrink:0;margin-top:2px"></div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13.5px;color:#fff;line-height:1.4">${t.task}</div>
+            <div style="font-size:11px;color:#777;margin-top:2px">${t.date}</div>
+          </div>
         </div>`;
       });
-      if(doneCount) h += '<div style="font-size:11px;color:#4caf7d;font-weight:800">✅ Принято: ' + doneCount + '</div>';
+      if(doneCount) h += '<div style="font-size:11px;color:#4caf7d;font-weight:800;margin-top:8px">✅ Выполнено: ' + doneCount + '</div>';
     }
     h += '</div>';
     el.innerHTML = h;
@@ -4575,27 +4696,24 @@ async function loadMyTasks(){
   try{
     const r = await callAction('getResTasks', {name: me.name});
     const tasks = (r && r.tasks) || [];
-    const active = tasks.filter(t => t.status !== 'Принята');
-    const done = tasks.filter(t => t.status === 'Принята');
+    const active = tasks.filter(t => t.status !== 'Выполнена');
+    const done = tasks.filter(t => t.status === 'Выполнена');
     if(!tasks.length){
       el.innerHTML = '<div style="color:#888;font-size:13px;padding:6px 0">Задач пока нет. Появятся после трекинг-встречи.</div>';
       return;
     }
     let h = '';
     active.forEach(t => {
-      const isReturned = t.status === 'Возвращена';
-      const onCheck = t.status === 'На проверке';
-      h += `<div style="padding:12px 14px;margin-bottom:8px;background:var(--card2);border-radius:10px;border-left:3px solid ${isReturned?'#e57373':(onCheck?'#ffd54f':'#D4B886')}">
-        <div style="font-size:14px;color:#fff;font-weight:600;line-height:1.45">${t.task}</div>
-        ${t.comment && isReturned ? '<div style="font-size:12px;color:#e57373;margin-top:6px">💬 '+t.comment+'</div>' : ''}
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-          <span style="font-size:11px;color:#888">${t.date}${isReturned?' · возвращена':''}${onCheck?' · на проверке':''}</span>
-          ${!onCheck ? `<button onclick="submitTaskForReview(${t.row})" style="background:rgba(212,184,134,0.15);border:1px solid #D4B886;color:#D4B886;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:800;font-family:inherit">Сдать на проверку</button>` : '<span style="font-size:12px;color:#ffd54f;font-weight:700">⏳ Ждёт трекера</span>'}
+      h += `<div onclick="markTaskDone(${t.row})" style="display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-top:1px solid rgba(255,255,255,0.05);cursor:pointer">
+        <div style="width:19px;height:19px;border:2px solid #555;border-radius:5px;flex-shrink:0;margin-top:1px"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13.5px;color:#fff;line-height:1.4">${t.task}</div>
+          <div style="font-size:11px;color:#777;margin-top:2px">${t.date}</div>
         </div>
       </div>`;
     });
     if(done.length){
-      h += '<div style="font-size:11px;color:#4caf7d;font-weight:800;margin-top:6px">✅ Принято задач: ' + done.length + '</div>';
+      h += '<div style="font-size:11px;color:#4caf7d;font-weight:800;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05)">✅ Выполнено: ' + done.length + '</div>';
     }
     el.innerHTML = h;
   }catch(e){
@@ -4604,20 +4722,20 @@ async function loadMyTasks(){
 }
 
 let _taskSubmitInFlight = false;
-async function submitTaskForReview(row){
+async function markTaskDone(row){
+  // Резидент сам отмечает выполнение. Проверки трекером нет, статусы смотрят на трекинге
   if(_taskSubmitInFlight) return;
   _taskSubmitInFlight = true;
-  showToast('⏳ Отправляем на проверку...');
   try{
-    const r = await callAction('setResTaskStatus', {row: row, status: 'На проверке'});
+    const r = await callAction('setResTaskStatus', {row: row, status: 'Выполнена'});
     if(r && r.ok){
-      showToast('✅ Сдано. Трекер проверит');
+      showToast('✅ Отмечено');
       loadMyTasks();
     } else {
       showToast('⚠️ ' + (r && r.error || 'Ошибка'));
     }
   }catch(e){ showToast('❌ ' + e.message); }
-  finally{ setTimeout(()=>{ _taskSubmitInFlight = false; }, 1500); }
+  finally{ setTimeout(()=>{ _taskSubmitInFlight = false; }, 1200); }
 }
 
 function copyReferralLink(){
@@ -4917,6 +5035,12 @@ function renderWheelDetail(){
     h += '<div style="margin-top:16px;padding:12px;background:rgba(76,175,125,0.08);border-radius:10px;font-size:13px;color:#4caf7d;font-weight:700;text-align:center">Все зоны выше 5. Сильно! 💪</div>';
   }
 
+  // ИИ-анализ динамики (если между замерами больше недели)
+  if(rows.length > 1){
+    h += '<div id="wheelAiBox" style="margin-top:16px"></div>';
+    setTimeout(analyzeWheelDynamics, 60);
+  }
+
   // Блок прибыли (только для ДНК и только своё колесо)
   if(isDna && !_wheelDetailName){
     h += '<div id="profitBlock" style="margin-top:18px"><div style="font-size:12px;color:#888;text-align:center">Загружаем прибыль...</div></div>';
@@ -5018,6 +5142,89 @@ function promptAddProfit(){
       showToast('⚠️ ' + (r && r.error || 'Ошибка'));
     }
   });
+}
+
+// ── ИИ-анализ динамики между замерами ──
+function parseWheelDate(s){
+  // "dd.MM.yyyy HH:mm" → Date
+  try{
+    var p = String(s).split(' ')[0].split('.');
+    return new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
+  }catch(e){ return null; }
+}
+
+async function analyzeWheelDynamics(){
+  const box = document.getElementById('wheelAiBox');
+  if(!box) return;
+  const d = _wheelHistory || {};
+  const isDna = _wheelDetailType === 'dna';
+  const axes = isDna ? (d.dnaAxes || WHEEL_DNA_AXES) : (d.lifeAxes || WHEEL_LIFE_AXES);
+  let rows;
+  if(isDna){
+    const businesses = d.businesses || [];
+    let biz = businesses.find(b => b.name === _wheelDetailBiz) || businesses[0];
+    rows = biz ? biz.rows : [];
+  } else {
+    rows = d.life || [];
+  }
+  const idx = Math.min(_wheelHistoryIdx, rows.length - 1);
+  const cur = rows[idx];
+  const prev = rows[idx + 1];
+  if(!cur || !prev){ box.innerHTML = ''; return; }
+
+  // Анализ только если между замерами прошла хотя бы неделя
+  const dCur = parseWheelDate(cur.date), dPrev = parseWheelDate(prev.date);
+  if(!dCur || !dPrev){ box.innerHTML = ''; return; }
+  const days = Math.round((dCur - dPrev) / 86400000);
+  if(days < 7){
+    box.innerHTML = '<div style="font-size:12px;color:#777;padding:10px 0">Между замерами ' + days + ' дн. Анализ появится когда пройдёт неделя и больше.</div>';
+    return;
+  }
+
+  box.innerHTML = '<div style="font-size:12px;color:#888;padding:12px 0">🤖 Анализируем динамику...</div>';
+
+  // Собираем изменения
+  const changes = axes.map(function(ax, i){
+    return {axis: ax, was: prev.values[i], now: cur.values[i], diff: Math.round((cur.values[i]-prev.values[i])*10)/10};
+  });
+  const avgWas = Math.round(prev.values.reduce((a,b)=>a+b,0)/prev.values.length*10)/10;
+  const avgNow = Math.round(cur.values.reduce((a,b)=>a+b,0)/cur.values.length*10)/10;
+
+  const prompt = 'Ты бизнес-трекер Business Surgery. Резидент дважды заполнил колесо ' +
+    (isDna ? 'ДНК бизнеса' : 'личного баланса') + '. Прошло ' + days + ' дней.\n\n' +
+    'Динамика по осям (было → стало):\n' +
+    changes.map(c => c.axis + ': ' + c.was + ' → ' + c.now + ' (' + (c.diff>0?'+':'') + c.diff + ')').join('\n') +
+    '\n\nСредний балл: ' + avgWas + ' → ' + avgNow + '\n\n' +
+    'Дай краткий разбор на русском, 3 блока по 1-2 предложения:\n' +
+    'РОСТ: где реально выросло и что это значит\n' +
+    'ПРОСЕДАНИЕ: где упало или стоит на месте и почему это опасно\n' +
+    'ФОКУС: одна конкретная зона на следующие 10 дней и первый шаг\n\n' +
+    'Пиши прямо, без воды и без длинных тире. Обращайся на ты. Не используй markdown-заголовки, просто РОСТ: текст, ПРОСЕДАНИЕ: текст, ФОКУС: текст.';
+
+  try{
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        messages: [{role: "user", content: prompt}]
+      })
+    });
+    const data = await resp.json();
+    let text = (data.content || []).map(function(it){ return it.type === 'text' ? it.text : ''; }).join('').trim();
+    if(!text){ box.innerHTML = ''; return; }
+    // Подсветим ключевые блоки
+    text = text.replace(/РОСТ:/g, '<b style="color:#4caf7d">РОСТ:</b>')
+               .replace(/ПРОСЕДАНИЕ:/g, '<b style="color:#e57373">ПРОСЕДАНИЕ:</b>')
+               .replace(/ФОКУС:/g, '<b style="color:#D4B886">ФОКУС:</b>')
+               .replace(/\n/g, '<br>');
+    box.innerHTML = '<div style="margin-top:4px;padding:14px;background:rgba(212,184,134,0.06);border-left:3px solid #D4B886;border-radius:0 10px 10px 0">' +
+      '<div style="font-size:11px;font-weight:800;color:#D4B886;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Анализ за ' + days + ' дней</div>' +
+      '<div style="font-size:13px;color:rgba(255,255,255,0.82);line-height:1.5">' + text + '</div></div>';
+  }catch(e){
+    box.innerHTML = '<div style="font-size:12px;color:#777;padding:8px 0">Анализ недоступен</div>';
+  }
 }
 
 // ── Редактор личных осей ──
@@ -5250,37 +5457,31 @@ function renderMyStatus(){
       </div>
     </div>
     
-    ${me.reportStreak>0?`<div class="card" style="display:flex;align-items:center;gap:14px;padding:14px 18px">
-      <div style="font-size:28px">🔥</div>
-      <div>
-        <div style="font-size:18px;font-weight:900;color:#fff">${me.reportStreak} ${(function(n){var d=n%10,h=n%100;if(h>=11&&h<=14)return 'дней';if(d===1)return 'день';if(d>=2&&d<=4)return 'дня';return 'дней';})(me.reportStreak)} подряд</div>
-        <div style="font-size:12px;color:#888">Отчёты без пропусков. Так держать</div>
-      </div>
+    ${me.reportStreak>0?`<div class="card" style="display:flex;align-items:center;gap:10px;padding:11px 16px">
+      <span style="font-size:20px">🔥</span>
+      <span style="font-size:15px;font-weight:900;color:#fff">${me.reportStreak}</span>
+      <span style="font-size:13px;color:#888">${(function(n){var d=n%10,h=n%100;if(h>=11&&h<=14)return 'дней';if(d===1)return 'день';if(d>=2&&d<=4)return 'дня';return 'дней';})(me.reportStreak)} отчётов подряд</span>
     </div>`:''}
 
     <!-- Задачи от трекера -->
-    <div class="card" id="myTasksCard">
-      <div class="card-title" style="margin-bottom:12px;color:#D4B886;font-weight:900;letter-spacing:0.5px">Задачи</div>
+    <div class="card" id="myTasksCard" style="padding:14px 16px">
+      <div style="font-size:11px;color:#888;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Задачи</div>
       <div id="myTasksList" style="font-size:13px;color:#888">Загрузка...</div>
     </div>
 
-    <!-- Сводка по встречам - всегда показывается -->
-    <div class="card">
-      <div class="card-title" style="margin-bottom:12px;color:#D4B886;font-weight:900;letter-spacing:0.5px">Встречи</div>
-      <div class="metric-grid" style="margin:0">
-        <div class="metric" style="background:var(--card2);border:none;padding:12px">
-          <div class="metric-val" style="font-size:22px;color:#D4B886">${me.visitsLeft||0}</div>
-          <div class="metric-lbl">Осталось</div>
+    <!-- Встречи: компактно -->
+    <div class="card" style="padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:11px;color:#888;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Встречи</div>
+          <div style="font-size:13px;color:#aaa">${me.visitsChecked||0} из ${me.visitsTotal||0} · тариф ${me.visitsTariff||0}/мес</div>
         </div>
-        <div class="metric" style="background:var(--card2);border:none;padding:12px">
-          <div class="metric-val" style="font-size:22px">${me.visitsChecked||0} / ${me.visitsTotal||0}</div>
-          <div class="metric-lbl">Использовано</div>
+        <div style="text-align:right">
+          <div style="font-size:26px;font-weight:900;color:#D4B886;line-height:1">${me.visitsLeft||0}</div>
+          <div style="font-size:10px;color:#888;letter-spacing:0.5px">ОСТАЛОСЬ</div>
         </div>
       </div>
-      <div style="margin-top:12px;padding:12px;background:var(--card2);border-radius:8px;font-size:13px;color:#888;line-height:1.5">
-        Тариф: ${me.visitsTariff||0} встреч/мес · Циклов оплачено: ${me.cyclesPaid||1}
-        ${me.partner ? '<br>🤝 Партнёр: <b style="color:#fff">'+me.partner+'</b> (одна Meet ссылка на двоих)' : ''}
-      </div>
+      ${me.partner ? '<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06);font-size:12px;color:#888">🤝 Партнёр: <b style="color:#fff">'+me.partner+'</b></div>' : ''}
     </div>
     
     <!-- Ближайшая встреча -->
@@ -6007,6 +6208,10 @@ function setPayType(type){
   document.getElementById('payTypeExpense').classList.toggle('selected', type==='expense');
   const src = type==='income' ? INCOME_SRC : EXPENSE_SRC;
   document.getElementById('paySource').innerHTML = src.map(s=>`<option value="${s}">${s}</option>`).join('');
+  // Комиссия банка 4% удерживается только с ПРИХОДА. для расхода способ не нужен
+  var mg = document.getElementById('payMethodGroup');
+  if(mg) mg.style.display = (type === 'expense') ? 'none' : '';
+  if(type === 'expense') setPayMethod('cash');
   if(typeof updatePayResidentVisibility==='function')updatePayResidentVisibility();
 }
 
@@ -6382,6 +6587,88 @@ function openEventCreateModal(type){
   }, 100);
 }
 
+
+// ══════════ ЗАДАЧИ РЕЗИДЕНТОВ (вкладка Задачи, блок снизу) ══════════
+async function renderAllResTasks(){
+  var el = document.getElementById('allResTasksBox');
+  if(!el) return;
+  try{
+    var r = await callAction('getResTasks', {});
+    var tasks = (r && r.tasks) || [];
+    var open = tasks.filter(function(t){ return t.status !== 'Выполнена'; });
+    var done = tasks.filter(function(t){ return t.status === 'Выполнена'; });
+    
+    var h = '<div style="display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px">' +
+      '<div class="section-title" style="margin:0">Задачи резидентов</div>' +
+      '<button class="icon-btn" onclick="openAddResTaskModal()" title="Добавить задачу резиденту">' +
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div>';
+    
+    if(!tasks.length){
+      h += '<div class="card"><div style="font-size:13px;color:#888;text-align:center;padding:14px">Задач нет. Нажми + чтобы поставить задачу резиденту после трекинга.</div></div>';
+      el.innerHTML = h;
+      return;
+    }
+    
+    // Группировка по резиденту
+    var byRes = {};
+    open.forEach(function(t){
+      if(!byRes[t.name]) byRes[t.name] = [];
+      byRes[t.name].push(t);
+    });
+    
+    Object.keys(byRes).sort().forEach(function(nm){
+      h += '<div class="card" style="margin-bottom:10px;padding:14px 16px">';
+      h += '<div style="font-weight:800;color:#D4B886;font-size:14px;margin-bottom:10px">' + nm + '</div>';
+      byRes[nm].forEach(function(t){
+        h += '<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-top:1px solid rgba(255,255,255,0.05)">' +
+          '<div style="width:16px;height:16px;border:2px solid #555;border-radius:4px;flex-shrink:0;margin-top:2px"></div>' +
+          '<div style="flex:1"><div style="font-size:13.5px;color:#fff;line-height:1.4">' + t.task + '</div>' +
+          '<div style="font-size:11px;color:#777;margin-top:3px">' + t.date + '</div></div></div>';
+      });
+      h += '</div>';
+    });
+    
+    if(done.length){
+      h += '<div style="font-size:12px;color:#4caf7d;font-weight:800;padding:4px 4px 10px">Выполнено задач: ' + done.length + '</div>';
+    }
+    el.innerHTML = h;
+  }catch(e){
+    el.innerHTML = '';
+  }
+}
+
+function openAddResTaskModal(){
+  var residents = (cache.residents||[]).filter(function(r){
+    return !r.isFired && !r.isAdmin && !r.isTeam && r.name!=='Тест' && r.name!=='Тест2';
+  });
+  if(!residents.length){ showToast('Нет резидентов'); return; }
+  var sel = document.getElementById('resTaskResident');
+  if(sel) sel.innerHTML = residents.map(function(r){ return '<option value="'+r.name+'">'+r.name+'</option>'; }).join('');
+  var ta = document.getElementById('resTaskText');
+  if(ta) ta.value = '';
+  openModal('addResTaskModal');
+}
+
+let _addResTaskInFlight = false;
+async function submitAddResTask(){
+  if(_addResTaskInFlight) return;
+  var name = document.getElementById('resTaskResident').value;
+  var task = document.getElementById('resTaskText').value.trim();
+  if(!task){ showToast('⚠️ Напиши задачу'); return; }
+  _addResTaskInFlight = true;
+  closeModal('addResTaskModal');
+  showToast('⏳ Создаём...');
+  try{
+    var r = await callAction('addResTask', {name: name, task: task, author: (user && user.first_name) || 'Админ'});
+    if(r && r.ok){
+      showToast('✅ Задача поставлена. ' + name + ' получил уведомление');
+      renderAllResTasks();
+    } else {
+      showToast('⚠️ ' + (r && r.error || 'Ошибка'));
+    }
+  }catch(e){ showToast('❌ ' + e.message); }
+  finally{ setTimeout(function(){ _addResTaskInFlight = false; }, 1500); }
+}
 
 function renderTodos(){
   var el = document.getElementById('page-todos');
