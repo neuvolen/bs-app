@@ -738,6 +738,7 @@
 </head>
 <body>
 
+<div id="syncDot" style="position:fixed;top:calc(var(--tg-safe-top,0px) + 8px);right:12px;width:7px;height:7px;border-radius:50%;background:#D4B886;opacity:0;transition:opacity 0.25s;z-index:9999;pointer-events:none"></div>
 <div class="header">
   <div class="header-row">
     <div class="logo">
@@ -769,7 +770,7 @@
   <div class="section-head">
     <div class="section-title">Задачи резидентов</div>
     <div style="display:flex;gap:8px">
-    <button class="icon-btn" onclick="forceReload('restasks', renderAllResTasks)" title="Обновить" style="width:36px;height:36px">
+    <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
     </button>
     <button class="icon-btn" onclick="openAddResTaskModal()" title="Поставить задачу">
@@ -802,7 +803,7 @@
   <div class="section-head">
     <div class="section-title">Полезное</div>
     <div style="display:flex;gap:8px">
-      <button class="icon-btn" onclick="forceReload('content', renderContentPlan)" title="Обновить" style="width:36px;height:36px">
+      <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
       </button>
       <button class="icon-btn" onclick="openContentModal()" title="Добавить пост" style="width:36px;height:36px">
@@ -815,9 +816,9 @@
 
 <div class="page" id="page-smm">
   <div class="section-head">
-    <div class="section-title">СММ</div>
+    <div class="section-title">SMM</div>
     <div style="display:flex;gap:8px">
-      <button class="icon-btn" onclick="forceReload('smm', renderSmm)" title="Обновить" style="width:36px;height:36px">
+      <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
       </button>
       <button class="icon-btn" onclick="openSmmModal()" title="Новая публикация" style="width:36px;height:36px">
@@ -839,7 +840,7 @@
 <div class="page" id="page-wheeladmin">
   <div class="section-head">
     <div class="section-title" style="color:#D4B886">Колесо клуба</div>
-    <button class="icon-btn" onclick="forceReload('wheeladmin', renderWheelAdmin)" title="Обновить" style="width:36px;height:36px">
+    <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
     </button>
   </div>
@@ -1028,6 +1029,7 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="smmModalTitle">Публикация</div>
+    <div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.45">План публикаций для @business.surgery. Заполните что можете, остальное позже: карточка обновляется в один клик.</div>
     <div class="form-group">
       <label class="form-label">Заголовок</label>
       <input class="form-input" type="text" id="smmTitle" placeholder="Кейс: с 200к до 2 млн за 4 месяца">
@@ -1066,7 +1068,10 @@
     <div style="height:14px"></div>
     <div class="modal-actions">
       <button class="btn btn-primary" onclick="submitSmm()">Сохранить</button>
-      <button class="btn btn-secondary" onclick="deleteSmm()">Удалить</button>
+      <button class="btn btn-secondary" onclick="closeModal('smmModal')">Закрыть</button>
+    </div>
+    <div id="smmDeleteRow" style="margin-top:10px;text-align:center;display:none">
+      <span onclick="deleteSmm()" style="font-size:12.5px;color:#e57373;cursor:pointer;font-weight:700">Удалить публикацию</span>
     </div>
   </div>
 </div>
@@ -3263,7 +3268,7 @@ const ADMIN_TABS = [
   {id:'reports', label:'Отчёты'},
   {id:'fines', label:'Штрафы'},
   {id:'content', label:'Полезное'},
-  {id:'smm', label:'СММ'},
+  {id:'smm', label:'SMM'},
   {id:'custdev', label:'CustDev'},
   {id:'wheeladmin', label:'Колесо'},
   {id:'residents', label:'Резиденты'},
@@ -3720,27 +3725,6 @@ function showPage(id){
     t.classList.add('active');
     t.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
   }
-  ensurePageData(id);
-}
-
-// Данные вкладки грузятся при первом открытии этой вкладки.
-// Раньше грузилось всё сразу на старте, когда роль ещё не определилась. отсюда пустые страницы
-const LAZY_LOADERS = {
-  leadmagnets: function(){ renderLeadmagnets(); },
-  subscribers: function(){ renderSubscribers(); },
-  wheeladmin:  function(){ renderWheelAdmin(); },
-  restasks:    function(){ renderAllResTasks(); },
-  mytasks:     function(){ loadMyTasks(); },
-  wheel:       function(){ renderWheel(); },
-  content:     function(){ renderContentPlan(); },
-  smm:         function(){ renderSmm(); }
-};
-function ensurePageData(id){
-  var fn = LAZY_LOADERS[id];
-  if(!fn) return;
-  if(window._loadedOnce[id]) return;
-  window._loadedOnce[id] = true;
-  try{ fn(); }catch(e){ window._loadedOnce[id] = false; console.error('lazy ' + id, e); }
 }
 
 // ══════════ АВТООБНОВЛЕНИЕ ДАННЫХ ══════════
@@ -3779,16 +3763,23 @@ function setupAutoRefresh(){
   }, {passive:true});
 }
 
-async function loadAllData(){
+async function loadAllData(opts){
+  // Мгновенный старт: рисуем из локального кеша сразу, сервер догоняет в фоне.
+  // Перерисовка только если данные реально изменились (сравниваем отпечаток)
+  opts = opts || {};
   try {
     var cached = localStorage.getItem('bs_cache');
-    if(cached){
+    if(cached && !window._renderedFromCache){
       cache = JSON.parse(cached);
+      window._renderedFromCache = true;
       renderAllPages();
     }
   } catch(e){}
+  var dot = document.getElementById('syncDot');
+  if(dot) dot.style.opacity = '0.9';
   try {
-    const r = await fetch(WEBAPP_URL+'?action=getBotCache');
+    var freshParam = opts.fresh ? '&fresh=1' : '';
+    const r = await fetch(WEBAPP_URL+'?action=getBotCache' + (user && user.id ? '&chatId='+user.id : '') + freshParam);
     var serverData = await r.json();
     // Сохраняем локальные изменения встреч
     var now = Date.now();
@@ -3819,8 +3810,34 @@ async function loadAllData(){
       if(!exists) serverSchedule.push(p);
     });
     serverData.schedule = serverSchedule;
+
+    // Отпечаток: если данные не изменились. не трогаем интерфейс вообще
+    var newStamp = '';
+    try{
+      newStamp = [
+        (serverData.residents||[]).length,
+        (serverSchedule||[]).length,
+        (serverData.fines||[]).length,
+        (serverData.reports||[]).length,
+        ((serverData.resTasks||{}).tasks||[]).length,
+        ((serverData.contentPlan||{}).items||[]).length,
+        ((serverData.smm||{}).items||[]).length,
+        ((serverData.problems||{}).problems||[]).length,
+        JSON.stringify(serverData.monthlyPL||{}).length,
+        JSON.stringify(serverData.wheelSummary||{}).length
+      ].join('|');
+    }catch(e){ newStamp = String(Date.now()); }
+
+    var unchanged = (window._dataStamp === newStamp);
+    window._dataStamp = newStamp;
+
     cache = serverData;
     try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
+    if(dot) dot.style.opacity = '0';
+    if(unchanged && window._renderedFromCache && !opts.force){
+      _lastDataLoad = Date.now();
+      return; // ничего не изменилось. интерфейс не дёргаем
+    }
     
     _lastDataLoad = Date.now();
     
@@ -3846,6 +3863,7 @@ async function loadAllData(){
     
     renderAllPages();
   } catch(e){
+    var d2 = document.getElementById('syncDot'); if(d2) d2.style.opacity = '0';
     console.error('loadAllData:', e);
     if(!cache || !cache.residents){
       cache = {residents:[], fines:[], logs:[], schedule:[], debet:{}};
@@ -3873,15 +3891,46 @@ function renderAllPages(){
   try{renderMyProfile();}catch(e){console.error('myprofile:',e);}
   try{renderMyMeetings();}catch(e){console.error('mymeetings:',e);}
 
-  // Данные вкладок грузятся лениво при их открытии (ensurePageData).
-  // Здесь только то, что видно на активной странице прямо сейчас
-  var act = document.querySelector('.page.active');
-  if(act && act.id) ensurePageData(act.id.replace('page-',''));
-  // Цена нерешённого грузится вместе со Статусом, один раз
-  if(viewAs === 'resident') loadOnce('problems', function(){ loadProblems(); });
+  // Всё приходит одним запросом и рисуется из кеша. дополнительных загрузок нет
+  try{renderLeadmagnets();}catch(e){console.error('lm:',e);}
+  try{renderSubscribers();}catch(e){console.error('subs:',e);}
+  try{renderWheel();}catch(e){console.error('wheel:',e);}
+  try{loadMyTasks();}catch(e){console.error('mytasks:',e);}
+  try{loadProblems();}catch(e){console.error('problems:',e);}
+  if(isRealAdmin){
+    try{renderWheelAdmin();}catch(e){console.error('wheeladmin:',e);}
+    try{renderAllResTasks();}catch(e){console.error('restasks:',e);}
+    try{renderContentPlan();}catch(e){console.error('content:',e);}
+    try{renderSmm();}catch(e){console.error('smm:',e);}
+  }
 }
 
 // Загрузка «один раз за сессию». Повторно только через forceReload()
+// Локальное обновление кеша: интерфейс меняется сразу, сервер догоняет в фоне
+function patchCache(path, updater){
+  try{
+    var parts = path.split('.');
+    var node = cache;
+    for(var i = 0; i < parts.length - 1; i++){
+      if(!node[parts[i]]) node[parts[i]] = {};
+      node = node[parts[i]];
+    }
+    var last = parts[parts.length - 1];
+    node[last] = updater(node[last]);
+    try{ localStorage.setItem('bs_cache', JSON.stringify(cache)); }catch(e){}
+  }catch(e){ console.error('patchCache', e); }
+}
+
+// Тихое обновление с сервера: без тостов и перерисовки если ничего не изменилось
+function silentSync(){
+  setTimeout(function(){ loadAllData({fresh: true}); }, 400);
+}
+
+function refreshData(){
+  showToast('⟳ Обновляем...');
+  loadAllData({fresh: true, force: true});
+}
+
 window._loadedOnce = window._loadedOnce || {};
 function loadOnce(key, fn){
   if(window._loadedOnce[key]) return;
@@ -3911,8 +3960,11 @@ function renderDashboard(){
       if(cached) window._monthlyPL = JSON.parse(cached);
     }catch(e){}
   }
-  // На фоне запросим свежие. ТОЛЬКО ОДИН РАЗ за сессию (иначе перерисовка = мигание)
-  if(!window._plLoading && !window._plLoaded){
+  // Финансы приходят вместе с основными данными
+  if(cache.monthlyPL && cache.monthlyPL.months && !window._monthlyPL){
+    window._monthlyPL = cache.monthlyPL;
+  }
+  if(!window._plLoading && !window._plLoaded && !window._monthlyPL){
     window._plLoading = true;
     window._plLoaded = true;
     callAction('getMonthlyPL', {}).then(function(r){
@@ -4518,13 +4570,11 @@ function renderFines(){
 }
 
 // ══════════ ПОЛЕЗНОЕ: очередь публикаций ══════════
-async function renderContentPlan(){
+function renderContentPlan(){
   var el = document.getElementById('contentPlanBox');
   if(!el) return;
-  el.innerHTML = '<div class="empty">Загрузка...</div>';
   try{
-    var r = await callAction('getContentPlan', {});
-    var items = (r && r.items) || [];
+    var items = (cache.contentPlan && cache.contentPlan.items) || [];
     var waiting = items.filter(function(i){ return i.status === 'Ожидает'; });
     var sent = items.filter(function(i){ return i.status !== 'Ожидает'; });
 
@@ -4595,9 +4645,8 @@ function openContentModal(){
   openModal('contentModal');
 }
 
-async function editContentPost(row){
-  var r = await callAction('getContentPlan', {});
-  var it = ((r && r.items) || []).find(function(x){ return x.row === row; });
+function editContentPost(row){
+  var it = ((cache.contentPlan && cache.contentPlan.items) || []).find(function(x){ return x.row === row; });
   if(!it) return;
   _contentEditRow = row;
   document.getElementById('contentText').value = it.text;
@@ -4623,7 +4672,7 @@ async function submitContentPost(){
     } else {
       r = await callAction('addContentPost', {text: text, cat: cat, date: date});
     }
-    if(r && r.ok){ showToast('✅ Сохранено'); forceReload('content', renderContentPlan); }
+    if(r && r.ok){ showToast('✅ Сохранено'); refreshData(); }
     else showToast('⚠️ ' + ((r && r.error) || 'Ошибка'));
   }catch(e){ showToast('❌ ' + e.message); }
   finally{ setTimeout(function(){ _contentInFlight = false; }, 1200); }
@@ -4633,18 +4682,16 @@ async function deleteContentPost(row){
   if(!confirm('Удалить пост из очереди?')) return;
   try{
     var r = await callAction('deleteContentPost', {row: row});
-    if(r && r.ok){ showToast('🗑 Удалено'); forceReload('content', renderContentPlan); }
+    if(r && r.ok){ showToast('🗑 Удалено'); refreshData(); }
   }catch(e){}
 }
 
 // ══════════ СММ ══════════
-async function renderSmm(){
+function renderSmm(){
   var el = document.getElementById('smmBox');
   if(!el) return;
-  el.innerHTML = '<div class="empty">Загрузка...</div>';
   try{
-    var r = await callAction('getSmm', {});
-    var items = (r && r.items) || [];
+    var items = (cache.smm && cache.smm.items) || [];
 
     var byStatus = {'Идея': [], 'В работе': [], 'Готово': [], 'Опубликовано': []};
     items.forEach(function(it){
@@ -4698,12 +4745,12 @@ function openSmmModal(){
   var rb = document.getElementById('smmRubric'); if(rb) rb.value = 'Кейс';
   var st = document.getElementById('smmStatus'); if(st) st.value = 'Идея';
   document.getElementById('smmModalTitle').textContent = 'Новая публикация';
+  var dr = document.getElementById('smmDeleteRow'); if(dr) dr.style.display = 'none';
   openModal('smmModal');
 }
 
-async function editSmm(row){
-  var r = await callAction('getSmm', {});
-  var it = ((r && r.items) || []).find(function(x){ return x.row === row; });
+function editSmm(row){
+  var it = ((cache.smm && cache.smm.items) || []).find(function(x){ return x.row === row; });
   if(!it) return;
   _smmEditRow = row;
   document.getElementById('smmTitle').value = it.title;
@@ -4714,6 +4761,7 @@ async function editSmm(row){
   document.getElementById('smmRubric').value = it.rubric || 'Кейс';
   document.getElementById('smmStatus').value = it.status;
   document.getElementById('smmModalTitle').textContent = 'Публикация';
+  var dr2 = document.getElementById('smmDeleteRow'); if(dr2) dr2.style.display = 'block';
   openModal('smmModal');
 }
 
@@ -4735,7 +4783,7 @@ async function submitSmm(){
       rubric: document.getElementById('smmRubric').value,
       status: document.getElementById('smmStatus').value
     });
-    if(r && r.ok){ showToast('✅ Сохранено'); forceReload('smm', renderSmm); }
+    if(r && r.ok){ showToast('✅ Сохранено'); refreshData(); }
     else showToast('⚠️ ' + ((r && r.error) || 'Ошибка'));
   }catch(e){ showToast('❌ ' + e.message); }
   finally{ setTimeout(function(){ _smmInFlight = false; }, 1200); }
@@ -4747,7 +4795,7 @@ async function deleteSmm(){
   closeModal('smmModal');
   try{
     var r = await callAction('deleteSmm', {row: _smmEditRow});
-    if(r && r.ok){ showToast('🗑 Удалено'); forceReload('smm', renderSmm); }
+    if(r && r.ok){ showToast('🗑 Удалено'); refreshData(); }
   }catch(e){}
 }
 
@@ -5111,13 +5159,11 @@ function openResidentProfile(r){
   }
 }
 
-async function loadResidentTasks(name){
+function loadResidentTasks(name){
   const el = document.getElementById('resTasksBlock');
   if(!el) return;
-  el.innerHTML = '<div class="card"><div style="font-size:13px;color:#888;text-align:center;padding:8px">Загружаем задачи...</div></div>';
   try{
-    const r = await callAction('getResTasks', {name: name});
-    const tasks = (r && r.tasks) || [];
+    const tasks = ((cache.resTasks && cache.resTasks.tasks) || []).filter(function(t){ return t.name === name; });
     let h = '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">';
     h += '<div class="card-title" style="margin:0;color:#D4B886;font-weight:900">📌 Задачи</div>';
     h += `<div class="section-action" onclick="promptAddTask('${name.replace(/'/g,"\\'")}')">+ Задача</div></div>`;
@@ -5185,12 +5231,11 @@ function adminTaskReturn(row, name){
   });
 }
 
-async function loadResidentWheel(name){
+function loadResidentWheel(name){
   const el = document.getElementById('resWheelBlock');
   if(!el) return;
-  el.innerHTML = '<div class="card"><div style="font-size:13px;color:#888;text-align:center;padding:10px">Загружаем колесо...</div></div>';
   try{
-    const d = await callAction('getWheel', {name: name});
+    const d = (cache.wheelAll && cache.wheelAll[name]) || {businesses:[], life:[]};
     const dna = (d.dna && d.dna[0]) || null;
     const dnaPrev = (d.dna && d.dna[1]) || null;
     const life = (d.life && d.life[0]) || null;
@@ -5500,14 +5545,13 @@ function wheelAvg(values){
 }
 
 // ══════════ ЗАДАЧИ РЕЗИДЕНТА ══════════
-async function loadMyTasks(){
+function loadMyTasks(){
   const el = document.getElementById('myTasksList');
   if(!el) return;
   const me = getMyData();
   if(!me) return;
   try{
-    const r = await callAction('getResTasks', {name: me.name});
-    const tasks = (r && r.tasks) || [];
+    const tasks = ((cache.resTasks && cache.resTasks.tasks) || []).filter(function(t){ return t.name === me.name; });
     const active = tasks.filter(t => t.status !== 'Выполнена');
     const done = tasks.filter(t => t.status === 'Выполнена');
 
@@ -5566,16 +5610,15 @@ async function loadMyTasks(){
 }
 
 // ══════════ ЦЕНА НЕРЕШЁННЫХ ПРОБЛЕМ ══════════
-async function loadProblems(){
+function loadProblems(){
   const el = document.getElementById('problemsBody');
   if(!el) return;
   const me = getMyData();
   if(!me) return;
   try{
-    const r = await callAction('getProblems', {name: me.name});
-    const list = (r && r.problems) || [];
+    const list = ((cache.problems && cache.problems.problems) || []).filter(function(p){ return p.name === me.name; });
     const open = list.filter(p => p.status === 'Открыта');
-    const total = r.total || 0;
+    const total = open.reduce(function(s,p){ return s + (p.cost||0); }, 0);
 
     if(!list.length){
       el.innerHTML = '<div style="font-size:12.5px;color:#888;line-height:1.45">Что вы не делаете, и во сколько это обходится каждый месяц?<br><span style="color:#666">Например: не веду личный бренд. 3 000 000 ₸/мес</span></div>';
@@ -5633,8 +5676,12 @@ async function submitProblem(){
 
 async function resolveProblem(row){
   try{
+    patchCache('problems.problems', function(list){
+      return (list||[]).map(function(p){ return p.row === row ? Object.assign({}, p, {status:'Решена'}) : p; });
+    });
+    loadProblems();
     const r = await callAction('setProblemStatus', {row: row, status: 'Решена'});
-    if(r && r.ok){ showToast('🎉 Проблема решена'); loadProblems(); }
+    if(r && r.ok){ showToast('🎉 Проблема решена'); silentSync(); }
   }catch(e){}
 }
 
@@ -5642,8 +5689,12 @@ async function removeProblem(row){
   if(!confirm('Удалить запись?')) return;
   const me = getMyData();
   try{
+    patchCache('problems.problems', function(list){
+      return (list||[]).filter(function(p){ return p.row !== row; });
+    });
+    loadProblems();
     const r = await callAction('deleteProblem', {row: row, name: me.name});
-    if(r && r.ok){ showToast('🗑 Удалено'); loadProblems(); }
+    if(r && r.ok){ showToast('🗑 Удалено'); silentSync(); }
   }catch(e){}
 }
 
@@ -5714,10 +5765,14 @@ async function markTaskDone(row){
   if(_taskSubmitInFlight) return;
   _taskSubmitInFlight = true;
   try{
+    patchCache('resTasks.tasks', function(list){
+      return (list||[]).map(function(t){ return t.row === row ? Object.assign({}, t, {status:'Выполнена'}) : t; });
+    });
+    loadMyTasks();
     const r = await callAction('setResTaskStatus', {row: row, status: 'Выполнена'});
     if(r && r.ok){
       showToast('✅ Отмечено');
-      loadMyTasks();
+      silentSync();
     } else {
       showToast('⚠️ ' + (r && r.error || 'Ошибка'));
     }
@@ -5742,18 +5797,13 @@ function copyReferralLink(){
   }
 }
 
-async function renderWheel(){
+function renderWheel(){
   const el = document.getElementById('wheelContent');
   if(!el) return;
   const me = getMyData();
   if(!me){ el.innerHTML = '<div class="empty">Профиль не найден</div>'; return; }
 
-  try{
-    _wheelData = await callAction('getWheel', {name: me.name});
-  }catch(e){
-    el.innerHTML = '<div class="card"><div style="color:var(--red)">Ошибка загрузки</div></div>';
-    return;
-  }
+  _wheelData = (cache.wheelAll && cache.wheelAll[me.name]) || {businesses:[], life:[], dnaAxes:WHEEL_DNA_AXES, lifeAxes:WHEEL_LIFE_AXES};
 
   const d = _wheelData || {};
   const businesses = d.businesses || [];
@@ -5805,18 +5855,10 @@ async function renderWheel(){
 }
 
 // ══════════ КОЛЕСО У АДМИНА: все резиденты ══════════
-async function renderWheelAdmin(){
+function renderWheelAdmin(){
   const el = document.getElementById('wheelAdminList');
   if(!el) return;
-  el.innerHTML = '<div class="empty">Загрузка...</div>';
-  let summary = [];
-  try{
-    const r = await callAction('getWheelSummary', {});
-    summary = (r && r.summary) || [];
-  }catch(e){
-    el.innerHTML = '<div class="card"><div style="color:var(--red)">Ошибка загрузки</div></div>';
-    return;
-  }
+  const summary = (cache.wheelSummary && cache.wheelSummary.summary) || [];
   
   // Все активные резиденты (включая тех кто ещё не делал замеров)
   const allRes = (cache.residents||[]).filter(r=>!r.isFired&&!r.isAdmin&&!r.isTeam&&r.name!=='Тест'&&r.name!=='Тест2');
@@ -5858,13 +5900,10 @@ async function renderWheelAdmin(){
   el.innerHTML = h;
 }
 
-async function openAdminResWheel(name){
+function openAdminResWheel(name){
   // Просмотр колёс резидента админом: выбор что смотреть
-  let d;
-  try{
-    showToast('⏳ Загружаем...');
-    d = await callAction('getWheel', {name: name});
-  }catch(e){ showToast('❌ Ошибка'); return; }
+  var d = (cache.wheelAll && cache.wheelAll[name]) || null;
+  if(!d){ showToast(name + ' ещё не заполнял колесо'); return; }
   
   const businesses = (d && d.businesses) || [];
   const hasLife = d && d.life && d.life.length;
@@ -5926,7 +5965,7 @@ let _wheelDetailName = null; // null = текущий пользователь; 
 let _wheelHistory = null;
 let _wheelHistoryIdx = 0;
 
-async function openWheelDetail(type, biz, resName){
+function openWheelDetail(type, biz, resName){
   _wheelDetailType = type;
   _wheelDetailBiz = biz || '';
   _wheelDetailName = resName || null;
@@ -5938,14 +5977,8 @@ async function openWheelDetail(type, biz, resName){
     targetName = me.name;
   }
   openModal('wheelDetailModal');
-  const body = document.getElementById('wheelDetailBody');
-  body.innerHTML = '<div style="text-align:center;padding:30px;color:#888;font-size:13px">Загружаем историю...</div>';
-  try{
-    _wheelHistory = await callAction('getWheel', {name: targetName, history: '1'});
-  }catch(e){
-    body.innerHTML = '<div style="color:var(--red);padding:20px">Ошибка загрузки</div>';
-    return;
-  }
+  // Вся история уже в кеше. открывается мгновенно
+  _wheelHistory = (cache.wheelAll && cache.wheelAll[targetName]) || {businesses:[], life:[]};
   renderWheelDetail();
 }
 
@@ -6647,9 +6680,23 @@ async function generateStory(template){
 
   // Шапка: логотип BS как во вкладке BS
   ctx.textAlign = 'center';
-  var logoEl = document.querySelector('.hero-logo-real img');
+  // Логотип: берём из вкладки BS, если она ещё не отрисована. грузим напрямую
   var logoDrawn = false;
   var headBottom = 175;
+  var logoEl = document.querySelector('.hero-logo-real img');
+  if(!logoEl || !logoEl.complete || !logoEl.naturalWidth){
+    try{
+      if(window._bsLogoSrc){
+        logoEl = await new Promise(function(res, rej){
+          var im = new Image();
+          im.onload = function(){ res(im); };
+          im.onerror = rej;
+          im.src = window._bsLogoSrc;
+          setTimeout(rej, 2500);
+        });
+      }
+    }catch(e){ logoEl = null; }
+  }
   if(logoEl && logoEl.complete && logoEl.naturalWidth){
     try{
       var lw = 270, lh = lw * (logoEl.naturalHeight / logoEl.naturalWidth);
@@ -7683,12 +7730,11 @@ function openEventCreateModal(type){
 
 
 // ══════════ ЗАДАЧИ РЕЗИДЕНТОВ (вкладка Задачи, блок снизу) ══════════
-async function renderAllResTasks(){
+function renderAllResTasks(){
   var el = document.getElementById('allResTasksBox');
   if(!el) return;
   try{
-    var r = await callAction('getResTasks', {});
-    var tasks = (r && r.tasks) || [];
+    var tasks = (cache.resTasks && cache.resTasks.tasks) || [];
     var open = tasks.filter(function(t){ return t.status !== 'Выполнена'; });
     var done = tasks.filter(function(t){ return t.status === 'Выполнена'; });
     
@@ -8119,10 +8165,6 @@ function renderRules(){
           <span>Политика конфиденциальности</span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
-        <a class="rules-doc" href="https://bxclub.kz/terms" target="_blank">
-          <span>Согласие на обработку данных</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
       </div>
       <div class="rules-foot">
         <div class="rules-foot-quote">Правила существуют не для контроля.<br>Они держат рамку, внутри которой бизнес растёт.</div>
@@ -8135,6 +8177,11 @@ function renderRules(){
 function renderAbout(){
   var el = document.getElementById('page-about');
   if(!el) return;
+  // Запомним логотип для Stories (там он нужен даже если вкладка BS не открывалась)
+  setTimeout(function(){
+    var li = document.querySelector('.hero-logo-real img');
+    if(li && li.src) window._bsLogoSrc = li.src;
+  }, 100);
   
   // 9 реальных кейсов резидентов (без имён, формат "разблокированный персонаж")
   var cases = [
@@ -8456,11 +8503,12 @@ function renderLeadmagnets(){
     </div>
   `;
   
-  callAction('getLeadmagnetsList', {}).then(function(r){
+  (function(){
+    var r = cache.leadmagnets || {};
     var listEl = document.getElementById('lmCardsList');
     if(!listEl) return;
-    if(!r || !r.ok || !r.items){
-      listEl.innerHTML = '<div class="empty"><div class="em-text">Не удалось загрузить</div></div>';
+    if(!r || !r.items){
+      listEl.innerHTML = '<div class="empty"><div class="em-text">Материалы появятся после обновления</div></div>';
       return;
     }
     var items = r.items.filter(function(x){ return x.fileId; });
@@ -8606,7 +8654,7 @@ function renderLeadmagnets(){
     
     // Первичный рендер
     _redrawLeadmagnets();
-  });
+  })();
 }
 
 function requestLeadmagnet(key){
