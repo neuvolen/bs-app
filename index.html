@@ -32,6 +32,8 @@
     --yellow: #ffd54f;
     --blue: #64b5f6;
     --gold: #D4B886;
+    --tg-safe-top: 0px;
+    --tg-safe-bottom: 0px;
     --text-muted: #888;
     --r: 14px;
   }
@@ -46,7 +48,7 @@
     z-index: 100;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
-    padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 12px;
+    padding: calc(14px + var(--tg-safe-top, 0px)) 16px 12px;
   }
   .header-row {
     display: flex;
@@ -154,7 +156,7 @@
   }
 
   /* PAGES */
-  .page { display: none; padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 130px); animation: fade 0.2s; }
+  .page { display: none; padding: 16px 16px calc(var(--tg-safe-bottom, 0px) + 130px); animation: fade 0.2s; }
   .page.active { display: block; }
   @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -743,6 +745,23 @@
 <!-- RESIDENT PAGES -->
 <div class="page" id="page-mystatus"><div id="mystatusContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-myprofile"><div id="myprofileContent"><div class="loading"><div class="spinner"></div></div></div></div>
+<div class="page" id="page-restasks">
+  <div class="section-head">
+    <div class="section-title">Задачи резидентов</div>
+    <button class="icon-btn" onclick="openAddResTaskModal()" title="Поставить задачу">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+  <div id="allResTasksBox"><div class="empty">Загрузка...</div></div>
+</div>
+
+<div class="page" id="page-mytasks">
+  <div class="section-head">
+    <div class="section-title" style="color:#D4B886">Мои задачи</div>
+  </div>
+  <div id="myTasksList"><div class="empty">Загрузка...</div></div>
+</div>
+
 <div class="page" id="page-wheel">
   <div class="section-head">
     <div class="section-title" style="color:#D4B886">Колесо баланса</div>
@@ -775,8 +794,7 @@
 
 <div class="page" id="page-residents"><div id="residentsContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-subscribers"></div>
-<div class="page" id="page-todos">
-  <div id="allResTasksBox"></div></div>
+<div class="page" id="page-todos"></div>
 <div class="page" id="page-about"></div>
 <div class="page" id="page-leadmagnets"></div>
 <div class="page" id="page-diagnostic"></div>
@@ -1085,16 +1103,19 @@
   .cal-day {
     background: #161616;
     border: 1px solid #262626;
-    border-radius: 8px;
-    min-height: 72px;
-    padding: 6px 5px;
+    border-radius: 7px;
+    aspect-ratio: 1 / 1;
+    min-height: 0;
+    padding: 4px 3px 3px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 3px;
-    transition: all 0.12s;
+    transition: background 0.12s, border-color 0.12s;
     cursor: pointer;
+    overflow: hidden;
   }
-  .cal-day:active { transform: scale(0.96); }
+  .cal-day:active { background: #242424; }
   .cal-day-empty {
     background: transparent;
     border: 1px solid transparent;
@@ -1102,60 +1123,46 @@
   }
   .cal-day-num {
     font-size: 13px;
-    font-weight: 800;
-    color: #e8e8e8;
+    font-weight: 700;
+    color: #ddd;
     line-height: 1;
   }
-  .cal-today {
-    border-color: #D4B886;
-    border-width: 2px;
-    background: rgba(212,184,134,0.12);
-  }
+  .cal-today { border-color: #D4B886; border-width: 2px; background: rgba(212,184,134,0.1); }
   .cal-today .cal-day-num { color: #D4B886; font-weight: 900; }
-  .cal-past { opacity: 0.4; }
-  .cal-past .cal-day-num { color: #777; }
-  .cal-has-meets { background: #1c1c1c; border-color: #333; }
-  .cal-has-meets:active { background: #242424; }
-  /* Формат встречи: офлайн красный, онлайн синий, не указан жёлтый */
-  .cal-meet {
-    font-size: 9.5px;
-    padding: 2.5px 4px;
-    border-radius: 4px;
-    line-height: 1.2;
-    white-space: nowrap;
+  .cal-past { opacity: 0.42; }
+  .cal-past .cal-day-num { color: #888; }
+  .cal-has-meets { background: #1d1d1d; border-color: #383838; }
+  /* Встречи: цветные точки, не текст. Размер клетки НИКОГДА не меняется */
+  .cal-dots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    gap: 3px;
+    width: 100%;
+    flex: 1;
     overflow: hidden;
-    text-overflow: ellipsis;
-    font-weight: 700;
-    border-left: 3px solid;
   }
-  .cal-meet-offline {
-    background: rgba(229,115,115,0.18);
-    border-left-color: #e57373;
-    color: #ffb4b4;
+  .cal-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
-  .cal-meet-online {
-    background: rgba(100,181,246,0.18);
-    border-left-color: #64b5f6;
-    color: #b3dcff;
-  }
-  .cal-meet-unknown {
-    background: rgba(255,213,79,0.16);
-    border-left-color: #ffd54f;
-    color: #ffe9a8;
-  }
-  .cal-meet-time { font-weight: 900; }
-  .cal-meet-more {
-    font-size: 9.5px;
-    color: #999;
-    padding-left: 3px;
+  .cal-dot-offline { background: #e57373; }
+  .cal-dot-online { background: #64b5f6; }
+  .cal-dot-unknown { background: #ffd54f; }
+  .cal-dot-more {
+    font-size: 8px;
     font-weight: 800;
+    color: #888;
+    line-height: 6px;
   }
-  /* Легенда */
   .cal-legend {
     display: flex;
     gap: 14px;
     justify-content: center;
-    padding: 12px 0 4px;
+    padding: 14px 0 4px;
     flex-wrap: wrap;
   }
   .cal-leg-item {
@@ -1166,7 +1173,7 @@
     color: #999;
     font-weight: 600;
   }
-  .cal-leg-dot { width: 9px; height: 9px; border-radius: 2px; }
+  .cal-leg-dot { width: 8px; height: 8px; border-radius: 50%; }
 
   
   /* === Add menu === */
@@ -2713,16 +2720,53 @@
   .pl-row-val.pos { color: #fff; }
   .pl-row-val.neg { color: rgba(255,255,255,0.7); }
   
-  .pl-chart {
+  .pl-months {
     display: flex;
-    align-items: flex-end;
-    gap: 2px;
-    padding: 8px 0 4px;
-    height: 100px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    margin-bottom: 12px;
-    overflow: visible;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 16px 10px;
+    margin: 8px -16px 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
   }
+  .pl-months::-webkit-scrollbar { display: none; }
+  .pl-mchip {
+    flex: 0 0 auto;
+    min-width: 78px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #1a1a1a;
+    border: 1.5px solid #2a2a2a;
+    cursor: pointer;
+    transition: all 0.15s;
+    scroll-snap-align: center;
+    text-align: left;
+  }
+  .pl-mchip:active { transform: scale(0.96); }
+  .pl-mchip-name {
+    font-size: 11px;
+    font-weight: 800;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+  }
+  .pl-mchip-val {
+    font-size: 14px;
+    font-weight: 900;
+    color: #ddd;
+    white-space: nowrap;
+  }
+  .pl-mchip.active {
+    background: rgba(212,184,134,0.14);
+    border-color: #D4B886;
+  }
+  .pl-mchip.active .pl-mchip-name { color: #D4B886; }
+  .pl-mchip.active .pl-mchip-val { color: #D4B886; }
+  .pl-mchip.neg .pl-mchip-val { color: #e57373; }
+  .pl-mchip.empty { opacity: 0.35; }
+  .pl-mchip.empty .pl-mchip-val { color: #666; }
   .pl-bar-wrap {
     flex: 1 1 0;
     min-width: 0;
@@ -2842,7 +2886,8 @@ let payMethod = 'cash';
 const ADMIN_TABS = [
   {id:'dashboard', label:'Сводка'},
   {id:'schedule', label:'Расписание'},
-  {id:'todos', label:'Задачи'},
+  {id:'todos', label:'Задачи BS'},
+  {id:'restasks', label:'Задачи резидентов'},
   {id:'reports', label:'Отчёты'},
   {id:'fines', label:'Штрафы'},
   {id:'custdev', label:'CustDev'},
@@ -2866,6 +2911,7 @@ const LEAD_TABS = [
 const RESIDENT_TABS = [
   {id:'about', label:'BS'},
   {id:'mystatus', label:'Статус'},
+  {id:'mytasks', label:'Задачи'},
   {id:'wheel', label:'Колесо'},
   {id:'mymeetings', label:'Встречи'},
   {id:'residents', label:'Резиденты'},
@@ -2945,6 +2991,24 @@ function init(){
     if(tg){
       tg.ready();
       tg.expand();
+    // Края обрезались: Telegram не поддерживает env(safe-area-inset) в WebView.
+    // Берём отступы из самого Telegram и применяем как CSS-переменные
+    try{
+      var applySafe = function(){
+        var si = tg.safeAreaInset || {};
+        var ci = tg.contentSafeAreaInset || {};
+        var top = (si.top || 0) + (ci.top || 0);
+        var bottom = (si.bottom || 0) + (ci.bottom || 0);
+        document.documentElement.style.setProperty('--tg-safe-top', top + 'px');
+        document.documentElement.style.setProperty('--tg-safe-bottom', bottom + 'px');
+      };
+      applySafe();
+      if(tg.onEvent){
+        tg.onEvent('safeAreaChanged', applySafe);
+        tg.onEvent('contentSafeAreaChanged', applySafe);
+        tg.onEvent('viewportChanged', applySafe);
+      }
+    }catch(e){}
 
   // Telegram Mini App: при открытии клавиатуры скроллим к активному инпуту в модалке
   // Это решает проблему когда клавиатура закрывает поле ввода или кнопки
@@ -3456,17 +3520,21 @@ function renderDashboard(){
     const curIdx = (window._selectedMonth!=null) ? window._selectedMonth : mp.currentMonthIdx;
     const m = mp.months[curIdx] || mp.months[0];
     
-    // Бар-чарт: 12 столбцов прибыли
-    const profits = mp.months.map(x=>x.profit);
-    const maxAbs = Math.max(1, ...profits.map(Math.abs));
+    // Месяцы: понятные кликабельные чипы с суммой прибыли
     const barsHtml = mp.months.map((mm,i)=>{
-      const h = Math.abs(mm.profit) / maxAbs * 64;
-      const isNeg = mm.profit < 0;
       const isCur = i === curIdx;
-      const cls = isCur ? 'pl-bar active' : (mm.hasData ? 'pl-bar' : 'pl-bar empty');
-      return `<div class="pl-bar-wrap" onclick="selectMonth(${i})">
-        <div class="${cls}${isNeg?' neg':''}" style="height:${Math.max(3,h)}px"></div>
-        <div class="pl-bar-lbl${isCur?' active':''}">${String(mm.short||'').toLowerCase().substring(0,3)}</div>
+      const isNeg = mm.profit < 0;
+      let cls = 'pl-mchip';
+      if(isCur) cls += ' active';
+      if(!mm.hasData) cls += ' empty';
+      if(isNeg) cls += ' neg';
+      let val;
+      if(!mm.hasData) val = '-';
+      else if(Math.abs(mm.profit) >= 1000000) val = (isNeg?'−':'') + (Math.abs(mm.profit)/1000000).toFixed(1).replace('.',',') + ' млн';
+      else val = (isNeg?'−':'') + Math.round(Math.abs(mm.profit)/1000) + 'K';
+      return `<div class="${cls}" onclick="selectMonth(${i})">
+        <div class="pl-mchip-name">${String(mm.short||'').substring(0,3)}</div>
+        <div class="pl-mchip-val">${val}</div>
       </div>`;
     }).join('');
     
@@ -3494,7 +3562,7 @@ function renderDashboard(){
           </div>
           <div>
             <div class="pl-main-lbl">Остаток</div>
-            <div class="pl-main-val ${m.saldo<0?'neg':''}" style="color:${(m.saldo!==null&&m.saldo<0)?'#e57373':'#D4B886'};font-size:17px;">${m.saldo===null?'-':((m.saldo<0?'−':'')+fmt(Math.abs(m.saldo)))}</div>
+            <div class="pl-main-val" style="color:${(m.kassa!==null&&m.kassa<0)?'#e57373':'#D4B886'};font-size:17px;">${(m.kassa===null||m.kassa===undefined)?'-':((m.kassa<0?'−':'')+fmt(Math.abs(m.kassa)))}</div>
           </div>
         </div>
         
@@ -3509,18 +3577,7 @@ function renderDashboard(){
           </div>
         </div>
         
-        ${(m.kassaStart!==null&&m.kassaStart!==undefined)||(m.kassa!==null&&m.kassa!==undefined)?`<div class="pl-row" style="border-top:1px solid var(--border);padding-top:10px;margin-top:2px">
-          ${m.kassaStart!==null&&m.kassaStart!==undefined?`<div class="pl-row-item">
-            <div class="pl-row-lbl">На начало месяца</div>
-            <div class="pl-row-val" style="color:${m.kassaStart<0?'#e57373':'#aaa'};font-weight:800">${(m.kassaStart<0?'−':'')+fmt(Math.abs(m.kassaStart))} ₸</div>
-          </div>`:''}
-          ${m.kassa!==null&&m.kassa!==undefined?`<div class="pl-row-item">
-            <div class="pl-row-lbl">На конец месяца</div>
-            <div class="pl-row-val" style="color:${m.kassa<0?'#e57373':'#D4B886'};font-weight:900">${(m.kassa<0?'−':'')+fmt(Math.abs(m.kassa))} ₸</div>
-          </div>`:''}
-        </div>`:''}
-        
-        <div class="pl-chart">
+        <div class="pl-months" id="plMonthsRow">
           ${barsHtml}
         </div>
         
@@ -3531,6 +3588,12 @@ function renderDashboard(){
       </div>
     `;
   }
+  
+  setTimeout(function(){
+    var row = document.getElementById('plMonthsRow');
+    var act = row && row.querySelector('.pl-mchip.active');
+    if(act && row) row.scrollLeft = act.offsetLeft - row.clientWidth/2 + act.clientWidth/2;
+  }, 50);
   
   document.getElementById('dashboardContent').innerHTML = `
     ${monthlyHtml}
@@ -3569,6 +3632,30 @@ function renderSchedule(){
   window._currentScheduleList = list;
   const el = document.getElementById('scheduleContent');
   const viewMode = window._scheduleViewMode || 'list'; // list | calendar
+  
+  // Кнопка + пропадала: шапка рисуется один раз, а роль админа определяется позже.
+  // Поэтому наличие кнопки синхронизируем при КАЖДОМ рендере
+  (function syncAddBtn(){
+    var hdr = el.querySelector('.sched-header');
+    if(!hdr) return;
+    var box = hdr.querySelector('div[style*="display:flex"]');
+    if(!box) return;
+    var existing = document.getElementById('schedAddBtn');
+    var shouldShow = isRealAdmin && viewAs === 'admin';
+    if(shouldShow && !existing){
+      var b = document.createElement('button');
+      b.className = 'icon-btn';
+      b.id = 'schedAddBtn';
+      b.title = 'Добавить встречу';
+      b.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+      b.onclick = function(){ openModal('schedModal'); initSchedModal(); };
+      box.insertBefore(b, box.firstChild);
+    } else if(!shouldShow && existing){
+      existing.remove();
+    } else if(shouldShow && existing && !existing.onclick){
+      existing.onclick = function(){ openModal('schedModal'); initSchedModal(); };
+    }
+  })();
   
   // Шапка рисуется один раз, потом обновляется только содержимое
   if(!el.querySelector('.sched-header')){
@@ -3705,14 +3792,13 @@ function renderScheduleCalendar(list){
     html += '>';
     html += '<div class="cal-day-num">' + d + '</div>';
     if(dayMeets.length){
-      dayMeets.slice(0, 2).forEach(function(ev){
-        var name = (ev.res || '').split(' ')[0];
-        var fmtCls = meetFormatClass(ev);
-        html += '<div class="cal-meet ' + fmtCls + '"><span class="cal-meet-time">' + (ev.time || '') + '</span> ' + name + '</div>';
+      // Точки вместо текста: клетка всегда одного размера (как в Google Calendar)
+      html += '<div class="cal-dots">';
+      dayMeets.slice(0, 6).forEach(function(ev){
+        html += '<div class="cal-dot ' + meetDotClass(ev) + '"></div>';
       });
-      if(dayMeets.length > 2){
-        html += '<div class="cal-meet-more">+' + (dayMeets.length-2) + ' ещё</div>';
-      }
+      if(dayMeets.length > 6) html += '<span class="cal-dot-more">+' + (dayMeets.length-6) + '</span>';
+      html += '</div>';
     }
     html += '</div>';
   }
@@ -3723,11 +3809,19 @@ function renderScheduleCalendar(list){
   html += '<div class="cal-legend">' +
     '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#e57373"></span> Офлайн</div>' +
     '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#64b5f6"></span> Онлайн</div>' +
-    '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#ffd54f"></span> Не указан</div>' +
+    '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#ffd54f"></span> Без ссылки</div>' +
     '</div>';
   
   html += '</div>';
   return html;
+}
+
+function meetDotClass(ev){
+  var link = String(ev.link || ev.meet || '').toLowerCase();
+  if(link.indexOf('meet.google') >= 0 || link.indexOf('zoom') >= 0) return 'cal-dot-online';
+  if(link && link.indexOf('http') < 0) return 'cal-dot-offline';
+  if(!link) return 'cal-dot-unknown';
+  return 'cal-dot-online';
 }
 
 function meetFormatClass(ev){
@@ -5439,76 +5533,76 @@ function renderMyStatus(){
     el.innerHTML = `<div class="empty"><div class="em-icon">🔒</div><div class="em-title">Не найден</div><div class="em-text">Обратитесь к админу</div></div>`;
     return;
   }
+
+  // Стаж в проекте: "1 год 7 месяцев" вместо "19 мес"
+  var monthsTotal = Number(me.months) || 0;
+  var stazh = (function(n){
+    if(!n) return 'меньше месяца';
+    var y = Math.floor(n/12), mo = n%12;
+    var parts = [];
+    if(y) parts.push(y + ' ' + (y===1?'год':(y>=2&&y<=4?'года':'лет')));
+    if(mo) parts.push(mo + ' ' + (mo===1?'месяц':(mo>=2&&mo<=4?'месяца':'месяцев')));
+    return parts.join(' ');
+  })(monthsTotal);
+  var startDate = me.startDate || me.dateIn || '';
+
+  // Ближайшая встреча
+  var myMeets = (cache.schedule||[]).filter(function(ev){ return ev.res === me.name; });
+  myMeets.sort(function(a,b){ return parseScheduleKey(a) - parseScheduleKey(b); });
+  var next = myMeets[0];
+  var isOnline = next && String(next.link||'').includes('meet');
+
   el.innerHTML = `
-    <div class="profile-hero">
-      <div class="profile-avatar-lg" style="${(me.avatar||user?.photo_url)?`background-image:url('${me.avatar||user.photo_url}');background-size:cover;background-position:center`:''}">${(me.avatar||user?.photo_url)?'':me.name[0]}</div>
-      <div class="profile-name-lg">${me.name.split(' ')[0]}</div>
-      <div class="profile-niche">${me.niche||me.format||'Резидент BS'}</div>
-      <div class="profile-status">🗓 ${me.months||0} мес в BS</div>
-    </div>
-    <div class="metric-grid">
-      <div class="metric">
-        <div class="metric-val" style="color:${me.debt>0?'var(--red)':'var(--green)'}">${me.debt>0?fmt(me.debt):'0'}</div>
-        <div class="metric-lbl">Долг</div>
+    <div class="card" style="padding:16px;display:flex;align-items:center;gap:14px">
+      <div class="profile-avatar-lg" style="width:56px;height:56px;font-size:22px;margin:0;flex-shrink:0;${(me.avatar||user?.photo_url)?`background-image:url('${me.avatar||user.photo_url}');background-size:cover;background-position:center`:''}">${(me.avatar||user?.photo_url)?'':me.name[0]}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:19px;font-weight:900;color:#fff;line-height:1.15">${me.name.split(' ')[0]}</div>
+        <div style="font-size:12px;color:#888;margin-top:3px">${stazh} в BS${startDate?' · с '+startDate:''}</div>
+        ${me.reportStreak>0?`<div style="font-size:12px;color:#D4B886;font-weight:700;margin-top:3px">🔥 ${me.reportStreak} ${(function(n){var d=n%10,h=n%100;if(h>=11&&h<=14)return 'дней';if(d===1)return 'день';if(d>=2&&d<=4)return 'дня';return 'дней';})(me.reportStreak)} отчётов подряд</div>`:''}
       </div>
-      <div class="metric">
-        <div class="metric-val">${me.tariff?fmt(me.tariff):' '}</div>
-        <div class="metric-lbl">Тариф</div>
-      </div>
-    </div>
-    
-    ${me.reportStreak>0?`<div class="card" style="display:flex;align-items:center;gap:10px;padding:11px 16px">
-      <span style="font-size:20px">🔥</span>
-      <span style="font-size:15px;font-weight:900;color:#fff">${me.reportStreak}</span>
-      <span style="font-size:13px;color:#888">${(function(n){var d=n%10,h=n%100;if(h>=11&&h<=14)return 'дней';if(d===1)return 'день';if(d>=2&&d<=4)return 'дня';return 'дней';})(me.reportStreak)} отчётов подряд</span>
-    </div>`:''}
-
-    <!-- Задачи от трекера -->
-    <div class="card" id="myTasksCard" style="padding:14px 16px">
-      <div style="font-size:11px;color:#888;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Задачи</div>
-      <div id="myTasksList" style="font-size:13px;color:#888">Загрузка...</div>
     </div>
 
-    <!-- Встречи: компактно -->
-    <div class="card" style="padding:14px 16px">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-size:11px;color:#888;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">Встречи</div>
-          <div style="font-size:13px;color:#aaa">${me.visitsChecked||0} из ${me.visitsTotal||0} · тариф ${me.visitsTariff||0}/мес</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:26px;font-weight:900;color:#D4B886;line-height:1">${me.visitsLeft||0}</div>
-          <div style="font-size:10px;color:#888;letter-spacing:0.5px">ОСТАЛОСЬ</div>
-        </div>
+    <div class="card" style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
+      <div>
+        <div style="font-size:19px;font-weight:900;color:#D4B886;line-height:1">${me.visitsLeft||0}</div>
+        <div style="font-size:10px;color:#888;letter-spacing:0.5px;margin-top:3px">ВСТРЕЧ ОСТАЛОСЬ</div>
       </div>
-      ${me.partner ? '<div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06);font-size:12px;color:#888">🤝 Партнёр: <b style="color:#fff">'+me.partner+'</b></div>' : ''}
+      <div style="border-left:1px solid rgba(255,255,255,0.07);border-right:1px solid rgba(255,255,255,0.07)">
+        <div style="font-size:19px;font-weight:900;color:${me.debt>0?'#e57373':'#4caf7d'};line-height:1">${me.debt>0?fmt(me.debt):'0'}</div>
+        <div style="font-size:10px;color:#888;letter-spacing:0.5px;margin-top:3px">ДОЛГ</div>
+      </div>
+      <div>
+        <div style="font-size:19px;font-weight:900;color:#fff;line-height:1">${me.tariff?fmt(me.tariff):'-'}</div>
+        <div style="font-size:10px;color:#888;letter-spacing:0.5px;margin-top:3px">ТАРИФ</div>
+      </div>
     </div>
-    
-    <!-- Ближайшая встреча -->
-    ${(function(){
-      var myMeets = (cache.schedule||[]).filter(ev => ev.res === me.name);
-      myMeets.sort((a,b) => parseScheduleKey(a) - parseScheduleKey(b));
-      var next = myMeets[0];
-      if(!next) return '';
-      return `<div class="card">
-        <div class="card-title" style="margin-bottom:10px;color:#D4B886;font-weight:900;letter-spacing:0.5px">Ближайшая встреча</div>
-        <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:6px">${next.date} ${next.time||''}</div>
-        <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px">${(next.link||'').includes('meet')?'🔗 Онлайн (Google Meet)':'📍 '+(next.link||'Уточнить место')}</div>
-        ${(next.link||'').includes('meet') ? '<a href="'+next.link+'" target="_blank"><button class="btn btn-primary" style="width:100%">Открыть Google Meet</button></a>' : ''}
-      </div>`;
-    })()}
-    ${me.debt>0?`<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank"><button class="btn btn-primary">💳 Оплатить через Kaspi</button></a>`:'<div class="card" style="text-align:center"><div style="font-size:32px;margin-bottom:6px">✅</div><div style="font-weight:600">Долгов нет</div></div>'}
-    <button class="btn btn-secondary" onclick="shareStory()">📸 Поделиться в Stories</button>
-    <div class="card" style="border:1.5px solid rgba(212,184,134,0.35);background:linear-gradient(135deg, rgba(212,184,134,0.08), rgba(212,184,134,0.02));margin-top:12px">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-        <div style="font-size:26px">🤝</div>
-        <div>
-          <div style="font-size:15px;font-weight:900;color:#D4B886;letter-spacing:0.3px">Пригласить друзей в BS</div>
-          <div style="font-size:12px;color:#888;margin-top:2px">Бонус <b style="color:#D4B886">100 000 ₸</b> когда друг станет резидентом</div>
+
+    <div class="card" style="border:1.5px solid rgba(212,184,134,0.35);background:linear-gradient(135deg, rgba(212,184,134,0.1), rgba(212,184,134,0.02));padding:14px 16px">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:11px">
+        <div style="font-size:23px">🤝</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:900;color:#D4B886">Пригласить друзей в BS</div>
+          <div style="font-size:11.5px;color:#888;margin-top:1px">Бонус <b style="color:#D4B886">100 000 ₸</b> за резидента</div>
         </div>
       </div>
       <button class="btn btn-primary" style="width:100%" onclick="copyReferralLink()">Скопировать приглашение</button>
     </div>
+
+    ${next?`<div class="card" style="padding:14px 16px">
+      <div style="font-size:10px;color:#888;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:7px">Ближайшая встреча</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+        <div style="min-width:0">
+          <div style="font-size:16px;font-weight:800;color:#fff">${next.date} ${next.time||''}</div>
+          <div style="font-size:12px;color:#888;margin-top:2px">${isOnline?'🔗 Онлайн':'📍 '+(next.link||'Место уточняется')}</div>
+        </div>
+        ${isOnline?`<a href="${next.link}" target="_blank" style="flex-shrink:0"><button class="btn btn-primary" style="padding:9px 16px;font-size:13px;margin:0">Meet</button></a>`:''}
+      </div>
+    </div>`:''}
+
+    ${me.partner?`<div class="card" style="padding:12px 16px;font-size:12.5px;color:#888">🤝 Партнёр: <b style="color:#fff">${me.partner}</b> · одна встреча на двоих</div>`:''}
+
+    ${me.debt>0?`<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank"><button class="btn btn-primary">💳 Оплатить через Kaspi</button></a>`:''}
+    <button class="btn btn-secondary" onclick="shareStory()">📸 Поделиться в Stories</button>
   `;
 }
 
@@ -6172,7 +6266,8 @@ async function submitSchedule(){
   try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
   renderAllPages();
   showToast('✅ Встреча: '+res+' '+selDate+' '+selTime);
-  callAction('addSchedule', {res, date: selDate, time: selTime}).then(function(){
+  callAction('addSchedule', {res, date: selDate, time: selTime}).then(function(r){
+    if(r && (r.duplicate || r.deduplicated)){ showToast('⚠️ У ' + res + ' уже есть встреча в этот день'); }
     // Через 10 сек удаляем из pending. она должна быть на сервере
     setTimeout(function(){
       if(window._pendingMeetings){
@@ -6598,10 +6693,7 @@ async function renderAllResTasks(){
     var open = tasks.filter(function(t){ return t.status !== 'Выполнена'; });
     var done = tasks.filter(function(t){ return t.status === 'Выполнена'; });
     
-    var h = '<div style="display:flex;justify-content:space-between;align-items:center;margin:22px 0 12px">' +
-      '<div class="section-title" style="margin:0">Задачи резидентов</div>' +
-      '<button class="icon-btn" onclick="openAddResTaskModal()" title="Добавить задачу резиденту">' +
-      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button></div>';
+    var h = '';
     
     if(!tasks.length){
       h += '<div class="card"><div style="font-size:13px;color:#888;text-align:center;padding:14px">Задач нет. Нажми + чтобы поставить задачу резиденту после трекинга.</div></div>';
