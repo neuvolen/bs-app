@@ -798,6 +798,36 @@
 <div class="page" id="page-mymeetings"><div id="mymeetingsContent"><div class="loading"><div class="spinner"></div></div></div></div>
 
 <!-- SHARED -->
+<div class="page" id="page-content">
+  <div class="section-head">
+    <div class="section-title">Полезное</div>
+    <div style="display:flex;gap:8px">
+      <button class="icon-btn" onclick="forceReload('content', renderContentPlan)" title="Обновить" style="width:36px;height:36px">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      </button>
+      <button class="icon-btn" onclick="openContentModal()" title="Добавить пост" style="width:36px;height:36px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="contentPlanBox"><div class="empty">Загрузка...</div></div>
+</div>
+
+<div class="page" id="page-smm">
+  <div class="section-head">
+    <div class="section-title">СММ</div>
+    <div style="display:flex;gap:8px">
+      <button class="icon-btn" onclick="forceReload('smm', renderSmm)" title="Обновить" style="width:36px;height:36px">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      </button>
+      <button class="icon-btn" onclick="openSmmModal()" title="Новая публикация" style="width:36px;height:36px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="smmBox"><div class="empty">Загрузка...</div></div>
+</div>
+
 <div class="page" id="page-custdev">
   <div class="section-head">
     <div class="section-title">CustDev</div>
@@ -965,6 +995,82 @@
   </div>
 </div>
 
+<div class="modal-bg" id="contentModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="contentModalTitle">Новый пост</div>
+    <div class="form-group">
+      <label class="form-label">Рубрика</label>
+      <select class="form-select" id="contentCat">
+        <option>Финансы</option><option>Продажи</option><option>Команда</option><option>Фокус</option>
+        <option>Делегирование</option><option>Стратегия</option><option>Метрики</option><option>Энергия</option>
+        <option>Окружение</option><option>Автоматизация</option><option>Цели</option><option>Ошибки</option>
+        <option>Процессы</option><option>Клиенты</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Дата и время отправки</label>
+      <input class="form-input" type="text" id="contentDate" placeholder="15.08.2026 09:00">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Текст поста</label>
+      <textarea class="form-input" id="contentText" rows="8" placeholder="Пишите коротко, конкретно, без воды. Заканчивайте вопросом." style="resize:vertical;min-height:170px"></textarea>
+    </div>
+    <div style="height:14px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="submitContentPost()">Сохранить</button>
+      <button class="btn btn-secondary" onclick="closeModal('contentModal')">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="smmModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="smmModalTitle">Публикация</div>
+    <div class="form-group">
+      <label class="form-label">Заголовок</label>
+      <input class="form-input" type="text" id="smmTitle" placeholder="Кейс: с 200к до 2 млн за 4 месяца">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Площадка</label>
+      <select class="form-select" id="smmPlatform">
+        <option>Instagram</option><option>Threads</option><option>Telegram</option><option>TikTok</option><option>YouTube</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Рубрика</label>
+      <select class="form-select" id="smmRubric">
+        <option>Кейс</option><option>Диагностика</option><option>Личное мнение</option>
+        <option>Разбор ошибки</option><option>Закулисье</option><option>Reels</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Дата публикации</label>
+      <input class="form-input" type="text" id="smmDate" placeholder="15.08.2026">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Статус</label>
+      <select class="form-select" id="smmStatus">
+        <option>Идея</option><option>В работе</option><option>Готово</option><option>Опубликовано</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Текст / сценарий</label>
+      <textarea class="form-input" id="smmText" rows="6" placeholder="Структура: боль, усиление, решение, призыв на разбор" style="resize:vertical;min-height:130px"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Ссылка на материал</label>
+      <input class="form-input" type="text" id="smmLink" placeholder="Canva, Drive, готовый пост">
+    </div>
+    <div style="height:14px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="submitSmm()">Сохранить</button>
+      <button class="btn btn-secondary" onclick="deleteSmm()">Удалить</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="wheelModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -1088,16 +1194,16 @@
     <div class="modal-handle"></div>
     <div class="modal-title">Выберите шаблон Stories</div>
     <button class="btn btn-secondary" onclick="generateStory('classic')" style="text-align:left;padding:14px">
-      <div style="font-weight:700;margin-bottom:4px">🎯 Я в Business Surgery</div>
-      <div style="font-size:11px;color:var(--g400);font-weight:400">Имя, ниша, месяцев в клубе</div>
+      <div style="font-weight:700;margin-bottom:4px">🧬 Как я работаю</div>
+      <div style="font-size:11px;color:var(--g400);font-weight:400">Разбор бизнеса раз в 10 дней. Без мотивации и вебинаров</div>
     </button>
     <button class="btn btn-secondary" onclick="generateStory('invite')" style="text-align:left;padding:14px">
-      <div style="font-weight:700;margin-bottom:4px">🚀 Приглашаю в клуб</div>
-      <div style="font-size:11px;color:var(--g400);font-weight:400">Призыв вступить в Business Surgery</div>
+      <div style="font-weight:700;margin-bottom:4px">💬 Вопрос подписчикам</div>
+      <div style="font-size:11px;color:var(--g400);font-weight:400">Знаешь, что тормозит твой бизнес прямо сейчас?</div>
     </button>
     <button class="btn btn-secondary" onclick="generateStory('milestone')" style="text-align:left;padding:14px">
-      <div style="font-weight:700;margin-bottom:4px">📈 Мои результаты</div>
-      <div style="font-size:11px;color:var(--g400);font-weight:400">Сколько месяцев + статус хирурга бизнеса</div>
+      <div style="font-weight:700;margin-bottom:4px">📈 Что изменилось</div>
+      <div style="font-size:11px;color:var(--g400);font-weight:400">Перестал быть главным сотрудником своей компании</div>
     </button>
     <button class="btn btn-secondary" onclick="closeModal('storyTemplateModal')">Отмена</button>
   </div>
@@ -1739,6 +1845,34 @@
     flex-shrink: 0;
     margin-top: 7px;
   }
+  .rules-docs {
+    margin-top: 18px;
+    padding: 16px;
+    background: #131313;
+    border: 1px solid #232323;
+    border-radius: 16px;
+  }
+  .rules-docs-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #888;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .rules-doc {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    font-size: 13.5px;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .rules-doc svg { color: #D4B886; flex-shrink: 0; }
   .rules-foot {
     margin-top: 22px;
     padding: 24px 18px;
@@ -2780,6 +2914,71 @@
   }
 
   /* === PL месячная карточка === */
+  .status-hero {
+    background: linear-gradient(160deg, #191715 0%, #121212 45%, #0d0d0d 100%);
+    border: 1px solid rgba(212,184,134,0.22);
+    border-radius: 20px;
+    padding: 20px 18px 16px;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .status-hero::before {
+    content: "";
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 190px; height: 190px;
+    background: radial-gradient(circle, rgba(212,184,134,0.16), transparent 70%);
+    pointer-events: none;
+  }
+  .status-hero-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .status-avatar {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(212,184,134,0.15);
+    color: #D4B886;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 900;
+    flex-shrink: 0;
+    border: 2px solid rgba(212,184,134,0.6);
+  }
+  .status-name {
+    font-size: 22px; font-weight: 900; color: #fff;
+    line-height: 1.1; letter-spacing: -0.4px;
+  }
+  .status-sub { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+  .status-streak {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 15px; font-weight: 900; color: #D4B886;
+    background: rgba(212,184,134,0.12);
+    border: 1px solid rgba(212,184,134,0.3);
+    padding: 7px 12px; border-radius: 20px;
+    flex-shrink: 0;
+  }
+  .status-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    position: relative;
+  }
+  .status-metric { text-align: center; }
+  .status-metric + .status-metric { border-left: 1px solid rgba(255,255,255,0.06); }
+  .status-metric-val {
+    font-size: 20px; font-weight: 900; color: #fff; line-height: 1;
+  }
+  .status-metric-lbl {
+    font-size: 9.5px; color: rgba(255,255,255,0.42);
+    letter-spacing: 0.6px; text-transform: uppercase;
+    margin-top: 5px; font-weight: 700;
+  }
   .pl-card {
     background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
     border: 1px solid rgba(212,184,134,0.15);
@@ -3063,6 +3262,8 @@ const ADMIN_TABS = [
   {id:'restasks', label:'Задачи резидентов'},
   {id:'reports', label:'Отчёты'},
   {id:'fines', label:'Штрафы'},
+  {id:'content', label:'Полезное'},
+  {id:'smm', label:'СММ'},
   {id:'custdev', label:'CustDev'},
   {id:'wheeladmin', label:'Колесо'},
   {id:'residents', label:'Резиденты'},
@@ -3089,7 +3290,7 @@ const RESIDENT_TABS = [
   {id:'mytasks', label:'Задачи'},
   {id:'diagnostic', label:'Диагностика'},
   {id:'wheel', label:'Колесо'},
-  {id:'mymeetings', label:'BS трекинг'},
+  {id:'mymeetings', label:'Встречи'},
   {id:'residents', label:'Резиденты'},
   {id:'leadmagnets', label:'Материалы'},
   {id:'myprofile', label:'Профиль'},
@@ -3519,6 +3720,27 @@ function showPage(id){
     t.classList.add('active');
     t.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
   }
+  ensurePageData(id);
+}
+
+// Данные вкладки грузятся при первом открытии этой вкладки.
+// Раньше грузилось всё сразу на старте, когда роль ещё не определилась. отсюда пустые страницы
+const LAZY_LOADERS = {
+  leadmagnets: function(){ renderLeadmagnets(); },
+  subscribers: function(){ renderSubscribers(); },
+  wheeladmin:  function(){ renderWheelAdmin(); },
+  restasks:    function(){ renderAllResTasks(); },
+  mytasks:     function(){ loadMyTasks(); },
+  wheel:       function(){ renderWheel(); },
+  content:     function(){ renderContentPlan(); },
+  smm:         function(){ renderSmm(); }
+};
+function ensurePageData(id){
+  var fn = LAZY_LOADERS[id];
+  if(!fn) return;
+  if(window._loadedOnce[id]) return;
+  window._loadedOnce[id] = true;
+  try{ fn(); }catch(e){ window._loadedOnce[id] = false; console.error('lazy ' + id, e); }
 }
 
 // ══════════ АВТООБНОВЛЕНИЕ ДАННЫХ ══════════
@@ -3651,16 +3873,12 @@ function renderAllPages(){
   try{renderMyProfile();}catch(e){console.error('myprofile:',e);}
   try{renderMyMeetings();}catch(e){console.error('mymeetings:',e);}
 
-  // ── Блоки с отдельными запросами к серверу: строго один раз за сессию ──
-  loadOnce('leadmagnets', function(){ renderLeadmagnets(); });
-  loadOnce('subscribers', function(){ renderSubscribers(); });
-  if(isRealAdmin) loadOnce('wheeladmin', function(){ renderWheelAdmin(); });
-  if(isRealAdmin) loadOnce('restasks', function(){ renderAllResTasks(); });
-  if(viewAs === 'resident'){
-    loadOnce('mytasks', function(){ loadMyTasks(); });
-    loadOnce('problems', function(){ loadProblems(); });
-    loadOnce('wheel', function(){ renderWheel(); });
-  }
+  // Данные вкладок грузятся лениво при их открытии (ensurePageData).
+  // Здесь только то, что видно на активной странице прямо сейчас
+  var act = document.querySelector('.page.active');
+  if(act && act.id) ensurePageData(act.id.replace('page-',''));
+  // Цена нерешённого грузится вместе со Статусом, один раз
+  if(viewAs === 'resident') loadOnce('problems', function(){ loadProblems(); });
 }
 
 // Загрузка «один раз за сессию». Повторно только через forceReload()
@@ -3716,8 +3934,10 @@ function renderDashboard(){
   const mp = window._monthlyPL;
   let monthlyHtml = '';
   if(mp && mp.months){
-    const curIdx = (window._selectedMonth!=null) ? window._selectedMonth : mp.currentMonthIdx;
-    const m = mp.months[curIdx] || mp.months[0];
+    // При входе всегда текущий месяц (раньше при отсутствии currentMonthIdx падало на январь)
+    var defIdx = (typeof mp.currentMonthIdx === 'number') ? mp.currentMonthIdx : new Date().getMonth();
+    const curIdx = (window._selectedMonth != null) ? window._selectedMonth : defIdx;
+    const m = mp.months[curIdx] || mp.months[defIdx] || mp.months[0];
     
     // Месяцы: понятные кликабельные чипы с суммой прибыли
     const barsHtml = mp.months.map((mm,i)=>{
@@ -4154,7 +4374,6 @@ function markAttendanceFromDay(resName, dateStr){
     if(r && (r.ok || r.alreadyDone)){
       showToast('✅ Отмечено');
       closeModal('dayMeetsModal');
-      loadAllData();
     } else {
       showToast('⚠️ ' + ((r && r.error) || 'Ошибка'));
     }
@@ -4296,6 +4515,240 @@ function renderFines(){
   });
   finesHtml += '</div>';
   el.innerHTML += finesHtml;
+}
+
+// ══════════ ПОЛЕЗНОЕ: очередь публикаций ══════════
+async function renderContentPlan(){
+  var el = document.getElementById('contentPlanBox');
+  if(!el) return;
+  el.innerHTML = '<div class="empty">Загрузка...</div>';
+  try{
+    var r = await callAction('getContentPlan', {});
+    var items = (r && r.items) || [];
+    var waiting = items.filter(function(i){ return i.status === 'Ожидает'; });
+    var sent = items.filter(function(i){ return i.status !== 'Ожидает'; });
+
+    var h = '<div class="card" style="padding:14px 16px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:center">' +
+      '<div><div style="font-size:22px;font-weight:900;color:#D4B886;line-height:1">' + waiting.length + '</div>' +
+      '<div style="font-size:10px;color:#888;letter-spacing:0.5px;margin-top:4px">В ОЧЕРЕДИ</div></div>' +
+      '<div style="border-left:1px solid rgba(255,255,255,0.07)"><div style="font-size:22px;font-weight:900;color:#fff;line-height:1">' + sent.length + '</div>' +
+      '<div style="font-size:10px;color:#888;letter-spacing:0.5px;margin-top:4px">ОПУБЛИКОВАНО</div></div></div>';
+
+    if(waiting.length <= 3){
+      h += '<div class="card" style="padding:12px 14px;margin-bottom:14px;border:1px solid rgba(229,115,115,0.3);background:rgba(229,115,115,0.05);font-size:12.5px;color:#e57373;line-height:1.45">' +
+        'Очередь заканчивается. Система добавит новые посты автоматически, либо нажмите + чтобы написать свой.</div>';
+    }
+
+    if(!items.length){
+      h += '<div class="empty"><div class="em-icon">📢</div><div class="em-title">Очередь пуста</div><div class="em-text">Нажмите + чтобы добавить пост</div></div>';
+      el.innerHTML = h;
+      return;
+    }
+
+    h += '<div style="font-size:11px;color:#D4B886;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin:4px 0 10px">Ближайшие</div>';
+    waiting.slice(0, 12).forEach(function(it){
+      h += contentCard(it, true);
+    });
+
+    if(sent.length){
+      h += '<div style="font-size:11px;color:#888;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin:20px 0 10px">Опубликовано</div>';
+      sent.slice(-8).reverse().forEach(function(it){
+        h += contentCard(it, false);
+      });
+    }
+    el.innerHTML = h;
+  }catch(e){
+    el.innerHTML = '<div class="card"><div style="color:var(--red);font-size:13px">Не удалось загрузить</div></div>';
+  }
+}
+
+function contentCard(it, editable){
+  var preview = it.text.length > 150 ? it.text.substring(0, 150) + '...' : it.text;
+  var dateShort = it.date.split(' ')[0];
+  var timeShort = (it.date.split(' ')[1] || '').substring(0,5);
+  return '<div class="card" style="padding:14px 16px;margin-bottom:10px;' + (editable ? 'border-left:3px solid #D4B886' : 'opacity:0.6') + '">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px">' +
+      '<span style="font-size:11px;font-weight:800;color:#D4B886;letter-spacing:0.5px;text-transform:uppercase">' + it.cat + '</span>' +
+      '<span style="font-size:12px;color:#888;font-weight:700;flex-shrink:0">' + dateShort + (timeShort ? ' · ' + timeShort : '') + '</span>' +
+    '</div>' +
+    '<div style="font-size:13px;color:rgba(255,255,255,0.82);line-height:1.5;white-space:pre-wrap">' + preview + '</div>' +
+    (editable ?
+      '<div style="display:flex;gap:10px;margin-top:11px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.06)">' +
+        '<button onclick="editContentPost(' + it.row + ')" style="flex:1;background:rgba(212,184,134,0.12);border:1px solid rgba(212,184,134,0.4);color:#D4B886;padding:8px;border-radius:8px;font-size:12px;font-weight:800;font-family:inherit">Изменить</button>' +
+        '<button onclick="deleteContentPost(' + it.row + ')" style="background:rgba(229,115,115,0.1);border:1px solid rgba(229,115,115,0.3);color:#e57373;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:800;font-family:inherit">Удалить</button>' +
+      '</div>' : '') +
+    '</div>';
+}
+
+var _contentEditRow = null;
+function openContentModal(){
+  _contentEditRow = null;
+  var t = document.getElementById('contentText'); if(t) t.value = '';
+  var c = document.getElementById('contentCat'); if(c) c.value = 'Финансы';
+  var d = document.getElementById('contentDate');
+  if(d){
+    var when = new Date(Date.now() + 2*24*3600*1000);
+    d.value = String(when.getDate()).padStart(2,'0') + '.' + String(when.getMonth()+1).padStart(2,'0') + '.' + when.getFullYear() + ' 09:00';
+  }
+  var ttl = document.getElementById('contentModalTitle');
+  if(ttl) ttl.textContent = 'Новый пост в Полезное';
+  openModal('contentModal');
+}
+
+async function editContentPost(row){
+  var r = await callAction('getContentPlan', {});
+  var it = ((r && r.items) || []).find(function(x){ return x.row === row; });
+  if(!it) return;
+  _contentEditRow = row;
+  document.getElementById('contentText').value = it.text;
+  document.getElementById('contentCat').value = it.cat;
+  document.getElementById('contentDate').value = it.date;
+  document.getElementById('contentModalTitle').textContent = 'Изменить пост';
+  openModal('contentModal');
+}
+
+var _contentInFlight = false;
+async function submitContentPost(){
+  if(_contentInFlight) return;
+  var text = document.getElementById('contentText').value.trim();
+  var cat = document.getElementById('contentCat').value;
+  var date = document.getElementById('contentDate').value.trim();
+  if(!text){ showToast('⚠️ Напишите текст'); return; }
+  _contentInFlight = true;
+  closeModal('contentModal');
+  try{
+    var r;
+    if(_contentEditRow){
+      r = await callAction('updateContentPost', {row: _contentEditRow, text: text, date: date});
+    } else {
+      r = await callAction('addContentPost', {text: text, cat: cat, date: date});
+    }
+    if(r && r.ok){ showToast('✅ Сохранено'); forceReload('content', renderContentPlan); }
+    else showToast('⚠️ ' + ((r && r.error) || 'Ошибка'));
+  }catch(e){ showToast('❌ ' + e.message); }
+  finally{ setTimeout(function(){ _contentInFlight = false; }, 1200); }
+}
+
+async function deleteContentPost(row){
+  if(!confirm('Удалить пост из очереди?')) return;
+  try{
+    var r = await callAction('deleteContentPost', {row: row});
+    if(r && r.ok){ showToast('🗑 Удалено'); forceReload('content', renderContentPlan); }
+  }catch(e){}
+}
+
+// ══════════ СММ ══════════
+async function renderSmm(){
+  var el = document.getElementById('smmBox');
+  if(!el) return;
+  el.innerHTML = '<div class="empty">Загрузка...</div>';
+  try{
+    var r = await callAction('getSmm', {});
+    var items = (r && r.items) || [];
+
+    var byStatus = {'Идея': [], 'В работе': [], 'Готово': [], 'Опубликовано': []};
+    items.forEach(function(it){
+      if(!byStatus[it.status]) byStatus[it.status] = [];
+      byStatus[it.status].push(it);
+    });
+
+    var h = '<div class="card" style="padding:14px 16px;margin-bottom:14px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;text-align:center">';
+    [['Идея','#888'],['В работе','#ffd54f'],['Готово','#4caf7d'],['Опубликовано','#D4B886']].forEach(function(s, i){
+      h += '<div' + (i ? ' style="border-left:1px solid rgba(255,255,255,0.07)"' : '') + '>' +
+        '<div style="font-size:19px;font-weight:900;color:' + s[1] + ';line-height:1">' + (byStatus[s[0]] || []).length + '</div>' +
+        '<div style="font-size:9px;color:#888;letter-spacing:0.3px;margin-top:4px">' + s[0].toUpperCase() + '</div></div>';
+    });
+    h += '</div>';
+
+    if(!items.length){
+      h += '<div class="empty"><div class="em-icon">📱</div><div class="em-title">План пуст</div><div class="em-text">Нажмите + чтобы запланировать публикацию для @business.surgery</div></div>';
+      el.innerHTML = h;
+      return;
+    }
+
+    ['Идея','В работе','Готово','Опубликовано'].forEach(function(st){
+      var list = byStatus[st] || [];
+      if(!list.length) return;
+      var color = st === 'Опубликовано' ? '#D4B886' : (st === 'Готово' ? '#4caf7d' : (st === 'В работе' ? '#ffd54f' : '#888'));
+      h += '<div style="font-size:11px;color:' + color + ';font-weight:800;letter-spacing:1px;text-transform:uppercase;margin:16px 0 10px">' + st + '</div>';
+      list.forEach(function(it){
+        h += '<div class="card" style="padding:14px 16px;margin-bottom:10px;border-left:3px solid ' + color + ';cursor:pointer" onclick="editSmm(' + it.row + ')">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px">' +
+            '<span style="font-size:11px;font-weight:800;color:' + color + ';letter-spacing:0.5px">' + it.platform + (it.rubric ? ' · ' + it.rubric : '') + '</span>' +
+            '<span style="font-size:12px;color:#888;flex-shrink:0">' + it.date + '</span>' +
+          '</div>' +
+          '<div style="font-size:14px;font-weight:800;color:#fff;line-height:1.35">' + it.title + '</div>' +
+          (it.text ? '<div style="font-size:12.5px;color:rgba(255,255,255,0.6);line-height:1.45;margin-top:5px">' + (it.text.length > 120 ? it.text.substring(0,120) + '...' : it.text) + '</div>' : '') +
+        '</div>';
+      });
+    });
+    el.innerHTML = h;
+  }catch(e){
+    el.innerHTML = '<div class="card"><div style="color:var(--red);font-size:13px">Не удалось загрузить</div></div>';
+  }
+}
+
+var _smmEditRow = 0;
+function openSmmModal(){
+  _smmEditRow = 0;
+  ['smmTitle','smmText','smmLink'].forEach(function(id){ var e = document.getElementById(id); if(e) e.value = ''; });
+  var d = document.getElementById('smmDate');
+  if(d){ var n = new Date(); d.value = String(n.getDate()).padStart(2,'0') + '.' + String(n.getMonth()+1).padStart(2,'0') + '.' + n.getFullYear(); }
+  var p = document.getElementById('smmPlatform'); if(p) p.value = 'Instagram';
+  var rb = document.getElementById('smmRubric'); if(rb) rb.value = 'Кейс';
+  var st = document.getElementById('smmStatus'); if(st) st.value = 'Идея';
+  document.getElementById('smmModalTitle').textContent = 'Новая публикация';
+  openModal('smmModal');
+}
+
+async function editSmm(row){
+  var r = await callAction('getSmm', {});
+  var it = ((r && r.items) || []).find(function(x){ return x.row === row; });
+  if(!it) return;
+  _smmEditRow = row;
+  document.getElementById('smmTitle').value = it.title;
+  document.getElementById('smmText').value = it.text;
+  document.getElementById('smmLink').value = it.link;
+  document.getElementById('smmDate').value = it.date;
+  document.getElementById('smmPlatform').value = it.platform;
+  document.getElementById('smmRubric').value = it.rubric || 'Кейс';
+  document.getElementById('smmStatus').value = it.status;
+  document.getElementById('smmModalTitle').textContent = 'Публикация';
+  openModal('smmModal');
+}
+
+var _smmInFlight = false;
+async function submitSmm(){
+  if(_smmInFlight) return;
+  var title = document.getElementById('smmTitle').value.trim();
+  if(!title){ showToast('⚠️ Нужен заголовок'); return; }
+  _smmInFlight = true;
+  closeModal('smmModal');
+  try{
+    var r = await callAction('saveSmm', {
+      row: _smmEditRow,
+      title: title,
+      text: document.getElementById('smmText').value.trim(),
+      link: document.getElementById('smmLink').value.trim(),
+      date: document.getElementById('smmDate').value.trim(),
+      platform: document.getElementById('smmPlatform').value,
+      rubric: document.getElementById('smmRubric').value,
+      status: document.getElementById('smmStatus').value
+    });
+    if(r && r.ok){ showToast('✅ Сохранено'); forceReload('smm', renderSmm); }
+    else showToast('⚠️ ' + ((r && r.error) || 'Ошибка'));
+  }catch(e){ showToast('❌ ' + e.message); }
+  finally{ setTimeout(function(){ _smmInFlight = false; }, 1200); }
+}
+
+async function deleteSmm(){
+  if(!_smmEditRow) return;
+  if(!confirm('Удалить публикацию?')) return;
+  closeModal('smmModal');
+  try{
+    var r = await callAction('deleteSmm', {row: _smmEditRow});
+    if(r && r.ok){ showToast('🗑 Удалено'); forceReload('smm', renderSmm); }
+  }catch(e){}
 }
 
 let _custdevCache = null;
@@ -5993,27 +6446,28 @@ function renderMyStatus(){
   var isOnline = next && String(next.link||'').includes('meet');
 
   el.innerHTML = `
-    <div class="card" style="padding:16px;display:flex;align-items:center;gap:14px">
-      <div class="profile-avatar-lg" style="width:56px;height:56px;font-size:22px;margin:0;flex-shrink:0;${(me.avatar||user?.photo_url)?`background-image:url('${me.avatar||user.photo_url}');background-size:cover;background-position:center`:''}">${(me.avatar||user?.photo_url)?'':me.name[0]}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:19px;font-weight:900;color:#fff;line-height:1.15">${me.name.split(' ')[0]}</div>
-        <div style="font-size:12px;color:#888;margin-top:3px">${stazh} в BS${startDate?' · с '+startDate:''}</div>
-        ${me.reportStreak>0?`<div style="font-size:12px;color:#D4B886;font-weight:700;margin-top:3px">🔥 ${me.reportStreak} ${(function(n){var d=n%10,h=n%100;if(h>=11&&h<=14)return 'дней';if(d===1)return 'день';if(d>=2&&d<=4)return 'дня';return 'дней';})(me.reportStreak)} отчётов подряд</div>`:''}
+    <div class="status-hero">
+      <div class="status-hero-top">
+        <div class="status-avatar" style="${(me.avatar||user?.photo_url)?`background-image:url('${me.avatar||user.photo_url}');background-size:cover;background-position:center`:''}">${(me.avatar||user?.photo_url)?'':me.name[0]}</div>
+        <div style="flex:1;min-width:0">
+          <div class="status-name">${me.name.split(' ')[0]}</div>
+          <div class="status-sub">${stazh} в клубе${startDate?' · с '+startDate:''}</div>
+        </div>
+        ${me.reportStreak>0?`<div class="status-streak"><span style="font-size:15px">🔥</span> ${me.reportStreak}</div>`:''}
       </div>
-    </div>
-
-    <div class="card" style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
-      <div>
-        <div style="font-size:19px;font-weight:900;color:#D4B886;line-height:1">${me.visitsLeft||0}</div>
-        <div style="font-size:10px;color:#888;letter-spacing:0.5px;margin-top:3px">ВСТРЕЧ ОСТАЛОСЬ</div>
-      </div>
-      <div style="border-left:1px solid rgba(255,255,255,0.07);border-right:1px solid rgba(255,255,255,0.07)">
-        <div style="font-size:19px;font-weight:900;color:${me.debt>0?'#e57373':'#4caf7d'};line-height:1">${me.debt>0?fmt(me.debt):'0'}</div>
-        <div style="font-size:10px;color:#888;letter-spacing:0.5px;margin-top:3px">ДОЛГ</div>
-      </div>
-      <div>
-        <div style="font-size:19px;font-weight:900;color:#fff;line-height:1">${me.tariff?fmt(me.tariff):'-'}</div>
-        <div style="font-size:10px;color:#888;letter-spacing:0.5px;margin-top:3px">ТАРИФ</div>
+      <div class="status-metrics">
+        <div class="status-metric">
+          <div class="status-metric-val" style="color:#D4B886">${me.visitsLeft||0}</div>
+          <div class="status-metric-lbl">Встреч осталось</div>
+        </div>
+        <div class="status-metric">
+          <div class="status-metric-val" style="color:${me.debt>0?'#e57373':'#4caf7d'}">${me.debt>0?fmt(me.debt):'0'}</div>
+          <div class="status-metric-lbl">Долг</div>
+        </div>
+        <div class="status-metric">
+          <div class="status-metric-val">${me.tariff?fmt(me.tariff):'-'}</div>
+          <div class="status-metric-lbl">Тариф</div>
+        </div>
       </div>
     </div>
 
@@ -6195,40 +6649,52 @@ async function generateStory(template){
   ctx.textAlign = 'center';
   var logoEl = document.querySelector('.hero-logo-real img');
   var logoDrawn = false;
+  var headBottom = 175;
   if(logoEl && logoEl.complete && logoEl.naturalWidth){
     try{
-      var lw = 300, lh = lw * (logoEl.naturalHeight / logoEl.naturalWidth);
-      ctx.drawImage(logoEl, 540 - lw/2, 90, lw, lh);
+      var lw = 270, lh = lw * (logoEl.naturalHeight / logoEl.naturalWidth);
+      ctx.drawImage(logoEl, 540 - lw/2, 95, lw, lh);
+      headBottom = 95 + lh;
       logoDrawn = true;
     }catch(e){}
   }
   if(!logoDrawn){
     ctx.fillStyle = '#ffffff';
-    ctx.font = '800 46px Inter, Arial, sans-serif';
-    ctx.letterSpacing = '6px';
-    ctx.fillText('BUSINESS SURGERY', 540, 165);
+    ctx.font = '800 44px Inter, Arial, sans-serif';
+    ctx.letterSpacing = '5px';
+    ctx.fillText('BUSINESS SURGERY', 540, 160);
     ctx.letterSpacing = '0px';
+    headBottom = 180;
   }
   ctx.fillStyle = GOLD;
-  ctx.font = '600 22px Inter, Arial, sans-serif';
-  ctx.letterSpacing = '4px';
-  ctx.fillText('РЕЗИДЕНЦИЯ', 540, 218);
+  ctx.font = '600 21px Inter, Arial, sans-serif';
+  ctx.letterSpacing = '5px';
+  ctx.fillText('РЕЗИДЕНЦИЯ', 540, headBottom + 42);
   ctx.letterSpacing = '0px';
-  ctx.fillStyle = 'rgba(212,184,134,0.45)';
-  ctx.fillRect(465, 244, 150, 2);
+  ctx.fillStyle = 'rgba(212,184,134,0.4)';
+  ctx.fillRect(470, headBottom + 66, 140, 2);
 
   // Аватар из Telegram (круг в золотом кольце)
-  var avatarUrl = me.avatar || (user && user.photo_url) || '';
+  // Аватар: Telegram отдаёт фото в user.photo_url, но иногда без CORS.
+  // Пробуем оба источника и оба режима загрузки
+  var avatarUrl = (user && user.photo_url) || me.avatar || '';
   var drewAvatar = false;
   if(avatarUrl){
     try{
       var img = await new Promise(function(res, rej){
-        var im = new Image();
-        im.crossOrigin = 'anonymous';
-        im.onload = function(){ res(im); };
-        im.onerror = rej;
-        im.src = avatarUrl;
-        setTimeout(rej, 3000);
+        var tries = 0;
+        var attempt = function(useCors){
+          var im = new Image();
+          if(useCors) im.crossOrigin = 'anonymous';
+          im.onload = function(){ res(im); };
+          im.onerror = function(){
+            tries++;
+            if(tries === 1) attempt(false); else rej();
+          };
+          im.src = avatarUrl;
+        };
+        attempt(true);
+        setTimeout(rej, 4000);
       });
       ctx.save();
       ctx.beginPath();
@@ -6271,76 +6737,70 @@ async function generateStory(template){
 
   if(template === 'classic'){
     if(me.niche){
-      ctx.fillStyle = 'rgba(255,255,255,0.62)';
-      ctx.font = '400 36px Inter, Arial, sans-serif';
-      wrapText(ctx, me.niche, 840).slice(0,2).forEach(function(line, i){
-        ctx.fillText(line, 540, 870 + i * 48);
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.font = '400 34px Inter, Arial, sans-serif';
+      wrapText(ctx, me.niche, 800).slice(0,2).forEach(function(line, i){
+        ctx.fillText(line, 540, 866 + i * 46);
       });
     }
     ctx.fillStyle = GOLD;
-    ctx.font = '700 34px Inter, Arial, sans-serif';
-    ctx.fillText(stazh, 540, 1010);
+    ctx.font = '700 32px Inter, Arial, sans-serif';
+    ctx.fillText(stazh, 540, 985);
 
-    // Манифест
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    ctx.font = '600 44px Inter, Arial, sans-serif';
-    ['Не курс. Не клуб.', 'Системная работа', 'с бизнесом на уровне ДНК'].forEach(function(l, i){
-      ctx.fillText(l, 540, 1230 + i * 66);
-    });
-    ctx.fillStyle = 'rgba(212,184,134,0.45)';
-    ctx.fillRect(390, 1460, 300, 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.55)';
-    ctx.font = '400 32px Inter, Arial, sans-serif';
-    ctx.fillText('Разбор бизнеса каждые 10 дней', 540, 1530);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 52px Inter, Arial, sans-serif';
+    ctx.fillText('Раз в 10 дней', 540, 1180);
+    ctx.fillText('я разбираю свой бизнес', 540, 1248);
+    ctx.fillText('по косточкам', 540, 1316);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '400 33px Inter, Arial, sans-serif';
+    ctx.fillText('Цифры, узкие места, план на 10 дней.', 540, 1410);
+    ctx.fillText('Без мотивации и вебинаров.', 540, 1456);
 
   } else if(template === 'invite'){
-    ctx.fillStyle = 'rgba(255,255,255,0.62)';
-    ctx.font = '400 36px Inter, Arial, sans-serif';
-    ctx.fillText(stazh, 540, 870);
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.font = '400 33px Inter, Arial, sans-serif';
+    ctx.fillText(stazh, 540, 866);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = '800 56px Inter, Arial, sans-serif';
-    ctx.fillText('Приглашаю в BS', 540, 1030);
+    ctx.font = '800 54px Inter, Arial, sans-serif';
+    ctx.fillText('Знаешь, что тормозит', 540, 1010);
+    ctx.fillText('твой бизнес прямо сейчас?', 540, 1076);
 
-    ctx.fillStyle = 'rgba(255,255,255,0.72)';
-    ctx.font = '400 36px Inter, Arial, sans-serif';
-    ['Диагностика бизнеса', 'Стратегия и задачи каждые 10 дней', 'Среда предпринимателей Алматы'].forEach(function(l, i){
-      ctx.fillText(l, 540, 1130 + i * 56);
-    });
+    ctx.fillStyle = 'rgba(255,255,255,0.62)';
+    ctx.font = '400 34px Inter, Arial, sans-serif';
+    ctx.fillText('Я тоже не знал, пока не сел', 540, 1170);
+    ctx.fillText('с двумя трекерами на 60 минут.', 540, 1216);
 
     ctx.fillStyle = GOLD;
-    ctx.font = '900 76px Inter, Arial, sans-serif';
-    ctx.fillText('×3', 480, 1400);
+    ctx.font = '700 36px Inter, Arial, sans-serif';
+    ctx.fillText('Выяснилось за час.', 540, 1310);
     ctx.fillStyle = 'rgba(255,255,255,0.62)';
-    ctx.font = '400 32px Inter, Arial, sans-serif';
-    ctx.textAlign = 'left';
-    ctx.fillText('средний рост', 545, 1385);
-    ctx.fillText('резидента за год', 545, 1425);
-    ctx.textAlign = 'center';
+    ctx.font = '400 34px Inter, Arial, sans-serif';
+    ctx.fillText('Исправляю до сих пор.', 540, 1356);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = '700 40px Inter, Arial, sans-serif';
-    ctx.fillText('Напиши мне', 540, 1560);
+    ctx.font = '700 38px Inter, Arial, sans-serif';
+    ctx.fillText('Напиши мне, если хочешь так же', 540, 1470);
 
   } else {
-    // milestone
     ctx.fillStyle = GOLD;
-    ctx.font = '900 200px Inter, Arial, sans-serif';
-    ctx.fillText(months || 1, 540, 1050);
-    ctx.fillStyle = 'rgba(255,255,255,0.7)';
-    ctx.font = '600 36px Inter, Arial, sans-serif';
-    ctx.fillText(months === 1 ? 'МЕСЯЦ В BS' : 'МЕСЯЦЕВ В BS', 540, 1110);
+    ctx.font = '900 190px Inter, Arial, sans-serif';
+    ctx.fillText(months || 1, 540, 1020);
+    ctx.fillStyle = 'rgba(255,255,255,0.65)';
+    ctx.font = '600 34px Inter, Arial, sans-serif';
+    ctx.fillText(months === 1 ? 'МЕСЯЦ В BUSINESS SURGERY' : 'МЕСЯЦЕВ В BUSINESS SURGERY', 540, 1082);
 
-    ctx.fillStyle = 'rgba(255,255,255,0.88)';
-    ctx.font = '600 42px Inter, Arial, sans-serif';
-    ['Каждые 10 дней:', 'диагностика, стратегия, задачи'].forEach(function(l, i){
-      ctx.fillText(l, 540, 1290 + i * 62);
-    });
-    ctx.fillStyle = 'rgba(212,184,134,0.45)';
-    ctx.fillRect(390, 1420, 300, 2);
-    ctx.fillStyle = GOLD;
-    ctx.font = '700 34px Inter, Arial, sans-serif';
-    ctx.fillText('Бизнес меняется, когда меняется система', 540, 1500);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '800 50px Inter, Arial, sans-serif';
+    ctx.fillText('За это время я перестал', 540, 1230);
+    ctx.fillText('быть главным сотрудником', 540, 1292);
+    ctx.fillText('своей компании', 540, 1354);
+
+    ctx.fillStyle = 'rgba(255,255,255,0.58)';
+    ctx.font = '400 32px Inter, Arial, sans-serif';
+    ctx.fillText('Каждые 10 дней: цифры, решения, действия.', 540, 1450);
   }
 
   // Подвал: понятный призыв
@@ -7644,10 +8104,25 @@ function renderRules(){
         </div>
         <div class="hero-label">Резиденция</div>
         <h1 class="hero-title" style="font-size:34px">Правила клуба</h1>
-        <p class="hero-sub">Шесть договорённостей, которые делают работу системной. Не бюрократия, а то, что отличает клуб от чата.</p>
+        <p class="hero-sub">6 договорённостей, которые делают работу системной. Не бюрократия, а то, что отличает клуб от чата.</p>
       </div>
       <div class="rules-wrap">
         ${blocksHtml}
+      </div>
+      <div class="rules-docs">
+        <div class="rules-docs-title">Документы</div>
+        <a class="rules-doc" href="https://bxclub.kz/oferta" target="_blank">
+          <span>Публичная оферта</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <a class="rules-doc" href="https://bxclub.kz/privacy" target="_blank">
+          <span>Политика конфиденциальности</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
+        <a class="rules-doc" href="https://bxclub.kz/terms" target="_blank">
+          <span>Согласие на обработку данных</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </a>
       </div>
       <div class="rules-foot">
         <div class="rules-foot-quote">Правила существуют не для контроля.<br>Они держат рамку, внутри которой бизнес растёт.</div>
