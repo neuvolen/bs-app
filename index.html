@@ -1028,25 +1028,47 @@
 <div class="modal-bg" id="smmModal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title" id="smmModalTitle">Публикация</div>
-    <div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.45">План публикаций для @business.surgery. Заполните что можете, остальное позже: карточка обновляется в один клик.</div>
-    <div class="form-group">
-      <label class="form-label">Заголовок</label>
-      <input class="form-input" type="text" id="smmTitle" placeholder="Кейс: с 200к до 2 млн за 4 месяца">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="modal-title" id="smmModalTitle" style="margin:0">Публикация</div>
+      <div onclick="closeModal('smmModal')" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;cursor:pointer;flex-shrink:0">✕</div>
     </div>
+
     <div class="form-group">
       <label class="form-label">Площадка</label>
-      <select class="form-select" id="smmPlatform">
-        <option>Instagram</option><option>Threads</option><option>Telegram</option><option>TikTok</option><option>YouTube</option>
-      </select>
+      <div class="picker" style="grid-template-columns:1fr 1fr">
+        <button class="pick-btn selected" data-plat="Instagram" onclick="setSmmPlatform('Instagram')">Instagram</button>
+        <button class="pick-btn" data-plat="Threads" onclick="setSmmPlatform('Threads')">Threads</button>
+        <button class="pick-btn" data-plat="Telegram" onclick="setSmmPlatform('Telegram')">Telegram</button>
+        <button class="pick-btn" data-plat="TikTok" onclick="setSmmPlatform('TikTok')">TikTok</button>
+      </div>
+      <input type="hidden" id="smmPlatform" value="Instagram">
     </div>
+
+    <div class="form-group" id="smmFormatGroup">
+      <label class="form-label">Формат</label>
+      <div class="picker" style="grid-template-columns:1fr 1fr">
+        <button class="pick-btn selected" data-fmt="Пост" onclick="setSmmFormat('Пост')">Пост</button>
+        <button class="pick-btn" data-fmt="Карусель" onclick="setSmmFormat('Карусель')">Карусель</button>
+        <button class="pick-btn" data-fmt="Сторис" onclick="setSmmFormat('Сторис')">Сторис</button>
+        <button class="pick-btn" data-fmt="Reels" onclick="setSmmFormat('Reels')">Reels сценарий</button>
+      </div>
+      <input type="hidden" id="smmFormat" value="Пост">
+    </div>
+
     <div class="form-group">
       <label class="form-label">Рубрика</label>
       <select class="form-select" id="smmRubric">
-        <option>Кейс</option><option>Диагностика</option><option>Личное мнение</option>
-        <option>Разбор ошибки</option><option>Закулисье</option><option>Reels</option>
+        <option>Кейс резидента</option>
+        <option>Диагностика боли</option>
+        <option>Личное мнение</option>
+        <option>Разбор ошибки</option>
+        <option>Закулисье BS</option>
+        <option>Инструмент</option>
       </select>
     </div>
+
+    <button class="btn btn-primary" style="width:100%;margin-bottom:16px" onclick="generateSmmContent()">✨ Сгенерировать контент</button>
+
     <div class="form-group">
       <label class="form-label">Дата публикации</label>
       <input class="form-input" type="text" id="smmDate" placeholder="15.08.2026">
@@ -1058,13 +1080,18 @@
       </select>
     </div>
     <div class="form-group">
-      <label class="form-label">Текст / сценарий</label>
-      <textarea class="form-input" id="smmText" rows="6" placeholder="Структура: боль, усиление, решение, призыв на разбор" style="resize:vertical;min-height:130px"></textarea>
+      <label class="form-label">Заголовок</label>
+      <input class="form-input" type="text" id="smmTitle" placeholder="Появится после генерации">
     </div>
     <div class="form-group">
-      <label class="form-label">Ссылка на материал</label>
-      <input class="form-input" type="text" id="smmLink" placeholder="Canva, Drive, готовый пост">
+      <label class="form-label" id="smmTextLabel">Текст публикации</label>
+      <textarea class="form-input" id="smmText" rows="8" placeholder="Появится после генерации" style="resize:vertical;min-height:180px"></textarea>
     </div>
+    <div class="form-group" id="smmSlidesGroup" style="display:none">
+      <label class="form-label">Слайды карусели</label>
+      <textarea class="form-input" id="smmSlides" rows="8" placeholder="Появятся после генерации" style="resize:vertical;min-height:170px"></textarea>
+    </div>
+
     <div id="smmActionsRow" style="display:none;gap:8px;margin-bottom:12px">
       <button class="btn btn-secondary" style="flex:1;margin:0;font-size:13px" onclick="generateSmmImage()">🎨 Картинка</button>
       <button class="btn btn-secondary" style="flex:1;margin:0;font-size:13px" onclick="copySmmText()">📋 Копировать</button>
@@ -1072,13 +1099,23 @@
     <div id="smmPublishRow" style="display:none;margin-bottom:12px">
       <button class="btn btn-primary" style="width:100%;margin:0" onclick="publishSmmNow()">📢 Опубликовать в канал BS</button>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" onclick="submitSmm()">Сохранить</button>
-      <button class="btn btn-secondary" onclick="closeModal('smmModal')">Закрыть</button>
+
+    <div style="height:8px"></div>
+    <button class="btn btn-primary" style="width:100%" onclick="submitSmm()">Сохранить</button>
+    <div id="smmDeleteRow" style="margin-top:12px;display:none">
+      <button class="btn btn-secondary" style="width:100%;margin:0;color:#e57373;border-color:rgba(229,115,115,0.35)" onclick="deleteSmm()">Удалить публикацию</button>
     </div>
-    <div id="smmDeleteRow" style="margin-top:10px;text-align:center;display:none">
-      <span onclick="deleteSmm()" style="font-size:12.5px;color:#e57373;cursor:pointer;font-weight:700">Удалить публикацию</span>
+  </div>
+</div>
+
+<div class="modal-bg" id="storyResultModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="modal-title" style="color:#D4B886;margin:0">Готово</div>
+      <div onclick="closeModal('storyResultModal')" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;cursor:pointer">✕</div>
     </div>
+    <div id="storyResultBody"></div>
   </div>
 </div>
 
@@ -2603,6 +2640,25 @@
   .diag-extreme.weak .diag-extreme-pct { color: #E53935; }
   
   /* === Что дальше === */
+  .diag-phone-block {
+    margin-top: 20px;
+    padding: 18px 16px;
+    background: linear-gradient(135deg, rgba(212,184,134,0.1), rgba(212,184,134,0.02));
+    border: 1.5px solid rgba(212,184,134,0.3);
+    border-radius: 16px;
+  }
+  .diag-phone-title {
+    font-size: 15px;
+    font-weight: 900;
+    color: #D4B886;
+    margin-bottom: 7px;
+  }
+  .diag-phone-text {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
   .diag-next {
     padding: 18px 20px;
     background: rgba(212, 184, 134, 0.06);
@@ -4871,7 +4927,7 @@ async function generateSmmImage(){
   ctx.fillStyle = '#ffffff';
   var titleSize = title.length > 60 ? 52 : (title.length > 35 ? 62 : 74);
   ctx.font = '900 ' + titleSize + 'px Inter, Arial, sans-serif';
-  var titleLines = wrapText(ctx, title, 880);
+  var titleLines = wrapText(ctx, title, 880, 5);
   var ty = top + 110;
   titleLines.slice(0, 5).forEach(function(line, i){
     ctx.fillText(line, 540, ty + i * (titleSize + 14));
@@ -4880,12 +4936,13 @@ async function generateSmmImage(){
 
   // Текст
   if(text){
-    ctx.fillStyle = 'rgba(255,255,255,0.68)';
-    ctx.font = '400 34px Inter, Arial, sans-serif';
-    var maxLines = H > 1500 ? 12 : 7;
-    var bodyLines = wrapText(ctx, text.replace(/\n+/g, ' '), 860);
-    bodyLines.slice(0, maxLines).forEach(function(line, i){
-      ctx.fillText(line, 540, afterTitle + 60 + i * 48);
+    var maxLines = H > 1500 ? 14 : 9;
+    var bodySize = text.length > 420 ? 30 : 34;
+    ctx.fillStyle = 'rgba(255,255,255,0.78)';
+    ctx.font = '400 ' + bodySize + 'px Inter, Arial, sans-serif';
+    var bodyLines = wrapText(ctx, text.replace(/\s*\n+\s*/g, ' '), 860, maxLines);
+    bodyLines.forEach(function(line, i){
+      ctx.fillText(line, 540, afterTitle + 66 + i * (bodySize + 14));
     });
   }
 
@@ -4946,18 +5003,126 @@ async function publishSmmNow(){
   }catch(e){ showToast('❌ ' + e.message); }
 }
 
+function setSmmPlatform(p){
+  document.getElementById('smmPlatform').value = p;
+  document.querySelectorAll('[data-plat]').forEach(function(b){
+    b.classList.toggle('selected', b.dataset.plat === p);
+  });
+  // Threads и Telegram: только текст, без карусели
+  var fg = document.getElementById('smmFormatGroup');
+  if(fg) fg.style.display = (p === 'Threads' || p === 'Telegram') ? 'none' : 'block';
+  if(p === 'Threads' || p === 'Telegram') setSmmFormat('Пост');
+  var pr = document.getElementById('smmPublishRow');
+  if(pr) pr.style.display = (p === 'Telegram' && _smmEditRow) ? 'block' : 'none';
+}
+
+function setSmmFormat(f){
+  document.getElementById('smmFormat').value = f;
+  document.querySelectorAll('[data-fmt]').forEach(function(b){
+    b.classList.toggle('selected', b.dataset.fmt === f);
+  });
+  var sg = document.getElementById('smmSlidesGroup');
+  if(sg) sg.style.display = (f === 'Карусель') ? 'block' : 'none';
+  var tl = document.getElementById('smmTextLabel');
+  if(tl) tl.textContent = (f === 'Карусель') ? 'Текст под публикацией' : (f === 'Reels' ? 'Сценарий Reels' : 'Текст публикации');
+}
+
+var _smmGenInFlight = false;
+async function generateSmmContent(){
+  if(_smmGenInFlight) return;
+  var platform = document.getElementById('smmPlatform').value;
+  var format = document.getElementById('smmFormat').value;
+  var rubric = document.getElementById('smmRubric').value;
+
+  _smmGenInFlight = true;
+  showToast('✨ Пишем контент...');
+
+  // Контекст: реальные данные клуба, чтобы посты были не абстрактными
+  var residentsCount = (cache.residents||[]).filter(function(r){ return !r.isFired && !r.isAdmin; }).length;
+  var cases = 'Исфандияр: с 200 тысяч до 2 млн чистыми за 4 месяца. Казбек: 15-20 млн чистой прибыли в месяц. Артём: прибыль выросла втрое, открыл второй бизнес. Даулет: рост втрое, купил квартиру в Астане.';
+
+  var formatBrief = {
+    'Пост': 'Один связный пост на 120-180 слов.',
+    'Карусель': 'Карусель из 7 слайдов. Для каждого слайда: короткий заголовок (до 6 слов) и 1-2 предложения текста. Первый слайд цепляет, последний ведёт на разбор. Отдельно текст под публикацией на 60-90 слов.',
+    'Сторис': 'Три коротких экрана сторис, каждый 1-2 предложения, крупная мысль.',
+    'Reels': 'Сценарий Reels на 40 секунд: что говорить (реплики), что показывать в кадре. Первые 3 секунды должны останавливать.'
+  }[format] || 'Один пост.';
+
+  var platformBrief = {
+    'Instagram': 'Instagram: живой разговорный тон, абзацы по 1-2 предложения, без хэштегов в теле.',
+    'Threads': 'Threads: коротко и остро, максимум 400 знаков, как реплика в разговоре.',
+    'Telegram': 'Telegram-канал: спокойный экспертный тон, можно чуть длиннее, без эмодзи в начале строк.',
+    'TikTok': 'TikTok: динамичный сценарий, простые слова, короткие фразы.'
+  }[platform] || '';
+
+  var prompt = 'Ты пишешь контент для Business Surgery. Это клуб системного трекинга бизнеса в Алматы: ' +
+    'разбор бизнеса каждые 10 дней с двумя основателями, Рустамом и Береке. Не курс, не инфобизнес. ' +
+    'Сейчас ' + residentsCount + ' резидентов. Проведено больше 700 разборов. Средний рост резидента втрое за год. ' +
+    'Вход через разбор бизнеса за 30 000 тенге: 60 минут, диагностика, план на 10 дней.\n\n' +
+    'Кейсы для примеров: ' + cases + '\n\n' +
+    'Рубрика: ' + rubric + '\n' +
+    'Площадка: ' + platformBrief + '\n' +
+    'Формат: ' + formatBrief + '\n\n' +
+    'ТРЕБОВАНИЯ К ТЕКСТУ (обязательно):\n' +
+    'Пиши как живой предприниматель, а не как маркетолог. Никаких клише инфобиза: убери "прокачай", "секреты успеха", "гарантированно", "успешный успех", "хочешь так же?", "лови подборку".\n' +
+    'Не используй длинное тире, только точки и запятые. Не используй конструкцию "не X, а Y".\n' +
+    'Не начинай с вопроса-заманухи. Начинай с конкретной ситуации или факта.\n' +
+    'Конкретика вместо абстракций: цифры, ситуации, реплики. Максимум одна метафора на текст.\n' +
+    'Заканчивай спокойным приглашением на разбор, без давления и без дедлайнов.\n\n' +
+    'Верни СТРОГО JSON без markdown и пояснений:\n' +
+    (format === 'Карусель'
+      ? '{"title":"заголовок публикации","slides":[{"h":"заголовок слайда","t":"текст слайда"}],"caption":"текст под публикацией"}'
+      : '{"title":"короткий заголовок","text":"полный текст публикации"}');
+
+  try{
+    var resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        messages: [{role: "user", content: prompt}]
+      })
+    });
+    var data = await resp.json();
+    var raw = (data.content || []).map(function(it){ return it.type === 'text' ? it.text : ''; }).join('').trim();
+    raw = raw.replace(/```json|```/g, '').trim();
+    var parsed = JSON.parse(raw);
+
+    document.getElementById('smmTitle').value = parsed.title || '';
+    if(format === 'Карусель'){
+      var slidesText = (parsed.slides || []).map(function(s, i){
+        return (i+1) + '. ' + (s.h || '') + '\n' + (s.t || '');
+      }).join('\n\n');
+      document.getElementById('smmSlides').value = slidesText;
+      document.getElementById('smmText').value = parsed.caption || '';
+    } else {
+      document.getElementById('smmText').value = parsed.text || '';
+    }
+    var ar = document.getElementById('smmActionsRow');
+    if(ar) ar.style.display = 'flex';
+    showToast('✅ Готово. Проверьте и сохраните');
+  }catch(e){
+    showToast('⚠️ Не получилось. Попробуйте ещё раз');
+    console.error('generateSmmContent', e);
+  }finally{
+    _smmGenInFlight = false;
+  }
+}
+
 function openSmmModal(){
   _smmEditRow = 0;
-  ['smmTitle','smmText','smmLink'].forEach(function(id){ var e = document.getElementById(id); if(e) e.value = ''; });
+  ['smmTitle','smmText','smmSlides'].forEach(function(id){ var e = document.getElementById(id); if(e) e.value = ''; });
   var d = document.getElementById('smmDate');
-  if(d){ var n = new Date(); d.value = String(n.getDate()).padStart(2,'0') + '.' + String(n.getMonth()+1).padStart(2,'0') + '.' + n.getFullYear(); }
-  var p = document.getElementById('smmPlatform'); if(p) p.value = 'Instagram';
-  var rb = document.getElementById('smmRubric'); if(rb) rb.value = 'Кейс';
+  if(d){ var n = new Date(); n.setDate(n.getDate()+1); d.value = String(n.getDate()).padStart(2,'0') + '.' + String(n.getMonth()+1).padStart(2,'0') + '.' + n.getFullYear(); }
+  setSmmPlatform('Instagram');
+  setSmmFormat('Пост');
+  var rb = document.getElementById('smmRubric'); if(rb) rb.value = 'Кейс резидента';
   var st = document.getElementById('smmStatus'); if(st) st.value = 'Идея';
   document.getElementById('smmModalTitle').textContent = 'Новая публикация';
-  var dr = document.getElementById('smmDeleteRow'); if(dr) dr.style.display = 'none';
-  var ar0 = document.getElementById('smmActionsRow'); if(ar0) ar0.style.display = 'none';
-  var pr0 = document.getElementById('smmPublishRow'); if(pr0) pr0.style.display = 'none';
+  ['smmDeleteRow','smmActionsRow','smmPublishRow'].forEach(function(id){
+    var e = document.getElementById(id); if(e) e.style.display = 'none';
+  });
   openModal('smmModal');
 }
 
@@ -4965,15 +5130,20 @@ function editSmm(row){
   var it = ((cache.smm && cache.smm.items) || []).find(function(x){ return x.row === row; });
   if(!it) return;
   _smmEditRow = row;
-  document.getElementById('smmTitle').value = it.title;
-  document.getElementById('smmText').value = it.text;
-  document.getElementById('smmLink').value = it.link;
-  document.getElementById('smmDate').value = it.date;
-  document.getElementById('smmPlatform').value = it.platform;
-  document.getElementById('smmRubric').value = it.rubric || 'Кейс';
-  document.getElementById('smmStatus').value = it.status;
+  document.getElementById('smmTitle').value = it.title || '';
+  document.getElementById('smmText').value = it.text || '';
+  document.getElementById('smmDate').value = it.date || '';
+  document.getElementById('smmRubric').value = it.rubric || 'Кейс резидента';
+  document.getElementById('smmStatus').value = it.status || 'Идея';
+  setSmmPlatform(it.platform || 'Instagram');
+  var fmt = (it.link && it.link.indexOf('Карусель') === 0) ? 'Карусель' : 'Пост';
+  setSmmFormat(fmt);
+  if(fmt === 'Карусель'){
+    var sl = document.getElementById('smmSlides');
+    if(sl) sl.value = (it.link || '').replace(/^Карусель:\s*/, '');
+  }
   document.getElementById('smmModalTitle').textContent = 'Публикация';
-  var dr2 = document.getElementById('smmDeleteRow'); if(dr2) dr2.style.display = 'block';
+  var dr = document.getElementById('smmDeleteRow'); if(dr) dr.style.display = 'block';
   var ar = document.getElementById('smmActionsRow'); if(ar) ar.style.display = 'flex';
   var pr = document.getElementById('smmPublishRow');
   if(pr) pr.style.display = (it.platform === 'Telegram') ? 'block' : 'none';
@@ -4984,21 +5154,23 @@ var _smmInFlight = false;
 async function submitSmm(){
   if(_smmInFlight) return;
   var title = document.getElementById('smmTitle').value.trim();
-  if(!title){ showToast('⚠️ Нужен заголовок'); return; }
+  if(!title){ showToast('⚠️ Сгенерируйте или впишите заголовок'); return; }
   _smmInFlight = true;
+  var fmt = document.getElementById('smmFormat').value;
+  var slides = (document.getElementById('smmSlides') || {}).value || '';
   closeModal('smmModal');
   try{
     var r = await callAction('saveSmm', {
       row: _smmEditRow,
       title: title,
       text: document.getElementById('smmText').value.trim(),
-      link: document.getElementById('smmLink').value.trim(),
+      link: fmt === 'Карусель' ? ('Карусель: ' + slides) : fmt,
       date: document.getElementById('smmDate').value.trim(),
       platform: document.getElementById('smmPlatform').value,
       rubric: document.getElementById('smmRubric').value,
       status: document.getElementById('smmStatus').value
     });
-    if(r && r.ok){ showToast('✅ Сохранено'); refreshData(); }
+    if(r && r.ok){ showToast('✅ Сохранено'); silentSync(); }
     else showToast('⚠️ ' + ((r && r.error) || 'Ошибка'));
   }catch(e){ showToast('❌ ' + e.message); }
   finally{ setTimeout(function(){ _smmInFlight = false; }, 1200); }
@@ -7011,7 +7183,7 @@ async function generateStory(template){
     if(me.niche){
       ctx.fillStyle = 'rgba(255,255,255,0.55)';
       ctx.font = '400 34px Inter, Arial, sans-serif';
-      wrapText(ctx, me.niche, 800).slice(0,2).forEach(function(line, i){
+      wrapText(ctx, me.niche, 800, 2).forEach(function(line, i){
         ctx.fillText(line, 540, 866 + i * 46);
       });
     }
@@ -7088,45 +7260,67 @@ async function generateStory(template){
   ctx.font = '400 28px Inter, Arial, sans-serif';
   ctx.fillText('@business.surgery · Алматы', 540, 1820);
 
-  // Публикация: сначала пробуем нативный шеринг Telegram/системы, потом сохранение
-  var dataUrl = canvas.toDataURL('image/png');
-  var caption = 'Business Surgery. Системная работа с бизнесом каждые 10 дней. bxclub.kz';
+  // Публикация. В Telegram WebView скачивание заблокировано, поэтому:
+  // 1) показываем картинку прямо в приложении (можно сохранить долгим нажатием)
+  // 2) бот присылает её же в чат. оттуда в Stories одним касанием
+  var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+  showStoryResult(dataUrl);
 
-  canvas.toBlob(async function(blob){
-    // 1) Нативный шеринг: сразу выбор Instagram / Telegram / куда угодно
+  // Отправка через бота в фоне
+  if(user && user.id){
     try{
-      if(navigator.canShare){
-        var file = new File([blob], 'bs_story.png', {type: 'image/png'});
-        if(navigator.canShare({files: [file]})){
-          await navigator.share({files: [file], text: caption});
-          showToast('✅ Готово');
-          return;
-        }
-      }
-    }catch(e){
-      if(e && e.name === 'AbortError') return; // пользователь закрыл окно шеринга
-    }
-    // 2) Telegram Stories (если клиент поддерживает)
-    try{
-      if(tg && tg.shareToStory){
-        tg.shareToStory(dataUrl, {text: caption});
-        showToast('✅ Открываем Stories');
+      fetch(WEBAPP_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
+        body: JSON.stringify({
+          bsAction: 'sendImage',
+          chatId: String(user.id),
+          image: dataUrl,
+          caption: 'Ваша картинка для Stories. Сохраните и выложите в Instagram или Telegram.'
+        })
+      }).then(function(){
+        showToast('✅ Картинка отправлена в чат с ботом');
+      }).catch(function(){});
+    }catch(e){}
+  }
+}
+
+function showStoryResult(dataUrl){
+  // Экран с готовой картинкой: сохранить долгим нажатием или поделиться
+  var box = document.getElementById('storyResultBody');
+  if(!box) return;
+  box.innerHTML =
+    '<img src="' + dataUrl + '" style="width:100%;border-radius:14px;display:block;margin-bottom:14px">' +
+    '<div style="font-size:12.5px;color:#888;line-height:1.5;margin-bottom:14px;text-align:center">' +
+      'Нажмите на картинку и удерживайте, чтобы сохранить в галерею.<br>Она также придёт в чат с ботом.' +
+    '</div>' +
+    '<button class="btn btn-primary" style="width:100%" onclick="shareStoryImage(\'' + 'x' + '\')">Поделиться</button>';
+  window._lastStoryData = dataUrl;
+  openModal('storyResultModal');
+}
+
+async function shareStoryImage(){
+  var dataUrl = window._lastStoryData;
+  if(!dataUrl) return;
+  try{
+    var res = await fetch(dataUrl);
+    var blob = await res.blob();
+    if(navigator.canShare){
+      var file = new File([blob], 'bs_story.jpg', {type: 'image/jpeg'});
+      if(navigator.canShare({files: [file]})){
+        await navigator.share({files: [file]});
         return;
       }
-    }catch(e){}
-    // 3) Сохранение в галерею
-    try{
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement('a');
-      a.href = url; a.download = 'bs_story_' + template + '.png';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
-      showToast('✅ Сохранено в галерею. Выложи в Stories');
-    }catch(e){
-      var w = window.open();
-      if(w) w.document.write('<img src="' + dataUrl + '" style="width:100%">');
     }
-  }, 'image/png');
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'bs_story.jpg';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+  }catch(e){
+    if(e && e.name === 'AbortError') return;
+    showToast('Картинка в чате с ботом');
+  }
 }
 
 function fallbackDownload(blob, fileName){
@@ -7143,8 +7337,8 @@ function fallbackDownload(blob, fileName){
   }
 }
 
-function wrapText(ctx, text, maxWidth){
-  var words = text.split(' ');
+function wrapText(ctx, text, maxWidth, maxLines){
+  var words = String(text).split(' ');
   var lines = [];
   var line = '';
   for(var i = 0; i < words.length; i++){
@@ -7157,7 +7351,7 @@ function wrapText(ctx, text, maxWidth){
     }
   }
   lines.push(line.trim());
-  return lines.slice(0, 3); // макс 3 строки
+  return lines.slice(0, maxLines || 3);
 }
 
 function renderMyProfile(){
@@ -9265,6 +9459,29 @@ function finishDiagnostic(){
   });
 }
 
+function requestLeadPhone(){
+  // Telegram сам подставит номер из профиля: человеку достаточно нажать одну кнопку
+  if(!user || !user.id){ showToast('Откройте приложение через бота'); return; }
+  showToast('⏳ Отправляем запрос в чат...');
+  callAction('requestPhone', {
+    chatId: String(user.id),
+    reason: 'Чтобы разобрать результат вашей диагностики, нам нужен номер телефона.\n\nНажмите кнопку ниже. номер подставится автоматически из профиля Telegram, вводить ничего не нужно.'
+  }).then(function(r){
+    if(r && r.ok){
+      var btn = document.getElementById('leadPhoneBtn');
+      if(btn){
+        btn.textContent = 'Кнопка в чате с ботом ↓';
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+      }
+      showToast('Откройте чат с ботом и нажмите кнопку');
+      try{ if(tg && tg.close) setTimeout(function(){ tg.close(); }, 1200); }catch(e){}
+    } else {
+      showToast('⚠️ Не удалось. Напишите нам в чат');
+    }
+  });
+}
+
 function renderDiagnosticResult(){
   var el = document.getElementById('page-diagnostic');
   if(!el) return;
@@ -9382,7 +9599,13 @@ function renderDiagnosticResult(){
       </div>
       
       ${(viewAs !== 'resident') ? `
-      <button class="cta-button" id="diagCtaBtn" style="margin-top:20px">
+      <div class="diag-phone-block">
+        <div class="diag-phone-title">Отправить результат вам</div>
+        <div class="diag-phone-text">Пришлём разбор диагностики и свяжемся, чтобы обсудить слабые места. Номер подставится из вашего профиля Telegram, вводить ничего не нужно.</div>
+        <button class="btn btn-primary" id="leadPhoneBtn" style="width:100%;margin:0" onclick="requestLeadPhone()">📱 Отправить мой номер</button>
+      </div>
+
+      <button class="cta-button" id="diagCtaBtn" style="margin-top:16px">
         <div class="cta-button-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
