@@ -3288,30 +3288,45 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202608100145";
-(function checkAppVersion(){
+var APP_VERSION = "202608101241";
+function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0];
-    fetch(base + '?nocache=' + Date.now(), {cache: 'no-store'})
+    return fetch(base + '?nocache=' + Date.now(), {
+      cache: 'no-store',
+      headers: {'Cache-Control': 'no-cache, no-store', 'Pragma': 'no-cache'}
+    })
       .then(function(r){ return r.ok ? r.text() : null; })
       .then(function(txt){
-        if(!txt) return;
+        if(!txt) return null;
         var m = txt.match(/APP_VERSION\s*=\s*"([^"]+)"/);
-        if(!m) return;
+        if(!m) return null;
         var serverVersion = m[1];
-        if(serverVersion === APP_VERSION) return;
+        if(serverVersion === APP_VERSION){
+          if(!silentOk && window.showToast) showToast('✅ Установлена последняя версия');
+          return serverVersion;
+        }
         var flag = 'bs_reload_' + serverVersion;
-        if(sessionStorage.getItem(flag)) return;
+        if(sessionStorage.getItem(flag)) return serverVersion;
         sessionStorage.setItem(flag, '1');
         try{ localStorage.removeItem('bs_cache'); }catch(e){}
         var params = new URLSearchParams(location.search);
         params.set('v', serverVersion);
         params.delete('nocache');
         location.replace(base + '?' + params.toString());
+        return serverVersion;
       })
-      .catch(function(){});
-  }catch(e){}
-})();
+      .catch(function(){ return null; });
+  }catch(e){ return Promise.resolve(null); }
+}
+
+// Проверка при запуске, повторно через 4 секунды (на случай медленного GitHub)
+// и при каждом возврате в приложение
+bsCheckVersion(true);
+setTimeout(function(){ bsCheckVersion(true); }, 4000);
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState === 'visible') bsCheckVersion(true);
+});
 </script>
 <script>
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwBbU7pJMyIptJoOtJ5hctU2rYbh3AioA-ScM14Y3dwuIF0UFNYrp7HiWqhOiQX74NpPA/exec';
@@ -4050,11 +4065,17 @@ function refreshData(){
 }
 
 function hardReload(){
-  // Полная перезагрузка приложения: чистит все кеши и качает свежую сборку
+  // Полная перезагрузка: чистим все кеши и качаем свежую сборку
+  showToast('⟳ Загружаем свежую версию...');
   try{ localStorage.removeItem('bs_cache'); }catch(e){}
   try{ sessionStorage.clear(); }catch(e){}
+  try{
+    if(window.caches && caches.keys){
+      caches.keys().then(function(names){ names.forEach(function(n){ caches.delete(n); }); });
+    }
+  }catch(e){}
   var base = location.href.split('?')[0].split('#')[0];
-  location.replace(base + '?v=' + Date.now());
+  setTimeout(function(){ location.replace(base + '?v=' + Date.now()); }, 300);
 }
 
 window._loadedOnce = window._loadedOnce || {};
@@ -8640,7 +8661,10 @@ function renderRules(){
       <div class="rules-foot">
         <div class="rules-foot-quote">Правила существуют не для контроля.<br>Они держат рамку, внутри которой бизнес растёт.</div>
         <div class="rules-foot-brand">BUSINESS SURGERY · BXCLUB.KZ</div>
-      <div style="margin-top:14px;font-size:11px;color:#555" onclick="hardReload()">Версия ${typeof APP_VERSION!=='undefined'?APP_VERSION:''} · обновить</div>
+      <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;align-items:center">
+        <div style="font-size:11px;color:#555">Версия ${typeof APP_VERSION!=='undefined'?APP_VERSION:''}</div>
+        <button onclick="hardReload()" style="background:rgba(212,184,134,0.12);border:1px solid rgba(212,184,134,0.35);color:#D4B886;padding:9px 20px;border-radius:20px;font-size:12.5px;font-weight:800;font-family:inherit">Обновить приложение</button>
+      </div>
       </div>
     </div>
   `;
