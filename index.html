@@ -3288,7 +3288,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202608101257";
+var APP_VERSION = "202608101315";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0];
@@ -7222,86 +7222,56 @@ async function generateStory(template){
     return parts.join(' ') + ' в клубе';
   })(months);
 
-  if(template === 'classic'){
-    if(me.niche){
-      ctx.fillStyle = 'rgba(255,255,255,0.55)';
-      ctx.font = '400 34px Inter, Arial, sans-serif';
-      wrapText(ctx, me.niche, 800, 2).forEach(function(line, i){
-        ctx.fillText(line, 540, 866 + i * 46);
-      });
-    }
-    ctx.fillStyle = GOLD;
-    ctx.font = '700 32px Inter, Arial, sans-serif';
-    ctx.fillText(stazh, 540, 985);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '800 52px Inter, Arial, sans-serif';
-    ctx.fillText('Раз в 10 дней', 540, 1180);
-    ctx.fillText('я разбираю свой бизнес', 540, 1248);
-    ctx.fillText('по косточкам', 540, 1316);
-
-    ctx.fillStyle = 'rgba(255,255,255,0.6)';
-    ctx.font = '400 33px Inter, Arial, sans-serif';
-    ctx.fillText('Цифры, узкие места, план на 10 дней.', 540, 1410);
-    ctx.fillText('Без мотивации и вебинаров.', 540, 1456);
-
-  } else if(template === 'invite'){
-    ctx.fillStyle = 'rgba(255,255,255,0.55)';
-    ctx.font = '400 33px Inter, Arial, sans-serif';
-    ctx.fillText(stazh, 540, 866);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '800 54px Inter, Arial, sans-serif';
-    ctx.fillText('Знаешь, что тормозит', 540, 1010);
-    ctx.fillText('твой бизнес прямо сейчас?', 540, 1076);
-
-    ctx.fillStyle = 'rgba(255,255,255,0.62)';
-    ctx.font = '400 34px Inter, Arial, sans-serif';
-    ctx.fillText('Я тоже не знал, пока не сел', 540, 1170);
-    ctx.fillText('с двумя трекерами на 60 минут.', 540, 1216);
-
-    ctx.fillStyle = GOLD;
-    ctx.font = '700 36px Inter, Arial, sans-serif';
-    ctx.fillText('Выяснилось за час.', 540, 1310);
-    ctx.fillStyle = 'rgba(255,255,255,0.62)';
-    ctx.font = '400 34px Inter, Arial, sans-serif';
-    ctx.fillText('Исправляю до сих пор.', 540, 1356);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '700 38px Inter, Arial, sans-serif';
-    ctx.fillText('Напиши мне, если хочешь так же', 540, 1470);
-
-  } else {
-    ctx.fillStyle = GOLD;
-    ctx.font = '900 190px Inter, Arial, sans-serif';
-    ctx.fillText(months || 1, 540, 1020);
-    ctx.fillStyle = 'rgba(255,255,255,0.65)';
-    ctx.font = '600 34px Inter, Arial, sans-serif';
-    ctx.fillText(months === 1 ? 'МЕСЯЦ В BUSINESS SURGERY' : 'МЕСЯЦЕВ В BUSINESS SURGERY', 540, 1082);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '800 50px Inter, Arial, sans-serif';
-    ctx.fillText('За это время я перестал', 540, 1230);
-    ctx.fillText('быть главным сотрудником', 540, 1292);
-    ctx.fillText('своей компании', 540, 1354);
-
-    ctx.fillStyle = 'rgba(255,255,255,0.58)';
+  // Единый сюжет: резидент говорит от себя и приглашает тех, кому актуально
+  if(me.niche){
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
     ctx.font = '400 32px Inter, Arial, sans-serif';
-    ctx.fillText('Каждые 10 дней: цифры, решения, действия.', 540, 1450);
+    wrapText(ctx, me.niche, 780, 1).forEach(function(line){
+      ctx.fillText(line, 540, 862);
+    });
   }
-
-  // Подвал: понятный призыв
-  ctx.fillStyle = 'rgba(255,255,255,0.2)';
-  ctx.fillRect(140, 1650, 800, 1);
   ctx.fillStyle = GOLD;
   ctx.font = '700 30px Inter, Arial, sans-serif';
-  ctx.fillText('Разбор вашего бизнеса за 60 минут', 540, 1715);
+  ctx.fillText(stazh, 540, me.niche ? 912 : 880);
+
+  var blockTop = me.niche ? 1010 : 980;
+
+  // Что происходит
   ctx.fillStyle = '#ffffff';
-  ctx.font = '800 40px Inter, Arial, sans-serif';
-  ctx.fillText('BXCLUB.KZ', 540, 1775);
-  ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  ctx.font = '400 28px Inter, Arial, sans-serif';
-  ctx.fillText('@business.surgery · Алматы', 540, 1820);
+  ctx.font = '800 50px Inter, Arial, sans-serif';
+  ctx.fillText('Каждые 10 дней', 540, blockTop);
+  ctx.fillText('мой бизнес разбирают', 540, blockTop + 62);
+  ctx.fillText('по цифрам', 540, blockTop + 124);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.62)';
+  ctx.font = '400 32px Inter, Arial, sans-serif';
+  ctx.fillText('Два трекера, живая встреча,', 540, blockTop + 200);
+  ctx.fillText('план на следующие 10 дней.', 540, blockTop + 244);
+
+  // Разделитель
+  ctx.fillStyle = 'rgba(212,184,134,0.3)';
+  ctx.fillRect(390, blockTop + 300, 300, 1);
+
+  // Приглашение
+  ctx.fillStyle = GOLD;
+  ctx.font = '800 44px Inter, Arial, sans-serif';
+  ctx.fillText('Если у тебя бизнес', 540, blockTop + 372);
+  ctx.fillText('и он встал на месте', 540, blockTop + 426);
+
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '600 34px Inter, Arial, sans-serif';
+  ctx.fillText('Напиши мне. Расскажу как это', 540, blockTop + 500);
+  ctx.fillText('устроено изнутри.', 540, blockTop + 544);
+
+  // Подвал
+  ctx.fillStyle = 'rgba(255,255,255,0.16)';
+  ctx.fillRect(180, 1706, 720, 1);
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.font = '800 34px Inter, Arial, sans-serif';
+  ctx.fillText('BUSINESS SURGERY', 540, 1768);
+  ctx.fillStyle = 'rgba(255,255,255,0.42)';
+  ctx.font = '400 27px Inter, Arial, sans-serif';
+  ctx.fillText('bxclub.kz · @business.surgery · Алматы', 540, 1812);
 
   // Публикация. В Telegram WebView скачивание заблокировано, поэтому:
   // 1) показываем картинку прямо в приложении (можно сохранить долгим нажатием)
