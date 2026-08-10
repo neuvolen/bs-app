@@ -3284,6 +3284,34 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ══ САМООБНОВЛЕНИЕ ══
+// Telegram кеширует Mini App агрессивно: при входе с кнопки в списке чатов
+// открывалась старая версия. Приложение само сверяет версию и перезагружается
+var APP_VERSION = "202608100104";
+(function checkAppVersion(){
+  try{
+    var url = 'version.json?_=' + Date.now();
+    fetch(url, {cache: 'no-store'}).then(function(r){
+      if(!r.ok) return;
+      return r.json();
+    }).then(function(d){
+      if(!d || !d.version) return;
+      if(String(d.version) !== APP_VERSION){
+        // Пришла новая версия. чистим кеш и перезагружаемся один раз
+        var flag = 'bs_reload_' + d.version;
+        if(sessionStorage.getItem(flag)) return;
+        sessionStorage.setItem(flag, '1');
+        try{ localStorage.removeItem('bs_cache'); }catch(e){}
+        var base = location.href.split('?')[0].split('#')[0];
+        var params = new URLSearchParams(location.search);
+        params.set('v', d.version);
+        location.replace(base + '?' + params.toString());
+      }
+    }).catch(function(){});
+  }catch(e){}
+})();
+</script>
+<script>
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwBbU7pJMyIptJoOtJ5hctU2rYbh3AioA-ScM14Y3dwuIF0UFNYrp7HiWqhOiQX74NpPA/exec';
 const ADMIN_IDS = ['453800951','1285596249'];
 
@@ -3666,22 +3694,16 @@ function init(){
     setupAutoRefresh();
     setTimeout(preloadBsLogo, 800);
     setTimeout(function(){
-      // Аватар из Telegram в память, чтобы Stories собирались мгновенно
+      // Аватар в base64 из бандла: canvas не загрязняется, картинка собирается всегда
       try{
-        var au = (user && user.photo_url) || '';
+        var au = cache.myAvatar || '';
         if(au && !window._bsAvatarImg){
           var ai = new Image();
-          ai.crossOrigin = 'anonymous';
           ai.onload = function(){ window._bsAvatarImg = ai; };
-          ai.onerror = function(){
-            var a2 = new Image();
-            a2.onload = function(){ window._bsAvatarImg = a2; };
-            a2.src = au;
-          };
           ai.src = au;
         }
       }catch(e){}
-    }, 900);
+    }, 1200);
     // Автосохранение аватара из Telegram (для других пользователей)
     if(user && user.photo_url && user.id){
       setTimeout(function(){
@@ -7109,9 +7131,9 @@ async function generateStory(template){
   ctx.fillRect(470, headBottom + 66, 140, 2);
 
   // Аватар из Telegram (круг в золотом кольце)
-  // Аватар: Telegram отдаёт фото в user.photo_url, но иногда без CORS.
-  // Пробуем оба источника и оба режима загрузки
-  var avatarUrl = (user && user.photo_url) || me.avatar || '';
+  // Аватар приходит с сервера в base64: прямая ссылка Telegram не отдаёт CORS
+  // и загрязняет canvas, из-за чего картинка вообще не создавалась
+  var avatarUrl = cache.myAvatar || '';
   var drewAvatar = false;
   if(window._bsAvatarImg){
     try{
@@ -7125,19 +7147,11 @@ async function generateStory(template){
   if(!drewAvatar && avatarUrl){
     try{
       var img = await new Promise(function(res, rej){
-        var tries = 0;
-        var attempt = function(useCors){
-          var im = new Image();
-          if(useCors) im.crossOrigin = 'anonymous';
-          im.onload = function(){ res(im); };
-          im.onerror = function(){
-            tries++;
-            if(tries === 1) attempt(false); else rej();
-          };
-          im.src = avatarUrl;
-        };
-        attempt(true);
-        setTimeout(rej, 4000);
+        var im = new Image();
+        im.onload = function(){ res(im); };
+        im.onerror = rej;
+        im.src = avatarUrl;
+        setTimeout(rej, 3000);
       });
       ctx.save();
       ctx.beginPath();
@@ -7263,7 +7277,30 @@ async function generateStory(template){
   // Публикация. В Telegram WebView скачивание заблокировано, поэтому:
   // 1) показываем картинку прямо в приложении (можно сохранить долгим нажатием)
   // 2) бот присылает её же в чат. оттуда в Stories одним касанием
-  var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+  var dataUrl = '';
+  try{
+    dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+  }catch(secErr){
+    // Canvas загрязнён внешней картинкой. закрашиваем аватар кругом с буквой и пробуем снова
+    try{
+      ctx.save();
+      ctx.beginPath(); ctx.arc(540, 520, 168, 0, Math.PI*2); ctx.closePath();
+      ctx.fillStyle = '#0d0d0d'; ctx.fill();
+      ctx.fillStyle = 'rgba(212,184,134,0.14)'; ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = GOLD;
+      ctx.font = '800 130px Inter, Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(me.name[0].toUpperCase(), 540, 570);
+      ctx.beginPath(); ctx.arc(540, 520, 168, 0, Math.PI*2);
+      ctx.strokeStyle = GOLD; ctx.lineWidth = 4; ctx.stroke();
+      dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    }catch(e2){
+      showToast('⚠️ Не удалось создать картинку');
+      return;
+    }
+  }
+  if(!dataUrl){ showToast('⚠️ Пустая картинка'); return; }
   showStoryResult(dataUrl);
 
   // Отправка через бота в фоне
