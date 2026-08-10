@@ -3288,7 +3288,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202608101241";
+var APP_VERSION = "202608101257";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0];
@@ -4101,32 +4101,30 @@ function renderDashboard(){
   const rentab = d.rentab||0;
   
   // Кеш: моментально подставим последние сохранённые данные
-  if(!window._monthlyPL){
-    try{
-      var cached = localStorage.getItem('bs_monthly_pl');
-      if(cached) window._monthlyPL = JSON.parse(cached);
-    }catch(e){}
-  }
-  // Финансы приходят вместе с основными данными
-  if(cache.monthlyPL && cache.monthlyPL.months && !window._monthlyPL){
+  // ИСТОЧНИК ФИНАНСОВ: свежие данные из пакета всегда важнее локального кеша.
+  // Раньше при наличии старой копии в localStorage новые данные игнорировались,
+  // из-за чего август показывался пустым даже после обновления PL
+  if(cache.monthlyPL && cache.monthlyPL.months){
     window._monthlyPL = cache.monthlyPL;
-  }
-  if(!window._plLoading && !window._plLoaded && !window._monthlyPL){
-    window._plLoading = true;
-    window._plLoaded = true;
-    callAction('getMonthlyPL', {}).then(function(r){
-      window._plLoading = false;
-      if(r && r.ok){
-        var prevSerialized = JSON.stringify(window._monthlyPL||{});
-        var newSerialized = JSON.stringify(r);
-        window._monthlyPL = r;
-        try{ localStorage.setItem('bs_monthly_pl', newSerialized); }catch(e){}
-        // Перерисовываем только если данные изменились
-        if(prevSerialized !== newSerialized){
+    try{ localStorage.setItem('bs_monthly_pl', JSON.stringify(cache.monthlyPL)); }catch(e){}
+  } else if(!window._monthlyPL){
+    // Пакет ещё не пришёл. показываем последнее сохранённое, чтобы не мигало пустотой
+    try{
+      var cachedPL = localStorage.getItem('bs_monthly_pl');
+      if(cachedPL) window._monthlyPL = JSON.parse(cachedPL);
+    }catch(e){}
+    // И запрашиваем отдельно, если пакет не содержит финансов
+    if(!window._plLoading){
+      window._plLoading = true;
+      callAction('getMonthlyPL', {}).then(function(r){
+        window._plLoading = false;
+        if(r && r.ok){
+          window._monthlyPL = r;
+          try{ localStorage.setItem('bs_monthly_pl', JSON.stringify(r)); }catch(e){}
           renderDashboard();
         }
-      }
-    });
+      });
+    }
   }
 
   // Месячная аналитика
