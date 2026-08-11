@@ -1112,8 +1112,8 @@
   <div class="modal">
     <div class="modal-handle"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div class="modal-title" style="color:#D4B886;margin:0">Готово</div>
-      <div onclick="closeModal('storyResultModal')" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;cursor:pointer">✕</div>
+      <div class="modal-title" style="color:#D4B886;margin:0">Картинка готова</div>
+      <div onclick="closeStoryResult()" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;cursor:pointer;flex-shrink:0">✕</div>
     </div>
     <div id="storyResultBody"></div>
   </div>
@@ -3288,7 +3288,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202608101325";
+var APP_VERSION = "202608110039";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0].replace(/[^/]*$/, '');
@@ -7338,8 +7338,11 @@ function showStoryResult(dataUrl){
 }
 
 function closeStoryResult(){
-  closeModal('storyResultModal');
-  try{ if(tg && tg.close) return; }catch(e){}
+  try{
+    var m = document.getElementById('storyResultModal');
+    if(m) m.classList.remove('show');
+    window._lastStoryData = null;
+  }catch(e){}
 }
 
 async function shareStoryImage(){
