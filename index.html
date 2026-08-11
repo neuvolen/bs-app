@@ -49,4 +49,55 @@
 })();
 </script>
 </body>
+</html><!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Business Surgery</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  html,body{margin:0;padding:0;background:#0a0a0a;height:100%;overflow:hidden}
+  .ldr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;font-family:-apple-system,'Segoe UI',sans-serif}
+  .ldr-mark{width:44px;height:44px;border:2.5px solid rgba(212,184,134,.16);border-top-color:#D4B886;border-radius:50%;animation:sp .8s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .ldr-t{color:#D4B886;font-size:10.5px;letter-spacing:3.5px;font-weight:800}
+  .ldr-e{color:#e57373;font-size:13px;text-align:center;padding:0 34px;line-height:1.55}
+  .ldr-b{margin-top:4px;background:rgba(212,184,134,.14);border:1px solid rgba(212,184,134,.4);color:#D4B886;padding:11px 24px;border-radius:22px;font-size:13px;font-weight:800;font-family:inherit}
+</style>
+</head>
+<body>
+<div class="ldr" id="ldr">
+  <div class="ldr-mark"></div>
+  <div class="ldr-t">BUSINESS SURGERY</div>
+</div>
+<script>
+// ЗАГРУЗЧИК. Этот файл заливается один раз и больше не меняется никогда.
+// Telegram может кешировать его сколько угодно. приложение всё равно скачивается
+// заново при каждом запуске по адресу, которого нет ни в одном кеше
+(function(){
+  var n = 0;
+  function go(){
+    n++;
+    var u = 'app.html?v=' + Date.now() + '.' + Math.random().toString(36).slice(2);
+    fetch(u, {cache:'no-store', headers:{'Cache-Control':'no-cache, no-store, must-revalidate','Pragma':'no-cache','Expires':'0'}})
+      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
+      .then(function(h){
+        if(!h || h.length < 5000) throw new Error('bad');
+        document.open(); document.write(h); document.close();
+      })
+      .catch(function(){
+        if(n < 4){ setTimeout(go, 800); return; }
+        document.getElementById('ldr').innerHTML =
+          '<div class="ldr-e">Не удалось загрузить приложение.<br>Проверьте соединение.</div>' +
+          '<button class="ldr-b" onclick="location.reload()">Повторить</button>';
+      });
+  }
+  go();
+})();
+</script>
+</body>
 </html>
