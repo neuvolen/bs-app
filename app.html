@@ -1402,6 +1402,12 @@
     background: #ffd54f;
     border-color: #ffd54f;
   }
+  /* Встреча состоялась: спокойный зелёный, как в Google Calendar */
+  .cal-fill-done {
+    background: #4caf7d;
+    border-color: #4caf7d;
+  }
+  .cal-fill-done .cal-day-num, .cal-fill-done .cal-day-cnt { color: #06251a; }
   .cal-fill-other .cal-day-num, .cal-fill-other .cal-day-cnt { color: #33270a; }
   /* Смешанный день: диагональная заливка */
   .cal-fill-mixed {
@@ -3288,7 +3294,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202608110039";
+var APP_VERSION = "202608130130";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0].replace(/[^/]*$/, '');
@@ -3419,7 +3425,7 @@ const FINE_TYPES = [
 ];
 
 const INCOME_SRC = ['БХ Трекинг продление','БХ Трекинг год','БХ Штраф','БХ Экспресс разбор','БХ МК/Завтрак','Прочие доходы'];
-const EXPENSE_SRC = ['Комиссия+налог','Маркет.бюджет','SMM','Таргетолог','Tilda + домен','CRM','Canva','Съемки проф','Съемки доп','HH объявление','Симка тариф','Оборудование','Офис','Ассистент','Бухгалтер','Юрист','IT','Прочие расходы:'];
+const EXPENSE_SRC = ['Дивиденды','Комиссия+налог','Маркет.бюджет','SMM','Таргетолог','Tilda + домен','CRM','Canva','Съемки проф','Съемки доп','HH объявление','Симка тариф','Оборудование','Офис','Ассистент','Бухгалтер','Юрист','IT','Прочие расходы:'];
 
 
 // Глобальный обработчик кликов по карточкам резидентов
@@ -4402,9 +4408,17 @@ function renderScheduleCalendar(list){
     var isToday = dStr === todayStr;
     var isPast = (new Date(year, month, d) < new Date(now.getFullYear(), now.getMonth(), now.getDate()));
     
-    // Заливка дня цветом формата встречи
+    // Состоявшиеся встречи этого дня (из Лога встреч)
+    var doneToday = (cache.doneMeetings || []).filter(function(dm){
+      var s = String(dm.date || '');
+      return s === dStr || s.substring(0,5) === dStr.substring(0,5);
+    });
+
+    // Заливка: зелёный если встреча прошла, иначе цвет формата
     var fillCls = '';
-    if(dayMeets.length){
+    if(doneToday.length && !dayMeets.length){
+      fillCls = 'cal-fill-done';
+    } else if(dayMeets.length){
       var kinds = {};
       dayMeets.forEach(function(ev){ kinds[meetKind(ev)] = true; });
       var uniq = Object.keys(kinds);
@@ -4413,12 +4427,15 @@ function renderScheduleCalendar(list){
       else if(uniq[0] === 'online') fillCls = 'cal-fill-online';
       else fillCls = 'cal-fill-other';
     }
+    var dayCount = dayMeets.length || doneToday.length;
     html += '<div class="cal-day ' + (isToday?'cal-today ':'') + (isPast?'cal-past ':'') + fillCls + '"';
     html += ' onclick="calDayClick(\''+ dStr +'\')"';
     html += '>';
     html += '<div class="cal-day-num">' + d + '</div>';
-    if(dayMeets.length > 1){
-      html += '<div class="cal-day-cnt">' + dayMeets.length + '</div>';
+    if(dayCount > 1){
+      html += '<div class="cal-day-cnt">' + dayCount + '</div>';
+    } else if(doneToday.length && !dayMeets.length){
+      html += '<div class="cal-day-cnt">✓</div>';
     }
     html += '</div>';
   }
@@ -4430,6 +4447,7 @@ function renderScheduleCalendar(list){
     '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#e57373"></span> Офлайн</div>' +
     '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#64b5f6"></span> Онлайн</div>' +
     '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#ffd54f"></span> Прочее</div>' +
+    '<div class="cal-leg-item"><span class="cal-leg-dot" style="background:#4caf7d"></span> Прошла</div>' +
     '</div>';
   
   html += '</div>';
@@ -4499,9 +4517,28 @@ function showDayMeetings(dateStr){
   var body = document.getElementById('dayMeetsBody');
   if(!body) return;
 
+  // Состоявшиеся встречи этого дня
+  var doneList = (cache.doneMeetings || []).filter(function(dm){
+    var s = String(dm.date || '');
+    return s === dateStr || s.substring(0,5) === ddmm;
+  });
+
   if(!list.length){
-    body.innerHTML = '<div style="text-align:center;padding:24px 0;color:#888;font-size:13px">В этот день встреч нет</div>' +
-      (isRealAdmin ? '<button class="btn btn-primary" onclick="closeModal(\'dayMeetsModal\');calCreateOn(\''+dateStr+'\')">Создать встречу</button>' : '');
+    var h0 = '';
+    if(doneList.length){
+      h0 += '<div style="font-size:11px;color:#4caf7d;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Встречи прошли</div>';
+      doneList.forEach(function(dm){
+        h0 += '<div style="padding:13px 14px;margin-bottom:8px;background:var(--card2);border-radius:11px;border-left:3px solid #4caf7d;display:flex;align-items:center;gap:10px">' +
+          '<span style="font-size:16px">✅</span>' +
+          '<span style="font-size:14px;font-weight:700;color:#fff">' + dm.res + '</span></div>';
+      });
+    } else {
+      h0 += '<div style="text-align:center;padding:24px 0;color:#888;font-size:13px">В этот день встреч нет</div>';
+    }
+    if(isRealAdmin){
+      h0 += '<button class="btn btn-primary" style="margin-top:6px" onclick="closeModal(\'dayMeetsModal\');calCreateOn(\''+dateStr+'\')">Создать встречу</button>';
+    }
+    body.innerHTML = h0;
     openModal('dayMeetsModal');
     return;
   }
@@ -5086,76 +5123,35 @@ async function generateSmmContent(){
   var rubric = document.getElementById('smmRubric').value;
 
   _smmGenInFlight = true;
-  showToast('✨ Пишем контент...');
-
-  // Контекст: реальные данные клуба, чтобы посты были не абстрактными
-  var residentsCount = (cache.residents||[]).filter(function(r){ return !r.isFired && !r.isAdmin; }).length;
-  var cases = 'Исфандияр: с 200 тысяч до 2 млн чистыми за 4 месяца. Казбек: 15-20 млн чистой прибыли в месяц. Артём: прибыль выросла втрое, открыл второй бизнес. Даулет: рост втрое, купил квартиру в Астане.';
-
-  var formatBrief = {
-    'Пост': 'Один связный пост на 120-180 слов.',
-    'Карусель': 'Карусель из 7 слайдов. Для каждого слайда: короткий заголовок (до 6 слов) и 1-2 предложения текста. Первый слайд цепляет, последний ведёт на разбор. Отдельно текст под публикацией на 60-90 слов.',
-    'Сторис': 'Три коротких экрана сторис, каждый 1-2 предложения, крупная мысль.',
-    'Reels': 'Сценарий Reels на 40 секунд: что говорить (реплики), что показывать в кадре. Первые 3 секунды должны останавливать.'
-  }[format] || 'Один пост.';
-
-  var platformBrief = {
-    'Instagram': 'Instagram: живой разговорный тон, абзацы по 1-2 предложения, без хэштегов в теле.',
-    'Threads': 'Threads: коротко и остро, максимум 400 знаков, как реплика в разговоре.',
-    'Telegram': 'Telegram-канал: спокойный экспертный тон, можно чуть длиннее, без эмодзи в начале строк.',
-    'TikTok': 'TikTok: динамичный сценарий, простые слова, короткие фразы.'
-  }[platform] || '';
-
-  var prompt = 'Ты пишешь контент для Business Surgery. Это клуб системного трекинга бизнеса в Алматы: ' +
-    'разбор бизнеса каждые 10 дней с двумя основателями, Рустамом и Береке. Не курс, не инфобизнес. ' +
-    'Сейчас ' + residentsCount + ' резидентов. Проведено больше 700 разборов. Средний рост резидента втрое за год. ' +
-    'Вход через разбор бизнеса за 30 000 тенге: 60 минут, диагностика, план на 10 дней.\n\n' +
-    'Кейсы для примеров: ' + cases + '\n\n' +
-    'Рубрика: ' + rubric + '\n' +
-    'Площадка: ' + platformBrief + '\n' +
-    'Формат: ' + formatBrief + '\n\n' +
-    'ТРЕБОВАНИЯ К ТЕКСТУ (обязательно):\n' +
-    'Пиши как живой предприниматель, а не как маркетолог. Никаких клише инфобиза: убери "прокачай", "секреты успеха", "гарантированно", "успешный успех", "хочешь так же?", "лови подборку".\n' +
-    'Не используй длинное тире, только точки и запятые. Не используй конструкцию "не X, а Y".\n' +
-    'Не начинай с вопроса-заманухи. Начинай с конкретной ситуации или факта.\n' +
-    'Конкретика вместо абстракций: цифры, ситуации, реплики. Максимум одна метафора на текст.\n' +
-    'Заканчивай спокойным приглашением на разбор, без давления и без дедлайнов.\n\n' +
-    'Верни СТРОГО JSON без markdown и пояснений:\n' +
-    (format === 'Карусель'
-      ? '{"title":"заголовок публикации","slides":[{"h":"заголовок слайда","t":"текст слайда"}],"caption":"текст под публикацией"}'
-      : '{"title":"короткий заголовок","text":"полный текст публикации"}');
+  showToast('✨ Пишем текст...');
 
   try{
-    var resp = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1000,
-        messages: [{role: "user", content: prompt}]
-      })
-    });
-    var data = await resp.json();
-    var raw = (data.content || []).map(function(it){ return it.type === 'text' ? it.text : ''; }).join('').trim();
-    raw = raw.replace(/```json|```/g, '').trim();
-    var parsed = JSON.parse(raw);
-
-    document.getElementById('smmTitle').value = parsed.title || '';
-    if(format === 'Карусель'){
-      var slidesText = (parsed.slides || []).map(function(s, i){
+    // Генерация идёт на сервере: браузер не может обращаться к модели напрямую
+    var r = await callAction('generateSmm', {platform: platform, format: format, rubric: rubric});
+    if(!r || r.error){
+      showToast('⚠️ ' + ((r && r.error) || 'Не получилось'));
+      return;
+    }
+    document.getElementById('smmTitle').value = r.title || '';
+    if(format === 'Карусель' && r.slides){
+      var slidesText = (r.slides || []).map(function(s, i){
         return (i+1) + '. ' + (s.h || '') + '\n' + (s.t || '');
       }).join('\n\n');
-      document.getElementById('smmSlides').value = slidesText;
-      document.getElementById('smmText').value = parsed.caption || '';
+      var sl = document.getElementById('smmSlides');
+      if(sl) sl.value = slidesText;
+      document.getElementById('smmText').value = r.caption || '';
     } else {
-      document.getElementById('smmText').value = parsed.text || '';
+      document.getElementById('smmText').value = r.text || '';
     }
     var ar = document.getElementById('smmActionsRow');
     if(ar) ar.style.display = 'flex';
-    showToast('✅ Готово. Проверьте и сохраните');
+    if(r.source === 'template'){
+      showToast('Готово. Взята заготовка, подключите ключ для генерации');
+    } else {
+      showToast('✅ Готово. Проверьте и сохраните');
+    }
   }catch(e){
-    showToast('⚠️ Не получилось. Попробуйте ещё раз');
-    console.error('generateSmmContent', e);
+    showToast('⚠️ Ошибка: ' + e.message);
   }finally{
     _smmGenInFlight = false;
   }
@@ -6630,58 +6626,36 @@ async function analyzeWheelDynamics(){
   const prev = rows[idx + 1];
   if(!cur || !prev){ box.innerHTML = ''; return; }
 
-  // Анализ только если между замерами прошла хотя бы неделя
   const dCur = parseWheelDate(cur.date), dPrev = parseWheelDate(prev.date);
   if(!dCur || !dPrev){ box.innerHTML = ''; return; }
   const days = Math.round((dCur - dPrev) / 86400000);
   if(days < 7){
-    box.innerHTML = '<div style="font-size:12px;color:#777;padding:10px 0">Между замерами ' + days + ' дн. Анализ появится когда пройдёт неделя и больше.</div>';
+    box.innerHTML = '<div style="font-size:12px;color:#777;padding:10px 0">Между замерами ' + days + ' дн. Разбор появится когда пройдёт неделя и больше.</div>';
     return;
   }
 
-  box.innerHTML = '<div style="font-size:12px;color:#888;padding:12px 0">🤖 Анализируем динамику...</div>';
-
-  // Собираем изменения
-  const changes = axes.map(function(ax, i){
-    return {axis: ax, was: prev.values[i], now: cur.values[i], diff: Math.round((cur.values[i]-prev.values[i])*10)/10};
-  });
-  const avgWas = Math.round(prev.values.reduce((a,b)=>a+b,0)/prev.values.length*10)/10;
-  const avgNow = Math.round(cur.values.reduce((a,b)=>a+b,0)/cur.values.length*10)/10;
-
-  const prompt = 'Ты бизнес-трекер Business Surgery. Резидент дважды заполнил колесо ' +
-    (isDna ? 'ДНК бизнеса' : 'личного баланса') + '. Прошло ' + days + ' дней.\n\n' +
-    'Динамика по осям (было → стало):\n' +
-    changes.map(c => c.axis + ': ' + c.was + ' → ' + c.now + ' (' + (c.diff>0?'+':'') + c.diff + ')').join('\n') +
-    '\n\nСредний балл: ' + avgWas + ' → ' + avgNow + '\n\n' +
-    'Дай краткий разбор на русском, 3 блока по 1-2 предложения:\n' +
-    'РОСТ: где реально выросло и что это значит\n' +
-    'ПРОСЕДАНИЕ: где упало или стоит на месте и почему это опасно\n' +
-    'ФОКУС: одна конкретная зона на следующие 10 дней и первый шаг\n\n' +
-    'Пиши прямо, без воды и без длинных тире. Обращайся на ты. Не используй markdown-заголовки, просто РОСТ: текст, ПРОСЕДАНИЕ: текст, ФОКУС: текст.';
+  box.innerHTML = '<div style="font-size:12px;color:#888;padding:12px 0">Готовим разбор...</div>';
 
   try{
-    const resp = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1000,
-        messages: [{role: "user", content: prompt}]
-      })
+    // Разбор считается на сервере
+    const r = await callAction('analyzeWheel', {
+      axes: axes.join('|'),
+      was: prev.values.join(','),
+      now: cur.values.join(','),
+      days: days,
+      kind: isDna ? 'dna' : 'life'
     });
-    const data = await resp.json();
-    let text = (data.content || []).map(function(it){ return it.type === 'text' ? it.text : ''; }).join('').trim();
+    let text = (r && r.text) || '';
     if(!text){ box.innerHTML = ''; return; }
-    // Подсветим ключевые блоки
     text = text.replace(/РОСТ:/g, '<b style="color:#4caf7d">РОСТ:</b>')
                .replace(/ПРОСЕДАНИЕ:/g, '<b style="color:#e57373">ПРОСЕДАНИЕ:</b>')
                .replace(/ФОКУС:/g, '<b style="color:#D4B886">ФОКУС:</b>')
                .replace(/\n/g, '<br>');
     box.innerHTML = '<div style="margin-top:4px;padding:14px;background:rgba(212,184,134,0.06);border-left:3px solid #D4B886;border-radius:0 10px 10px 0">' +
-      '<div style="font-size:11px;font-weight:800;color:#D4B886;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Анализ за ' + days + ' дней</div>' +
+      '<div style="font-size:11px;font-weight:800;color:#D4B886;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px">Разбор за ' + days + ' дней</div>' +
       '<div style="font-size:13px;color:rgba(255,255,255,0.82);line-height:1.5">' + text + '</div></div>';
   }catch(e){
-    box.innerHTML = '<div style="font-size:12px;color:#777;padding:8px 0">Анализ недоступен</div>';
+    box.innerHTML = '';
   }
 }
 
