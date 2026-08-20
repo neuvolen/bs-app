@@ -1156,8 +1156,9 @@
       </div>
     </div>
     <div style="font-size:12px;color:#777;line-height:1.45;margin-bottom:14px">
-      При оплате продления вторая цифра растёт сама. При отметке посещения первая тоже.
+      При оплате продления счётчик обнуляется сам, неиспользованные встречи переносятся в новый пакет.
     </div>
+    <button class="btn btn-secondary" style="width:100%;margin-bottom:14px" onclick="renewMeetings()">🔄 Продлить вручную</button>
     <div class="modal-actions">
       <button class="btn btn-primary" onclick="submitVisitEdit()">Сохранить</button>
       <button class="btn btn-secondary" onclick="closeModal('visitEditModal')">Отмена</button>
@@ -3346,7 +3347,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202608201331";
+var APP_VERSION = "202608201351";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0].replace(/[^/]*$/, '');
@@ -8354,6 +8355,30 @@ async function submitVisitEdit(){
     } else showToast('⚠️ ' + ((res && res.error) || 'Ошибка'));
   }catch(e){ showToast('❌ ' + e.message); }
   finally{ setTimeout(function(){ _visitSaveInFlight = false; }, 1200); }
+}
+
+async function renewMeetings(){
+  var name = window._visitEditName;
+  if(!name) return;
+  if(!confirm('Продлить ' + name + '?\n\nСчётчик обнулится, неиспользованные встречи перенесутся в новый пакет.')) return;
+  closeModal('visitEditModal');
+  showToast('⏳ Продлеваем...');
+  try{
+    var r = await callAction('renewMeetings', {name: name});
+    if(r && r.ok){
+      patchCache('residents', function(list){
+        return (list||[]).map(function(x){
+          return x.name === name ? Object.assign({}, x, {meetingsDone: 0, meetingsGranted: r.total}) : x;
+        });
+      });
+      renderVisits();
+      var txt = 'Новый пакет: ' + r.pack;
+      if(r.carried > 0) txt += ', перенесено ' + r.carried;
+      if(r.carried < 0) txt += ', списано ' + Math.abs(r.carried);
+      showToast('✅ ' + txt + '. Итого ' + r.total);
+      silentSync();
+    } else showToast('⚠️ ' + ((r && r.error) || 'Ошибка'));
+  }catch(e){ showToast('❌ ' + e.message); }
 }
 
 function addOneMeeting(delta){
