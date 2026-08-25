@@ -766,6 +766,17 @@
 <!-- RESIDENT PAGES -->
 <div class="page" id="page-mystatus"><div id="mystatusContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-myprofile"><div id="myprofileContent"><div class="loading"><div class="spinner"></div></div></div></div>
+<div class="page" id="page-crm">
+  <div class="section-head">
+    <div class="section-title">CRM</div>
+    <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+    </button>
+  </div>
+  <div id="crmFilters" style="display:flex;gap:7px;overflow-x:auto;padding:0 0 12px;margin:0 -16px 4px;padding-left:16px;padding-right:16px"></div>
+  <div id="crmBox"></div>
+</div>
+
 <div class="page" id="page-visits">
   <div class="section-head">
     <div class="section-title">Посещения</div>
@@ -1112,6 +1123,10 @@
     <div id="smmPublishRow" style="display:none;margin-bottom:12px">
       <button class="btn btn-primary" style="width:100%;margin:0" onclick="publishSmmNow()">📢 Опубликовать в канал BS</button>
     </div>
+    <div id="smmCarouselRow" style="display:none;margin-bottom:12px">
+      <button class="btn btn-primary" style="width:100%;margin:0" onclick="publishCarouselNow()">🧵 Опубликовать карусель в Threads</button>
+      <div style="font-size:11.5px;color:#777;margin-top:7px;line-height:1.4">Слайды соберутся, загрузятся на хостинг и уйдут в Threads одним постом.</div>
+    </div>
 
     <div style="height:8px"></div>
     <button class="btn btn-primary" style="width:100%" onclick="submitSmm()">Сохранить</button>
@@ -1162,6 +1177,30 @@
     <div class="modal-actions">
       <button class="btn btn-primary" onclick="submitVisitEdit()">Сохранить</button>
       <button class="btn btn-secondary" onclick="closeModal('visitEditModal')">Отмена</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="leadModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div class="modal-title" id="leadTitle" style="margin:0">Лид</div>
+      <div onclick="closeModal('leadModal')" style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;cursor:pointer;flex-shrink:0">✕</div>
+    </div>
+    <div id="leadInfo" style="margin-bottom:16px"></div>
+    <div class="form-group">
+      <label class="form-label">Статус</label>
+      <select class="form-select" id="leadStatus"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Комментарий</label>
+      <textarea class="form-input" id="leadComment" rows="3" placeholder="О чём договорились" style="resize:vertical;min-height:76px"></textarea>
+    </div>
+    <div style="height:10px"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="submitLead()">Сохранить</button>
+      <button class="btn btn-secondary" onclick="closeModal('leadModal')">Закрыть</button>
     </div>
   </div>
 </div>
@@ -3347,7 +3386,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202608201408";
+var APP_VERSION = "202608250154";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0].replace(/[^/]*$/, '');
@@ -3432,6 +3471,7 @@ const ADMIN_TABS = [
   {id:'todos', label:'Задачи BS'},
   {id:'restasks', label:'Задачи резидентов'},
   {id:'visits', label:'Посещения'},
+  {id:'crm', label:'CRM'},
   {id:'reports', label:'Отчёты'},
   {id:'fines', label:'Штрафы'},
   {id:'content', label:'Полезное'},
@@ -4080,6 +4120,7 @@ function renderAllPages(){
     try{renderWheelAdmin();}catch(e){console.error('wheeladmin:',e);}
     try{renderAllResTasks();}catch(e){console.error('restasks:',e);}
     try{renderVisits();}catch(e){console.error('visits:',e);}
+    try{renderCrm();}catch(e){console.error('crm:',e);}
     try{renderContentPlan();}catch(e){console.error('content:',e);}
     try{renderSmm();}catch(e){console.error('smm:',e);}
   }
@@ -4245,7 +4286,7 @@ function renderDashboard(){
           </div>
           <div>
             <div class="pl-main-lbl">Остаток</div>
-            <div class="pl-main-val" style="color:${(m.kassa!==null&&m.kassa<0)?'#e57373':'#D4B886'};font-size:17px;">${(m.kassa===null||m.kassa===undefined)?'-':((m.kassa<0?'−':'')+fmt(Math.abs(m.kassa)))}</div>
+            <div class="pl-main-val" style="color:${(m.saldo!==null&&m.saldo<0)?'#e57373':'#D4B886'};font-size:17px;">${(m.saldo===null||m.saldo===undefined)?'-':((m.saldo<0?'−':'')+fmt(Math.abs(m.saldo)))}</div>
           </div>
         </div>
         
@@ -4259,6 +4300,12 @@ function renderDashboard(){
             <div class="pl-row-val neg">${fmt(m.expenses)} ₸</div>
           </div>
         </div>
+        ${(m.kassa!==null&&m.kassa!==undefined)?`<div class="pl-row" style="margin-top:8px">
+          <div class="pl-row-item" style="flex:1">
+            <div class="pl-row-lbl">На кассе</div>
+            <div class="pl-row-val" style="color:${m.kassa<0?'#e57373':'#D4B886'};font-weight:900">${(m.kassa<0?'−':'')+fmt(Math.abs(m.kassa))} ₸</div>
+          </div>
+        </div>`:''}
         
         <div class="pl-months" id="plMonthsRow">
           ${barsHtml}
@@ -5136,6 +5183,142 @@ function copySmmText(){
   }catch(e){ prompt('Скопируйте:', full); }
 }
 
+async function publishCarouselNow(){
+  var title = document.getElementById('smmTitle').value.trim();
+  var slidesRaw = (document.getElementById('smmSlides') || {}).value || '';
+  var caption = document.getElementById('smmText').value.trim();
+  if(!slidesRaw.trim()){ showToast('⚠️ Сначала сгенерируйте слайды'); return; }
+  if(!confirm('Опубликовать карусель в Threads?')) return;
+
+  showToast('🎨 Собираем слайды...');
+
+  // Разбор слайдов: "1. Заголовок\nТекст"
+  var blocks = slidesRaw.split(/\n\s*\n/).filter(function(b){ return b.trim(); });
+  if(!blocks.length){ showToast('⚠️ Слайды не разобрались'); return; }
+  if(blocks.length > 10) blocks = blocks.slice(0, 10);
+
+  var urls = [];
+  try{
+    for(var i = 0; i < blocks.length; i++){
+      var lines = blocks[i].split('\n');
+      var head = lines[0].replace(/^\d+[.)]\s*/, '').trim();
+      var body = lines.slice(1).join(' ').trim();
+      var dataUrl = await buildSlideImage(head, body, i + 1, blocks.length);
+
+      showToast('⬆️ Загружаем ' + (i+1) + ' из ' + blocks.length);
+      var up = await fetch(WEBAPP_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
+        body: JSON.stringify({
+          bsAction: 'uploadImage',
+          image: dataUrl,
+          fileName: 'car_' + Date.now() + '_' + (i+1) + '.png'
+        })
+      });
+      var res = await up.json();
+      if(!res || !res.ok) throw new Error(res && res.error || 'Загрузка не удалась');
+      urls.push(res.url);
+    }
+
+    showToast('🧵 Публикуем в Threads...');
+    // Хостингу нужно время отдать файлы
+    await new Promise(function(r){ setTimeout(r, 4000); });
+
+    var pub = await callAction('publishCarousel', {
+      urls: JSON.stringify(urls),
+      caption: (title ? title + '\n\n' : '') + caption
+    });
+    if(pub && pub.ok){
+      showToast('✅ Карусель опубликована, слайдов ' + pub.slides);
+      closeModal('smmModal');
+      silentSync();
+    } else {
+      showToast('⚠️ ' + ((pub && pub.error) || 'Ошибка публикации'));
+    }
+  }catch(e){
+    showToast('❌ ' + e.message);
+  }
+}
+
+async function buildSlideImage(head, body, num, total){
+  // Один слайд карусели в стиле BS, размер 1080x1350
+  var W = 1080, H = 1350;
+  var canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  var ctx = canvas.getContext('2d');
+  var GOLD = '#D4B886';
+
+  var grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#141312'); grad.addColorStop(0.5, '#0a0a0a'); grad.addColorStop(1, '#000');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+
+  var glow = ctx.createRadialGradient(540, 400, 40, 540, 400, 700);
+  glow.addColorStop(0, 'rgba(212,184,134,0.13)'); glow.addColorStop(1, 'rgba(212,184,134,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+
+  // Спираль ДНК
+  ctx.save(); ctx.globalAlpha = 0.1; ctx.strokeStyle = GOLD; ctx.lineWidth = 3;
+  for(var s = 0; s < 2; s++){
+    ctx.beginPath();
+    for(var y = 0; y <= H; y += 8){
+      var x = 1000 + Math.sin((y/150) + s*Math.PI) * 50;
+      if(y === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  ctx.textAlign = 'center';
+
+  // Логотип
+  var logo = window._bsLogoImg || document.querySelector('.hero-logo-real img');
+  var top = 150;
+  if(logo && logo.complete && logo.naturalWidth){
+    try{
+      var lw = 210, lh = lw * (logo.naturalHeight / logo.naturalWidth);
+      ctx.drawImage(logo, 540 - lw/2, 80, lw, lh);
+      top = 80 + lh + 60;
+    }catch(e){}
+  }
+
+  // Номер слайда
+  ctx.fillStyle = 'rgba(255,255,255,0.28)';
+  ctx.font = '800 22px Inter, Arial, sans-serif';
+  ctx.letterSpacing = '3px';
+  ctx.fillText(num + ' / ' + total, 540, top);
+  ctx.letterSpacing = '0px';
+
+  // Заголовок
+  ctx.fillStyle = '#fff';
+  var hs = head.length > 40 ? 62 : 76;
+  ctx.font = '900 ' + hs + 'px Inter, Arial, sans-serif';
+  var hl = wrapText(ctx, head, 880, 4);
+  var hy = top + 130;
+  hl.forEach(function(l, i){ ctx.fillText(l, 540, hy + i * (hs + 14)); });
+  var after = hy + hl.length * (hs + 14);
+
+  // Текст
+  if(body){
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    var bs = body.length > 260 ? 32 : 38;
+    ctx.font = '400 ' + bs + 'px Inter, Arial, sans-serif';
+    var bl = wrapText(ctx, body, 860, 9);
+    bl.forEach(function(l, i){ ctx.fillText(l, 540, after + 70 + i * (bs + 16)); });
+  }
+
+  // Подвал
+  ctx.fillStyle = 'rgba(255,255,255,0.16)';
+  ctx.fillRect(180, H - 150, 720, 1);
+  ctx.fillStyle = GOLD;
+  ctx.font = '700 26px Inter, Arial, sans-serif';
+  ctx.fillText(num === total ? 'Разбор бизнеса за 60 минут · bxclub.kz' : 'BUSINESS SURGERY', 540, H - 95);
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.font = '400 24px Inter, Arial, sans-serif';
+  ctx.fillText('@business.surgery', 540, H - 55);
+
+  return canvas.toDataURL('image/png');
+}
+
 async function publishSmmNow(){
   if(!_smmEditRow){ showToast('⚠️ Сначала сохраните'); return; }
   if(!confirm('Опубликовать пост в канал BS прямо сейчас?')) return;
@@ -5172,6 +5355,8 @@ function setSmmFormat(f){
   });
   var sg = document.getElementById('smmSlidesGroup');
   if(sg) sg.style.display = (f === 'Карусель') ? 'block' : 'none';
+  var cr = document.getElementById('smmCarouselRow');
+  if(cr) cr.style.display = (f === 'Карусель' && _smmEditRow) ? 'block' : 'none';
   var tl = document.getElementById('smmTextLabel');
   if(tl) tl.textContent = (f === 'Карусель') ? 'Текст под публикацией' : (f === 'Reels' ? 'Сценарий Reels' : 'Текст публикации');
 }
@@ -8261,6 +8446,125 @@ function openEventCreateModal(type){
 
 
 // ══════════ ЗАДАЧИ РЕЗИДЕНТОВ (вкладка Задачи, блок снизу) ══════════
+var CRM_STATUSES = ['Новый','Взят в работу','Недозвон','Квалифицирован',
+  'Записан на диагностику','Диагностика проведена','Резидент','Платформа','Отказ','Не целевой'];
+var CRM_COLORS = {
+  'Новый':'#ffd54f','Взят в работу':'#64b5f6','Недозвон':'#e57373',
+  'Квалифицирован':'#4caf7d','Записан на диагностику':'#64b5f6',
+  'Диагностика проведена':'#ab8fd4','Резидент':'#4caf7d','Платформа':'#8bc34a',
+  'Отказ':'#777','Не целевой':'#555'
+};
+var _crmFilter = 'Все';
+
+function setCrmFilter(f){ _crmFilter = f; renderCrm(); }
+
+function renderCrm(){
+  var el = document.getElementById('crmBox');
+  var fl = document.getElementById('crmFilters');
+  if(!el) return;
+  var all = (cache.leads && cache.leads.leads) || [];
+
+  // Фильтры
+  if(fl){
+    var counts = {'Все': all.length};
+    all.forEach(function(l){ counts[l.status] = (counts[l.status]||0) + 1; });
+    var fh = '';
+    ['Все','Новый','Взят в работу','Квалифицирован','Записан на диагностику','Резидент','Отказ'].forEach(function(s){
+      var cnt = counts[s] || 0;
+      if(s !== 'Все' && !cnt) return;
+      var act = _crmFilter === s;
+      fh += '<button onclick="setCrmFilter(\'' + s + '\')" style="flex:0 0 auto;padding:8px 13px;border-radius:18px;border:1.5px solid ' +
+        (act ? '#D4B886' : 'var(--border)') + ';background:' + (act ? 'rgba(212,184,134,.13)' : 'transparent') +
+        ';color:' + (act ? '#D4B886' : '#888') + ';font-size:12.5px;font-weight:800;font-family:inherit;white-space:nowrap">' +
+        s + (cnt ? ' · ' + cnt : '') + '</button>';
+    });
+    fl.innerHTML = fh;
+  }
+
+  var list = _crmFilter === 'Все' ? all : all.filter(function(l){ return l.status === _crmFilter; });
+
+  if(!all.length){
+    el.innerHTML = '<div class="empty"><div class="em-icon">📋</div><div class="em-title">Лидов пока нет</div>' +
+      '<div class="em-text">Подключите форму на сайте или импортируйте подписчиков из меню таблицы</div></div>';
+    return;
+  }
+  if(!list.length){ el.innerHTML = '<div class="empty"><div class="em-text">В этом статусе пусто</div></div>'; return; }
+
+  var h = '';
+  list.slice(0, 60).forEach(function(l){
+    var color = CRM_COLORS[l.status] || '#888';
+    h += '<div class="card" style="padding:14px 16px;margin-bottom:8px;border-left:3px solid ' + color + ';cursor:pointer" onclick="openLead(' + l.row + ')">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">' +
+        '<div style="min-width:0;flex:1">' +
+          '<div style="font-size:15px;font-weight:700;color:#fff">' + (l.name || l.phone || 'Без имени') + '</div>' +
+          (l.phone ? '<div style="font-size:12.5px;color:#aaa;margin-top:2px">' + l.phone + '</div>' : '') +
+          '<div style="font-size:11.5px;color:#777;margin-top:3px">' + l.source + (l.niche ? ' · ' + l.niche : '') + '</div>' +
+        '</div>' +
+        '<div style="text-align:right;flex-shrink:0">' +
+          '<div style="font-size:10.5px;font-weight:800;color:' + color + ';white-space:nowrap">' + l.status + '</div>' +
+          '<div style="font-size:10.5px;color:#666;margin-top:3px">' + l.date + '</div>' +
+        '</div>' +
+      '</div>' +
+      (l.request ? '<div style="font-size:12px;color:#999;margin-top:8px;line-height:1.4">' + l.request.substring(0,110) + (l.request.length>110?'...':'') + '</div>' : '') +
+    '</div>';
+  });
+  if(list.length > 60) h += '<div style="font-size:12px;color:#666;text-align:center;padding:10px">Показаны последние 60 из ' + list.length + '</div>';
+  el.innerHTML = h;
+}
+
+function openLead(row){
+  var l = ((cache.leads && cache.leads.leads) || []).find(function(x){ return x.row === row; });
+  if(!l) return;
+  window._leadRow = row;
+  document.getElementById('leadTitle').textContent = l.name || l.phone || 'Лид';
+
+  var info = '';
+  if(l.phone) info += '<div style="margin-bottom:6px"><a href="tel:' + l.phone + '" style="color:#D4B886;font-size:16px;font-weight:700;text-decoration:none">📱 ' + l.phone + '</a></div>';
+  if(l.telegram) info += '<div style="margin-bottom:6px"><a href="https://t.me/' + l.telegram.replace('@','') + '" target="_blank" style="color:#64b5f6;font-size:14px;text-decoration:none">💬 ' + l.telegram + '</a></div>';
+  info += '<div style="font-size:12.5px;color:#888;line-height:1.6;margin-top:8px">' +
+    'Источник: ' + l.source + (l.campaign ? '<br>Кампания: ' + l.campaign : '') +
+    (l.niche ? '<br>Ниша: ' + l.niche : '') + (l.revenue ? '<br>Оборот: ' + l.revenue : '') +
+    '<br>Дата: ' + l.date + '</div>';
+  if(l.request) info += '<div style="margin-top:10px;padding:11px 13px;background:var(--card2);border-radius:9px;font-size:13px;color:#ccc;line-height:1.45">' + l.request + '</div>';
+  document.getElementById('leadInfo').innerHTML = info;
+
+  var sel = document.getElementById('leadStatus');
+  if(sel) sel.innerHTML = CRM_STATUSES.map(function(s){
+    return '<option' + (s === l.status ? ' selected' : '') + '>' + s + '</option>';
+  }).join('');
+  var cm = document.getElementById('leadComment');
+  if(cm) cm.value = l.comment || '';
+  openModal('leadModal');
+}
+
+var _leadSaveInFlight = false;
+async function submitLead(){
+  if(_leadSaveInFlight) return;
+  var row = window._leadRow;
+  if(!row) return;
+  var status = document.getElementById('leadStatus').value;
+  var comment = document.getElementById('leadComment').value.trim();
+  _leadSaveInFlight = true;
+  closeModal('leadModal');
+  try{
+    var r = await callAction('setLeadStatus', {
+      row: row, status: status, comment: comment,
+      owner: (user && user.first_name) || ''
+    });
+    if(r && r.ok){
+      patchCache('leads.leads', function(list){
+        return (list||[]).map(function(x){
+          return x.row === row ? Object.assign({}, x, {status: status, comment: comment}) : x;
+        });
+      });
+      renderCrm();
+      showToast('✅ Сохранено');
+      silentSync();
+    } else showToast('⚠️ ' + ((r && r.error) || 'Ошибка'));
+  }catch(e){ showToast('❌ ' + e.message); }
+  finally{ setTimeout(function(){ _leadSaveInFlight = false; }, 1200); }
+}
+
 function renderVisits(){
   var el = document.getElementById('visitsBox');
   if(!el) return;
