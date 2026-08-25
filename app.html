@@ -3386,7 +3386,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202608250154";
+var APP_VERSION = "202608250221";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0].replace(/[^/]*$/, '');
@@ -4275,45 +4275,32 @@ function renderDashboard(){
           </div>
         </div>
         
-        <div class="pl-card-main" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+        <div class="pl-card-main" style="display:grid;grid-template-columns:1fr 1fr;gap:14px 12px;">
           <div>
-            <div class="pl-main-lbl">Прибыль</div>
-            <div class="pl-main-val ${m.profit<0?'neg':''}" style="font-size:17px;">${m.profit>=0?'':'−'}${fmt(Math.abs(m.profit))}</div>
+            <div class="pl-main-lbl">Оборот</div>
+            <div class="pl-main-val" style="color:#fff;font-size:19px;">${fmt(m.revenue)}</div>
+          </div>
+          <div>
+            <div class="pl-main-lbl">Чистая прибыль</div>
+            <div class="pl-main-val ${m.profit<0?'neg':''}" style="font-size:19px;">${m.profit>=0?'':'−'}${fmt(Math.abs(m.profit))}</div>
           </div>
           <div>
             <div class="pl-main-lbl">Дивиденды</div>
-            <div class="pl-main-val" style="color:#fff;font-size:17px;">${fmt(m.dividends||0)}</div>
+            <div class="pl-main-val" style="color:#fff;font-size:19px;">${fmt(m.dividends||0)}</div>
           </div>
           <div>
-            <div class="pl-main-lbl">Остаток</div>
-            <div class="pl-main-val" style="color:${(m.saldo!==null&&m.saldo<0)?'#e57373':'#D4B886'};font-size:17px;">${(m.saldo===null||m.saldo===undefined)?'-':((m.saldo<0?'−':'')+fmt(Math.abs(m.saldo)))}</div>
+            <div class="pl-main-lbl">На кассе</div>
+            <div class="pl-main-val" style="color:${(m.kassa!==null&&m.kassa<0)?'#e57373':'#D4B886'};font-size:19px;">${(m.kassa===null||m.kassa===undefined)?'-':((m.kassa<0?'−':'')+fmt(Math.abs(m.kassa)))}</div>
           </div>
         </div>
-        
-        <div class="pl-row">
-          <div class="pl-row-item">
-            <div class="pl-row-lbl">Доход</div>
-            <div class="pl-row-val pos">${fmt(m.revenue)} ₸</div>
-          </div>
-          <div class="pl-row-item">
-            <div class="pl-row-lbl">Расход</div>
-            <div class="pl-row-val neg">${fmt(m.expenses)} ₸</div>
-          </div>
-        </div>
-        ${(m.kassa!==null&&m.kassa!==undefined)?`<div class="pl-row" style="margin-top:8px">
-          <div class="pl-row-item" style="flex:1">
-            <div class="pl-row-lbl">На кассе</div>
-            <div class="pl-row-val" style="color:${m.kassa<0?'#e57373':'#D4B886'};font-weight:900">${(m.kassa<0?'−':'')+fmt(Math.abs(m.kassa))} ₸</div>
-          </div>
-        </div>`:''}
-        
+
         <div class="pl-months" id="plMonthsRow">
           ${barsHtml}
         </div>
         
-        <div class="pl-year-row">
-          <div class="pl-year-lbl">Итого за год</div>
-          <div class="pl-year-val ${mp.year.profit<0?'neg':'pos'}">${mp.year.profit>=0?'+':'−'}${fmt(Math.abs(mp.year.profit))} ₸</div>
+        <div class="pl-year-row" onclick="showPage('residents')" style="cursor:pointer">
+          <div class="pl-year-lbl">Дебет</div>
+          <div class="pl-year-val" style="color:${(cache.totalDebt||0)>0?'#e57373':'#4caf7d'}">${fmt(cache.totalDebt||0)} ₸</div>
         </div>
       </div>
     `;
