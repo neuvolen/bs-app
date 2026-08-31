@@ -3386,7 +3386,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202608250221";
+var APP_VERSION = "202608291536";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0].replace(/[^/]*$/, '');
@@ -3519,7 +3519,7 @@ const FINE_TYPES = [
 ];
 
 const INCOME_SRC = ['БХ Трекинг продление','БХ Трекинг год','БХ Штраф','БХ Экспресс разбор','БХ МК/Завтрак','Прочие доходы'];
-const EXPENSE_SRC = ['Дивиденды','Комиссия+налог','Маркет.бюджет','SMM','Таргетолог','Tilda + домен','CRM','Canva','Съемки проф','Съемки доп','HH объявление','Симка тариф','Оборудование','Офис','Ассистент','Бухгалтер','Юрист','IT','Прочие расходы:'];
+const EXPENSE_SRC = ['Дивиденды','Бонус резидента','Комиссия+налог','Маркет.бюджет','SMM','Таргетолог','Tilda + домен','CRM','Canva','Съемки проф','Съемки доп','HH объявление','Симка тариф','Оборудование','Офис','Ассистент','Бухгалтер','Юрист','IT','Прочие расходы:'];
 
 
 // Глобальный обработчик кликов по карточкам резидентов
@@ -4710,20 +4710,33 @@ function markAttendanceFromDay(resName, dateStr){
 }
 
 function meetingCard(ev, idx){
-  const isOnline = ev.link && ev.link.includes('meet');
-  const cd = countdownText(ev.date, ev.time);
-  // Если res начинается с 🎬. это мероприятие, не трекинг
+  const link = String(ev.link || '');
+  const isOnline = link.indexOf('meet') >= 0 || link.indexOf('zoom') >= 0;
   const isEvent = (ev.res || '').indexOf('🎬') === 0;
-  const title = isEvent ? ev.res : ('Трекинг • ' + ev.res);
-  const subInfo = isEvent 
-    ? (ev.link || 'Мероприятие') 
-    : (ev.link ? (isOnline ? '🔗 Онлайн (Google Meet)' : '📍 ' + ev.link) : '⏳ Загрузка...');
+  const isOffline = !isEvent && link && !isOnline;
+  const cd = countdownText(ev.date, ev.time);
+  const title = isEvent ? ev.res : ev.res;
+
+  // Формат видно сразу: цветная полоса слева и метка справа
+  var accent = isEvent ? '#ab8fd4' : (isOnline ? '#64b5f6' : (isOffline ? '#e57373' : '#777'));
+  var badge = isEvent ? 'СОБЫТИЕ' : (isOnline ? 'ОНЛАЙН' : (isOffline ? 'ОФЛАЙН' : '?'));
+  var place = isEvent ? (link || 'Мероприятие')
+            : (isOnline ? 'Google Meet' : (isOffline ? link : 'Место не указано'));
+
   return `
-    <div class="meeting ${cd.urgent?'upcoming':''}" data-meetidx="${idx}" onclick="openMeetByIdx(${idx})">
+    <div class="meeting ${cd.urgent?'upcoming':''}" data-meetidx="${idx}" onclick="openMeetByIdx(${idx})"
+         style="border-left:3px solid ${accent}">
       ${cd.urgent?`<div class="meeting-countdown">${cd.text}</div>`:''}
-      <div class="meeting-title">${title}</div>
-      <div class="meeting-when">${ev.date} ${ev.time||''}</div>
-      <div class="meeting-row" ${!ev.link && !isEvent ? 'style="opacity:0.5"' : ''}>${subInfo}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+        <div style="min-width:0;flex:1">
+          <div class="meeting-title">${title}</div>
+          <div class="meeting-when">${ev.date} ${ev.time||''}</div>
+        </div>
+        <span style="flex-shrink:0;font-size:9.5px;font-weight:900;letter-spacing:0.8px;
+              color:${accent};background:${accent}1f;border:1px solid ${accent}55;
+              padding:4px 9px;border-radius:11px">${badge}</span>
+      </div>
+      <div class="meeting-row" style="margin-top:6px;${!link && !isEvent ? 'opacity:0.5' : ''}">${place}</div>
     </div>
   `;
 }
@@ -7785,12 +7798,12 @@ function initSchedModal(){
   // ПРАВИЛЬНЫЙ ПОРЯДОК: 1) дата 2) заполнить время 3) отсечь прошедшее
   selDate = new Date().toLocaleDateString('ru-RU');
   const tg2 = document.getElementById('timeGrid');
-  const times = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00'];
+  const times = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00','22:30','23:00'];
   tg2.innerHTML = times.map((t,i)=>`<button class="pick-btn ${i===0?'selected':''}" data-time="${t}" onclick="selectSchedTime(this)">${t}</button>`).join('');
   selTime = '09:00';
   // Если уже вечер и ВСЕ слоты сегодня в прошлом. автоматически выбираем ЗАВТРА
   var nowMin = new Date().getHours()*60 + new Date().getMinutes();
-  var lastSlotMin = 20*60; // 20:00
+  var lastSlotMin = 23*60; // 23:00
   if(nowMin >= lastSlotMin){
     var dateBtns = document.querySelectorAll('#dateGrid .pick-btn[data-date]');
     if(dateBtns.length > 1){
