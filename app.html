@@ -838,20 +838,7 @@
   <div id="contentPlanBox"><div class="empty">Загрузка...</div></div>
 </div>
 
-<div class="page" id="page-smm">
-  <div class="section-head">
-    <div class="section-title">SMM</div>
-    <div style="display:flex;gap:8px">
-      <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-      </button>
-      <button class="icon-btn" onclick="openSmmModal()" title="Новая публикация" style="width:36px;height:36px">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-    </div>
-  </div>
-  <div id="smmBox"><div class="empty">Загрузка...</div></div>
-</div>
+
 
 <div class="page" id="page-custdev">
   <div class="section-head">
@@ -884,19 +871,7 @@
   <div id="rulesContent"></div>
 </div>
 
-<div class="page" id="page-platform">
-  <div class="card" style="text-align:center;padding:40px 20px;margin-top:20px">
-    <div style="font-size:42px;margin-bottom:14px">🧬</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:8px">BS ПЛАТФОРМА</div>
-    <div style="font-size:12px;color:var(--g400);line-height:1.6;margin-bottom:18px">Экосистема предпринимателя в разработке. Здесь будут разборы, треккинг, материалы.</div>
-    <div class="badge b-yellow">Скоро</div>
-  </div>
-  <div class="card">
-    <div class="card-title">Установить как приложение</div>
-    <div style="font-size:12px;color:var(--g400);line-height:1.5;margin-bottom:14px">Добавьте BS на главный экран телефона как обычное приложение для быстрого доступа.</div>
-    <button class="btn btn-primary" onclick="addToHomeScreen()">📲 Установить на главный экран</button>
-  </div>
-</div>
+
 
 <!-- DETAIL VIEW для встречи / резидента -->
 <div class="detail-view" id="detailView">
@@ -3468,14 +3443,14 @@ let payMethod = 'cash';
 const ADMIN_TABS = [
   {id:'dashboard', label:'Сводка'},
   {id:'schedule', label:'Расписание'},
-  {id:'todos', label:'Задачи BS'},
+  
   {id:'restasks', label:'Задачи резидентов'},
   {id:'visits', label:'Посещения'},
   {id:'crm', label:'CRM'},
   {id:'reports', label:'Отчёты'},
   {id:'fines', label:'Штрафы'},
   {id:'content', label:'Полезное'},
-  {id:'smm', label:'SMM'},
+  
   {id:'custdev', label:'CustDev'},
   {id:'wheeladmin', label:'Колесо'},
   {id:'residents', label:'Резиденты'},
@@ -3483,7 +3458,6 @@ const ADMIN_TABS = [
   {id:'leadmagnets', label:'Материалы'},
   {id:'myprofile', label:'Профиль'},
   {id:'rules', label:'Правила клуба'},
-  {id:'platform', label:'Платформа'},
   {id:'about', label:'BS'},
   {id:'diagnostic', label:'Диагностика'}
 ];
