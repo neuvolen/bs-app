@@ -1332,6 +1332,11 @@
 
 <style>
 .attend-item{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--border);cursor:pointer}
+.attend-sep{display:flex;align-items:center;gap:10px;margin:14px 0 8px;
+ font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#8a8a8f}
+.attend-sep::before,.attend-sep::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.12)}
+.attend-tag{margin-left:auto;font-size:10px;color:#8a8a8f;background:rgba(255,255,255,.06);
+ padding:2px 8px;border-radius:9px}
 .attend-item:hover{background:#1a1a1a}
 .attend-item input{width:20px;height:20px}
 .attend-item span{font-size:15px;font-weight:500}
@@ -7234,12 +7239,24 @@ async function openAttendanceModal(date, time){
   // Заполняем checkboxes
   var box = document.getElementById('attendList');
   if(!box) return;
-  box.innerHTML = list.map(function(name,i){
-    return `<label class="attend-item">
-      <input type="checkbox" value="${name}" id="att_${i}" checked>
-      <span>${name}</span>
-    </label>`;
-  }).join('');
+  box.innerHTML = (function(){
+    var html = '', prevFmt = null;
+    list.forEach(function(item, i){
+      var name = (typeof item === 'string') ? item : item.name;
+      var fmt = (typeof item === 'string') ? 'Офлайн' : (item.format || 'Офлайн');
+      if(prevFmt !== null && fmt !== prevFmt){
+        html += '<div class="attend-sep"><span>' + fmt + '</span></div>';
+      }
+      prevFmt = fmt;
+      html += '<label class="attend-item">' +
+        '<input type="checkbox" value="' + name + '" id="att_' + i + '"' +
+        (fmt === 'Офлайн' ? ' checked' : '') + '>' +
+        '<span>' + name + '</span>' +
+        (fmt === 'Онлайн' ? '<span class="attend-tag">онлайн</span>' : '') +
+        '</label>';
+    });
+    return html;
+  })();
   closeDetail();
   openModal('attendModal');
 }
