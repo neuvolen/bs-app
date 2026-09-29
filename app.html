@@ -736,6 +736,13 @@
     color: var(--white);
   }
 
+  /* ═══ АВАТАРКИ ИЗ TELEGRAM, РОВНЫЕ СПИСКИ ═══ */
+  .list-item { align-items: center; }
+  .list-avatar, .res-avatar, .profile-avatar-lg, .status-avatar { position: relative; overflow: hidden; }
+  .av-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .team-h { font-size: 11px; font-weight: 800; letter-spacing: 1.6px; color: #8C8C8C; margin: 4px 4px 10px; }
+  #payModal .modal { display: flex; flex-direction: column; }
+  #payModal .modal-actions { margin-top: auto; }
   /* ═══ НИЖНЕЕ МЕНЮ И РАЗДЕЛЫ (дизайн v2) ═══ */
   a:has(> .btn), a:has(> button) { text-decoration: none; color: inherit; }
   .btn-primary { color: #000 !important; }
@@ -3499,8 +3506,8 @@ const ADMIN_IDS = ['453800951','1285596249'];
 
 // ── Глобальные функции для onclick на карточках ──
 window.openResByIdx = function(idx){
-  var list = window._currentResidentsList || [];
-  var r = list[idx];
+  var list = idx >= 10000 ? (window._teamResidentsList || []) : (window._currentResidentsList || []);
+  var r = list[idx >= 10000 ? idx - 10000 : idx];
   if(r && typeof openResidentProfile === 'function'){
     openResidentProfile(r);
   }
@@ -4085,6 +4092,7 @@ async function loadAllData(opts){
     var cached = localStorage.getItem('bs_cache');
     if(cached && !window._renderedFromCache){
       cache = JSON.parse(cached);
+      hideDoneMeetings(cache);
       window._renderedFromCache = true;
       renderAllPages();
     }
@@ -4126,6 +4134,7 @@ async function loadAllData(opts){
       if(!exists) serverSchedule.push(p);
     });
     serverData.schedule = serverSchedule;
+    hideDoneMeetings(serverData);
 
     // Отпечаток: если данные не изменились. не трогаем интерфейс вообще
     var newStamp = '';
@@ -4286,6 +4295,32 @@ function forceReload(key, fn){
   loadOnce(key, fn);
 }
 
+// ═══ АВАТАРКИ: фото из профиля Telegram через сервер ═══
+// Сервер берёт фото через бота. Если фото нет или профиль закрыт, остаётся буква
+function avImg(chatId, fallback){
+  var id = String(chatId||'').replace(/[^0-9]/g,'');
+  var src = id ? APP_SERVER + 'avatar/' + id : (fallback || '');
+  if(!src) return '';
+  var fb = (fallback && id) ? String(fallback).replace(/'/g,'%27') : '';
+  return '<img class="av-img" alt="" loading="lazy" src="'+v2esc(src)+'" onerror="'+(fb ? "if(!this.dataset.f){this.dataset.f=1;this.src='"+v2esc(fb)+"'}else{this.remove()}" : 'this.remove()')+'">';
+}
+function resByName(name){ return (cache.residents||[]).find(function(r){ return r.name === name; }); }
+
+// Встречи, которые уже прошли и отмечены (лог встреч), в расписании не висят
+function hideDoneMeetings(data){
+  try{
+    var done = {};
+    (data.doneMeetings||[]).forEach(function(d){ done[String(d.res||d.name||'').trim()+'|'+String(d.date||'').slice(0,10)] = 1; });
+    if(!Object.keys(done).length || !data.schedule) return;
+    var now = Date.now();
+    data.schedule = data.schedule.filter(function(ev){
+      var k = String(ev.res||'').trim()+'|'+String(ev.date||'').slice(0,10);
+      if(!done[k]) return true;
+      return parseScheduleKey(ev) > now;   // отметка сегодня прячет только уже начавшуюся встречу
+    });
+  }catch(e){ console.error('hideDone', e); }
+}
+
 // ═══ РЕЗИДЕНТ: ГЛАВНАЯ ═══
 function v2esc(t){ return String(t==null?'':t).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function v2money(n){ n = Math.round(Number(n)||0); return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
@@ -4298,7 +4333,7 @@ function renderResHome(){
     return;
   }
   var today = new Date().toLocaleDateString('ru-RU');
-  var sent = (cache.logs||[]).some(function(l){ return l.date === today && String(l.userId) === String(me.chatId); });
+  var sent = (cache.logs||[]).some(function(l){ return l.date === today && String(l.chatId||l.userId) === String(me.chatId); });
   var tasks = ((cache.resTasks && cache.resTasks.tasks) || []).filter(function(t){ return t.name === me.name; });
   var done = tasks.filter(function(t){ return t.status === 'Выполнена'; }).length;
   var now = Date.now();
@@ -5075,11 +5110,11 @@ function countdownText(date, time){
 
 function renderReports(){
   const logs = cache.logs||[];
-  const residents = (cache.residents||[]).filter(r=>!r.isFired&&!r.isExcluded&&r.name!=='Тест'&&r.name!=='Тест2');
+  const residents = (cache.residents||[]).filter(r=>!r.isFired&&!r.isExcluded&&!r.isAdmin&&!r.isTeam&&r.name!=='Тест'&&r.name!=='Тест2');
   const today = new Date().toLocaleDateString('ru-RU');
-  const submitted = new Set(logs.filter(l=>l.date===today).map(l=>l.userId));
-  const done = residents.filter(r=>submitted.has(r.chatId));
-  const missing = residents.filter(r=>!submitted.has(r.chatId));
+  const submitted = new Set(logs.filter(l=>l.date===today).map(l=>String(l.chatId||l.userId||'')));
+  const done = residents.filter(r=>submitted.has(String(r.chatId)));
+  const missing = residents.filter(r=>!submitted.has(String(r.chatId)));
 
   document.getElementById('reportsContent').innerHTML = `
     <div class="section-head">
@@ -5092,7 +5127,7 @@ function renderReports(){
         <span class="badge b-green">${done.length} / ${residents.length}</span>
       </div>
       ${done.length?done.map(r=>`<div class="list-item">
-        <div class="list-avatar" style="background:rgba(76,175,125,0.2);color:var(--green)">${r.name[0]}</div>
+        <div class="list-avatar" style="background:rgba(76,175,125,0.2);color:var(--green)">${r.name[0]}${avImg(r.chatId, r.avatar)}</div>
         <div class="list-content"><div class="list-name">${r.name}</div></div>
         <div>✅</div>
       </div>`).join(''):'<div class="list-sub" style="text-align:center;padding:12px">Пока никто</div>'}
@@ -5103,15 +5138,15 @@ function renderReports(){
         <span class="badge b-red">${missing.length}</span>
       </div>
       ${missing.map(r=>`<div class="list-item">
-        <div class="list-avatar" style="background:rgba(229,115,115,0.2);color:var(--red)">${r.name[0]}</div>
+        <div class="list-avatar" style="background:rgba(229,115,115,0.2);color:var(--red)">${r.name[0]}${avImg(r.chatId, r.avatar)}</div>
         <div class="list-content"><div class="list-name">${r.name}</div></div>
-        <div>❌</div>
+        <span class="badge b-red">нет</span>
       </div>`).join('')}
     </div>`:''}
     <div class="card">
       <div class="card-title">Последние отчёты</div>
       ${logs.slice(0,10).map(l=>`<div class="list-item">
-        <div class="list-avatar">${(l.name||'U')[0]}</div>
+        <div class="list-avatar">${(l.name||'U')[0]}${avImg(l.chatId, (resByName(l.name)||{}).avatar)}</div>
         <div class="list-content">
           <div class="list-name">${l.name||l.username}</div>
           <div class="list-sub">${(l.text||'').substring(0,80)}...</div>
@@ -6065,23 +6100,29 @@ async function banSubscriberFromChannel(chatId, name){
 
 function renderResidents(){
   allResidents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
+  var team = allResidents.filter(function(r){ return r.isAdmin || r.isTeam; });
+  var club = allResidents.filter(function(r){ return !r.isAdmin && !r.isTeam; });
   const el = document.getElementById('residentsContent');
   el.innerHTML = `
-    <div class="section-head">
-      <div class="section-title">Резиденты <span style="font-size:13px;color:var(--g400);font-family:'Manrope';font-weight:400">(${allResidents.length})</span></div>
+    ${team.length?`<div class="team-h">КОМАНДА КЛУБА</div><div id="teamList">${residentsHTML(team, 'team')}</div>`:''}
+    <div class="section-head" style="margin-top:${team.length?'18px':'0'}">
+      <div class="section-title">Резиденты <span style="font-size:13px;color:var(--g400);font-family:'Manrope';font-weight:400">(${club.length})</span></div>
     </div>
     <input type="text" class="form-input" placeholder="🔍 Поиск..." style="margin-bottom:12px" oninput="filterRes(this.value)">
-    <div id="resList">${residentsHTML(allResidents)}</div>
+    <div id="resList">${residentsHTML(club)}</div>
   `;
 }
 
-function residentsHTML(list){
+function residentsHTML(list, kind){
   if(!list.length) return '<div class="empty"><div class="em-text">Не найдено</div></div>';
-  window._currentResidentsList = list;
+  // Команда и резиденты: общий список для открытия карточки, индексы не пересекаются
+  var base = 0;
+  if(kind === 'team'){ window._teamResidentsList = list; base = 10000; }
+  else window._currentResidentsList = list;
   return list.map((r,idx)=>`
-    <div class="res-card${r.isAdmin?' is-admin':''}" data-residx="${idx}" onclick="openResByIdx(${idx})">
+    <div class="res-card${r.isAdmin?' is-admin':''}" data-residx="${idx+base}" onclick="openResByIdx(${idx+base})">
       <div class="res-head">
-        <div class="res-avatar" ${r.avatar?`style="background-image:url('${r.avatar}')"`:''}>${r.avatar?'':r.name[0]}</div>
+        <div class="res-avatar">${r.name[0]}${avImg(r.chatId, r.avatar)}</div>
         <div class="res-info">
           <div class="res-name">${r.name}${r.isAdmin?' <span class="admin-badge">SURGEON</span>':''}</div>
           <div class="res-niche">${r.niche||r.format||'Резидент BS'}</div>
@@ -6102,9 +6143,9 @@ function openResidentProfile(r){
   document.getElementById('detailTitle').textContent = r.name;
   document.getElementById('detailContent').innerHTML = `
     <div class="profile-hero">
-      <div class="profile-avatar-lg" ${r.avatar?`style="background-image:url('${r.avatar}')"`:''}>${r.avatar?'':r.name[0]}</div>
+      <div class="profile-avatar-lg">${r.name[0]}${avImg(r.chatId, r.avatar)}</div>
       <div class="profile-name-lg">${r.name}${r.isAdmin?' <span class="admin-badge">SURGEON</span>':''}</div>
-      <div class="profile-niche">${r.niche||'Резидент Business Surgery'}</div>
+      <div class="profile-niche">${r.niche||((r.isAdmin||r.isTeam)?'Команда Business Surgery':'Резидент Business Surgery')}</div>
     </div>
     ${r.bio?`<div class="card">
       <div class="card-title">О себе</div>
@@ -6250,7 +6291,8 @@ function loadResidentWheel(name){
 }
 
 function filterRes(q){
-  const f = q ? allResidents.filter(r=>(r.name+(r.niche||'')+(r.bio||'')).toLowerCase().includes(q.toLowerCase())) : allResidents;
+  const club = allResidents.filter(r=>!r.isAdmin&&!r.isTeam);
+  const f = q ? club.filter(r=>(r.name+(r.niche||'')+(r.bio||'')).toLowerCase().includes(q.toLowerCase())) : club;
   document.getElementById('resList').innerHTML = residentsHTML(f);
 }
 
@@ -7447,7 +7489,7 @@ function renderMyStatus(){
   el.innerHTML = `
     <div class="status-hero">
       <div class="status-hero-top">
-        <div class="status-avatar" style="${(me.avatar||user?.photo_url)?`background-image:url('${me.avatar||user.photo_url}');background-size:cover;background-position:center`:''}">${(me.avatar||user?.photo_url)?'':me.name[0]}</div>
+        <div class="status-avatar">${me.name[0]}${avImg(me.chatId, me.avatar||user?.photo_url)}</div>
         <div style="flex:1;min-width:0">
           <div class="status-name">${me.name.split(' ')[0]}</div>
           <div class="status-sub">${stazh} в клубе${startDate?' · с '+startDate:''}</div>
@@ -8093,7 +8135,12 @@ async function submitFine(){
 
 function initSchedModal(){
   const residents = (cache.residents||[]).filter(r=>!r.isFired&&!r.isAdmin&&!r.isTeam&&r.name!=='Тест'&&r.name!=='Тест2');
-  document.getElementById('schedResident').innerHTML = residents.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
+  var onl = residents.filter(function(r){ return String(r.format||'') === 'Онлайн'; });
+  var offl = residents.filter(function(r){ return String(r.format||'') !== 'Онлайн'; });
+  var opt = function(r){ return `<option value="${r.name}">${r.name}</option>`; };
+  document.getElementById('schedResident').innerHTML =
+    (onl.length ? '<optgroup label="Онлайн · '+onl.length+'">' + onl.map(opt).join('') + '</optgroup>' : '') +
+    (offl.length ? '<optgroup label="Офлайн · '+offl.length+'">' + offl.map(opt).join('') + '</optgroup>' : '');
   renderDateGrid(10);
   // ПРАВИЛЬНЫЙ ПОРЯДОК: 1) дата 2) заполнить время 3) отсечь прошедшее
   selDate = new Date().toLocaleDateString('ru-RU');
@@ -8345,6 +8392,17 @@ function initPayModal(){
   var residents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
   document.getElementById('payResident').innerHTML = residents.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
   updatePayResidentVisibility();
+  lockPayHeight(true);
+}
+// Шторка держит самую большую высоту: переключение приход/расход её не двигает
+function lockPayHeight(reset){
+  var m = document.querySelector('#payModal .modal');
+  if(!m) return;
+  if(reset){ m._maxH = 0; m.style.minHeight = ''; }
+  requestAnimationFrame(function(){
+    var h = m.offsetHeight;
+    if(h > (m._maxH||0)){ m._maxH = h; m.style.minHeight = h + 'px'; }
+  });
 }
 
 function updatePayResidentVisibility(){
@@ -8365,6 +8423,7 @@ function setPayType(type){
   if(mg) mg.style.display = (type === 'expense') ? 'none' : '';
   if(type === 'expense') setPayMethod('cash');
   if(typeof updatePayResidentVisibility==='function')updatePayResidentVisibility();
+  lockPayHeight(false);
 }
 
 function setPayMethod(method){
