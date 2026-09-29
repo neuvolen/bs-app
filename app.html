@@ -3408,6 +3408,39 @@ document.addEventListener('visibilitychange', function(){
 </script>
 <script>
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwBbU7pJMyIptJoOtJ5hctU2rYbh3AioA-ScM14Y3dwuIF0UFNYrp7HiWqhOiQX74NpPA/exec';
+// Сервер платформы: проверяет по подписи Telegram, кто открыл приложение, и держит
+// готовые данные, чтобы экран открывался сразу. Если сервер недоступен, приложение
+// идёт в таблицу напрямую, как раньше
+const APP_SERVER = 'https://bs-platform-production.up.railway.app/api/v1/app/';
+function bsInitData(){
+  try{ return (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData) || ''; }catch(e){ return ''; }
+}
+async function appGet(params){
+  var init = bsInitData();
+  var qs = new URLSearchParams(params || {});
+  if(init){
+    try{
+      var sq = new URLSearchParams(params || {}); sq.set('_tg', init);
+      var r = await fetch(APP_SERVER + 'call?' + sq.toString());
+      if(r.ok) return await r.json();
+      if(r.status === 401 || r.status === 400) console.warn('app server refused', r.status);
+    }catch(e){ console.warn('app server unreachable', e); }
+  }
+  var r2 = await fetch(WEBAPP_URL + '?' + qs.toString());
+  return await r2.json();
+}
+async function appPost(obj){
+  var init = bsInitData();
+  if(init){
+    try{
+      var r = await fetch(APP_SERVER + 'post', {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify(Object.assign({}, obj, {_tg: init}))});
+      if(r.ok) return await r.json();
+    }catch(e){ console.warn('app server unreachable', e); }
+  }
+  var r2 = await fetch(WEBAPP_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(obj)});
+  return await r2.json();
+}
 const ADMIN_IDS = ['453800951','1285596249'];
 
 // ── Глобальные функции для onclick на карточках ──
@@ -3977,8 +4010,10 @@ async function loadAllData(opts){
   if(dot) dot.style.opacity = '0.9';
   try {
     var freshParam = opts.fresh ? '&fresh=1' : '';
-    const r = await fetch(WEBAPP_URL+'?action=getBotCache' + (user && user.id ? '&chatId='+user.id : '') + freshParam);
-    var serverData = await r.json();
+    var bundleParams = {action: 'getBotCache'};
+    if(user && user.id) bundleParams.chatId = user.id;
+    if(opts.fresh) bundleParams.fresh = '1';
+    var serverData = await appGet(bundleParams);
     // Сохраняем локальные изменения встреч
     var now = Date.now();
     var localPending = window._pendingMeetings || [];
@@ -5185,16 +5220,11 @@ async function publishCarouselNow(){
       var dataUrl = await buildSlideImage(head, body, i + 1, blocks.length);
 
       showToast('⬆️ Загружаем ' + (i+1) + ' из ' + blocks.length);
-      var up = await fetch(WEBAPP_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'text/plain;charset=utf-8'},
-        body: JSON.stringify({
-          bsAction: 'uploadImage',
-          image: dataUrl,
-          fileName: 'car_' + Date.now() + '_' + (i+1) + '.png'
-        })
+      var res = await appPost({
+        bsAction: 'uploadImage',
+        image: dataUrl,
+        fileName: 'car_' + Date.now() + '_' + (i+1) + '.png'
       });
-      var res = await up.json();
       if(!res || !res.ok) throw new Error(res && res.error || 'Загрузка не удалась');
       urls.push(res.url);
     }
@@ -7542,15 +7572,11 @@ async function generateStory(template){
   // Отправка через бота в фоне
   if(user && user.id){
     try{
-      fetch(WEBAPP_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'text/plain;charset=utf-8'},
-        body: JSON.stringify({
-          bsAction: 'sendImage',
-          chatId: String(user.id),
-          image: dataUrl,
-          caption: 'Ваша картинка для Stories. Сохраните и выложите в Instagram или Telegram.'
-        })
+      appPost({
+        bsAction: 'sendImage',
+        chatId: String(user.id),
+        image: dataUrl,
+        caption: 'Ваша картинка для Stories. Сохраните и выложите в Instagram или Telegram.'
       }).then(function(){
         showToast('✅ Картинка отправлена в чат с ботом');
       }).catch(function(){});
@@ -8213,14 +8239,14 @@ async function callAction(action, params){
     try {
       // ВСЕГДА добавляем chatId и имя пользователя если известны
       var paramsWithUser = Object.assign({}, params || {});
+      // Для действий админа над подписчиком chatId — это тот, над кем действуют
+      var keepTarget = ['banFromChannel','convertToResident','updateSubscriber'].indexOf(action) >= 0 && paramsWithUser.chatId;
       if(user && user.id){
-        paramsWithUser.chatId = String(user.id);
+        if(!keepTarget) paramsWithUser.chatId = String(user.id);
         if(user.first_name) paramsWithUser.userName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
         if(user.username) paramsWithUser.userTg = user.username;
       }
-      const url = WEBAPP_URL+'?action='+action+'&'+new URLSearchParams(paramsWithUser);
-      const r = await fetch(url);
-      return await r.json();
+      return await appGet(Object.assign({action: action}, paramsWithUser));
     } catch(e){
       console.error('callAction error:', e);
       return {error: String(e)};
