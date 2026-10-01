@@ -3820,13 +3820,53 @@
   .v10-st { font-size: 12px; color: #8C8C8C; margin: 0 4px 10px; }
   .v10-st.red { color: #FF6B6F; }
   .v10-bar { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
-  .v10-vseg { grid-template-columns: 1fr 1fr; flex: 0 0 150px; }
-  .v10-vseg button { height: 32px; }
+  .v10-vseg { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .v10-vseg button { height: 34px; }
   .v10-nav { display: flex; gap: 6px; }
   .v10-nav button { height: 42px; min-width: 42px; border-radius: 12px; border: 1px solid #262626; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
   .v10-nav button.t { padding: 0 12px; }
-  .v10-sum { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 14px 4px 10px; }
-  .v10-sum b { font-size: 16px; font-weight: 800; }
+  .v10-sum { display: flex; flex-direction: column; gap: 2px; min-width: 0; margin: 0 4px; }
+  .v10-sum b { font-size: 16px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .v10-bar { margin: 12px 0 10px; }
+  .v10-tomonth { display: inline-block; margin: 0 4px 10px; font-size: 13px; font-weight: 800; color: #FFFFFF; cursor: pointer; }
+  .v10-grid.ten { padding: 8px 4px; gap: 2px; }
+  .v10-grid.ten .v10-hd span { font-size: 8px; letter-spacing: 0.3px; }
+  .v10-grid.ten .v10-hd b { width: 20px; height: 20px; border-radius: 10px; font-size: 11px; }
+  .v10-grid.ten .v10-c { border-radius: 4px; }
+  .v10-month { padding: 10px 6px; margin-top: 4px; }
+  .v10-mw, .v10-mg { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+  .v10-mw span { text-align: center; font-size: 9px; font-weight: 800; letter-spacing: 0.8px; color: #8C8C8C; padding-bottom: 6px; }
+  .v10-md { min-height: 66px; border-radius: 8px; background: #121212; border: 1px solid #1C1C1C; padding: 4px 4px 3px; display: flex; flex-direction: column; gap: 3px; cursor: pointer; -webkit-tap-highlight-color: transparent; min-width: 0; }
+  .v10-md.empty { background: transparent; border-color: transparent; cursor: default; }
+  .v10-md.past { opacity: 0.6; }
+  .v10-md.today { border-color: #FFFFFF; }
+  .v10-md .t { display: flex; justify-content: space-between; align-items: center; }
+  .v10-md .t b { font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .v10-md.today .t b { background: #FFFFFF; color: #000; border-radius: 9px; min-width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; }
+  .v10-md .t em { font-style: normal; font-size: 9px; font-weight: 800; min-width: 13px; height: 12px; line-height: 12px; text-align: center; border-radius: 6px; padding: 0 3px; background: #FFFFFF; color: #000; }
+  .v10-md .t em.r { background: #FF6B6F; }
+  .v10-md .t em.g { background: #2A2A2A; color: #9A9A9A; }
+  .v10-md .bars { display: flex; flex-direction: column; gap: 2px; }
+  .v10-md .bars i { display: block; height: 4px; border-radius: 2px; min-width: 6px; }
+  .v10-md .bars i.bs { background: #000; box-shadow: inset 0 0 0 1px #FFFFFF; height: 5px; }
+  .v10-md .h { margin-top: auto; font-size: 9px; color: #8C8C8C; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .v11-rules { margin-top: 14px; background: #FFFFFF; color: #000; border-radius: 18px; padding: 18px 18px 20px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v11-rules .k { font-size: 10px; font-weight: 800; letter-spacing: 2px; color: #555; }
+  .v11-rules .t { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-top: 6px; }
+  .v11-rules .s { font-size: 13px; color: #333; line-height: 1.45; margin-top: 6px; }
+  .v11-lib { margin-top: 12px; background: #FFFFFF; color: #000; border-radius: 20px; padding: 18px 16px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v11-lib .k { font-size: 10px; font-weight: 800; letter-spacing: 2px; color: #555; }
+  .v11-lib .t { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-top: 4px; }
+  .v11-lib .s { font-size: 13px; color: #333; margin-top: 4px; }
+  .v11-lib .n { font-size: 34px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+  .v11-lib button { width: 100%; height: 48px; margin-top: 14px; border: none; border-radius: 12px; background: #000; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer; }
+  .v11-covers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+  .v11-cover { aspect-ratio: 3 / 4; background: #000; color: #FFFFFF; border-radius: 4px 10px 10px 4px; padding: 10px 9px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; box-shadow: inset 4px 0 0 #2A2A2A; min-width: 0; }
+  .v11-cover .k { display: flex; align-items: center; gap: 4px; font-size: 8px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #9A9A9A; }
+  .v11-cover .t { font-size: 12px; font-weight: 800; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+  .v11-cover .o { margin-top: auto; font-size: 9px; color: #9A9A9A; font-weight: 700; }
+  .v11-ext { color: #FFFFFF !important; font-size: 15px; font-weight: 800; width: 18px; justify-content: center; }
+  .v10-legend i.sq { width: 12px; height: 12px; border-radius: 3px; border: 1px solid #3A3A3A; }
   .v10-sum span { font-size: 12px; color: #9A9A9A; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .v10-types { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
   .v10-types button { min-width: 0; height: 52px; padding: 0 2px; border-radius: 12px; border: 1px solid #262626; background: transparent; color: #BDBDBD; font-family: inherit; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
@@ -4026,13 +4066,13 @@ const NAV = {
     {id:'meet', label:'Встречи',   icon:'cal',  pages:[{id:'schedule', label:'Расписание'}]},
     {id:'plus', plus:true},
     {id:'res',  label:'Резиденты', icon:'club', pages:[{id:'residents', label:'Резиденты'},{id:'reports', label:'Отчёты'},{id:'visits', label:'Посещения'},{id:'fines', label:'Штрафы'},{id:'restasks', label:'Задачи'}]},
-    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила'},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'}]}
+    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true}]}
   ],
   resident: [
     {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'}]},
     {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Мой разбор'},{id:'wheel', label:'Колесо'},{id:'diagnostic', label:'Диагностика'}]},
     {id:'tasks', label:'Задачи',  icon:'tasks', pages:[{id:'mytasks', label:'Задачи'},{id:'mymeetings', label:'Встречи'}]},
-    {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила'}]},
+    {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила', hidden:true}]},
     {id:'me',    label:'Профиль', icon:'me',    pages:[{id:'mystatus', label:'Статус'},{id:'myprofile', label:'Данные'}]}
   ],
   lead: [
@@ -4233,7 +4273,7 @@ function init(){
                 var newPage = null;
                 if(window._bsResolveDeep) newPage = window._bsResolveDeep(viewAs);
                 if(newPage){
-                  showPage(newPage);
+                  v11openDeep(newPage);
                   return;
                 }
                 // Роль сменилась: открываем стартовую страницу новой роли
@@ -4322,6 +4362,8 @@ function init(){
       'tasks':        {admin:'todos',       resident:'about',       lead:'about'},
       // BS главная
       'about':        {admin:'about',       resident:'about',       lead:'about'},
+      // Правила живут внутри «О проекте»: открываем О проекте, затем Правила
+      'rules':        {admin:'rules',       resident:'rules',       lead:'about'},
       'main':         {admin:'about',       resident:'about',       lead:'about'},
       // Платформа
       'platform':     {admin:'about',       resident:'myboard',     lead:'about'},
@@ -4348,7 +4390,7 @@ function init(){
     
     if (resolvedPage) {
       console.log('Deep-link', initialPage, '→', resolvedPage, '(role:', effectiveRole, ')');
-      showPage(resolvedPage);
+      v11openDeep(resolvedPage);
     } else {
       // Стартовая по умолчанию для каждой роли
       if (effectiveRole === 'admin') {
@@ -4443,7 +4485,7 @@ function renderTabs(){
   var noHead = hideChips && !isRealAdmin;
   if(hdr) hdr.classList.toggle('v3-empty', noHead);
   document.body.classList.toggle('v3-nohead', noHead);
-  el.innerHTML = pages.map(function(t){
+  el.innerHTML = pages.filter(function(t){ return !t.hidden || t.id === actId; }).map(function(t){
     var lockedCls = isTabLocked(t) ? ' locked' : '';
     return '<div class="tab'+(t.id===actId?' active':'')+lockedCls+'" data-page="'+t.id+'" onclick="showPage(\''+t.id+'\')">'+t.label+'</div>';
   }).join('');
@@ -4588,6 +4630,11 @@ function showPage(id, opts){
   v9scrollTop();
   setTimeout(v9scrollTop, 0);
   v9updateBack();
+}
+// Глубокая ссылка: Правила открываются поверх «О проекте», чтобы «Назад» вёл туда
+function v11openDeep(id){
+  if(id === 'rules'){ showPage('about'); window._navStack.length = 0; showPage('rules'); return; }
+  showPage(id);
 }
 function v9detailOpen(){ var d = document.getElementById('detailView'); return !!(d && d.classList.contains('show')); }
 function v9updateBack(){
@@ -4768,7 +4815,7 @@ async function loadAllData(opts){
         renderTabs();
         // Роль сменилась: глубокая ссылка, если была, иначе стартовая страница роли
         var dl = window._bsResolveDeep ? window._bsResolveDeep(viewAs) : null;
-        showPage(dl || (viewAs === 'lead' ? 'diagnostic' : 'home'));
+        v11openDeep(dl || (viewAs === 'lead' ? 'diagnostic' : 'home'));
       }
     }
     
@@ -4956,19 +5003,90 @@ function v3isEvent(ev){ return String((ev && ev.res) || '').indexOf('🎬') === 
 function v3isOnline(ev){ var l = String((ev && ev.link) || ''); return l.indexOf('meet') >= 0 || l.indexOf('zoom') >= 0; }
 // Чат в Telegram: по нику, если он есть, иначе по chatId
 function v3chatUrl(r){
-  if(!r) return '';
-  var p = v3prof(r) || {};
-  var u = String(r.username || r.telegram || r.tg || p.username || '').replace('@', '').trim();
-  if(u && /^[A-Za-z0-9_]{4,}$/.test(u)) return 'https://t.me/' + u;
-  var id = String(r.chatId || '').replace(/[^0-9]/g, '');
+  var u = v11tgUser(r);
+  if(u) return 'https://t.me/' + u;
+  var id = String((r && r.chatId) || '').replace(/[^0-9]/g, '');
   return id ? 'tg://user?id=' + id : '';
 }
-function v3write(r){
+// ═══ v11: «НАПИСАТЬ». Есть ник: открываем чат в Telegram. Нет ника: сообщение через бота BS ═══
+// tg://user?id=… внутри Telegram у людей без ника не открывается, поэтому пишем через сервер
+var V11_TEAM_IDS = {'453800951': 'Рустам', '1285596249': 'Береке'};
+function v11tgUser(r){
+  if(!r) return '';
+  var p = v3prof(r) || {};
+  var id = String(r.chatId || '');
+  var s = id ? ((window._subscribers || []).filter(function(x){ return String(x.chatId) === id; })[0] || {}) : {};
+  var c = [r.username, r.userTg, r.tgUsername, r.tg, r.telegram, p.username, p.userTg, p.tg, p.telegram, s.username];
+  for(var i = 0; i < c.length; i++){
+    var u = String(c[i] || '').trim().replace(/^https?:\/\/(www\.)?t(elegram)?\.me\//i, '').replace(/^@/, '').split(/[/?#\s]/)[0];
+    if(/^[A-Za-z][A-Za-z0-9_]{3,31}$/.test(u)) return u;
+  }
+  return '';
+}
+function v11chatId(r){
+  if(!r) return '';
+  var id = String(r.chatId || '').replace(/[^0-9]/g, '');
+  if(!id && r.name){ V4_TEAM.forEach(function(t){ if(t.re.test(String(r.name))) id = t.id; }); }
+  return id;
+}
+// Админ пишет любому; резидент и лид только команде клуба
+function v11canCompose(r){
+  var id = v11chatId(r);
+  if(!id) return false;
+  return navRole() === 'admin' || !!V11_TEAM_IDS[id];
+}
+function v11canWrite(r){ return !!(v11tgUser(r) || v11canCompose(r)); }
+function v11write(r){
   if(typeof r === 'string') r = resByName(r) || {name: r};
-  var url = v3chatUrl(r);
-  if(!url){ showToast('Нет контакта в Telegram'); return; }
-  try{ if(url.indexOf('https://t.me/') === 0 && tg && tg.openTelegramLink){ tg.openTelegramLink(url); return; } }catch(e){}
-  try{ window.location.href = url; }catch(e){}
+  if(!r) return;
+  var u = v11tgUser(r);
+  if(u){
+    var url = 'https://t.me/' + u;
+    try{ if(tg && tg.openTelegramLink){ tg.openTelegramLink(url); return; } }catch(e){}
+    window.open(url, '_blank');
+    return;
+  }
+  if(!v11canCompose(r)){ showToast(v11chatId(r) ? 'Написать можно только команде клуба' : 'Нет контакта в Telegram'); return; }
+  v11compose(r);
+}
+function v11compose(r){
+  var id = v11chatId(r);
+  var old = document.getElementById('v11msg'); if(old) old.remove();
+  var m = document.createElement('div');
+  m.className = 'add-menu-overlay show';
+  m.id = 'v11msg';
+  m.onclick = function(e){ if(e.target === m) m.remove(); };
+  var who = navRole() === 'admin' ? (/берек/i.test(String((user && user.first_name) || '')) || String((user && user.id) || '') === '1285596249' ? 'Береке' : 'Рустам') : '';
+  m.innerHTML = '<div class="add-menu">' +
+    '<div class="v3-row-sb" style="margin-bottom:4px"><div class="add-menu-title" style="margin:0;text-align:left">Сообщение ' + v2esc(String(r.name || V11_TEAM_IDS[id] || '').trim()) + '</div>' +
+    '<button class="v3-sheet-x" data-x="1" aria-label="Закрыть">' + navIcon('x', 16, 2) + '</button></div>' +
+    '<div class="v3-cap" style="margin:0 0 12px;line-height:1.45">' + (who ? 'Бот BS доставит в личные сообщения с подписью «Сообщение от ' + who + '»' : 'Бот BS доставит в личные сообщения от вашего имени') + '</div>' +
+    '<textarea id="v11text" class="field-input" rows="4" maxlength="2000" placeholder="Текст сообщения" style="width:100%;resize:none;min-height:110px"></textarea>' +
+    '<button class="v3-primary" data-s="1" style="margin-top:12px">Отправить</button>' +
+  '</div>';
+  document.body.appendChild(m);
+  m.querySelector('[data-x]').onclick = function(){ m.remove(); };
+  var btn = m.querySelector('[data-s]');
+  btn.onclick = function(){
+    var text = String(m.querySelector('#v11text').value || '').trim();
+    if(!text){ showToast('Напишите текст сообщения'); return; }
+    var init = bsInitData();
+    if(!init){ showToast('Откройте приложение из Telegram'); return; }
+    btn.disabled = true; btn.textContent = 'Отправляем...';
+    fetch(APP_SERVER + 'message?' + new URLSearchParams({_tg: init}).toString(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({chatId: id, text: text})})
+      .then(function(res){ return res.json().catch(function(){ return {error: 'http ' + res.status}; }); })
+      .then(function(j){
+        if(j && j.ok){ m.remove(); showToast('Отправлено'); try{ tg.HapticFeedback.notificationOccurred('success'); }catch(x){} return; }
+        throw new Error((j && j.error) || 'ошибка');
+      })
+      .catch(function(e){ btn.disabled = false; btn.textContent = 'Отправить'; showToast('Не отправлено: ' + String((e && e.message) || 'нет связи')); });
+  };
+  setTimeout(function(){ try{ m.querySelector('#v11text').focus(); }catch(e){} }, 80);
+}
+function v3write(r){ v11write(r); }
+function v11writeSub(id){
+  var s = (window._subscribers || []).filter(function(x){ return String(x.chatId) === String(id); })[0] || {chatId: id};
+  v11write({name: s.name || 'подписчику', chatId: s.chatId, username: s.username});
 }
 function v3row(icon, title, sub, onclick, right){
   return '<div class="v2-row" onclick="' + onclick + '">' + (icon ? '<div class="ic">' + v3icon(icon, 20) + '</div>' : '') +
@@ -5085,6 +5203,8 @@ function renderResHome(){
            '<div class="s">Отчёт пишется в группе клуба, в теме «ОТЧЁТЫ». Без отчёта в 14:30 следующего дня приходит штраф 10 000 ₸.</div>' +
            '<button onclick="v3sendReport()">Сдать отчёт</button></div>';
   }
+  // Библиотека BS: крупно, сразу после отчёта
+  h += v11homeLib();
   h += '<div class="v2-stats">' +
          '<div class="v2-stat" onclick="showPage(\'mytasks\')"><div class="l">Задачи</div><div class="v num">' + done + '<small>/' + tasks.length + '</small></div></div>' +
          '<div class="v2-stat" onclick="showPage(\'mystatus\')"><div class="l">Отчёты</div><div class="v num">' + v3reports30(me) + '<small>/30</small></div></div>' +
@@ -5112,8 +5232,6 @@ function renderResHome(){
     var upd = b.updated ? new Date(b.updated).toLocaleDateString('ru-RU', {day:'numeric', month:'short'}) : '';
     h += '<div class="v2-h">Мой разбор</div><div class="v2-card">' + '<div class="v2-row" onclick="showPage(\'myboard\')"><div class="ic">' + navIcon('board',20) + '</div><div class="m"><b>Обновлён разбор · цикл ' + b.cycle + '</b><span>' + (b.diagnoses.length ? v2esc(b.diagnoses.map(function(d){return d.title;}).slice(0,2).join(', ')) : 'Доска с трекером') + (upd ? ' · ' + upd : '') + '</span></div><div class="ic">' + navIcon('chev',16) + '</div></div>' + '</div>';
   }
-  // Вместо «Прислали вам»: база знаний платформы
-  h += v9homeLibrary();
   el.innerHTML = h;
   if(!window._myBoard && !window._v3BoardTried){
     window._v3BoardTried = true;
@@ -5213,6 +5331,42 @@ function v9homeLibrary(){
   }
   window._libHome = items.slice(0, 4);
   return h + '<div class="v9-lib-grid">' + window._libHome.map(v9libTile).join('') + '</div>';
+}
+// Карточка «Библиотека BS» на главной резидента: белая, счётчики и три обложки последних книг
+function v11libDate(x){ var t = Date.parse(x.updated || x.updatedAt || x.created || x.createdAt || x.date || ''); return isFinite(t) ? t : 0; }
+function v11homeLib(){
+  var L = window._lib;
+  if(!L && !window._v9LibTried){
+    window._v9LibTried = true;
+    loadLibrary(false).then(function(){ if(v9activeId() === 'home') renderResHome(); });
+  }
+  var items = (L && L.items) || [];
+  var cnt = {}; items.forEach(function(x){ var k = v9libKind(x); cnt[k] = (cnt[k] || 0) + 1; });
+  var parts = [];
+  if(cnt.book) parts.push(cnt.book + ' ' + v3plural(cnt.book, 'книга', 'книги', 'книг'));
+  if(cnt.tool) parts.push(cnt.tool + ' ' + v3plural(cnt.tool, 'инструмент', 'инструмента', 'инструментов'));
+  var rest = items.length - (cnt.book || 0) - (cnt.tool || 0);
+  if(rest > 0) parts.push(rest + ' ' + v3plural(rest, 'материал', 'материала', 'материалов'));
+  var sub = !L ? 'Загружаем...' : (items.length ? parts.join(' · ') : (L.error ? 'Сейчас недоступна, откройте позже' : 'Скоро появятся книги и инструменты'));
+  // Последние книги: по дате, если она есть, иначе в порядке платформы
+  var books = items.map(function(x, i){ return {x: x, i: i}; }).filter(function(o){ return v9libKind(o.x) === 'book'; });
+  if(books.some(function(o){ return v11libDate(o.x); })) books.sort(function(a, b){ return v11libDate(b.x) - v11libDate(a.x); });
+  var pick = books.map(function(o){ return o.x; });
+  if(pick.length < 3) pick = pick.concat(items.filter(function(x){ return v9libKind(x) !== 'book'; })).slice(0, 3);
+  pick = pick.slice(0, 3);
+  window._libHome = pick;
+  var tiles = '';
+  if(pick.length){
+    tiles = '<div class="v11-covers">' + pick.map(function(x, i){
+      var k = v9libKind(x);
+      return '<div class="v11-cover" onclick="event.stopPropagation();openLibItem(window._libHome[' + i + '])"><div class="k">' + v9libIcon(k, 12) + V9_LIB_ONE[k] + '</div><div class="t">' + v2esc(x.title) + '</div>' +
+        (x.organ ? '<div class="o">' + v2esc(v9organLabel(x.organ)) + '</div>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+  return '<div class="v11-lib" onclick="showPage(\'library\')"><div class="v3-row-sb" style="align-items:flex-start;gap:12px"><div style="min-width:0">' +
+    '<div class="k">БАЗА ЗНАНИЙ КЛУБА</div><div class="t">Библиотека BS</div><div class="s">' + v2esc(sub) + '</div></div>' +
+    (items.length ? '<div class="n num">' + items.length + '</div>' : '') + '</div>' + tiles +
+    '<button onclick="event.stopPropagation();showPage(\'library\')">Открыть</button></div>';
 }
 function v9libFiltered(){
   var items = (window._lib && window._lib.items) || [];
@@ -5689,6 +5843,7 @@ function v10calLoad(force){
       S.ops.forEach(function(op){ v10apply(v, op); });
       S.value = v; S.version = Number(j.version) || 0; S.error = null;
       v10calStore();
+      (S.pv || []).forEach(function(op){ v10apply(S.value, op); });
       if(S.ops.length && !v10preview()) v10calSave();
     })
     .catch(function(e){ S.error = String((e && e.message) || 'network'); })
@@ -5729,7 +5884,7 @@ async function v10calSave(){
 function v10calLater(){ var S = window._v10cal; if(!S) return; clearTimeout(S.timer); S.timer = setTimeout(v10calSave, 800); }
 function v10calStatusText(){
   var S = window._v10cal;
-  if(v10preview()) return 'Режим просмотра: изменения не сохраняются';
+  if(v10preview()) return 'Режим просмотра: правки видны только здесь, на платформу не уходят';
   if(!S || (!S.loadedAt && S.loading)) return 'Загружаем с платформы...';
   if(S.saving || (S.ops.length && !S.error)) return 'Сохраняем...';
   if(S.error && S.ops.length) return 'Не сохранено, повторим автоматически';
@@ -5739,11 +5894,21 @@ function v10calStatusText(){
 function v10calStatus(){ var s = document.getElementById('v10calSt'); if(s){ s.textContent = v10calStatusText(); s.classList.toggle('red', !!(window._v10cal && window._v10cal.error && window._v10cal.ops.length)); } }
 function v10dk(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function v10fromKey(k){ var p = String(k).split('-'); return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])); }
+// Виды: день, неделя, 10 дней (цикл с сегодняшнего дня), месяц
+var V10_MN = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+function v10viewName(){ var v = window._v10view; return (v === 'day' || v === 'ten' || v === 'month') ? v : 'week'; }
 function v10days(){
   var a = v10fromKey(window._v10day || v10dk(new Date()));
-  if(window._v10view === 'day') return [a];
+  var view = v10viewName(), out = [], i, d;
+  if(view === 'day') return [a];
+  if(view === 'ten'){ for(i = 0; i < 10; i++){ d = new Date(a); d.setDate(a.getDate() + i); out.push(d); } return out; }
+  if(view === 'month'){
+    var n = new Date(a.getFullYear(), a.getMonth() + 1, 0).getDate();
+    for(i = 1; i <= n; i++) out.push(new Date(a.getFullYear(), a.getMonth(), i));
+    return out;
+  }
   var m = new Date(a); m.setDate(m.getDate() - (m.getDay() + 6) % 7);
-  var out = []; for(var i = 0; i < 7; i++){ var d = new Date(m); d.setDate(m.getDate() + i); out.push(d); }
+  for(i = 0; i < 7; i++){ d = new Date(m); d.setDate(m.getDate() + i); out.push(d); }
   return out;
 }
 // Встречи с трекером из расписания клуба: «YYYY-MM-DD|H» → встреча
@@ -5763,50 +5928,78 @@ function v10dueByDay(me){
 }
 function v10calShift(n){
   var a = v10fromKey(window._v10day || v10dk(new Date()));
-  a.setDate(a.getDate() + n * (window._v10view === 'day' ? 1 : 7));
+  var view = v10viewName();
+  if(view === 'month') a = new Date(a.getFullYear(), a.getMonth() + n, 1);
+  else a.setDate(a.getDate() + n * (view === 'day' ? 1 : (view === 'ten' ? 10 : 7)));
   window._v10day = v10dk(a); v10calRefresh();
 }
 function v10calToday(){ window._v10day = v10dk(new Date()); v10calRefresh(); }
-function v10calView(v){ window._v10view = v; v10calRefresh(); }
-function v10calOpenDay(k){ window._v10day = k; window._v10view = 'day'; v10calRefresh(); }
+function v10calView(v){
+  // 10 дней: цикл всегда от сегодняшнего дня
+  if(v === 'ten' || (v !== 'day' && v !== v10viewName())) window._v10day = v10dk(new Date());
+  window._v10view = v; window._v10from = null; v10calRefresh();
+}
+function v10calOpenDay(k){ window._v10from = v10viewName() === 'month' ? 'month' : null; window._v10day = k; window._v10view = 'day'; v10calRefresh(); }
+function v10calBackMonth(){ window._v10view = 'month'; window._v10from = null; v10calRefresh(); }
 function v10calType(t){ window._v10type = t; v10calRefresh(); }
-// Тап: поставить/снять выбранный тип; долгое нажатие: заметка
-var _v10p = null;
+// Тап (click) ставит/снимает выбранный тип; долгое нажатие (таймер или contextmenu): заметка.
+// Пока палец на ячейке, календарь не перерисовывается: иначе ячейка под пальцем подменяется и тап теряется
+var _v10p = null, _v10lp = null, _v10pend = false;
 function v10pd(e, k){
-  if(e.button > 0) return;
-  v10pc();
-  _v10p = {k: k, x: e.clientX, y: e.clientY, lp: false};
+  if(e && e.button > 0) return;
+  if(_v10p) clearTimeout(_v10p.t);
+  _v10p = {k: k, x: e ? e.clientX : 0, y: e ? e.clientY : 0};
   _v10p.t = setTimeout(function(){
     if(!_v10p || _v10p.k !== k) return;
-    _v10p.lp = true;
-    try{ tg.HapticFeedback.impactOccurred('medium'); }catch(x){}
-    v10noteSheet(k);
+    _v10p = null;
+    v10longPress(k);
   }, 520);
 }
-function v10pm(e){ if(_v10p && (Math.abs(e.clientX - _v10p.x) > 8 || Math.abs(e.clientY - _v10p.y) > 8)) v10pc(); }
-function v10pc(){ if(_v10p){ clearTimeout(_v10p.t); _v10p = null; } }
-function v10pu(e, k){
-  var p = _v10p; _v10p = null;
-  if(!p) return;
-  clearTimeout(p.t);
-  if(p.lp || p.k !== k) return;
+function v10pm(e){ if(_v10p && (Math.abs(e.clientX - _v10p.x) > 10 || Math.abs(e.clientY - _v10p.y) > 10)){ clearTimeout(_v10p.t); _v10p = null; } }
+function v10pu(){
+  if(_v10p){ clearTimeout(_v10p.t); _v10p = null; }
+  // click приходит сразу после pointerup; отложенная перерисовка только после него
+  setTimeout(v10flushPend, 400);
+}
+function v10flushPend(){ if(_v10pend && !_v10p){ _v10pend = false; v10calRefresh(); } }
+function v10longPress(k){
+  _v10lp = {k: k, at: Date.now()};
+  try{ tg.HapticFeedback.impactOccurred('medium'); }catch(x){}
+  v10noteSheet(k);
+}
+function v10ctx(e, k){
+  try{ e.preventDefault(); }catch(x){}
+  if(_v10p){ clearTimeout(_v10p.t); _v10p = null; }
+  if(!(_v10lp && _v10lp.k === k && Date.now() - _v10lp.at < 1500)) v10longPress(k);
+  return false;
+}
+function v10click(e, k){
+  if(_v10lp && _v10lp.k === k && Date.now() - _v10lp.at < 2500){ _v10lp = null; return; }
+  _v10lp = null;
+  if(_v10p){ clearTimeout(_v10p.t); _v10p = null; }
   v10tap(k);
 }
 function v10tap(k){
   var me = getMyData(); if(!me) return;
   var ev = v10meets(me)[k];
   if(ev){ showToast('Встреча BS · ' + (ev.time || '') + (v3isOnline(ev) ? ' · онлайн' : ' · офлайн')); return; }
-  if(v10preview()){ showToast('Режим просмотра: изменения не сохраняются'); return; }
   var S = v10calState();
   var sel = window._v10type || 'work';
   var op = {k: k, t: S.value.slots[k] === sel ? null : sel};
-  v10apply(S.value, op); S.ops.push(op); v10calStore();
+  v10apply(S.value, op);
+  if(v10preview()){
+    // Админ смотрит глазами резидента: правки видны на экране, но на платформу не уходят
+    (S.pv = S.pv || []).push(op);
+    if(!S.pvTold){ S.pvTold = true; showToast('Режим просмотра: правки видны только здесь'); }
+  } else { S.ops.push(op); v10calStore(); }
   try{ tg.HapticFeedback.selectionChanged(); }catch(x){}
-  v10calRefresh(); v10calLater();
+  _v10pend = false;
+  v10calRefresh();
+  if(!v10preview()) v10calLater();
 }
 function v10noteSheet(k){
-  if(v10preview()){ showToast('Режим просмотра: изменения не сохраняются'); return; }
   if(document.querySelector('.add-menu-overlay')) return;
+  var me = getMyData(); if(me && v10meets(me)[k]){ v10tap(k); return; }
   var S = v10calState();
   var p = k.split('|'), d = v10fromKey(p[0]);
   var cur = S.value.notes[k] || '';
@@ -5824,59 +6017,98 @@ function v10noteSheet(k){
   document.body.appendChild(m);
   function done(n){
     var op = {k: k, n: n};
-    v10apply(S.value, op); S.ops.push(op); v10calStore();
-    m.remove(); v10calRefresh(); v10calLater();
+    v10apply(S.value, op);
+    if(v10preview()) (S.pv = S.pv || []).push(op); else { S.ops.push(op); v10calStore(); }
+    m.remove(); v10calRefresh(); if(!v10preview()) v10calLater();
   }
   m.querySelector('[data-x]').onclick = function(){ m.remove(); };
   m.querySelector('[data-s]').onclick = function(){ done(String(m.querySelector('#v10note').value || '').trim().slice(0, 200)); };
   var del = m.querySelector('[data-d]'); if(del) del.onclick = function(){ done(''); };
   setTimeout(function(){ try{ m.querySelector('#v10note').focus(); }catch(e){} }, 80);
 }
-function v10cellAttrs(k){ return ' onpointerdown="v10pd(event,\'' + k + '\')" onpointerup="v10pu(event,\'' + k + '\')" onpointermove="v10pm(event)" onpointercancel="v10pc()" oncontextmenu="return false"'; }
+function v10cellAttrs(k){
+  return ' data-k="' + k + '" onclick="v10click(event,\'' + k + '\')" onpointerdown="v10pd(event,\'' + k + '\')" onpointerup="v10pu()" onpointermove="v10pm(event)" onpointercancel="v10pu()" oncontextmenu="return v10ctx(event,\'' + k + '\')"';
+}
+// Часы по типам за день: для месяца и счётчиков
+function v10dayStat(S, meets, dk){
+  var o = {bs: 0};
+  for(var h = V10_H0; h <= V10_H1; h++){
+    var k = dk + '|' + h;
+    if(meets[k]){ o.bs++; continue; }
+    var t = S.value.slots[k]; if(t && V10_T[t]) o[t] = (o[t] || 0) + 1;
+  }
+  return o;
+}
+function v10gridHTML(S, days, meets, due, today){
+  var n = days.length;
+  var h = '<div class="v2-card v10-grid' + (n > 7 ? ' ten' : '') + '" style="grid-template-columns:' + (n > 7 ? '26px' : '30px') + ' repeat(' + n + ',minmax(0,1fr))"><div class="v10-hd"></div>' + days.map(function(d){
+    var dk = v10dk(d), c = (due[dk] || []).length, open = (due[dk] || []).filter(function(it){ return !it.done; }).length;
+    return '<div class="v10-hd' + (dk === today ? ' today' : '') + '" onclick="v10calOpenDay(\'' + dk + '\')"><span>' + V10_WD[(d.getDay() + 6) % 7] + '</span><b>' + d.getDate() + '</b>' +
+      '<em>' + (c ? '<i class="' + (open ? (dk < today ? 'r' : '') : 'g') + '">' + c + '</i>' : '') + '</em></div>';
+  }).join('');
+  for(var hr = V10_H0; hr <= V10_H1; hr++){
+    h += '<div class="v10-hr">' + hr + '</div>';
+    days.forEach(function(d){
+      var k = v10dk(d) + '|' + hr, t = S.value.slots[k], ev = meets[k], note = S.value.notes[k];
+      if(ev){ h += '<div class="v10-c bs"' + v10cellAttrs(k) + '>BS</div>'; return; }
+      var T = t && V10_T[t];
+      h += '<div class="v10-c' + (T ? ' f' : '') + '"' + (T ? ' style="background:' + T[2] + ';color:' + T[3] + '"' : '') + v10cellAttrs(k) + '>' + (note ? '<s></s>' : '') + '</div>';
+    });
+  }
+  return h + '</div>';
+}
+function v10monthHTML(S, days, meets, due, today){
+  var first = days[0], lead = (first.getDay() + 6) % 7;
+  var h = '<div class="v2-card v10-month"><div class="v10-mw">' + V10_WD.map(function(w){ return '<span>' + w + '</span>'; }).join('') + '</div><div class="v10-mg">';
+  for(var i = 0; i < lead; i++) h += '<div class="v10-md empty"></div>';
+  days.forEach(function(d){
+    var dk = v10dk(d), st = v10dayStat(S, meets, dk);
+    var dl = due[dk] || [], open = dl.filter(function(it){ return !it.done; }).length;
+    var bars = V10_TYPES.filter(function(t){ return st[t[0]]; }).map(function(t){
+      return '<i style="background:' + t[2] + ';width:' + Math.min(100, Math.round(st[t[0]] / 6 * 100)) + '%"></i>';
+    });
+    if(st.bs) bars.unshift('<i class="bs" style="width:' + Math.min(100, Math.round(st.bs / 6 * 100)) + '%"></i>');
+    var hrs = 0; V10_TYPES.forEach(function(t){ if(t[0] !== 'rest') hrs += st[t[0]] || 0; }); hrs += st.bs;
+    h += '<div class="v10-md' + (dk === today ? ' today' : '') + (dk < today ? ' past' : '') + '" onclick="v10calOpenDay(\'' + dk + '\')">' +
+      '<div class="t"><b>' + d.getDate() + '</b>' + (dl.length ? '<em class="' + (open ? (dk < today ? 'r' : '') : 'g') + '">' + dl.length + '</em>' : '') + '</div>' +
+      '<div class="bars">' + bars.slice(0, 4).join('') + '</div>' + (hrs ? '<div class="h">' + hrs + ' ч</div>' : '') + '</div>';
+  });
+  return h + '</div></div>';
+}
 function v10calInner(me){
   var S = v10calState();
-  var view = window._v10view || 'week';
+  var view = v10viewName();
   var days = v10days(), today = v10dk(new Date());
   var meets = v10meets(me), due = v10dueByDay(me);
   var sel = window._v10type || 'work';
   // Счётчики за видимый период
   var busyH = 0, focusH = 0;
   days.forEach(function(d){
-    var dk = v10dk(d);
-    for(var h = V10_H0; h <= V10_H1; h++){
-      var k = dk + '|' + h, t = S.value.slots[k];
-      if(meets[k] || (t && t !== 'rest')) busyH++;
-      if(!meets[k] && t === 'focus') focusH++;
-    }
+    var st = v10dayStat(S, meets, v10dk(d));
+    busyH += st.bs; V10_TYPES.forEach(function(t){ if(t[0] !== 'rest') busyH += st[t[0]] || 0; });
+    focusH += st.focus || 0;
   });
   var a = days[0], z = days[days.length - 1];
   var range = view === 'day'
     ? V10_WD[(a.getDay() + 6) % 7].charAt(0) + V10_WD[(a.getDay() + 6) % 7].charAt(1).toLowerCase() + ', ' + a.getDate() + ' ' + V10_MS[a.getMonth()]
-    : a.getDate() + (a.getMonth() !== z.getMonth() ? ' ' + V10_MS[a.getMonth()] : '') + ' – ' + z.getDate() + ' ' + V10_MS[z.getMonth()];
+    : (view === 'month' ? V10_MN[a.getMonth()] + ' ' + a.getFullYear()
+    : a.getDate() + (a.getMonth() !== z.getMonth() ? ' ' + V10_MS[a.getMonth()] : '') + ' – ' + z.getDate() + ' ' + V10_MS[z.getMonth()]);
   var h = '<div class="v10-st' + (S.error && S.ops.length ? ' red' : '') + '" id="v10calSt">' + v2esc(v10calStatusText()) + '</div>';
-  h += '<div class="v10-bar">' +
-    '<div class="v3-seg v10-vseg"><button class="' + (view === 'week' ? 'on' : '') + '" onclick="v10calView(\'week\')">Неделя</button><button class="' + (view === 'day' ? 'on' : '') + '" onclick="v10calView(\'day\')">День</button></div>' +
-    '<div class="v10-nav"><button aria-label="Назад" onclick="v10calShift(-1)">' + navIcon('back', 16) + '</button><button class="t" onclick="v10calToday()">Сегодня</button><button aria-label="Вперёд" onclick="v10calShift(1)">' + navIcon('chev', 16) + '</button></div></div>';
-  h += '<div class="v10-sum"><b>' + v2esc(range) + '</b><span>Занято ' + busyH + ' ч · фокус ' + focusH + ' ч</span></div>';
-  h += '<div class="v10-types">' + V10_TYPES.map(function(t){
-    return '<button class="' + (sel === t[0] ? 'on' : '') + '" onclick="v10calType(\'' + t[0] + '\')"><i style="background:' + t[2] + '"></i>' + t[1] + '</button>';
+  h += '<div class="v3-seg v10-vseg">' + [['day', 'День'], ['week', 'Неделя'], ['ten', '10 дней'], ['month', 'Месяц']].map(function(x){
+    return '<button class="' + (view === x[0] ? 'on' : '') + '" onclick="v10calView(\'' + x[0] + '\')">' + x[1] + '</button>';
   }).join('') + '</div>';
-  if(view === 'week'){
-    h += '<div class="v2-card v10-grid" style="grid-template-columns:30px repeat(7,minmax(0,1fr))"><div class="v10-hd"></div>' + days.map(function(d){
-      var dk = v10dk(d), n = (due[dk] || []).length, open = (due[dk] || []).filter(function(it){ return !it.done; }).length;
-      return '<div class="v10-hd' + (dk === today ? ' today' : '') + '" onclick="v10calOpenDay(\'' + dk + '\')"><span>' + V10_WD[(d.getDay() + 6) % 7] + '</span><b>' + d.getDate() + '</b>' +
-        '<em>' + (n ? '<i class="' + (open ? (dk < today ? 'r' : '') : 'g') + '">' + n + '</i>' : '') + '</em></div>';
-    }).join('');
-    for(var hr = V10_H0; hr <= V10_H1; hr++){
-      h += '<div class="v10-hr">' + hr + '</div>';
-      days.forEach(function(d){
-        var k = v10dk(d) + '|' + hr, t = S.value.slots[k], ev = meets[k], note = S.value.notes[k];
-        if(ev){ h += '<div class="v10-c bs"' + v10cellAttrs(k) + '>BS</div>'; return; }
-        var T = t && V10_T[t];
-        h += '<div class="v10-c' + (T ? ' f' : '') + '"' + (T ? ' style="background:' + T[2] + ';color:' + T[3] + '"' : '') + v10cellAttrs(k) + '>' + (note ? '<s></s>' : '') + '</div>';
-      });
-    }
-    h += '</div>';
+  h += '<div class="v10-bar"><div class="v10-sum"><b>' + v2esc(range) + '</b><span>Занято ' + busyH + ' ч · фокус ' + focusH + ' ч</span></div>' +
+    '<div class="v10-nav"><button aria-label="Назад" onclick="v10calShift(-1)">' + navIcon('back', 16) + '</button><button class="t" onclick="v10calToday()">Сегодня</button><button aria-label="Вперёд" onclick="v10calShift(1)">' + navIcon('chev', 16) + '</button></div></div>';
+  if(view === 'day' && window._v10from === 'month') h += '<div class="v3-txtbtn v10-tomonth" onclick="v10calBackMonth()">‹ ' + V10_MN[a.getMonth()] + '</div>';
+  if(view !== 'month'){
+    h += '<div class="v10-types">' + V10_TYPES.map(function(t){
+      return '<button class="' + (sel === t[0] ? 'on' : '') + '" onclick="v10calType(\'' + t[0] + '\')"><i style="background:' + t[2] + '"></i>' + t[1] + '</button>';
+    }).join('') + '</div>';
+  }
+  if(view === 'week' || view === 'ten'){
+    h += v10gridHTML(S, days, meets, due, today);
+  } else if(view === 'month'){
+    h += v10monthHTML(S, days, meets, due, today);
   } else {
     var dk0 = v10dk(days[0]);
     h += '<div class="v2-card v10-day">';
@@ -5897,8 +6129,13 @@ function v10calInner(me){
       }).join('') + '</div>';
     }
   }
-  h += '<div class="v10-legend"><span><i class="bs">BS</i>встреча клуба</span><span><i class="dot"></i>срок задачи</span><span><i class="nt"></i>заметка</span></div>';
-  h += '<div class="v3-cap" style="margin:8px 4px 0;line-height:1.45">Выберите тип и нажмите на час, повторное нажатие снимает. Долгое нажатие добавляет заметку. Всё сразу видно на платформе в «Мой календарь».</div>';
+  if(view === 'month'){
+    h += '<div class="v10-legend">' + V10_TYPES.map(function(t){ return '<span><i class="sq" style="background:' + t[2] + '"></i>' + t[1] + '</span>'; }).join('') + '<span><i class="bs">BS</i>встреча</span></div>';
+    h += '<div class="v3-cap" style="margin:8px 4px 0;line-height:1.45">Полоски показывают часы по типам. Нажмите на день, чтобы расписать его по часам.</div>';
+  } else {
+    h += '<div class="v10-legend"><span><i class="bs">BS</i>встреча клуба</span><span><i class="dot"></i>срок задачи</span><span><i class="nt"></i>заметка</span></div>';
+    h += '<div class="v3-cap" style="margin:8px 4px 0;line-height:1.45">Выберите тип и нажмите на час, повторное нажатие снимает. Долгое нажатие добавляет заметку. Всё сразу видно на платформе в «Мой календарь».</div>';
+  }
   return h;
 }
 function v10calHTML(me){
@@ -5908,6 +6145,7 @@ function v10calHTML(me){
 }
 function v10calRefresh(){
   var el = document.getElementById('v10cal'); if(!el) return;
+  if(_v10p){ _v10pend = true; return; }
   var me = getMyData(); if(!me) return;
   el.innerHTML = v10calInner(me);
 }
@@ -7560,7 +7798,7 @@ function openSubscriberDetail(chatId){
       <div class="profile-row"><span>Цель</span><strong style="font-size:13px">${s.goal||'не указано'}</strong></div>
       <div class="profile-row"><span>Статус</span><strong>${s.status||'Подписчик'}</strong></div>
     </div>
-    ${s.username?`<a class="btn btn-secondary" href="https://t.me/${s.username}" target="_blank">Написать в Telegram</a>`:''}
+    <button class="btn btn-secondary" onclick="v11writeSub('${String(s.chatId||'').replace(/[^0-9]/g,'')}')">Написать</button>
     ${s.status!=='Резидент' ? `<button class="btn btn-primary" onclick="openConvertModal('${s.chatId}','${(s.name||'').replace(/'/g,'')}')">Перевести в резиденты</button>` : ''}
     ${s.status!=='Резидент' ? `<button class="btn btn-danger" onclick="banSubscriberFromChannel('${s.chatId}', '${(s.name||'').replace(/'/g,'')}')">Удалить с канала</button>` : ''}
   `;
@@ -7688,7 +7926,7 @@ function v3clubPage(team, club){
   var logo = bsLogoSrc();
   var h = v3headBig(club.length + ' ' + v3plural(club.length, 'резидент', 'резидента', 'резидентов'), 'Клуб');
   h += '<div class="v2-card v2-about" style="margin-top:16px" onclick="showPage(\'about\')">' + (logo ? '<img src="' + logo + '" alt="business surgery">' : '') + '<div class="sep"></div>' +
-    '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800">О проекте</div><div style="font-size:12px;color:#9A9A9A;margin-top:2px">Правила, как всё устроено, пригласить</div></div>' +
+    '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800">О проекте</div><div style="font-size:12px;color:#9A9A9A;margin-top:2px">Как всё устроено, правила клуба, пригласить</div></div>' +
     '<div style="color:#6E6E6E">' + navIcon('chev', 16) + '</div></div>';
   if(team.length){
     h += '<div class="v2-h">Команда клуба</div><div class="v2-card">' + team.map(function(r, i){
@@ -7700,8 +7938,6 @@ function v3clubPage(team, club){
   h += '<div class="v2-h">Резиденты · ' + club.length + '</div>';
   h += '<div class="v3-search">' + navIcon('search', 18) + '<input type="text" placeholder="Имя или ниша" aria-label="Поиск" value="' + v2esc(window._resQuery || '') + '" oninput="filterRes(this.value)"></div>';
   h += '<div class="v2-card" id="resList" style="margin-top:10px">' + v3clubListHTML(club) + '</div>';
-  h += '<div class="v2-card" style="margin-top:10px">' + v3row('doc', 'Библиотека', 'Книги, инструменты, разборы', "showPage('library')") + '</div>';
-  h += '<div class="v2-card" style="margin-top:10px">' + v3row('doc', 'Правила клуба', 'Отчёты, встречи, штрафы', "showPage('rules')") + '</div>';
   return h;
 }
 
@@ -7773,9 +8009,10 @@ function openResidentProfile(r0){
   }
   if(r.bio) h += '<div class="v2-h">О себе</div><div class="v2-card v3-text">' + v2esc(r.bio) + '</div>';
   if(r.help) h += '<div class="v2-h">Чем может помочь</div><div class="v2-card v3-text">' + v2esc(r.help) + '</div>';
-  if(r.instagram || r.phone || (!adm && v3chatUrl(r))){
+  var canW = !adm && v11canWrite(r);
+  if(r.instagram || r.phone || canW){
     h += '<div class="v2-h">Контакты</div><div class="v2-card">' +
-      (!adm && v3chatUrl(r) ? v3row('msg', 'Написать в Telegram', '', 'v3write(window._v3CardRes)') : '') +
+      (canW ? v3row('msg', 'Написать', v11tgUser(r) ? 'Чат в Telegram' : 'Сообщение через бота BS', 'v11write(window._v3CardRes)') : '') +
       (r.instagram ? '<a class="v2-row" href="https://instagram.com/' + v2esc(String(r.instagram).replace('@', '')) + '" target="_blank"><div class="ic">' + navIcon('me', 20) + '</div><div class="m"><b>Instagram</b><span>' + v2esc(r.instagram) + '</span></div><div class="ic" style="color:#6E6E6E">' + navIcon('chev', 16) + '</div></a>' : '') +
       (r.phone ? '<a class="v2-row" href="https://wa.me/' + String(r.phone).replace(/[^0-9]/g, '') + '" target="_blank"><div class="ic">' + navIcon('msg', 20) + '</div><div class="m"><b>WhatsApp</b><span>' + v2esc(r.phone) + '</span></div><div class="ic" style="color:#6E6E6E">' + navIcon('chev', 16) + '</div></a>' : '') +
     '</div>';
@@ -8199,6 +8436,8 @@ function v3taskRow(done, text, meta, onCheck, extra){
 function loadMyTasks(){
   const el = document.getElementById('myTasksList');
   if(!el) return;
+  // Палец на ячейке календаря: полную перерисовку откладываем, иначе тап потеряется
+  if(window._v3TaskSeg === 'cal' && _v10p && document.getElementById('v10cal')){ _v10pend = true; return; }
   const me = getMyData();
   if(!me) return;
   try{
@@ -8443,10 +8682,12 @@ function copyReferralLink(){
 function renderWheel(){
   const el = document.getElementById('wheelContent');
   if(!el) return;
-  const me = getMyData();
+  // Админ проходит колёса для себя: результаты хранятся на устройстве, на платформу не уходят
+  const adm = v11adminWheel();
+  const me = getMyData() || (adm ? {name: (user && user.first_name) || 'Админ'} : null);
   if(!me){ el.innerHTML = '<div class="empty">Профиль не найден</div>'; return; }
 
-  _wheelData = (cache.wheelAll && cache.wheelAll[me.name]) || {businesses:[], life:[], dnaAxes:WHEEL_DNA_AXES, lifeAxes:WHEEL_LIFE_AXES};
+  _wheelData = adm ? v11wheelStore() : ((cache.wheelAll && cache.wheelAll[me.name]) || {businesses:[], life:[], dnaAxes:WHEEL_DNA_AXES, lifeAxes:WHEEL_LIFE_AXES});
 
   const d = _wheelData || {};
   const businesses = d.businesses || [];
@@ -8482,7 +8723,7 @@ function renderWheel(){
   h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">';
   h += '<div class="card-title" style="color:#FFFFFF;font-weight:800;letter-spacing:0.5px;margin:0">Колесо баланса</div>';
   h += '<div style="display:flex;gap:12px;align-items:center">';
-  h += '<div style="font-size:13px;color:#888" onclick="event.stopPropagation();openAxesEditor()">Оси</div>';
+  if(!adm) h += '<div style="font-size:13px;color:#888" onclick="event.stopPropagation();openAxesEditor()">Оси</div>';
   h += (life?'<div style="font-size:12px;color:#888">Подробнее ›</div>':'');
   h += '</div></div>';
   if(life){
@@ -8493,6 +8734,7 @@ function renderWheel(){
     h += '<div style="font-size:13px;color:#888;padding:20px 0;text-align:center">Ещё нет замеров.<br>Сначала оцени ДНК бизнеса, потом личное колесо.</div>';
   }
   h += '</div>';
+  if(adm) h += '<div class="v3-cap" style="margin:12px 4px 0;line-height:1.45">Ваши замеры хранятся только на этом устройстве и не попадают в замеры клуба.</div>';
 
   el.innerHTML = h;
 }
@@ -8614,14 +8856,15 @@ function openWheelDetail(type, biz, resName){
   _wheelDetailName = resName || null;
   _wheelHistoryIdx = 0;
   let targetName = resName;
-  if(!targetName){
+  const admOwn = !resName && v11adminWheel();
+  if(!targetName && !admOwn){
     const me = getMyData();
     if(!me) return;
     targetName = me.name;
   }
   openModal('wheelDetailModal');
   // Вся история уже в кеше. открывается мгновенно
-  _wheelHistory = (cache.wheelAll && cache.wheelAll[targetName]) || {businesses:[], life:[]};
+  _wheelHistory = admOwn ? v11wheelStore() : ((cache.wheelAll && cache.wheelAll[targetName]) || {businesses:[], life:[]});
   renderWheelDetail();
 }
 
@@ -9041,6 +9284,17 @@ function addNewBusiness(){
 let _wheelSaveInFlight = false;
 async function submitWheelForm(){
   if(_wheelSaveInFlight) return;
+  if(v11adminWheel()){
+    // Замер админа: только локально, без таблицы и без mytests
+    const vals = Array.from(document.querySelectorAll('#wheelFormBody input[type=range]')).map(inp => Number(inp.value));
+    const t = _wheelFormType;
+    _wheelData = v11wheelSave(t, vals, t === 'dna' ? (window._wheelFormBiz || 'Основной') : '');
+    if(t === 'dna'){ _wheelFormType = 'life'; renderWheelForm(); showToast('Колесо бизнеса сохранено. Теперь баланс'); }
+    else { closeModal('wheelModal'); showToast('Колесо баланса сохранено'); }
+    renderWheel();
+    try{ if(v9activeId() === 'more') renderAdminMore(); }catch(e){}
+    return;
+  }
   const me = getMyData();
   if(!me){ showToast('Профиль не найден'); return; }
 
@@ -11098,10 +11352,15 @@ function renderRules(){
         <div class="rules-foot-quote">Правила существуют не для контроля.<br>Они держат рамку, внутри которой бизнес растёт.</div>
         <div class="rules-foot-brand">BUSINESS SURGERY · BXCLUB.KZ</div>
       </div>
+      <button class="v3-outline" style="margin-top:18px" onclick="v11rulesBack()">‹ О проекте</button>
     </div>
   `;
 }
 
+function v11rulesBack(){
+  var st = window._navStack || [];
+  if(st.length && st[st.length - 1] === 'about') v9goBack(); else showPage('about', {back: true});
+}
 function v3numrow(items){
   return '<div class="v3-grid3">' + items.map(function(x){
     return '<div><div class="num" style="font-size:22px;font-weight:800">' + x[0] + '</div><div style="margin-top:2px;font-size:11px;color:#9A9A9A;line-height:1.3">' + x[1] + '</div></div>';
@@ -11165,8 +11424,9 @@ function renderAbout(){
       '<p class="v3-p">Акселератор и трекинг-платформа с миссией укрепить здоровье бизнеса и энергию роста.</p></div>';
     h += '<div style="margin-top:18px">' + v3numrow([['700+', 'разборов проведено'], ['20', 'резидентов в клубе'], ['×3', 'средний рост']]) + '</div>';
     h += '<div class="v3-quote" style="margin-top:10px">Выстраиваем стратегию. Внедряем систему. Трекерим результат.</div>';
+    h += '<div class="v11-rules" onclick="showPage(\'rules\')"><div class="k">6 ДОГОВОРЁННОСТЕЙ</div>' +
+      '<div class="t">Правила клуба →</div><div class="s">Отчёты, встречи, штрафы и оплата. Как устроена работа в клубе</div></div>';
     h += '<div class="v2-h">Клуб</div><div class="v2-card">' +
-      v3row('doc', 'Правила клуба', 'Отчёты, встречи, штрафы', "showPage('rules')") +
       (role === 'resident' ? v3row('board', 'Как пользоваться', 'Разбор, задачи, отчёт за 2 минуты', "showPage('myboard')") : v3row('board', 'Материалы', 'Шаблоны и гайды клуба', "showPage('leadmagnets')")) +
       v3row('club', 'Пригласить друга', 'Ссылка в бота с вашей меткой', 'copyReferralLink()') +
     '</div>';
@@ -11195,10 +11455,7 @@ var V4_TEAM = [
 function v4writeTeam(i){
   var t = V4_TEAM[i]; if(!t) return;
   var r = (cache.residents || []).filter(function(x){ return t.re.test(String(x.name || '')) && (x.isAdmin || x.isTeam || String(x.chatId || '') === t.id); })[0];
-  var url = r ? v3chatUrl(r) : '';
-  if(!url || url.indexOf('tg://') === 0) url = 'tg://user?id=' + t.id;
-  try{ if(url.indexOf('https://t.me/') === 0 && tg && tg.openTelegramLink){ tg.openTelegramLink(url); return; } }catch(e){}
-  try{ window.location.href = url; }catch(e){}
+  v11write(Object.assign({}, r || {}, {name: t.name, chatId: (r && r.chatId) || t.id}));
 }
 function renderLeadRazbor(){
   var el = document.getElementById('leadrazborContent');
@@ -11219,7 +11476,7 @@ function renderLeadRazbor(){
   h += '<div class="v2-h">Написать команде</div><div class="v2-card">' + V4_TEAM.map(function(t, i){
     var r = (cache.residents || []).filter(function(x){ return t.re.test(String(x.name || '')) && (x.isAdmin || x.isTeam); })[0];
     return '<div class="v2-row" onclick="v4writeTeam(' + i + ')">' + (r ? v3av(r, 40, true) : '<div class="v3-av" style="width:40px;height:40px;font-size:15px">' + t.name.charAt(0) + '</div>') +
-      '<div class="m"><b>' + t.name + '</b><span>' + t.role + '</span></div><button class="v3-btn" onclick="event.stopPropagation();v4writeTeam(' + i + ')">' + navIcon('msg', 14, 2) + 'Telegram</button></div>';
+      '<div class="m"><b>' + t.name + '</b><span>' + t.role + '</span></div><button class="v3-btn" onclick="event.stopPropagation();v4writeTeam(' + i + ')">' + navIcon('msg', 14, 2) + 'Написать</button></div>';
   }).join('') + '</div>';
   el.innerHTML = h;
 }
@@ -11237,21 +11494,19 @@ function renderAdminMore(){
   h += '<div class="v2-card v4-brand" style="margin-top:14px">' + (logo ? '<img src="' + logo + '" alt="business surgery">' : '') +
     '<div style="min-width:0"><div style="font-size:9px;font-weight:800;letter-spacing:2.6px;color:#D4B886">БИЗНЕС-ТРЕКИНГ</div>' +
     '<div class="t" style="margin-top:4px">Здоровье бизнеса и энергия роста</div></div></div>';
-  h += '<div class="v2-h">Продажи и маркетинг</div><div class="v2-card">' +
-    v3row('club', 'CRM лиды', (leads ? leads + ' · ' : '') + 'кто прошёл диагностику и не записался', "showPage('crm')") +
-    v3row('msg', 'Подписчики бота', 'Рассылки и дожимы', "showPage('subscribers')") +
-    v3row('board', 'CustDev', 'Интервью и выводы', "showPage('custdev')") +
-    v3row('doc', 'Полезное', 'Контент-план и публикации', "showPage('content')") +
-    v3row('doc', 'Материалы', 'Чек-листы и гайды для лидов', "showPage('leadmagnets')") +
-    v3row('board', 'Диагностика', 'Тест здоровья бизнеса', "showPage('diagnostic')") +
-  '</div>';
-  h += '<div class="v2-h">Клуб</div><div class="v2-card">' +
-    v3row('doc', 'Правила и тексты бота', 'То, что видят резиденты', "showPage('rules')") +
-    v3row('club', 'О клубе', 'Страница о проекте', "showPage('about')") +
-    v3row('sum', 'Колесо клуба', 'Замеры резидентов', "showPage('wheeladmin')") +
-    v3row('doc', 'Библиотека', 'Книги, инструменты, диагнозы с платформы', "showPage('library')") +
-    v3row('tasks', 'Задачи команды', 'Список дел Рустама и Береке', "showPage('todos')") +
-    v3row('me', 'Мой профиль', 'Ниша, о себе, контакты', "showPage('myprofile')") +
+  // Те же разделы и порядок, что в левом меню платформы. «↗» открывает раздел платформы в браузере
+  var res = act.length, unpaid = (cache.fines || []).filter(function(f){ return f.status === 'Не оплатил'; }).length;
+  var libN = (window._lib && window._lib.items) ? window._lib.items.length : 0;
+  var S = V11_MENU(leads, res, unpaid, met, closed, libN);
+  S.forEach(function(sec){
+    h += '<div class="v2-h">' + sec[0] + '</div><div class="v2-card">' + sec[1].map(function(r){
+      return r.ext ? v3row(r.icon, r.title, r.sub, "v11plat('" + r.ext + "')", '<div class="ic v11-ext" aria-label="Откроется в браузере">↗</div>')
+                   : v3row(r.icon, r.title, r.sub, r.go);
+    }).join('') + '</div>';
+  });
+  h += '<div class="v2-h">Мои замеры</div><div class="v2-card">' +
+    v3row('sum', 'Колесо бизнеса', v11wheelSub('dna'), "v11myWheel('dna')") +
+    v3row('sum', 'Колесо баланса', v11wheelSub('life'), "v11myWheel('life')") +
   '</div>';
   if(isRealAdmin){
     h += '<div class="v2-h">Режим просмотра</div><div class="v2-card" style="padding-top:14px">' +
@@ -11264,6 +11519,108 @@ function renderAdminMore(){
     v3row('', 'На главный экран', 'Иконка приложения на телефоне', 'addToHomeScreen()') +
   '</div>';
   el.innerHTML = h;
+}
+
+// Меню админа = структура платформы. go: страница приложения; ext: id раздела платформы
+function V11_MENU(leads, res, unpaid, met, closed, libN){
+  function pg(icon, title, sub, go){ return {icon: icon, title: title, sub: sub, go: go}; }
+  function ext(icon, title, sub, id){ return {icon: icon, title: title, sub: sub, ext: id}; }
+  return [
+    ['Трекинг', [
+      ext('board', 'Доска', 'Доска трекера на платформе', 'board'),
+      ext('board', 'Доски резидентов', 'Разборы и циклы по каждому', 'boards'),
+      pg('tasks', 'Задачи резидентов', (closed ? closed + ' закрыто · ' : '') + 'задания по циклам', "showPage('restasks')"),
+      pg('sum', 'Колесо клуба', 'Замеры резидентов', "showPage('wheeladmin')"),
+      pg('doc', 'Болезни', 'Диагнозы из библиотеки', "v11lib('diag')"),
+      pg('doc', 'Инструменты', 'Инструменты из библиотеки', "v11lib('tool')"),
+      ext('board', 'Карта диагнозов', 'Диагнозы по органам', 'diagMap'),
+      ext('pen', 'Заметки', 'Заметки трекера', 'notes'),
+      ext('doc', 'Стикеры', 'Стикеры на досках', 'stickers'),
+      pg('doc', 'Ресурсы', (libN ? libN + ' в библиотеке · ' : '') + 'книги и материалы', "v11lib('all')"),
+      ext('me', 'Контакты', 'Полезные контакты', 'contacts')
+    ]],
+    ['Клуб', [
+      pg('cal', 'Посещения', (met ? met + ' встреч проведено · ' : '') + 'кто пришёл', "showPage('visits')"),
+      pg('doc', 'Отчёты', 'Отчёты резидентов по дням', "showPage('reports')"),
+      pg('alert', 'Штрафы', unpaid ? unpaid + ' не оплачено' : 'Все оплачены', "showPage('fines')"),
+      ext('club', 'Пятёрки', 'Группы резидентов', 'sFive'),
+      ext('cal', 'Мероприятия', 'События клуба', 'events')
+    ]],
+    ['Учёт', [
+      ext('sum', 'PL и ДДС', 'Прибыль и движение денег', 'pl'),
+      ext('sum', 'В цифрах', 'Ключевые показатели', 'aNumbers'),
+      ext('sum', 'Анализ', 'Сводный анализ', 'summary'),
+      ext('doc', 'Google Таблица', 'Исходная таблица клуба', 'gsheet')
+    ]],
+    ['Продажи', [
+      pg('club', 'CRM лидов', (leads ? leads + ' · ' : '') + 'кто прошёл диагностику и не записался', "showPage('crm')"),
+      pg('msg', 'Подписчики бота', 'Рассылки и дожимы', "showPage('subscribers')"),
+      pg('board', 'Диагностика', 'Тест здоровья бизнеса', "showPage('diagnostic')"),
+      pg('doc', 'Материалы', 'Чек-листы и гайды для лидов', "showPage('leadmagnets')"),
+      ext('sum', 'Конверсии', 'Воронка CRM', 'crmFunnel'),
+      ext('sum', 'План продаж', 'План и факт', 'salesPlan'),
+      ext('doc', 'Скрипты', 'Скрипты продаж', 'scripts'),
+      pg('board', 'CustDev', 'Интервью и выводы', "showPage('custdev')"),
+      ext('sum', 'NPS', 'Оценки резидентов', 'nps'),
+      ext('search', 'Парсер лидов', 'Сбор контактов', 'parser'),
+      ext('msg', 'Промпты ИИ', 'Промпты для CRM', 'crmPrompts'),
+      pg('cal', 'SMM планер', 'Контент-план и публикации', "showPage('content')"),
+      ext('pen', 'Заметки маркетинга', 'Идеи и черновики', 'mNotes')
+    ]],
+    ['BS', [
+      ext('doc', 'Полезное', 'Ссылки и материалы команды', 'useful'),
+      pg('tasks', 'Цели и задачи', 'Задачи команды: Рустам и Береке', "showPage('todos')"),
+      ext('msg', 'Рекомендации ИИ', 'Подсказки по клубу', 'aiRec'),
+      ext('doc', 'Google Doc', 'Документ проекта', 'gdoc'),
+      pg('home', 'О проекте', 'Лендинг и правила клуба', "showPage('about')"),
+      pg('me', 'Мой профиль', 'Ниша, о себе, контакты', "showPage('myprofile')")
+    ]]
+  ];
+}
+function v11plat(id){
+  var url = 'https://app.bxclub.kz/#' + id;
+  try{ if(tg && tg.openLink){ tg.openLink(url); return; } }catch(e){}
+  window.open(url, '_blank');
+}
+function v11lib(kind){ window._libKind = kind; window._libQ = ''; showPage('library'); }
+
+// ═══ МОИ ЗАМЕРЫ АДМИНА: те же колёса, что у резидента; результаты только на этом устройстве ═══
+function v11adminWheel(){ return navRole() === 'admin'; }
+function v11wheelStore(){
+  var d = null; try{ d = JSON.parse(localStorage.getItem('bs_admin_wheel') || 'null'); }catch(e){}
+  if(!d || typeof d !== 'object') d = {};
+  if(!Array.isArray(d.businesses)) d.businesses = [];
+  if(!Array.isArray(d.life)) d.life = [];
+  d.dnaAxes = WHEEL_DNA_AXES; d.lifeAxes = d.lifeAxes || WHEEL_LIFE_AXES;
+  return d;
+}
+function v11wheelSave(type, values, biz){
+  var d = v11wheelStore();
+  var row = {date: new Date().toLocaleDateString('ru-RU') + ' ' + new Date().toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'}), values: values};
+  if(type === 'dna'){
+    var b = d.businesses.filter(function(x){ return x.name === biz; })[0];
+    if(!b){ b = {name: biz, rows: []}; d.businesses.push(b); }
+    b.rows.unshift(row); b.rows = b.rows.slice(0, 12);
+  } else {
+    // Ось «Бизнес» считается сама: среднее последних замеров всех направлений
+    var avgs = d.businesses.map(function(b){ return b.rows[0] ? wheelAvg(b.rows[0].values) : null; }).filter(function(x){ return x !== null; });
+    row.values = [avgs.length ? Math.round(avgs.reduce(function(a, x){ return a + x; }, 0) / avgs.length * 10) / 10 : 0].concat(values);
+    d.life.unshift(row); d.life = d.life.slice(0, 12);
+  }
+  try{ localStorage.setItem('bs_admin_wheel', JSON.stringify(d)); }catch(e){}
+  return d;
+}
+function v11wheelSub(type){
+  var d = v11wheelStore();
+  var r = type === 'dna' ? (d.businesses[0] && d.businesses[0].rows[0]) : d.life[0];
+  if(!r) return 'Пройти первый замер';
+  return 'Замер ' + String(r.date).split(' ')[0] + ' · средний ' + wheelAvg(r.values);
+}
+function v11myWheel(type){
+  showPage('wheel');
+  var d = v11wheelStore();
+  var has = type === 'dna' ? d.businesses.length : d.life.length;
+  if(!has){ openWheelForm(); if(type !== 'dna') switchWheelForm(type); }
 }
 
 function openDiagnosticModal(){
