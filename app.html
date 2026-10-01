@@ -33,6 +33,7 @@
     --blue: #64b5f6;
     --gold: #FFFFFF;
     --brand: #FFFFFF;
+    --accent: #FFFFFF;
     --tg-safe-top: 0px;
     --tg-safe-bottom: 0px;
     --text-muted: #888;
@@ -1448,11 +1449,11 @@
     transition: all 0.15s;
     padding: 0;
   }
-  .view-toggle-icon:hover {
+  @media (hover:hover){ .view-toggle-icon:hover {
     background: var(--accent);
     color: #000;
     border-color: var(--accent);
-  }
+  } }
   .view-toggle-icon:active {
     transform: scale(0.94);
   }
@@ -1479,7 +1480,7 @@
     justify-content: center;
   }
   .cal-nav-btn:active { background: #262626; }
-  .cal-nav-btn:hover { background:var(--accent); color:#000; }
+  @media (hover:hover){ .cal-nav-btn:hover { background:#2a2a2a; color:#fff; } }
   .cal-month-title {
     flex: 1 1 auto;
     min-width: 0;
@@ -3609,7 +3610,7 @@ const FINE_TYPES = [
 ];
 
 const INCOME_SRC = ['БХ Трекинг продление','БХ Трекинг год','БХ Штраф','БХ Экспресс разбор','БХ МК/Завтрак','Прочие доходы'];
-const EXPENSE_SRC = ['Дивиденды','Бонус резидента','Комиссия+налог','Маркет.бюджет','SMM','Таргетолог','Tilda + домен','CRM','Canva','Съемки проф','Съемки доп','HH объявление','Симка тариф','Оборудование','Офис','Ассистент','Бухгалтер','Юрист','IT','Прочие расходы:'];
+const EXPENSE_SRC = ['Дивиденды','Бонус резидента','Аренда','Комиссия+налог','Маркет.бюджет','SMM','Таргетолог','Tilda + домен','CRM','Canva','Съемки проф','Съемки доп','HH объявление','Симка тариф','Оборудование','Офис','Ассистент','Бухгалтер','Юрист','IT','Прочие расходы:'];
 
 
 // Глобальный обработчик кликов по карточкам резидентов
@@ -4084,6 +4085,11 @@ function setupAutoRefresh(){
   }, {passive:true});
 }
 
+function _bsHash(str){
+  var h = 5381;
+  for(var i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+  return h;
+}
 async function loadAllData(opts){
   // Мгновенный старт: рисуем из локального кеша сразу, сервер догоняет в фоне.
   // Перерисовка только если данные реально изменились (сравниваем отпечаток)
@@ -4148,7 +4154,10 @@ async function loadAllData(opts){
         ((serverData.contentPlan||{}).items||[]).length,
         ((serverData.smm||{}).items||[]).length,
         ((serverData.problems||{}).problems||[]).length,
-        JSON.stringify(serverData.monthlyPL||{}).length,
+        _bsHash(JSON.stringify(serverData.monthlyPL||{})),
+        _bsHash(JSON.stringify(serverData.fines||[])),
+        _bsHash(JSON.stringify(serverData.residents||[])),
+        _bsHash(JSON.stringify(serverSchedule||[])),
         JSON.stringify(serverData.wheelSummary||{}).length
       ].join('|');
     }catch(e){ newStamp = String(Date.now()); }
@@ -5179,7 +5188,7 @@ function renderFines(){
       '<div class="list-avatar" style="background:rgba(229,115,115,0.2);color:var(--red)">⚠</div>'+
       '<div class="list-content">'+
         '<div class="list-name">'+f.name+'</div>'+
-        '<div class="list-sub">'+f.type+'</div>'+
+        '<div class="list-sub">'+(f.kind||f.type||'')+'</div>'+
       '</div>'+
       '<div class="list-right">'+
         '<div class="list-amount">'+fmt(f.amount)+' тг</div>'+
@@ -6467,7 +6476,7 @@ function confirmMeeting(res, date, time){
     btn.innerHTML = '✓ Подтверждено';
     btn.style.opacity = '0.6';
   }
-  callAction('confirmMeeting', {res, date, time, userId: user?.id||''});
+  // Резидент подтверждает участие для себя. Отметить встречу проведённой может только команда
 }
 
 function addToCalendar(date, time, res, link){
@@ -7591,6 +7600,12 @@ async function openAttendanceModal(date, time){
   }
   window._attendDate = date;
   window._attendTime = time;
+  // Заранее отмечены те, кто записан на этот офлайн-слот. Остальных можно добавить
+  var booked = {};
+  (cache.schedule||[]).forEach(function(e){
+    if(e.date === date && (!time || !e.time || e.time === time)) booked[e.res] = 1;
+  });
+  var anyBooked = Object.keys(booked).length > 0;
   // Заполняем checkboxes
   var box = document.getElementById('attendList');
   if(!box) return;
@@ -7605,7 +7620,7 @@ async function openAttendanceModal(date, time){
       prevFmt = fmt;
       html += '<label class="attend-item">' +
         '<input type="checkbox" value="' + name + '" id="att_' + i + '"' +
-        (fmt === 'Офлайн' ? ' checked' : '') + '>' +
+        ((anyBooked ? booked[name] : fmt === 'Офлайн') ? ' checked' : '') + '>' +
         '<span>' + name + '</span>' +
         (fmt === 'Онлайн' ? '<span class="attend-tag">онлайн</span>' : '') +
         '</label>';
@@ -8233,6 +8248,7 @@ function selectSchedTime(btn){
 function openFineActions(idx){
   var f = (window._currentFinesList||[])[idx];
   if(!f) return;
+  window._fineSel = f;
   document.getElementById('detailTitle').textContent = 'Штраф: '+f.name;
   document.getElementById('detailContent').innerHTML = `
     <div class="card">
@@ -8240,7 +8256,7 @@ function openFineActions(idx){
         <div class="list-avatar" style="background:rgba(229,115,115,0.2);color:var(--red)">⚠</div>
         <div class="list-content">
           <div class="list-name">${f.name}</div>
-          <div class="list-sub">${f.type}</div>
+          <div class="list-sub">${f.kind||f.type||''}</div>
         </div>
         <div class="list-right">
           <div class="list-amount">${fmt(f.amount)} тг</div>
@@ -8248,43 +8264,39 @@ function openFineActions(idx){
         </div>
       </div>
     </div>
-    <button class="btn btn-success" onclick="markFinePaid('${f.name}','${f.date}','${f.type}',${f.amount})">✅ Отметить оплаченным</button>
-    <button class="btn btn-danger" onclick="deleteFine('${f.name}','${f.date}','${f.type}',${f.amount})">🗑 Удалить штраф</button>
+    <button class="btn btn-success" onclick="markFinePaid()">✅ Отметить оплаченным</button>
+    <button class="btn btn-danger" onclick="deleteFine()">🗑 Удалить штраф</button>
   `;
   showDetail();
 }
 
-function markFinePaid(name, date, type, amount){
-  if(!confirm('Отметить штраф '+name+' '+date+' как оплаченный?')) return;
-  // Оптимистично. убираем из кэша
+function _fineParams(f){
+  return {row: f.row||'', name: f.name, date: f.date, kind: f.kind||f.type||'', amount: f.amount};
+}
+function _fineAction(action, f, extra, okText){
+  // Убираем из списка сразу, сервер подтверждает. При ошибке штраф возвращается
+  var same = function(x){ return x===f || (x.row && x.row===f.row && x.name===f.name); };
   if(cache.fines){
-    cache.fines = cache.fines.filter(function(f){
-      return !(f.name===name && f.date===date && f.type===type && f.amount===amount);
-    });
+    cache.fines = cache.fines.filter(function(x){ return !same(x); });
     try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
   }
   closeDetail();
-  showToast('✅ Отмечено оплаченным');
   renderAllPages();
-  callAction('updateFine', {name:name, date:date, type:type, amount:amount, status:'Оплатил'}).then(function(){
-    setTimeout(loadAllData, 3000);
+  callAction(action, Object.assign(_fineParams(f), extra||{})).then(function(r){
+    if(r && r.ok){ showToast(okText); }
+    else { showToast('⚠️ Не получилось: ' + ((r && r.error) || 'нет ответа')); }
+    loadAllData({fresh:true, force:true});
   });
 }
-
-function deleteFine(name, date, type, amount){
-  if(!confirm('Удалить штраф '+name+' '+date+'?\n\nЭто удалит запись полностью из таблицы.')) return;
-  if(cache.fines){
-    cache.fines = cache.fines.filter(function(f){
-      return !(f.name===name && f.date===date && f.type===type && f.amount===amount);
-    });
-    try{localStorage.setItem('bs_cache', JSON.stringify(cache));}catch(e){}
-  }
-  closeDetail();
-  showToast('🗑 Штраф удалён');
-  renderAllPages();
-  callAction('deleteFine', {name:name, date:date, type:type, amount:amount}).then(function(){
-    setTimeout(loadAllData, 3000);
-  });
+function markFinePaid(){
+  var f = window._fineSel; if(!f) return;
+  if(!confirm('Отметить штраф '+f.name+' '+f.date+' как оплаченный?')) return;
+  _fineAction('updateFine', f, {status:'Оплатил'}, '✅ Отмечено оплаченным');
+}
+function deleteFine(){
+  var f = window._fineSel; if(!f) return;
+  if(!confirm('Удалить штраф '+f.name+' '+f.date+'?\n\nЭто удалит запись полностью из таблицы.')) return;
+  _fineAction('deleteFine', f, null, '🗑 Штраф удалён');
 }
 
 var offSelDate='', offSelTime='';
@@ -8432,32 +8444,46 @@ function setPayMethod(method){
   document.getElementById('payBank').classList.toggle('selected', method==='bank');
 }
 
-let _submitPaymentInFlight = false;
-async function submitPayment(){
-  if(_submitPaymentInFlight){
-    console.log('submitPayment: dedup, ещё обрабатывается');
-    return;
-  }
-  const amount = getMoneyValue('payAmount');
+// Оплаты: каждая запись уходит сразу, без ожидания предыдущей на экране.
+// Запросы идут по очереди, данные обновляются один раз после последней
+var _payQueue = Promise.resolve(), _payPending = 0, _payRecent = {};
+function _optimisticPL(type, amount, isCash){
+  try{
+    var mp = window._monthlyPL; if(!mp || !mp.months) return;
+    var m = mp.months[new Date().getMonth()]; if(!m) return;
+    if(type === 'income'){
+      var fee = isCash ? 0 : Math.round(amount*0.04);
+      m.revenue += amount; m.expenses += fee; m.profit += amount - fee;
+    } else { m.expenses += amount; m.profit -= amount; }
+    m.hasData = true;
+  }catch(e){}
+}
+function submitPayment(){
+  const amount = Number(getMoneyValue('payAmount')) || 0;
   const src = document.getElementById('paySource').value;
-  const resName = document.getElementById('payResidentGroup').style.display!=='none' 
+  const resName = document.getElementById('payResidentGroup').style.display!=='none'
     ? document.getElementById('payResident').value : '';
   if(!amount){showToast('⚠️ Введите сумму');return;}
-  _submitPaymentInFlight = true;
+  var t = payType, cash = payMethod==='cash';
+  var key = [t, src, amount, resName].join('|');
+  if(_payRecent[key] && Date.now() - _payRecent[key] < 4000){ showToast('⚠️ Эта запись уже отправлена'); return; }
+  _payRecent[key] = Date.now();
   closeModal('payModal');
+  _optimisticPL(t, amount, cash);
+  try{ renderAllPages(); }catch(e){}
+  _payPending++;
   showToast('⏳ Записываем '+fmt(amount)+' тг...');
-  callAction('addPayment', {type: payType, src, amount, isCash: payMethod==='cash', resident: resName})
-    .then(function(r){
-      if(r && r.deduplicated){
-        showToast('⚠️ Такая запись уже есть за сегодня. Дубль не создан');
-      } else if(r && r.ok){
-        showToast('✅ Записано: '+fmt(amount)+' тг');
-      } else {
-        showToast('❌ ' + ((r && r.error) || 'Ошибка записи'));
-      }
-      return loadAllData();
-    })
-    .finally(() => { setTimeout(() => { _submitPaymentInFlight = false; }, 3000); });
+  _payQueue = _payQueue.then(function(){
+    return callAction('addPayment', {type: t, src: src, amount: amount, isCash: cash, resident: resName});
+  }).then(function(r){
+    if(r && r.deduplicated) showToast('⚠️ Такая запись уже есть за сегодня. Дубль не создан');
+    else if(r && r.ok) showToast('✅ Записано: '+fmt(amount)+' тг');
+    else showToast('❌ ' + ((r && r.error) || 'Ошибка записи'));
+  }).catch(function(){ showToast('❌ Нет связи, запись не ушла'); })
+  .then(function(){
+    _payPending--;
+    if(!_payPending) loadAllData({fresh: true, force: true});
+  });
 }
 
 
