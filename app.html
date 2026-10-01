@@ -913,6 +913,8 @@
 <div class="page" id="page-more"><div id="moreContent"></div></div>
 <div class="page" id="page-home"><div id="homeContent"></div></div>
 <div class="page" id="page-library"><div id="libraryContent"></div></div>
+<div class="page" id="page-checklists"><div id="checklistsContent"></div></div>
+<div class="page" id="page-checklist"><div id="checklistContent"></div></div>
 <div class="page" id="page-myboard"><div id="myboardContent"></div></div>
 <div class="page" id="page-leadmagnets"></div>
 <div class="page" id="page-diagnostic"></div>
@@ -3906,6 +3908,121 @@
   .v10-dna-i .d { font-size: 13px; color: #9A9A9A; line-height: 1.5; margin-top: 4px; }
   .v9-mhead.v10-link { cursor: pointer; }
   .v9-mhead.v10-link span { display: flex; align-items: center; gap: 4px; }
+  /* ═══ 99 ЧЕК-ЛИСТОВ ═══ */
+  .v12-hero { position: relative; margin: 6px 0 0; padding: 22px 18px 18px; border-radius: 22px; background: #0B0B0B; border: 1px solid #1F1F1F; overflow: hidden; }
+  .v12-hero::after { content: ''; position: absolute; right: -70px; top: -70px; width: 220px; height: 220px; border-radius: 50%; border: 1px solid #1C1C1C; box-shadow: 0 0 0 26px #0B0B0B, 0 0 0 27px #181818, 0 0 0 54px #0B0B0B, 0 0 0 55px #141414; pointer-events: none; }
+  .v12-hero > * { position: relative; z-index: 1; }
+  .v12-hero .k { font-size: 10px; font-weight: 800; letter-spacing: 2.4px; color: #8C8C8C; }
+  .v12-hero .top { display: flex; align-items: flex-end; gap: 14px; margin-top: 10px; }
+  .v12-hero .n { font-size: 116px; font-weight: 800; line-height: 0.8; letter-spacing: -7px; margin-left: -4px; }
+  .v12-hero .t { font-size: 22px; font-weight: 800; line-height: 1.1; letter-spacing: -0.5px; padding-bottom: 2px; }
+  .v12-hero .s { font-size: 14px; color: #9A9A9A; line-height: 1.5; margin-top: 16px; max-width: 320px; }
+  .v12-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 16px; border-top: 1px solid #1F1F1F; padding-top: 14px; }
+  .v12-stats div + div { border-left: 1px solid #1F1F1F; padding-left: 14px; }
+  .v12-stats b { display: block; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+  .v12-stats span { display: block; font-size: 11px; color: #8C8C8C; margin-top: 2px; }
+  .v12-og { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
+  .v12-og button { background: #0E0E0E; border: 1px solid #1F1F1F; border-radius: 14px; padding: 12px 4px 10px; color: #FFFFFF; font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; -webkit-tap-highlight-color: transparent; min-width: 0; }
+  .v12-og button .i { height: 24px; display: flex; align-items: center; justify-content: center; }
+  .v12-og button b { font-size: 17px; font-weight: 800; line-height: 1.1; margin-top: 2px; }
+  .v12-og button span.l { font-size: 10.5px; color: #8C8C8C; font-weight: 700; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .v12-og button.on { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v12-og button.on span.l { color: #444; }
+  .v12-og button:active { transform: scale(0.97); }
+  .v12-chips2 { margin-top: 8px; }
+  .v12-cnt { margin: 16px 4px 8px; font-size: 11px; font-weight: 800; letter-spacing: 1.6px; color: #8C8C8C; text-transform: uppercase; display: flex; justify-content: space-between; align-items: baseline; }
+  .v12-cnt .lnk { color: #FFFFFF; letter-spacing: 0; text-transform: none; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .v12-card { background: #0E0E0E; border: 1px solid #1F1F1F; border-radius: 18px; padding: 14px 16px 15px; margin-top: 8px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v12-card:active { background: #141414; }
+  .v12-card.done { border-color: #3A3A3A; }
+  .v12-card .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .v12-org { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: 1.6px; color: #9A9A9A; text-transform: uppercase; }
+  .v12-org svg { color: #FFFFFF; }
+  .v12-lvl { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; border-radius: 11px; border: 1px solid #2E2E2E; font-size: 11px; font-weight: 800; color: #CFCFCF; white-space: nowrap; }
+  .v12-lvl .bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 10px; }
+  .v12-lvl .bars i { width: 3px; border-radius: 1px; background: #3A3A3A; }
+  .v12-lvl .bars i:nth-child(1) { height: 4px; } .v12-lvl .bars i:nth-child(2) { height: 7px; } .v12-lvl .bars i:nth-child(3) { height: 10px; }
+  .v12-lvl .bars i.on { background: currentColor; }
+  .v12-lvl.l3 { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v12-lvl.l3 .bars i { background: #000; }
+  .v12-card .row { display: flex; align-items: flex-start; gap: 14px; margin-top: 10px; }
+  .v12-card .m { flex: 1; min-width: 0; }
+  .v12-card .t { font-size: 17px; font-weight: 800; line-height: 1.25; letter-spacing: -0.3px; }
+  .v12-card .s { font-size: 13px; color: #9A9A9A; line-height: 1.45; margin-top: 4px; }
+  .v12-card .meta { font-size: 12px; color: #6E6E6E; font-weight: 700; margin-top: 10px; display: flex; align-items: center; gap: 6px; }
+  .v12-card .meta i { width: 3px; height: 3px; border-radius: 2px; background: #4A4A4A; }
+  .v12-ring { position: relative; width: 44px; height: 44px; flex-shrink: 0; margin-top: 2px; }
+  .v12-ring svg { display: block; transform: rotate(-90deg); }
+  .v12-ring span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; }
+  .v12-ring.full span { color: #000; }
+  .v12-empty { padding: 34px 18px; text-align: center; color: #9A9A9A; font-size: 13px; line-height: 1.5; }
+  /* Экран чек-листа */
+  .v12-cl-h { font-size: 28px; font-weight: 800; line-height: 1.1; letter-spacing: -0.8px; margin: 12px 0 0; }
+  .v12-cl-sub { font-size: 15px; color: #9A9A9A; line-height: 1.5; margin-top: 10px; }
+  .v12-cl-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+  .v12-cl-meta .v12-lvl { height: 28px; padding: 0 11px; border-radius: 14px; font-size: 12px; }
+  .v12-chip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 14px; border: 1px solid #2E2E2E; font-size: 12px; font-weight: 800; color: #CFCFCF; }
+  .v12-prog { margin: 14px 0 0; padding: 12px 2px; }
+  .v12-progfix { position: fixed; left: 0; right: 0; top: 0; z-index: 60; margin: 0; background: rgba(0,0,0,0.94); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid #1A1A1A; padding: calc(10px + var(--tg-safe-top, 0px)) 18px 12px; transform: translateY(-110%); transition: transform 0.2s ease; }
+  .v12-progfix.show { transform: none; }
+  .v12-progfix .tt { font-size: 12px; color: #8C8C8C; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
+  .v12-prog .r { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; font-weight: 800; }
+  .v12-prog .r span { color: #8C8C8C; font-weight: 700; }
+  .v12-prog .r b { font-size: 13px; }
+  .v12-prog .bar { height: 6px; border-radius: 3px; background: #1F1F1F; margin-top: 8px; overflow: hidden; }
+  .v12-prog .bar i { display: block; height: 100%; background: #FFFFFF; border-radius: 3px; transition: width 0.35s ease; }
+  .v12-items { padding: 4px 0; }
+  .v12-it { display: flex; gap: 14px; padding: 14px 16px; border-bottom: 1px solid #1A1A1A; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+  .v12-it:last-child { border-bottom: none; }
+  .v12-it .cb { width: 26px; height: 26px; border-radius: 8px; border: 1.5px solid #4A4A4A; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: transparent; transition: background 0.15s, border-color 0.15s; }
+  .v12-it .tx { font-size: 15px; line-height: 1.45; padding-top: 2px; transition: color 0.15s; }
+  .v12-it .tx em { font-style: normal; font-size: 11px; font-weight: 800; color: #5A5A5A; margin-right: 8px; letter-spacing: 0.4px; }
+  .v12-it.on .cb { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v12-it.on .tx { color: #6E6E6E; }
+  .v12-it:active .cb { transform: scale(0.92); }
+  .v12-box { margin-top: 10px; border-radius: 16px; padding: 16px 18px; }
+  .v12-box .k { font-size: 10px; font-weight: 800; letter-spacing: 2px; display: flex; align-items: center; gap: 8px; }
+  .v12-box .t { font-size: 15px; line-height: 1.5; margin-top: 8px; }
+  .v12-box.res { background: #FFFFFF; color: #000; }
+  .v12-box.res .k { color: #6B6B6B; }
+  .v12-box.err { background: #0E0E0E; border: 1px solid #1F1F1F; border-left: 3px solid #FF6B6F; border-radius: 6px 16px 16px 6px; }
+  .v12-box.err .k { color: #FF6B6F; }
+  .v12-box.err .t { color: #E6E6E6; }
+  .v12-done { margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; border: 1px solid #FFFFFF; }
+  .v12-done .ic { width: 34px; height: 34px; border-radius: 10px; background: #FFFFFF; color: #000; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .v12-done b { display: block; font-size: 15px; font-weight: 800; }
+  .v12-done span { display: block; font-size: 12px; color: #9A9A9A; margin-top: 2px; }
+  .v12-share { margin-top: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .v12-reset { display: block; margin: 14px auto 0; background: none; border: none; color: #8C8C8C; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .v12-mini { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid #1A1A1A; cursor: pointer; }
+  .v12-mini:last-child { border-bottom: none; }
+  .v12-mini .ic { width: 36px; height: 36px; border-radius: 10px; border: 1px solid #262626; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .v12-mini .m { flex: 1; min-width: 0; }
+  .v12-mini b { display: block; font-size: 14px; font-weight: 800; line-height: 1.3; }
+  .v12-mini span { display: block; font-size: 12px; color: #8C8C8C; margin-top: 2px; }
+  /* Промо-блок: белая карточка */
+  .v12-promo { margin-top: 12px; background: #FFFFFF; color: #000; border-radius: 22px; padding: 18px 16px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent; position: relative; overflow: hidden; }
+  .v12-promo .k { font-size: 10px; font-weight: 800; letter-spacing: 2.2px; color: #6B6B6B; display: flex; justify-content: space-between; align-items: center; }
+  .v12-promo .k .free { color: #000; border: 1.5px solid #000; border-radius: 6px; padding: 3px 7px; letter-spacing: 1.4px; }
+  .v12-promo .hd { display: flex; align-items: flex-end; gap: 12px; margin-top: 10px; }
+  .v12-promo .n { font-size: 76px; font-weight: 800; line-height: 0.8; letter-spacing: -4.5px; margin-left: -2px; }
+  .v12-promo .t { font-size: 19px; font-weight: 800; line-height: 1.12; letter-spacing: -0.4px; padding-bottom: 1px; }
+  .v12-promo .s { font-size: 13px; color: #4A4A4A; line-height: 1.45; margin-top: 12px; }
+  .v12-promo .ex { margin-top: 12px; border-top: 1px solid #E6E6E6; }
+  .v12-promo .ex div { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #EDEDED; font-size: 14px; font-weight: 700; line-height: 1.3; }
+  .v12-promo .ex div span.o { flex-shrink: 0; width: 30px; height: 30px; border-radius: 9px; background: #000; color: #FFFFFF; display: flex; align-items: center; justify-content: center; }
+  .v12-promo .ex div span.x { flex: 1; min-width: 0; }
+  .v12-promo .ex div span.x i { display: block; font-style: normal; font-size: 11.5px; color: #8C8C8C; font-weight: 700; margin-top: 2px; }
+  .v12-promo .ex div > svg { color: #B0B0B0; flex-shrink: 0; }
+  .v12-promo .ex div em { font-style: normal; font-size: 11px; color: #8C8C8C; font-weight: 700; flex-shrink: 0; }
+  .v12-promo .icons { display: flex; gap: 6px; margin-top: 14px; color: #000; }
+  .v12-promo .icons span { width: 30px; height: 30px; border-radius: 9px; border: 1px solid #DADADA; display: flex; align-items: center; justify-content: center; }
+  .v12-promo button { width: 100%; height: 50px; margin-top: 14px; border: none; border-radius: 12px; background: #000; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer; }
+  .v12-promo.compact .n { font-size: 60px; letter-spacing: -3.5px; }
+  .lm-min .v12-promo { margin: 18px 0 26px; }
+  .v12-promo.compact .t { font-size: 17px; }
+  .v12-libcl { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #F2F2F2; font-size: 14px; font-weight: 800; }
+  .v12-libcl span { font-size: 12px; color: #6B6B6B; font-weight: 700; }
 </style>
 
 <div class="modal-bg" id="attendModal">
@@ -4367,11 +4484,17 @@ function init(){
       'main':         {admin:'about',       resident:'about',       lead:'about'},
       // Платформа
       'platform':     {admin:'about',       resident:'myboard',     lead:'about'},
-      'board':        {admin:'about',       resident:'myboard',     lead:'about'}
+      'board':        {admin:'about',       resident:'myboard',     lead:'about'},
+      // 99 чек-листов: для всех ролей
+      'checklists':   {admin:'checklists',  resident:'checklists',  lead:'checklists'},
+      '99':           {admin:'checklists',  resident:'checklists',  lead:'checklists'}
     };
     
     function _resolveInitialPage(rawPage, role){
       if(!rawPage) return null;
+      // #checklist_c012: витрина, затем сам чек-лист
+      var clm = /^(?:checklists?|cl)[_-](c\d{1,4})$/i.exec(String(rawPage));
+      if(clm){ window._clDeep = clm[1].toLowerCase(); return 'checklists'; }
       var aliases = PAGE_ALIASES[String(rawPage).toLowerCase()];
       if(aliases && aliases[role]) return aliases[role];
       // Если алиас не найден, проверим что такая страница есть в доступных
@@ -4581,6 +4704,9 @@ function _showPageCore(id){
   if(id === 'leadmagnets'){ try{ renderLeadmagnets(); }catch(e){ console.error('lm:', e); } }
   if(id === 'leadrazbor'){ try{ renderLeadRazbor(); }catch(e){ console.error('razbor:', e); } }
   if(id === 'library'){ try{ renderLibrary(); }catch(e){ console.error('library:', e); } }
+  if(id === 'checklists'){ try{ renderChecklists(); }catch(e){ console.error('checklists:', e); } }
+  if(id === 'checklist'){ try{ renderChecklist(); }catch(e){ console.error('checklist:', e); } }
+  try{ if(typeof v12progFixSync === 'function') v12progFixSync(); }catch(e){}
 }
 
 // ══════════ НАВИГАЦИЯ: ИСТОРИЯ, «НАЗАД», ПРОКРУТКА ══════════
@@ -4603,7 +4729,8 @@ function v9title(id){
   var T = {dashboard:'Сводка', schedule:'Встречи', residents:'Резиденты', more:'Меню', home:'Главная', myboard:'Разбор', mytasks:'Задачи',
     mymeetings:'Встречи', mystatus:'Профиль', about:'О проекте', rules:'Правила', wheel:'Колесо', diagnostic:'Диагностика', leadmagnets:'Материалы',
     library:'Библиотека', reports:'Отчёты', fines:'Штрафы', visits:'Посещения', restasks:'Задачи резидентов', crm:'CRM', subscribers:'Подписчики',
-    custdev:'CustDev', content:'Полезное', wheeladmin:'Колесо клуба', todos:'Задачи команды', leadrazbor:'Разбор'};
+    custdev:'CustDev', content:'Полезное', wheeladmin:'Колесо клуба', todos:'Задачи команды', leadrazbor:'Разбор',
+    checklists:'99 чек-листов', checklist:'Чек-лист'};
   return T[id] || 'Назад';
 }
 function v9activeId(){ var a = document.querySelector('.page.active'); return a ? a.id.replace('page-', '') : ''; }
@@ -4634,6 +4761,7 @@ function showPage(id, opts){
 // Глубокая ссылка: Правила открываются поверх «О проекте», чтобы «Назад» вёл туда
 function v11openDeep(id){
   if(id === 'rules'){ showPage('about'); window._navStack.length = 0; showPage('rules'); return; }
+  if(id === 'checklists'){ var r0 = navRole(); showPage(r0 === 'admin' ? 'more' : (r0 === 'lead' ? 'about' : 'home')); window._navStack.length = 0; showPage('checklists'); return; }
   showPage(id);
 }
 function v9detailOpen(){ var d = document.getElementById('detailView'); return !!(d && d.classList.contains('show')); }
@@ -5366,6 +5494,7 @@ function v11homeLib(){
   return '<div class="v11-lib" onclick="showPage(\'library\')"><div class="v3-row-sb" style="align-items:flex-start;gap:12px"><div style="min-width:0">' +
     '<div class="k">БАЗА ЗНАНИЙ КЛУБА</div><div class="t">Библиотека BS</div><div class="s">' + v2esc(sub) + '</div></div>' +
     (items.length ? '<div class="n num">' + items.length + '</div>' : '') + '</div>' + tiles +
+    '<div class="v12-libcl" onclick="event.stopPropagation();v12openCL()"><div>+ 99 чек-листов <span>по органам бизнеса</span></div>' + v3icon('chev', 16) + '</div>' +
     '<button onclick="event.stopPropagation();showPage(\'library\')">Открыть</button></div>';
 }
 function v9libFiltered(){
@@ -5401,6 +5530,7 @@ function renderLibrary(){
   var L = window._lib;
   var n = L && L.items ? L.items.length : 0;
   var h = v3headBig(n ? n + ' ' + v3plural(n, 'материал', 'материала', 'материалов') + ' · синхронно с платформой' : 'База знаний клуба', 'Библиотека');
+  h += v12libFeatured();
   if(!L){
     el.innerHTML = h + '<div class="loading"><div class="spinner"></div></div>';
     loadLibrary(false).then(function(){ if(v9activeId() === 'library') renderLibrary(); });
@@ -11403,6 +11533,7 @@ function renderAbout(){
       '<div class="v3-row-sb" style="align-items:baseline"><div style="font-size:16px;font-weight:800">Диагностика бизнеса</div><div class="num" style="font-size:13px;color:#9A9A9A">' + ready + '/' + areas + '</div></div>' +
       '<div class="v3-dseg" style="margin-top:12px;grid-template-columns:repeat(' + areas + ',minmax(0,1fr))">' + Array.apply(null, Array(areas)).map(function(a, i){ return '<i' + (i < ready ? ' class="on"' : '') + '></i>'; }).join('') + '</div>' +
       '<div class="v3-row-sb" style="margin-top:12px"><div style="font-size:13px;color:#9A9A9A;line-height:1.45">' + v2esc(diagText) + '</div><div style="flex-shrink:0;font-size:13px;font-weight:800">' + (ready >= areas ? 'Результат →' : (ready ? 'Дальше →' : 'Начать →')) + '</div></div></div>';
+    h += v12promo('lead');
     h += '<div class="v3-hero" style="margin-top:12px"><div class="k">ЭКСПРЕСС-РАЗБОР</div><div class="t">Разберём одну проблему до причины</div>' +
       '<div class="s">60 минут с Рустамом и Береке. Уходите с диагнозом и планом на 10 дней.</div>' +
       '<button id="ctaDiagnostic">Записаться на разбор</button></div>';
@@ -11569,6 +11700,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
     ]],
     ['BS', [
       ext('doc', 'Полезное', 'Ссылки и материалы команды', 'useful'),
+      pg('check', '99 чек-листов', 'Витрина для лидов и резидентов', "showPage('checklists')"),
       pg('tasks', 'Цели и задачи', 'Задачи команды: Рустам и Береке', "showPage('todos')"),
       ext('msg', 'Рекомендации ИИ', 'Подсказки по клубу', 'aiRec'),
       ext('doc', 'Google Doc', 'Документ проекта', 'gdoc'),
@@ -11692,6 +11824,7 @@ function renderLeadmagnets(){
         <h1 class="hero-title">Чек-листы и подкасты</h1>
         <div class="hero-sub">Реальные кейсы резидентов с цифрами «было / стало». Концентрат того что мы делаем на разборах.</div>
       </div>
+      ${v12promo('lm')}
       
       <div class="lm-section">
         <div class="section-min-label" id="lmCountLabel">Чек-листы</div>
@@ -12762,6 +12895,369 @@ function selectMonth(idx){
   set('v3Div', fmt(m.dividends || 0));
   set('v3Kassa', (m.kassa === null || m.kassa === undefined) ? '·' : fmt(m.kassa), m.kassa != null && m.kassa < 0);
   document.querySelectorAll('#plMonthsRow .v3-mchip').forEach(function(c, i){ c.classList.toggle('on', i === idx); });
+}
+
+// ═══ 99 ЧЕК-ЛИСТОВ: витрина, экран чек-листа, промо-блоки для всех ролей ═══
+// Данные: GET app/checklists → {version, items}. Кэш с версией в localStorage, без сети показываем кэш.
+// Отметки хранятся на устройстве: bs_cl_p_<id> = [номера выполненных пунктов]
+function V12_ORG(){ return [['Финансы', 'blood'], ['Стратегия', 'brain'], ['Маркетинг', 'heart'], ['Продажи', 'hands'], ['Команда', 'spine'], ['Процессы', 'dna'], ['Аналитика', 'eyes'], ['Собственник', 'owner']]; }
+function V12_LV(){ return [['старт', 'Старт', 1], ['рост', 'Рост', 2], ['система', 'Система', 3]]; }
+function V12_OWNER_ICON(){ return '<circle cx="10" cy="7" r="3.5"/><path d="M3.5 20.5c0-3.9 2.9-6.6 6.5-6.6 1.3 0 2.5.3 3.4.9"/><path d="M18.2 11.5l-2.7 4.5h3.6l-2.7 4.5"/>'; }
+function V12_SHARE_ICON(){ return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L10 14"/><path d="M21 3l-6.5 18-3.5-7-7-3.5z"/></svg>'; }
+function v12organId(o){ for(var i = 0; i < V12_ORG().length; i++) if(V12_ORG()[i][0] === o) return V12_ORG()[i][1]; return 'brain'; }
+function v12oIcon(organ, size, w){
+  var id = v12organId(organ);
+  return '<svg width="' + (size || 20) + '" height="' + (size || 20) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.8) + '" stroke-linecap="round" stroke-linejoin="round">' + (id === 'owner' ? V12_OWNER_ICON() : (((typeof V9_ORGAN_ICONS === 'object' && V9_ORGAN_ICONS) || {})[id] || '')) + '</svg>';
+}
+function v12num(n){ return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+function v12lvl(level){
+  var L = V12_LV().filter(function(x){ return x[0] === String(level || '').toLowerCase(); })[0] || V12_LV()[0];
+  return '<span class="v12-lvl l' + L[2] + '"><span class="bars"><i class="on"></i><i' + (L[2] > 1 ? ' class="on"' : '') + '></i><i' + (L[2] > 2 ? ' class="on"' : '') + '></i></span>' + L[1] + '</span>';
+}
+function v12clean(s){ return String(s == null ? '' : s).replace(/\s*[\u2014\u2013]\s*/g, ': ').trim(); }
+
+// ── Данные ──
+window._cl = null;
+function v12clCached(){ try{ var c = JSON.parse(localStorage.getItem('bs_checklists') || 'null'); return c && Array.isArray(c.items) && c.items.length ? c : null; }catch(e){ return null; } }
+function v12clNorm(j){
+  var arr = Array.isArray(j) ? j : ((j && j.items) || []);
+  var items = arr.filter(function(x){ return x && x.id && String(x.title || '').trim(); }).map(function(x){
+    return {id: String(x.id), organ: String(x.organ || ''), title: v12clean(x.title), subtitle: v12clean(x.subtitle), level: String(x.level || 'старт').toLowerCase(), time: v12clean(x.time),
+      items: (Array.isArray(x.items) ? x.items : v9list(x.items)).map(v12clean).filter(Boolean), result: v12clean(x.result), mistake: v12clean(x.mistake)};
+  });
+  return {version: (j && !Array.isArray(j) && j.version != null) ? String(j.version) : '', items: items};
+}
+function v12clData(){
+  if(!window._cl){
+    var c = v12clCached();
+    if(c) window._cl = {items: c.items, version: c.version || '', at: 0, cached: true};
+  }
+  return window._cl;
+}
+function loadChecklists(force){
+  var cur = v12clData();
+  if(!force && cur && !cur.error && cur.at && Date.now() - cur.at < 600000) return Promise.resolve(cur);
+  if(window._clLoading) return window._clLoading;
+  var init = bsInitData();
+  if(!init){
+    var c0 = v12clCached();
+    window._cl = {items: c0 ? c0.items : [], version: c0 ? c0.version : '', error: 'noinit', stale: !!c0, at: Date.now()};
+    return Promise.resolve(window._cl);
+  }
+  window._clLoading = fetch(APP_SERVER + 'checklists?' + new URLSearchParams({_tg: init}).toString())
+    .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function(j){
+      var d = v12clNorm(j), c = v12clCached();
+      if(!d.items.length && c) d = {items: c.items, version: c.version};
+      else if(d.items.length && (!c || String(c.version || '') !== d.version || !d.version || c.items.length !== d.items.length)){
+        try{ localStorage.setItem('bs_checklists', JSON.stringify({version: d.version, items: d.items, saved: Date.now()})); }catch(e){}
+      }
+      window._cl = {items: d.items, version: d.version, at: Date.now()};
+      return window._cl;
+    })
+    .catch(function(e){
+      var c = v12clCached();
+      var items = (window._cl && window._cl.items && window._cl.items.length) ? window._cl.items : (c ? c.items : []);
+      window._cl = {items: items, version: c ? c.version : '', error: String(e && e.message || 'network'), stale: items.length > 0, at: Date.now()};
+      return window._cl;
+    })
+    .then(function(l){ window._clLoading = null; v12clRefresh(); return l; });
+  return window._clLoading;
+}
+// После загрузки: перерисовываем открытый экран чек-листов и промо-блоки на месте
+function v12clRefresh(){
+  var a = v9activeId();
+  if(a === 'checklists'){ v12clKeepScroll(renderChecklists); return; }
+  if(a === 'checklist'){ v12clKeepScroll(renderChecklist); return; }
+  document.querySelectorAll('[data-v12promo]').forEach(function(el){
+    var t = document.createElement('div'); t.innerHTML = v12promo(el.getAttribute('data-v12promo'));
+    if(t.firstChild) el.replaceWith(t.firstChild);
+  });
+  document.querySelectorAll('[data-v12feat]').forEach(function(el){
+    var t = document.createElement('div'); t.innerHTML = v12libFeatured();
+    if(t.firstChild) el.replaceWith(t.firstChild);
+  });
+}
+function v12clKeepScroll(fn){ var y = window.scrollY; try{ fn(); }catch(e){ console.error('checklists:', e); } try{ window.scrollTo(0, y); }catch(e){} }
+
+// ── Прогресс ──
+function v12prog(id){
+  try{ var a = JSON.parse(localStorage.getItem('bs_cl_p_' + id) || '[]'); return Array.isArray(a) ? a.filter(function(n){ return typeof n === 'number'; }) : []; }catch(e){ return []; }
+}
+function v12progSave(id, arr){
+  try{ if(arr.length) localStorage.setItem('bs_cl_p_' + id, JSON.stringify(arr)); else localStorage.removeItem('bs_cl_p_' + id); }catch(e){}
+}
+function v12progDone(x){ var n = x.items.length; return v12prog(x.id).filter(function(i){ return i >= 0 && i < n; }).length; }
+function v12ring(done, total){
+  var r = 19, c = 2 * Math.PI * r, p = total ? done / total : 0, full = total && done >= total;
+  return '<div class="v12-ring' + (full ? ' full' : '') + '"><svg width="44" height="44" viewBox="0 0 44 44">' +
+    (full ? '<circle cx="22" cy="22" r="21" fill="#FFFFFF"/>' :
+      '<circle cx="22" cy="22" r="' + r + '" fill="none" stroke="#262626" stroke-width="3"/>' +
+      '<circle cx="22" cy="22" r="' + r + '" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - p)).toFixed(1) + '"/>') +
+    '</svg><span class="num">' + (full ? (V3_CHECK || '') : Math.round(p * 100) + '%') + '</span></div>';
+}
+
+// ── Открытие ──
+function v12openCL(organ){
+  if(organ) window._clOrgan = organ;
+  showPage('checklists');
+}
+function v12clOpen(id){
+  window._clCur = id;
+  try{ sessionStorage.setItem('bs_cl_cur', id); }catch(e){}
+  showPage('checklist');
+}
+
+// ── Витрина «99 чек-листов» ──
+function v12clFiltered(){
+  var L = v12clData(); var items = (L && L.items) || [];
+  var o = window._clOrgan || 'all', lv = window._clLevel || 'all', q = String(window._clQ || '').toLowerCase().trim();
+  return items.filter(function(x){
+    if(o !== 'all' && x.organ !== o) return false;
+    if(lv !== 'all' && x.level !== lv) return false;
+    if(q){ var hay = [x.title, x.subtitle, x.organ, x.result, x.mistake].concat(x.items).join(' ').toLowerCase(); if(hay.indexOf(q) < 0) return false; }
+    return true;
+  });
+}
+function v12card(x){
+  var d = v12progDone(x), n = x.items.length;
+  return '<div class="v12-card' + (d && d >= n ? ' done' : '') + '" onclick="v12clOpen(\'' + v2esc(x.id) + '\')">' +
+    '<div class="top"><div class="v12-org">' + v12oIcon(x.organ, 14, 2) + v2esc(x.organ) + '</div>' + v12lvl(x.level) + '</div>' +
+    '<div class="row"><div class="m"><div class="t">' + v2esc(x.title) + '</div>' + (x.subtitle ? '<div class="s">' + v2esc(x.subtitle) + '</div>' : '') +
+    '<div class="meta">' + (x.time ? '<span>' + v2esc(x.time) + '</span><i></i>' : '') + '<span class="num">' + n + ' ' + v3plural(n, 'пункт', 'пункта', 'пунктов') + '</span>' +
+    (d && d < n ? '<i></i><span style="color:#CFCFCF">в работе</span>' : '') + (d && d >= n ? '<i></i><span style="color:#FFFFFF">пройден</span>' : '') + '</div></div>' +
+    (d ? v12ring(d, n) : '') + '</div></div>';
+}
+function v12clListHTML(){
+  var list = v12clFiltered();
+  var all = (v12clData() || {}).items || [];
+  var filt = (window._clOrgan && window._clOrgan !== 'all') || (window._clLevel && window._clLevel !== 'all') || window._clQ;
+  var head = '<div class="v12-cnt"><span>' + (filt ? 'Найдено ' + v12num(list.length) : 'Все чек-листы') + '</span>' + (filt ? '<span class="lnk" onclick="v12clReset()">Сбросить</span>' : '<span>' + v12num(all.length) + '</span>') + '</div>';
+  if(!list.length) return head + '<div class="v2-card v12-empty">Ничего не нашли.<br>Попробуйте другой орган или уровень</div>';
+  // Начатые и незавершённые: наверх, чтобы продолжить
+  var started = list.filter(function(x){ var d = v12progDone(x); return d && d < x.items.length; });
+  var rest = list.filter(function(x){ return started.indexOf(x) < 0; });
+  var h = '';
+  if(started.length && !filt) h += '<div class="v12-cnt"><span>Продолжить</span><span class="num">' + started.length + '</span></div>' + started.map(v12card).join('') + head;
+  else { h += head; rest = list; }
+  return h + rest.map(v12card).join('');
+}
+function v12clSetOrgan(o){ window._clOrgan = (window._clOrgan === o && o !== 'all') ? 'all' : o; v12clKeepScroll(renderChecklists); }
+function v12clSetLevel(l){ window._clLevel = l; v12clKeepScroll(renderChecklists); }
+function v12clReset(){ window._clOrgan = 'all'; window._clLevel = 'all'; window._clQ = ''; v12clKeepScroll(renderChecklists); }
+function v12clSearch(v){ window._clQ = v; var el = document.getElementById('clList'); if(el) el.innerHTML = v12clListHTML(); }
+function renderChecklists(){
+  var el = document.getElementById('checklistsContent');
+  if(!el) return;
+  var L = v12clData();
+  if(!L || !L.at) loadChecklists(false);
+  var items = (L && L.items) || [];
+  var total = items.length || 99;
+  var points = items.reduce(function(s, x){ return s + x.items.length; }, 0);
+  var started = 0, finished = 0;
+  items.forEach(function(x){ var d = v12progDone(x); if(d) started++; if(d && d >= x.items.length) finished++; });
+  var h = '<div class="v12-hero"><div class="k">' + (navRole() === 'lead' ? 'БИБЛИОТЕКА BS · БЕСПЛАТНО' : 'БИБЛИОТЕКА BS') + '</div>' +
+    '<div class="top"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '<br>для вашего<br>бизнеса</div></div>' +
+    '<div class="s">Проверенные шаги по семи органам бизнеса: от финансов до команды</div>' +
+    '<div class="v12-stats">' +
+      '<div><b class="num">' + (points ? v12num(points) : '1 000+') + '</b><span>' + (points ? v3plural(points, 'шаг', 'шага', 'шагов') : 'шагов') + ' внутри</span></div>' +
+      '<div><b class="num">7+1</b><span>органов и собственник</span></div>' +
+      (finished ? '<div><b class="num">' + finished + '<span style="display:inline;font-size:13px;color:#6E6E6E;margin:0">/' + started + '</span></b><span>пройдено у вас</span></div>'
+               : (started ? '<div><b class="num">' + started + '</b><span>в работе у вас</span></div>' : '<div><b class="num">3</b><span>уровня глубины</span></div>')) +
+    '</div></div>';
+  if(!items.length){
+    if(L && L.error) h += '<div class="v2-card v12-empty" style="margin-top:12px">Не получилось загрузить чек-листы.<br><button class="v3-outline" style="margin-top:12px" onclick="window._cl=null;loadChecklists(true);renderChecklists()">Повторить</button></div>';
+    else h += '<div class="loading"><div class="spinner"></div></div>';
+    el.innerHTML = h;
+    return;
+  }
+  var cnt = {}, lcnt = {};
+  var o = window._clOrgan || 'all', lv = window._clLevel || 'all';
+  items.forEach(function(x){ cnt[x.organ] = (cnt[x.organ] || 0) + 1; if(o === 'all' || x.organ === o) lcnt[x.level] = (lcnt[x.level] || 0) + 1; });
+  h += '<div class="v12-og">' + V12_ORG().map(function(g){
+    return '<button class="' + (o === g[0] ? 'on' : '') + '" onclick="v12clSetOrgan(\'' + g[0] + '\')" aria-label="' + g[0] + '"><span class="i">' + v12oIcon(g[0], 22) + '</span><b class="num">' + (cnt[g[0]] || 0) + '</b><span class="l">' + g[0] + '</span></button>';
+  }).join('') + '</div>';
+  if(L.error && L.stale) h += '<div class="v3-cap" style="margin:10px 4px 0">Показана сохранённая версия: сервер сейчас не ответил</div>';
+  h += '<div class="v3-search" style="margin-top:14px">' + navIcon('search', 18) + '<input type="text" placeholder="Найти: касса, найм, воронка" aria-label="Поиск по чек-листам" value="' + v2esc(window._clQ || '') + '" oninput="v12clSearch(this.value)"></div>';
+  h += '<div class="v9-chips">' + [['all', 'Все', items.length]].concat(V12_ORG().map(function(g){ return [g[0], g[0], cnt[g[0]] || 0]; })).filter(function(c){ return c[0] === 'all' || c[2]; }).map(function(c){
+    return '<button class="' + (o === c[0] ? 'on' : '') + '" onclick="v12clSetOrgan(\'' + c[0] + '\')">' + c[1] + ' <span class="num" style="opacity:.55">' + c[2] + '</span></button>';
+  }).join('') + '</div>';
+  h += '<div class="v9-chips v12-chips2">' + [['all', 'Любой уровень', 0]].concat(V12_LV().map(function(l){ return [l[0], l[1], lcnt[l[0]] || 0]; })).map(function(c){
+    return '<button class="' + (lv === c[0] ? 'on' : '') + '" onclick="v12clSetLevel(\'' + c[0] + '\')">' + c[1] + (c[0] !== 'all' ? ' <span class="num" style="opacity:.55">' + c[2] + '</span>' : '') + '</button>';
+  }).join('') + '</div>';
+  h += '<div id="clList">' + v12clListHTML() + '</div>';
+  el.innerHTML = h;
+  // Глубокая ссылка на конкретный чек-лист
+  if(window._clDeep){
+    var id = window._clDeep; window._clDeep = null;
+    if(items.some(function(x){ return x.id === id; })) setTimeout(function(){ v12clOpen(id); }, 0);
+  }
+}
+
+// ── Экран чек-листа ──
+function v12clCur(){
+  var id = window._clCur;
+  if(!id){ try{ id = sessionStorage.getItem('bs_cl_cur'); }catch(e){} }
+  var items = (v12clData() || {}).items || [];
+  return items.filter(function(x){ return x.id === id; })[0] || null;
+}
+function v12progHTML(d, n){
+  var p = n ? Math.round(d / n * 100) : 0;
+  return '<div class="r"><b>Выполнено <span class="num" style="color:#fff">' + d + '</span> из <span class="num" style="color:#fff">' + n + '</span></b><span class="num">' + p + '%</span></div><div class="bar"><i style="width:' + p + '%"></i></div>';
+}
+function v12doneHTML(){
+  return '<div class="v12-done"><div class="ic">' + (V3_CHECK || '') + '</div><div><b>Чек-лист пройден</b><span>Все шаги отмечены. Поделитесь с командой или возьмите следующий</span></div></div>';
+}
+function renderChecklist(){
+  var el = document.getElementById('checklistContent');
+  if(!el) return;
+  var x = v12clCur();
+  if(!x){
+    var L = v12clData();
+    if(!L || !L.at){ el.innerHTML = '<div class="loading"><div class="spinner"></div></div>'; loadChecklists(false); return; }
+    el.innerHTML = '<div class="v2-card v12-empty" style="margin-top:12px">Чек-лист не найден.<br><button class="v3-outline" style="margin-top:12px" onclick="showPage(\'checklists\')">Все чек-листы</button></div>';
+    return;
+  }
+  var n = x.items.length, done = v12prog(x.id), d = v12progDone(x);
+  var h = '<div class="v12-org" style="margin-top:6px">' + v12oIcon(x.organ, 16, 2) + v2esc(x.organ) + '<span style="color:#4A4A4A">·</span><span class="num">' + v2esc(x.id.replace(/^c0*/, '№ ')) + '</span></div>' +
+    '<h1 class="v12-cl-h">' + v2esc(x.title) + '</h1>' +
+    (x.subtitle ? '<div class="v12-cl-sub">' + v2esc(x.subtitle) + '</div>' : '') +
+    '<div class="v12-cl-meta">' + (x.time ? '<span class="v12-chip">' + navIcon('cal', 13, 2) + v2esc(x.time) + '</span>' : '') + v12lvl(x.level) +
+      '<span class="v12-chip num">' + n + ' ' + v3plural(n, 'пункт', 'пункта', 'пунктов') + '</span></div>';
+  h += '<div class="v12-prog" id="clProg">' + v12progHTML(d, n) + '</div>';
+  h += '<div class="v2-card v12-items" style="margin-top:4px">' + x.items.map(function(s, i){
+    var on = done.indexOf(i) >= 0;
+    return '<div class="v12-it' + (on ? ' on' : '') + '" id="clIt' + i + '" role="checkbox" aria-checked="' + on + '" onclick="v12clTick(' + i + ')"><div class="cb">' + (V3_CHECK || '') + '</div><div class="tx"><em class="num">' + String(i + 1).padStart(2, '0') + '</em>' + v2esc(s) + '</div></div>';
+  }).join('') + '</div>';
+  h += '<div id="clDone">' + (n && d >= n ? v12doneHTML() : '') + '</div>';
+  if(x.result) h += '<div class="v12-box res" style="margin-top:14px"><div class="k">' + (V3_CHECK || '') + 'РЕЗУЛЬТАТ</div><div class="t">' + v2esc(x.result) + '</div></div>';
+  if(x.mistake) h += '<div class="v12-box err"><div class="k"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 7v6"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9.5"/></svg>ТИПИЧНАЯ ОШИБКА</div><div class="t">' + v2esc(x.mistake) + '</div></div>';
+  h += '<button class="v3-primary v12-share" onclick="v12clShare()">' + V12_SHARE_ICON() + 'Поделиться чек-листом</button>';
+  h += '<button class="v12-reset" id="clReset" onclick="v12clResetProg()" style="' + (d ? '' : 'display:none') + '">Сбросить отметки</button>';
+  // Лиду: внедрить с трекером
+  if(navRole() === 'lead'){
+    h += '<div class="v3-hero" style="margin-top:18px"><div class="k">ВНЕДРИТЬ С ТРЕКЕРОМ</div><div class="t">Разберём ваш бизнес и выберем чек-листы, которые дадут деньги первыми</div>' +
+      '<button onclick="showPage(\'leadrazbor\')">Записаться на разбор</button></div>';
+  }
+  var more = ((v12clData() || {}).items || []).filter(function(y){ return y.organ === x.organ && y.id !== x.id; });
+  var k = more.findIndex(function(y){ return y.id > x.id; }); if(k > 0) more = more.slice(k).concat(more.slice(0, k));
+  more = more.slice(0, 3);
+  if(more.length){
+    h += '<div class="v2-h" style="margin-top:24px">Ещё: ' + v2esc(x.organ) + ' <span class="lnk" onclick="v12openCL(\'' + v2esc(x.organ) + '\')">Все</span></div><div class="v2-card">' + more.map(function(y){
+      var dd = v12progDone(y);
+      return '<div class="v12-mini" onclick="v12clOpen(\'' + v2esc(y.id) + '\')"><div class="ic">' + v12oIcon(y.organ, 18) + '</div><div class="m"><b>' + v2esc(y.title) + '</b><span class="num">' + v2esc(y.time) + ' · ' + y.items.length + ' ' + v3plural(y.items.length, 'пункт', 'пункта', 'пунктов') + (dd ? ' · ' + Math.round(dd / y.items.length * 100) + '%' : '') + '</span></div><div style="color:#6E6E6E">' + v3icon('chev', 16) + '</div></div>';
+    }).join('') + '</div>';
+  }
+  el.innerHTML = h;
+  v12progFix(x, d, n);
+}
+// Прогресс всегда на виду: при прокрутке списка сверху выезжает компактная полоса
+function v12progFix(x, d, n){
+  var f = document.getElementById('clProgFix');
+  if(!f){
+    f = document.createElement('div'); f.id = 'clProgFix'; f.className = 'v12-progfix v12-prog';
+    document.body.appendChild(f);
+    window.addEventListener('scroll', v12progFixSync, {passive: true});
+  }
+  f.innerHTML = '<div class="tt">' + v2esc(x.title) + '</div><div id="clProgFixIn">' + v12progHTML(d, n) + '</div>';
+  v12progFixSync();
+}
+function v12progFixSync(){
+  var f = document.getElementById('clProgFix'); if(!f) return;
+  var p = document.getElementById('clProg');
+  var on = v9activeId() === 'checklist' && p && p.getBoundingClientRect().bottom < 0;
+  f.classList.toggle('show', !!on);
+}
+function v12clTick(i){
+  var x = v12clCur(); if(!x) return;
+  var a = v12prog(x.id), k = a.indexOf(i);
+  if(k >= 0) a.splice(k, 1); else a.push(i);
+  a.sort(function(p, q){ return p - q; });
+  v12progSave(x.id, a);
+  var n = x.items.length, d = v12progDone(x);
+  var it = document.getElementById('clIt' + i);
+  if(it){ it.classList.toggle('on', k < 0); it.setAttribute('aria-checked', String(k < 0)); }
+  var pr = document.getElementById('clProg'); if(pr) pr.innerHTML = v12progHTML(d, n);
+  var pf = document.getElementById('clProgFixIn'); if(pf) pf.innerHTML = v12progHTML(d, n);
+  var rs = document.getElementById('clReset'); if(rs) rs.style.display = d ? '' : 'none';
+  var dn = document.getElementById('clDone'); if(dn) dn.innerHTML = (n && d >= n) ? v12doneHTML() : '';
+  try{
+    if(tg && tg.HapticFeedback){
+      if(n && d >= n && k < 0) tg.HapticFeedback.notificationOccurred('success'); else tg.HapticFeedback.selectionChanged();
+    }
+  }catch(e){}
+  if(n && d >= n && k < 0) showToast('Чек-лист пройден');
+}
+function v12clResetProg(){
+  var x = v12clCur(); if(!x) return;
+  v12progSave(x.id, []);
+  v12clKeepScroll(renderChecklist);
+}
+function v12clShareText(x){
+  var t = x.title + (x.subtitle ? '\n' + x.subtitle : '') + '\n\n' + x.items.map(function(s, i){ return (i + 1) + '. ' + s; }).join('\n');
+  if(x.result) t += '\n\nРезультат: ' + x.result;
+  if(x.mistake) t += '\nТипичная ошибка: ' + x.mistake;
+  t += '\n\n99 чек-листов Business Surgery';
+  return t;
+}
+function v12clShare(){
+  var x = v12clCur(); if(!x) return;
+  var url = 'https://t.me/bsurgery_bot?start=checklists';
+  var link = 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(v12clShareText(x));
+  try{ if(tg && tg.openTelegramLink){ tg.openTelegramLink(link); return; } }catch(e){}
+  window.open(link, '_blank');
+}
+
+// ── Промо-блоки ──
+// Три примера из разных органов, меняются раз в день
+function v12examples(k){
+  var items = ((v12clData() || {}).items) || [];
+  if(!items.length) return [];
+  var pref = ['Финансы', 'Продажи', 'Команда', 'Маркетинг', 'Стратегия', 'Процессы', 'Аналитика', 'Собственник'];
+  var day = Math.floor(Date.now() / 86400000);
+  var out = [];
+  for(var j = 0; j < pref.length && out.length < (k || 3); j++){
+    var org = pref[(j + day) % pref.length];
+    var pool = items.filter(function(x){ return x.organ === org; });
+    if(pool.length) out.push(pool[day % pool.length]);
+  }
+  return out;
+}
+function v12promo(kind){
+  var L = v12clData();
+  if(!L || !L.at) loadChecklists(false);
+  var items = (L && L.items) || [];
+  var total = items.length || 99;
+  var ex = v12examples(3);
+  var compact = kind === 'lm';
+  var h = '<div class="v12-promo' + (compact ? ' compact' : '') + '" data-v12promo="' + kind + '" onclick="v12openCL()">' +
+    '<div class="k"><span>БИБЛИОТЕКА BS</span><span class="free">БЕСПЛАТНО</span></div>' +
+    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '<br>для вашего бизнеса</div></div>' +
+    '<div class="s">Пошаговые инструкции по семи органам бизнеса: делаете по пунктам и видите результат.</div>';
+  if(ex.length){
+    h += '<div class="ex">' + ex.map(function(x){
+      return '<div onclick="event.stopPropagation();window._clOrgan=\'all\';v12clOpenFrom(\'' + v2esc(x.id) + '\')"><span class="o">' + v12oIcon(x.organ, 16) + '</span><span class="x">' + v2esc(x.title) + '<i>' + v2esc(x.organ) + ' · ' + x.items.length + ' ' + v3plural(x.items.length, 'шаг', 'шага', 'шагов') + '</i></span>' + v3icon('chev', 16) + '</div>';
+    }).join('') + '</div>';
+  } else {
+    h += '<div class="icons">' + V12_ORG().map(function(g){ return '<span>' + v12oIcon(g[0], 16) + '</span>'; }).join('') + '</div>';
+  }
+  h += '<button onclick="event.stopPropagation();v12openCL()">Открыть ' + total + ' ' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '</button></div>';
+  return h;
+}
+// Пример из промо: сначала витрина, потом чек-лист, чтобы «Назад» вёл в витрину
+function v12clOpenFrom(id){ showPage('checklists'); v12clOpen(id); }
+// Карточка в Библиотеке
+function v12libFeatured(){
+  var L = v12clData();
+  if(!L || !L.at) loadChecklists(false);
+  var items = (L && L.items) || [];
+  var total = items.length || 99;
+  var started = items.filter(function(x){ return v12progDone(x); }).length;
+  return '<div class="v12-promo compact" data-v12feat="1" style="margin-top:16px" onclick="v12openCL()">' +
+    '<div class="k"><span>НОВОЕ В БИБЛИОТЕКЕ</span><span class="free">' + (started ? 'В РАБОТЕ ' + started : V12_ORG().length + ' ОРГАНОВ') + '</span></div>' +
+    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '<br>для вашего бизнеса</div></div>' +
+    '<div class="icons">' + V12_ORG().map(function(g){ return '<span>' + v12oIcon(g[0], 16) + '</span>'; }).join('') + '</div>' +
+    '<button onclick="event.stopPropagation();v12openCL()">Открыть</button></div>';
 }
 </script>
 </body>
