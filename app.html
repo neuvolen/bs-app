@@ -4014,6 +4014,49 @@
   .v12-promo .ex div span.x { flex: 1; min-width: 0; }
   .v12-promo .ex div span.x i { display: block; font-style: normal; font-size: 11.5px; color: #8C8C8C; font-weight: 700; margin-top: 2px; }
   .v12-promo .ex div > svg { color: #B0B0B0; flex-shrink: 0; }
+  /* R13: герой лида «99 чек-листов», конверсия после чек-листа */
+  .v13-hero { margin: 2px -2px 0; background: #FFFFFF; color: #000; border-radius: 24px; padding: 18px 18px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v13-hero .k { font-size: 10px; font-weight: 800; letter-spacing: 2.2px; color: #6B6B6B; display: flex; justify-content: space-between; align-items: center; }
+  .v13-hero .k .free { color: #FFFFFF; background: #000; border-radius: 6px; padding: 4px 8px; letter-spacing: 1.4px; }
+  .v13-hero .hd { display: flex; align-items: flex-end; gap: 12px; margin-top: 12px; }
+  .v13-hero .n { font-size: 96px; font-weight: 800; line-height: 0.78; letter-spacing: -6px; margin-left: -3px; }
+  .v13-hero .t { font-size: 20px; font-weight: 800; line-height: 1.1; letter-spacing: -0.4px; padding-bottom: 1px; }
+  .v13-hero .t b { display: inline-block; margin-top: 3px; border-bottom: 3px solid #000; line-height: 1.05; }
+  .v13-hero .s { font-size: 13.5px; color: #4A4A4A; line-height: 1.45; margin-top: 14px; }
+  .v13-hero .ex { margin-top: 12px; border-top: 1px solid #E6E6E6; transition: opacity .25s ease, transform .25s ease; min-height: 168px; }
+  .v13-hero .ex.out { opacity: 0; transform: translateY(-4px); }
+  .v13-hero .ex .r { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #EDEDED; font-size: 14px; font-weight: 700; line-height: 1.3; min-height: 56px; box-sizing: border-box; }
+  .v13-hero .ex .r span.o { flex-shrink: 0; width: 32px; height: 32px; border-radius: 9px; background: #000; color: #FFFFFF; display: flex; align-items: center; justify-content: center; }
+  .v13-hero .ex .r span.x { flex: 1; min-width: 0; }
+  .v13-hero .ex .r span.x i { display: block; font-style: normal; font-size: 11.5px; color: #8C8C8C; font-weight: 700; margin-top: 2px; }
+  .v13-hero .ex .r > svg { color: #B0B0B0; flex-shrink: 0; }
+  .v13-hero .dots { display: flex; justify-content: center; gap: 5px; margin-top: 10px; }
+  .v13-hero .dots i { width: 5px; height: 5px; border-radius: 3px; background: #D0D0D0; transition: width .25s, background .25s; }
+  .v13-hero .dots i.on { width: 16px; background: #000; }
+  .v13-hero .icons { display: flex; gap: 6px; margin-top: 14px; }
+  .v13-hero .icons span { width: 32px; height: 32px; border-radius: 9px; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; }
+  .v13-hero .go { margin-top: 12px; width: 100%; height: 56px; border-radius: 14px; border: none; background: #000; color: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .v13-hero .ft { margin-top: 10px; text-align: center; font-size: 11.5px; font-weight: 700; color: #8C8C8C; }
+  .v13-hero .ft b { color: #000; }
+  .v13-brand { margin: 30px 2px 0; }
+  .v13-soft { margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 14px 14px 14px 16px; border-radius: 16px; border: 1px solid #2E2E2E; background: #0E0E0E; cursor: pointer; }
+  .v13-soft .m { flex: 1; min-width: 0; }
+  .v13-soft b { display: block; font-size: 14.5px; font-weight: 800; line-height: 1.3; }
+  .v13-soft span { display: block; font-size: 12.5px; color: #9A9A9A; line-height: 1.45; margin-top: 4px; }
+  .v13-soft em { display: inline-block; font-style: normal; font-size: 13px; font-weight: 800; margin-top: 8px; border-bottom: 1px solid #FFFFFF; }
+  .v13-soft .go { color: #8C8C8C; flex-shrink: 0; }
+  .v13-done { margin-top: 12px; background: #FFFFFF; color: #000; border-radius: 20px; padding: 18px 16px 16px; animation: v13in .35s ease; }
+  @keyframes v13in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .v13-done .k { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; }
+  .v13-done .k .ic { width: 26px; height: 26px; border-radius: 8px; background: #000; color: #FFFFFF; display: flex; align-items: center; justify-content: center; }
+  .v13-done .t { font-size: 21px; font-weight: 800; line-height: 1.2; letter-spacing: -0.4px; margin-top: 10px; }
+  .v13-done .s { font-size: 13px; color: #4A4A4A; line-height: 1.45; margin-top: 8px; }
+  .v13-done .b1 { margin-top: 14px; width: 100%; height: 54px; border-radius: 14px; border: none; background: #000; color: #FFFFFF; font-family: inherit; font-size: 15.5px; font-weight: 800; cursor: pointer; }
+  .v13-done .b2 { margin-top: 8px; width: 100%; min-height: 54px; padding: 8px 14px; border-radius: 14px; border: 1.5px solid #000; background: transparent; color: #000; font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .v13-done .b2 .l { font-size: 15px; font-weight: 800; }
+  .v13-done .b2 .n { font-size: 12px; font-weight: 600; color: #6B6B6B; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .v13-seen { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 12px; font-size: 12px; color: #7A7A7A; font-weight: 600; }
+  @media (prefers-reduced-motion: reduce) { .v13-hero .ex, .v13-done { transition: none; animation: none; } }
   .v12-promo .ex div em { font-style: normal; font-size: 11px; color: #8C8C8C; font-weight: 700; flex-shrink: 0; }
   .v12-promo .icons { display: flex; gap: 6px; margin-top: 14px; color: #000; }
   .v12-promo .icons span { width: 30px; height: 30px; border-radius: 9px; border: 1px solid #DADADA; display: flex; align-items: center; justify-content: center; }
@@ -4172,7 +4215,8 @@ const NAV_ICONS = {
   x:'<path d="M6 6l12 12M18 6L6 18"/>',
   pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
   minus:'<path d="M5 12h14"/>',
-  check:'<path d="M5 12l5 5 9-10"/>'
+  check:'<path d="M5 12l5 5 9-10"/>',
+  cl:'<rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M8 8.5l1.5 1.5 2.5-2.8M8 14.5l1.5 1.5 2.5-2.8M14.5 9h2M14.5 15h2"/>'
 };
 function navIcon(k, size, w){
   return '<svg width="'+(size||24)+'" height="'+(size||24)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(w||1.8)+'" stroke-linecap="round" stroke-linejoin="round">'+(NAV_ICONS[k]||'')+'</svg>';
@@ -4194,6 +4238,7 @@ const NAV = {
   ],
   lead: [
     {id:'home', label:'Главная',     icon:'home',  pages:[{id:'about', label:'Главная'}]},
+    {id:'cl',   label:'Чек-листы',   icon:'cl',    pages:[{id:'checklists', label:'99 чек-листов'}]},
     {id:'diag', label:'Диагностика', icon:'board', pages:[{id:'diagnostic', label:'Диагностика'}]},
     {id:'mat',  label:'Материалы',   icon:'doc',   pages:[{id:'leadmagnets', label:'Материалы'}]},
     {id:'razbor', label:'Разбор',    icon:'cal',   pages:[{id:'leadrazbor', label:'Разбор'}]}
@@ -4519,7 +4564,7 @@ function init(){
       if (effectiveRole === 'admin') {
         showPage('dashboard');
       } else if (effectiveRole === 'lead') {
-        showPage('diagnostic');
+        showPage('about');
       } else {
         showPage('home');
       }
@@ -4568,7 +4613,6 @@ function setRole(role){
   setTimeout(() => {
     window._navGroup = null;
     var firstTab = NAV[navRole()][0].pages[0].id;
-    if(navRole() === 'lead') firstTab = 'diagnostic';
     showPage(firstTab);
   }, 50);
   // Сохраняем выбор админа
@@ -11525,15 +11569,12 @@ function renderAbout(){
     if(ready < areas) nextArea = AREAS[ready] || null;
     var diagText = ready >= areas ? 'Диагностика пройдена. Результат: ' + (dr && dr.totalPct != null ? dr.totalPct + ' из 100' : 'готов') + '.'
       : (ready && nextArea ? 'Готово органов: ' + ready + '. Дальше ' + nextArea.organ + ': ' + String(nextArea.label).toLowerCase() + '.' : 'Семь органов бизнеса, 5 минут. Покажем слабые места.');
-    h += '<div style="margin:0 2px">' +
-      '<div class="hero-logo-real" style="width:auto">' + (logo ? '<img class="v3-logo" src="' + logo + '" alt="business surgery">' : '') + '<div class="v3-gold">БИЗНЕС-ТРЕКИНГ</div></div></div>';
-    h += '<div style="margin:0 2px"><div class="v3-h1" style="font-size:36px;line-height:1.02;letter-spacing:-1.2px;margin-top:16px">Бизнес<br>как организм</div>' +
-      '<p class="v3-p" style="font-size:15px;max-width:300px;margin-top:14px">Находим причину, а не симптом. Каждые 10 дней: диагноз, стратегия, задачи.</p></div>';
-    h += '<div class="v2-card" style="margin-top:20px;padding:16px 18px;cursor:pointer" onclick="showPage(\'diagnostic\')">' +
+    // Главный бесплатный оффер: 99 чек-листов, сразу на первом экране
+    h += v13leadHero();
+    h += '<div class="v2-card" style="margin-top:12px;padding:16px 18px;cursor:pointer" onclick="showPage(\'diagnostic\')">' +
       '<div class="v3-row-sb" style="align-items:baseline"><div style="font-size:16px;font-weight:800">Диагностика бизнеса</div><div class="num" style="font-size:13px;color:#9A9A9A">' + ready + '/' + areas + '</div></div>' +
       '<div class="v3-dseg" style="margin-top:12px;grid-template-columns:repeat(' + areas + ',minmax(0,1fr))">' + Array.apply(null, Array(areas)).map(function(a, i){ return '<i' + (i < ready ? ' class="on"' : '') + '></i>'; }).join('') + '</div>' +
       '<div class="v3-row-sb" style="margin-top:12px"><div style="font-size:13px;color:#9A9A9A;line-height:1.45">' + v2esc(diagText) + '</div><div style="flex-shrink:0;font-size:13px;font-weight:800">' + (ready >= areas ? 'Результат →' : (ready ? 'Дальше →' : 'Начать →')) + '</div></div></div>';
-    h += v12promo('lead');
     h += '<div class="v3-hero" style="margin-top:12px"><div class="k">ЭКСПРЕСС-РАЗБОР</div><div class="t">Разберём одну проблему до причины</div>' +
       '<div class="s">60 минут с Рустамом и Береке. Уходите с диагнозом и планом на 10 дней.</div>' +
       '<button id="ctaDiagnostic">Записаться на разбор</button></div>';
@@ -11542,8 +11583,10 @@ function renderAbout(){
       h += '<div class="v2-h">Материалы <span class="lnk" onclick="showPage(\'leadmagnets\')">Все ' + items.length + '</span></div><div class="v3-tiles">' +
         items.slice(0, 2).map(function(x, i){ return '<div class="v2-card v3-tile" style="min-height:0;border-radius:14px" onclick="showPage(\'leadmagnets\')"><span class="num" style="font-size:11px;color:#8C8C8C">' + String(i + 1).padStart(2, '0') + '</span><div class="t">' + v2esc(x.title || x.name || 'Материал') + '</div></div>'; }).join('') + '</div>';
     }
-    h += '<div class="v2-h">О проекте</div>';
-    h += '<div class="v2-card" style="padding:16px"><div style="font-size:14px;color:#9A9A9A;line-height:1.45">Акселератор и трекинг-платформа с миссией укрепить здоровье бизнеса и энергию роста.</div>' +
+    h += '<div class="v13-brand"><div class="hero-logo-real" style="width:auto">' + (logo ? '<img class="v3-logo" src="' + logo + '" alt="business surgery">' : '') + '<div class="v3-gold">БИЗНЕС-ТРЕКИНГ</div></div>' +
+      '<div class="v3-h1" style="font-size:30px;line-height:1.05;letter-spacing:-1px;margin-top:14px">Бизнес как организм</div>' +
+      '<p class="v3-p" style="font-size:14px;max-width:310px;margin-top:10px">Находим причину, а не симптом. Каждые 10 дней: диагноз, стратегия, задачи.</p></div>';
+    h += '<div class="v2-card" style="padding:16px;margin-top:14px"><div style="font-size:14px;color:#9A9A9A;line-height:1.45">Акселератор и трекинг-платформа с миссией укрепить здоровье бизнеса и энергию роста.</div>' +
       '<div style="margin-top:12px">' + v3numrow([['700+', 'разборов проведено'], ['20', 'резидентов в клубе'], ['×3', 'средний рост']]) + '</div></div>';
     h += '<div class="v3-quote" style="margin-top:10px">Работаем с причиной на уровне ДНК, а не с симптомами.</div>';
     h += v3socials();
@@ -11590,7 +11633,7 @@ function v4writeTeam(i){
 }
 function renderLeadRazbor(){
   var el = document.getElementById('leadrazborContent');
-  if(!el) return;
+  if(!el || !V4_TEAM) return;   // первый ранний вызов: скрипт ниже ещё не дочитан
   var h = '<div class="v3-headbig"><div class="v3-title xl">Экспресс-разбор</div></div>';
   h += '<div class="v3-hero" style="margin-top:14px"><div class="k">60 МИНУТ · РУСТАМ И БЕРЕКЕ</div>' +
     '<div class="t">Разберём одну проблему вашего бизнеса до причины</div>' +
@@ -12253,6 +12296,7 @@ let diagState = {
 function renderDiagnostic(){
   var el = document.getElementById('page-diagnostic');
   if(!el) return;
+  try{ diagState; }catch(e){ return; }   // первый ранний вызов: состояние объявлено ниже по скрипту
   
   // Если есть сохранённый результат. восстановим
   if(!diagState.started && !diagState.finished){
@@ -12973,6 +13017,10 @@ function v12clRefresh(){
     var t = document.createElement('div'); t.innerHTML = v12promo(el.getAttribute('data-v12promo'));
     if(t.firstChild) el.replaceWith(t.firstChild);
   });
+  document.querySelectorAll('[data-v13hero]').forEach(function(el){
+    var t = document.createElement('div'); t.innerHTML = v13leadHero();
+    if(t.firstChild) el.replaceWith(t.firstChild);
+  });
   document.querySelectorAll('[data-v12feat]').forEach(function(el){
     var t = document.createElement('div'); t.innerHTML = v12libFeatured();
     if(t.firstChild) el.replaceWith(t.firstChild);
@@ -13071,6 +13119,7 @@ function renderChecklists(){
     el.innerHTML = h;
     return;
   }
+  h += v13softBanner(started);
   var cnt = {}, lcnt = {};
   var o = window._clOrgan || 'all', lv = window._clLevel || 'all';
   items.forEach(function(x){ cnt[x.organ] = (cnt[x.organ] || 0) + 1; if(o === 'all' || x.organ === o) lcnt[x.level] = (lcnt[x.level] || 0) + 1; });
@@ -13129,14 +13178,15 @@ function renderChecklist(){
     var on = done.indexOf(i) >= 0;
     return '<div class="v12-it' + (on ? ' on' : '') + '" id="clIt' + i + '" role="checkbox" aria-checked="' + on + '" onclick="v12clTick(' + i + ')"><div class="cb">' + (V3_CHECK || '') + '</div><div class="tx"><em class="num">' + String(i + 1).padStart(2, '0') + '</em>' + v2esc(s) + '</div></div>';
   }).join('') + '</div>';
-  h += '<div id="clDone">' + (n && d >= n ? v12doneHTML() : '') + '</div>';
+  h += '<div id="clDone">' + (n && d >= n ? v13doneHTML(x) : '') + '</div>';
   if(x.result) h += '<div class="v12-box res" style="margin-top:14px"><div class="k">' + (V3_CHECK || '') + 'РЕЗУЛЬТАТ</div><div class="t">' + v2esc(x.result) + '</div></div>';
   if(x.mistake) h += '<div class="v12-box err"><div class="k"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 7v6"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9.5"/></svg>ТИПИЧНАЯ ОШИБКА</div><div class="t">' + v2esc(x.mistake) + '</div></div>';
   h += '<button class="v3-primary v12-share" onclick="v12clShare()">' + V12_SHARE_ICON() + 'Поделиться чек-листом</button>';
   h += '<button class="v12-reset" id="clReset" onclick="v12clResetProg()" style="' + (d ? '' : 'display:none') + '">Сбросить отметки</button>';
-  // Лиду: внедрить с трекером
+  if(navRole() === 'resident') h += '<div class="v13-seen">' + navIcon('me', 13, 2) + 'Трекер видит ваш прогресс</div>';
+  // Лиду: внедрить с трекером (после прохождения вместо него карточка «Чек-лист пройден»)
   if(navRole() === 'lead'){
-    h += '<div class="v3-hero" style="margin-top:18px"><div class="k">ВНЕДРИТЬ С ТРЕКЕРОМ</div><div class="t">Разберём ваш бизнес и выберем чек-листы, которые дадут деньги первыми</div>' +
+    h += '<div class="v3-hero" id="clLeadCta" style="margin-top:18px;' + (n && d >= n ? 'display:none' : '') + '"><div class="k">ВНЕДРИТЬ С ТРЕКЕРОМ</div><div class="t">Разберём ваш бизнес и выберем чек-листы, которые дадут деньги первыми</div>' +
       '<button onclick="showPage(\'leadrazbor\')">Записаться на разбор</button></div>';
   }
   var more = ((v12clData() || {}).items || []).filter(function(y){ return y.organ === x.organ && y.id !== x.id; });
@@ -13180,7 +13230,10 @@ function v12clTick(i){
   var pr = document.getElementById('clProg'); if(pr) pr.innerHTML = v12progHTML(d, n);
   var pf = document.getElementById('clProgFixIn'); if(pf) pf.innerHTML = v12progHTML(d, n);
   var rs = document.getElementById('clReset'); if(rs) rs.style.display = d ? '' : 'none';
-  var dn = document.getElementById('clDone'); if(dn) dn.innerHTML = (n && d >= n) ? v12doneHTML() : '';
+  var dn = document.getElementById('clDone'); if(dn) dn.innerHTML = (n && d >= n) ? v13doneHTML(x) : '';
+  var lc = document.getElementById('clLeadCta'); if(lc) lc.style.display = (n && d >= n) ? 'none' : '';
+  if(n && d >= n && k < 0 && dn && dn.firstChild){ try{ var rb = dn.getBoundingClientRect(); if(rb.bottom > window.innerHeight - 90) window.scrollBy({top: rb.bottom - window.innerHeight + 110, behavior: 'smooth'}); }catch(e){} }
+  v13report(x);
   try{
     if(tg && tg.HapticFeedback){
       if(n && d >= n && k < 0) tg.HapticFeedback.notificationOccurred('success'); else tg.HapticFeedback.selectionChanged();
@@ -13192,6 +13245,7 @@ function v12clResetProg(){
   var x = v12clCur(); if(!x) return;
   v12progSave(x.id, []);
   v12clKeepScroll(renderChecklist);
+  v13report(x);
 }
 function v12clShareText(x){
   var t = x.title + (x.subtitle ? '\n' + x.subtitle : '') + '\n\n' + x.items.map(function(s, i){ return (i + 1) + '. ' + s; }).join('\n');
@@ -13259,6 +13313,135 @@ function v12libFeatured(){
     '<div class="icons">' + V12_ORG().map(function(g){ return '<span>' + v12oIcon(g[0], 16) + '</span>'; }).join('') + '</div>' +
     '<button onclick="event.stopPropagation();v12openCL()">Открыть</button></div>';
 }
+
+// ═══ R13: 99 чек-листов как главный бесплатный оффер лида, конверсия после чек-листа, прогресс на сервер ═══
+// Примеры для героя: наборы по три из разных органов, наборы сменяются каждые 3.5 с
+function v13exampleSets(){
+  var items = ((v12clData() || {}).items) || [];
+  if(!items.length) return [];
+  var pref = ['Финансы', 'Продажи', 'Команда', 'Маркетинг', 'Стратегия', 'Процессы', 'Аналитика', 'Собственник'];
+  var day = Math.floor(Date.now() / 86400000);
+  var by = {}; items.forEach(function(x){ (by[x.organ] = by[x.organ] || []).push(x); });
+  var flat = [], seen = {};
+  for(var r = 0; r < 2; r++) pref.forEach(function(o, j){
+    var pool = by[o]; if(!pool || !pool.length) return;
+    var x = pool[(day + r * 5 + j) % pool.length];
+    if(!seen[x.id]){ seen[x.id] = 1; flat.push(x); }
+  });
+  var sets = [];
+  for(var i = 0; i + 3 <= flat.length && sets.length < 5; i += 3) sets.push(flat.slice(i, i + 3));
+  if(!sets.length && flat.length) sets.push(flat);
+  return sets;
+}
+function v13exRows(set){
+  return (set || []).map(function(x){
+    var n = x.items.length;
+    return '<div class="r" onclick="event.stopPropagation();window._clOrgan=\'all\';v12clOpenFrom(\'' + v2esc(x.id) + '\')"><span class="o">' + v12oIcon(x.organ, 16) + '</span><span class="x">' + v2esc(x.title) + '<i>' + v2esc(x.organ) + ' · <span class="num">' + n + '</span> ' + v3plural(n, 'шаг', 'шага', 'шагов') + '</i></span>' + v3icon('chev', 16) + '</div>';
+  }).join('');
+}
+function v13dots(n, k){ var h = ''; for(var i = 0; i < n; i++) h += '<i' + (i === k ? ' class="on"' : '') + '></i>'; return h; }
+function v13leadHero(){
+  var L = v12clData();
+  if(!L || !L.at) loadChecklists(false);
+  var items = (L && L.items) || [];
+  var total = items.length || 99;
+  var points = items.reduce(function(s, x){ return s + x.items.length; }, 0);
+  var started = items.filter(function(x){ return v12progDone(x); }).length;
+  var sets = v13exampleSets();
+  var k = sets.length ? (window._v13ex || 0) % sets.length : 0;
+  var h = '<div class="v13-hero" data-v13hero="1" onclick="v12openCL()">' +
+    '<div class="k"><span>BUSINESS SURGERY</span><span class="free">БЕСПЛАТНО</span></div>' +
+    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '<br>для вашего бизнеса.<br><b>Бесплатно</b></div></div>' +
+    '<div class="s">Пошаговые инструкции по семи органам бизнеса: делаете по пунктам и видите результат.</div>';
+  if(sets.length){
+    h += '<div class="ex" id="v13ex" aria-live="polite">' + v13exRows(sets[k]) + '</div>' +
+      (sets.length > 1 ? '<div class="dots" id="v13dots">' + v13dots(sets.length, k) + '</div>' : '');
+  } else {
+    h += '<div class="icons">' + V12_ORG().map(function(g){ return '<span>' + v12oIcon(g[0], 16) + '</span>'; }).join('') + '</div>';
+  }
+  h += '<button class="go" onclick="event.stopPropagation();v12openCL()">Открыть чек-листы' + v3icon('chev', 18, 2.4) + '</button>' +
+    '<div class="ft">' + (started ? 'В работе у вас: <b class="num">' + started + '</b> ' + v3plural(started, 'чек-лист', 'чек-листа', 'чек-листов')
+      : '<span class="num">' + (points ? v12num(points) : '1 000+') + '</span> шагов · 7 органов и собственник · 3 уровня') + '</div></div>';
+  if(sets.length > 1) v13rotStart();
+  return h;
+}
+function v13rotStart(){
+  if(window._v13rot) return;
+  window._v13rot = setInterval(function(){
+    var box = document.getElementById('v13ex');
+    if(!box || document.visibilityState !== 'visible' || v9activeId() !== 'about') return;
+    var sets = v13exampleSets(); if(sets.length < 2) return;
+    window._v13ex = ((window._v13ex || 0) + 1) % sets.length;
+    box.classList.add('out');
+    setTimeout(function(){
+      var b = document.getElementById('v13ex'); if(!b) return;
+      b.innerHTML = v13exRows(sets[window._v13ex]);
+      var d = document.getElementById('v13dots'); if(d) d.innerHTML = v13dots(sets.length, window._v13ex);
+      b.classList.remove('out');
+    }, 260);
+  }, 3500);
+}
+function v13diagDone(){ try{ return !!localStorage.getItem('bs_diagnostic_result'); }catch(e){ return false; } }
+// Мягкое приглашение в диагностику после 3 начатых чек-листов (лид)
+function v13softBanner(started){
+  if(navRole() !== 'lead' || started < 3) return '';
+  var done = v13diagDone();
+  return '<div class="v13-soft" onclick="showPage(\'diagnostic\')"><div class="m"><b>' + (done ? 'Сверьте чек-листы с вашей диагностикой' : 'В работе ' + started + ' ' + v3plural(started, 'чек-лист', 'чек-листа', 'чек-листов') + '. Пора увидеть картину целиком') + '</b>' +
+    '<span>' + (done ? 'Результат покажет, какой орган тянет остальные и что внедрять первым' : 'Диагностика: семь органов за 5 минут. Покажем, какой орган тянет остальные и с чего начать') + '</span>' +
+    '<em>' + (done ? 'Мой результат' : 'Пройти диагностику') + '</em></div><div class="go">' + v3icon('chev', 18, 2.2) + '</div></div>';
+}
+// Следующий чек-лист: сначала тот же орган, затем остальные, пройденные пропускаем
+function v13nextCL(x){
+  var items = ((v12clData() || {}).items) || [];
+  var open = items.filter(function(y){ return y.id !== x.id && v12progDone(y) < y.items.length; });
+  var same = open.filter(function(y){ return y.organ === x.organ; });
+  var pick = function(arr){ var a = arr.filter(function(y){ return y.id > x.id; }); return a[0] || arr[0] || null; };
+  return pick(same) || pick(open);
+}
+function v13clNext(){
+  var x = v12clCur(); if(!x) return;
+  var y = v13nextCL(x);
+  if(y) v12clOpen(y.id); else v12openCL(x.organ);
+}
+function v13book(){
+  var x = v12clCur();
+  try{ openDiagnosticModal(); }catch(e){ showPage('leadrazbor'); return; }
+  try{ var r = document.getElementById('diagRequest'); if(r && !r.value && x) r.value = 'Прошёл чек-лист «' + x.title + '». Хочу разобрать, как внедрить это в моём бизнесе'; }catch(e){}
+}
+function v13leadDoneHTML(x){
+  var y = v13nextCL(x);
+  return '<div class="v13-done" id="clConv"><div class="k"><span class="ic">' + (V3_CHECK || '') + '</span>Чек-лист пройден.</div>' +
+    '<div class="t">Следующий шаг: разобрать, как внедрить это в вашем бизнесе</div>' +
+    '<div class="s">60 минут с трекером: найдём, где этот чек-лист даст деньги первым, и соберём план на 10 дней.</div>' +
+    '<button class="b1" onclick="v13book()">Записаться на разбор</button>' +
+    '<button class="b2" onclick="v13clNext()"><span class="l">Следующий чек-лист</span>' + (y ? '<span class="n">' + v2esc(y.title) + '</span>' : '<span class="n">Все чек-листы: ' + v2esc(x.organ) + '</span>') + '</button></div>';
+}
+function v13doneHTML(x){ return navRole() === 'lead' ? v13leadDoneHTML(x) : v12doneHTML(); }
+
+// Прогресс на сервер: трекер видит, что внедрил резидент; бот приглашает лида после завершения.
+// Отправка без ожидания ответа, через 1.5 с после последней отметки, ошибки игнорируем.
+window._v13rep = {};
+function v13report(x){
+  if(!x || !bsInitData()) return;
+  var R = window._v13rep;
+  Object.keys(R).forEach(function(id){ if(id !== x.id) v13flush(id); });
+  if(R[x.id]) clearTimeout(R[x.id].t);
+  R[x.id] = {x: x, t: setTimeout(function(){ v13flush(x.id); }, 1500)};
+}
+function v13flush(id){
+  var R = window._v13rep, e = R[id];
+  if(!e) return;
+  clearTimeout(e.t); delete R[id];
+  var init = bsInitData(); if(!init) return;
+  var x = e.x;
+  var body = {id: x.id, title: x.title, organ: x.organ, done: v12progDone(x), total: x.items.length};
+  try{
+    fetch(APP_SERVER + 'ckprogress?_tg=' + encodeURIComponent(init), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body), keepalive: true}).catch(function(){});
+  }catch(err){}
+}
+document.addEventListener('visibilitychange', function(){
+  if(document.visibilityState === 'hidden') Object.keys(window._v13rep || {}).forEach(v13flush);
+});
 </script>
 </body>
 </html>
