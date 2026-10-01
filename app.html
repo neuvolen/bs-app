@@ -817,7 +817,8 @@
 </div>
 
 <nav class="bnav" id="bnav"></nav>
-<button id="v4BackAdmin" onclick="setRole('admin')">Вернуться в админ</button>
+<button id="v4BackAdmin" type="button" onclick="v9backToAdmin(event)">Вернуться в админ</button>
+<div id="v9Back" class="v9-back"><button type="button" onclick="v9goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span id="v9BackLbl">Назад</span></button></div>
 <!-- ADMIN PAGES -->
 <div class="page active" id="page-dashboard"><div id="dashboardContent"><div class="loading"><div class="spinner"></div><div class="loading-text" style="color:#999;font-size:12px;margin-top:8px">Загрузка данных...</div></div></div></div>
 <div class="page" id="page-leadrazbor"><div id="leadrazborContent"></div></div>
@@ -831,9 +832,6 @@
 <div class="page" id="page-crm">
   <div class="section-head">
     <div class="section-title">CRM</div>
-    <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-    </button>
   </div>
   <div id="crmFilters" style="display:flex;gap:7px;overflow-x:auto;padding:0 0 12px;margin:0 -16px 4px;padding-left:16px;padding-right:16px"></div>
   <div id="crmBox"></div>
@@ -842,9 +840,6 @@
 <div class="page" id="page-visits">
   <div class="section-head">
     <div class="section-title">Посещения</div>
-    <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-    </button>
   </div>
   <div style="font-size:12px;color:#888;padding:0 4px 14px;line-height:1.45">
     Проведено встреч из оплаченных. Неиспользованные переносятся, доступ не блокируется.
@@ -856,9 +851,6 @@
   <div class="section-head">
     <div class="section-title">Задачи резидентов</div>
     <div style="display:flex;gap:8px">
-    <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-    </button>
     <button class="icon-btn" onclick="openAddResTaskModal()" title="Поставить задачу">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
@@ -886,9 +878,6 @@
   <div class="section-head">
     <div class="section-title">Полезное</div>
     <div style="display:flex;gap:8px">
-      <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-      </button>
       <button class="icon-btn" onclick="openContentModal()" title="Добавить пост" style="width:36px;height:36px">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
@@ -910,9 +899,6 @@
 <div class="page" id="page-wheeladmin">
   <div class="section-head">
     <div class="section-title" style="color:#FFFFFF">Колесо клуба</div>
-    <button class="icon-btn" onclick="refreshData()" title="Обновить" style="width:36px;height:36px">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-    </button>
   </div>
   <div style="font-size:12px;color:#888;padding:0 4px 14px;line-height:1.45">
     Последние замеры каждого резидента. Клик по резиденту открывает его колёса и всю историю.
@@ -926,6 +912,7 @@
 <div class="page" id="page-about"></div>
 <div class="page" id="page-more"><div id="moreContent"></div></div>
 <div class="page" id="page-home"><div id="homeContent"></div></div>
+<div class="page" id="page-library"><div id="libraryContent"></div></div>
 <div class="page" id="page-myboard"><div id="myboardContent"></div></div>
 <div class="page" id="page-leadmagnets"></div>
 <div class="page" id="page-diagnostic"></div>
@@ -3706,6 +3693,129 @@
   .hero-sub { font-size: 14px; line-height: 1.45; }
   #payTypeIncome, #payTypeExpense { height: 46px; font-size: 15px; }
   .v4-brand .t { font-size: 13px; color: #9A9A9A; line-height: 1.4; }
+
+  /* ═══ v9: назад, прокрутка, Сводка крупнее, Библиотека, Замеры, рабочий календарь, разбор диагностики ═══ */
+  .v9-back { display: none; padding: calc(10px + var(--tg-safe-top, 0px)) 10px 0; }
+  .v9-back.show { display: block; }
+  .v9-back button { display: inline-flex; align-items: center; gap: 2px; height: 40px; padding: 0 14px 0 6px; border: 1px solid #262626; border-radius: 12px;
+    background: transparent; color: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v9-back button:active { background: #141414; }
+  body.v9-hasback .page, body.v9-hasback.v3-nohead .page { padding-top: 10px; }
+  #v4BackAdmin { z-index: 1200; touch-action: manipulation; }
+  .v3-mchips { gap: 8px; margin-top: 14px; padding-bottom: 2px; }
+  .v3-mchip { min-width: 56px; height: 48px; padding: 0 8px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .v3-mchip .n { font-size: 11px; letter-spacing: 0.8px; }
+  .v3-mchip .v { font-size: 14px; font-weight: 800; }
+  .v3-month { padding: 18px 16px; }
+  .v3-month .v3-k { font-size: 13px; }
+  .v3-month .v3-v { font-size: 26px; margin-top: 6px; letter-spacing: -0.6px; }
+  .v3-month .v3-grid2 > div { padding: 14px 14px 16px; }
+  .v3-month #v3MonName { font-size: 18px !important; }
+  #page-dashboard .v3-debt { font-size: 16px; }
+  #page-dashboard .v3-miss .m { font-size: 16px; }
+  #page-dashboard .v2-h { font-size: 13px; }
+  .v9-links { display: flex; gap: 6px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; }
+  .v9-links::-webkit-scrollbar { display: none; }
+  .v9-links button { flex-shrink: 0; height: 36px; padding: 0 12px; border-radius: 18px; border: 1px solid #262626; background: transparent; color: #FFFFFF;
+    font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .v9-links button b { color: #FF6B6F; font-weight: 800; }
+  .v3-lbl.lnkable { cursor: pointer; }
+  /* Библиотека */
+  .v9-lib-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .v9-lib-tile { padding: 14px; min-height: 112px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; }
+  .v9-lib-tile .k { font-size: 10px; font-weight: 800; letter-spacing: 1.2px; color: #8C8C8C; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+  .v9-lib-tile .t { font-size: 14px; font-weight: 800; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .v9-lib-tile .o { margin-top: auto; font-size: 11px; color: #9A9A9A; font-weight: 700; }
+  .v9-chips { display: flex; gap: 6px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .v9-chips::-webkit-scrollbar { display: none; }
+  .v9-chips button { flex-shrink: 0; height: 34px; padding: 0 14px; border-radius: 17px; border: 1px solid #262626; background: transparent; color: #9A9A9A;
+    font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+  .v9-chips button.on { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v9-lib-row { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-bottom: 1px solid #1A1A1A; cursor: pointer; }
+  .v9-lib-row:last-child { border-bottom: none; }
+  .v9-lib-row .ic { width: 36px; height: 36px; border-radius: 10px; border: 1px solid #262626; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #FFFFFF; }
+  .v9-lib-row .m { flex: 1; min-width: 0; }
+  .v9-lib-row .m b { display: block; font-size: 15px; font-weight: 800; line-height: 1.3; }
+  .v9-lib-row .m span { display: block; font-size: 12px; color: #9A9A9A; margin-top: 3px; line-height: 1.4; }
+  .v9-lib-row .m i { font-style: normal; font-size: 10px; font-weight: 800; letter-spacing: 1px; color: #8C8C8C; text-transform: uppercase; }
+  .v9-sec { margin-top: 18px; }
+  .v9-sec .h { font-size: 11px; font-weight: 800; letter-spacing: 1.4px; color: #8C8C8C; margin: 0 2px 8px; text-transform: uppercase; }
+  .v9-step { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #1A1A1A; font-size: 14px; line-height: 1.45; }
+  .v9-step:last-child { border-bottom: none; }
+  .v9-step .n { width: 24px; height: 24px; border-radius: 12px; background: #FFFFFF; color: #000; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .v9-step .c { width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid #4A4A4A; flex-shrink: 0; margin-top: 1px; }
+  .v9-mats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .v9-mats button { height: 48px; border-radius: 12px; border: 1px solid #262626; background: transparent; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; }
+  .v9-mats button.w { background: #FFFFFF; color: #000; border-color: #FFFFFF; }
+  /* Замеры: шкалы */
+  .v9-bars { padding: 6px 16px 14px; }
+  .v9-bar { display: grid; grid-template-columns: minmax(0, 1fr) 96px 34px; gap: 10px; align-items: center; padding: 8px 0; }
+  .v9-bar .l { font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .v9-bar .b { height: 6px; border-radius: 3px; background: #1F1F1F; overflow: hidden; }
+  .v9-bar .b i { display: block; height: 100%; background: #FFFFFF; border-radius: 3px; }
+  .v9-bar .b i.r { background: #FF6B6F; }
+  .v9-bar .v { font-size: 13px; font-weight: 800; text-align: right; font-variant-numeric: tabular-nums; }
+  .v9-bar .v.red { color: #FF6B6F; }
+  .v9-mhead { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 16px 4px; }
+  .v9-mhead b { font-size: 15px; font-weight: 800; }
+  .v9-mhead span { font-size: 12px; color: #9A9A9A; font-weight: 700; }
+  .v9-talents { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 16px 16px; }
+  .v9-talents span { height: 32px; padding: 0 12px; border-radius: 16px; border: 1px solid #333; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+  .v9-talents span i { font-style: normal; font-size: 11px; color: #8C8C8C; font-weight: 800; }
+  .v9-talents span.top { background: #FFFFFF; color: #000; border-color: #FFFFFF; }
+  .v9-talents span.top i { color: #555; }
+  .v9-none { padding: 4px 16px 16px; font-size: 13px; color: #8C8C8C; }
+  /* Рабочий календарь */
+  .v9-cal { padding: 14px 12px 12px; }
+  .v9-cal-head { display: flex; align-items: center; justify-content: space-between; margin: 0 4px 10px; }
+  .v9-cal-head b { font-size: 16px; font-weight: 800; }
+  .v9-cal-head button { width: 36px; height: 36px; border-radius: 10px; border: 1px solid #262626; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .v9-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+  .v9-cal-grid .wd { font-size: 10px; font-weight: 800; color: #6E6E6E; text-align: center; padding: 2px 0 4px; letter-spacing: 0.6px; }
+  .v9-cal-d { height: 44px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 14px; font-weight: 700; cursor: pointer; color: #DADADA; position: relative; }
+  .v9-cal-d.out { color: #333; cursor: default; }
+  .v9-cal-d.today { border: 1px solid #FFFFFF; }
+  .v9-cal-d.sel { background: #FFFFFF; color: #000; }
+  .v9-cal-d .dots { display: flex; gap: 2px; height: 5px; }
+  .v9-cal-d .dots i { width: 5px; height: 5px; border-radius: 3px; background: #FFFFFF; }
+  .v9-cal-d .dots i.r { background: #FF6B6F; }
+  .v9-cal-d .dots i.g { background: #555; }
+  .v9-cal-d.sel .dots i { background: #000; }
+  .v9-cal-d.sel .dots i.r { background: #FF6B6F; }
+  .v9-legend { display: flex; gap: 14px; margin: 10px 6px 0; font-size: 11px; color: #8C8C8C; font-weight: 700; flex-wrap: wrap; }
+  .v9-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .v9-legend i { width: 7px; height: 7px; border-radius: 4px; background: #FFFFFF; display: inline-block; }
+  .v9-legend i.r { background: #FF6B6F; }
+  .v9-legend i.g { background: #555; }
+  /* Глубокий разбор диагностики */
+  .v9-score { padding: 18px 16px; display: flex; align-items: center; gap: 16px; }
+  .v9-score .big { font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .v9-score .big small { font-size: 16px; color: #8C8C8C; letter-spacing: 0; font-weight: 800; }
+  .v9-score .vt { font-size: 16px; font-weight: 800; line-height: 1.3; }
+  .v9-score .vs { font-size: 13px; color: #9A9A9A; line-height: 1.45; margin-top: 4px; }
+  .v9-card { padding: 16px; }
+  .v9-card .tag { font-size: 10px; font-weight: 800; letter-spacing: 1.4px; color: #8C8C8C; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  .v9-card .tag.red { color: #FF6B6F; }
+  .v9-card .ttl { font-size: 19px; font-weight: 800; line-height: 1.25; margin-top: 8px; display: flex; align-items: center; gap: 10px; }
+  .v9-card .ttl .sc { margin-left: auto; font-size: 15px; font-variant-numeric: tabular-nums; }
+  .v9-card .txt { font-size: 14px; line-height: 1.5; color: #CFCFCF; margin-top: 8px; }
+  .v9-card .sub { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; color: #8C8C8C; margin-top: 14px; text-transform: uppercase; }
+  .v9-li { display: flex; gap: 10px; font-size: 14px; line-height: 1.45; margin-top: 8px; }
+  .v9-li::before { content: ''; width: 6px; height: 6px; border-radius: 3px; background: #FFFFFF; flex-shrink: 0; margin-top: 7px; }
+  .v9-li.r::before { background: #FF6B6F; }
+  .v9-li.n { counter-increment: v9n; }
+  .v9-cost { margin-top: 14px; padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,107,111,0.35); font-size: 13px; line-height: 1.45; color: #E6E6E6; }
+  .v9-cost b { color: #FF6B6F; }
+  .v9-oico { width: 40px; height: 40px; border-radius: 12px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .v9-oico.r { border-color: rgba(255,107,111,0.5); color: #FF6B6F; }
+  .v9-tools { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .v9-tool { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 12px; background: #0B0B0B; border: 1px solid #222; }
+  .v9-tool .n { font-size: 11px; font-weight: 800; color: #8C8C8C; width: 18px; font-variant-numeric: tabular-nums; }
+  .v9-tool b { display: block; font-size: 14px; font-weight: 800; }
+  .v9-tool span { display: block; font-size: 12px; color: #9A9A9A; margin-top: 2px; line-height: 1.4; }
+  .diag-area-tag svg { flex-shrink: 0; }
+  .diag-org-preview span:first-child { display: inline-flex; align-items: center; justify-content: center; }
 </style>
 
 <div class="modal-bg" id="attendModal">
@@ -3866,10 +3976,10 @@ const NAV = {
     {id:'meet', label:'Встречи',   icon:'cal',  pages:[{id:'schedule', label:'Расписание'}]},
     {id:'plus', plus:true},
     {id:'res',  label:'Резиденты', icon:'club', pages:[{id:'residents', label:'Резиденты'},{id:'reports', label:'Отчёты'},{id:'visits', label:'Посещения'},{id:'fines', label:'Штрафы'},{id:'restasks', label:'Задачи'}]},
-    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила'},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'}]}
+    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила'},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'}]}
   ],
   resident: [
-    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'}]},
+    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'}]},
     {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Мой разбор'},{id:'wheel', label:'Колесо'},{id:'diagnostic', label:'Диагностика'}]},
     {id:'tasks', label:'Задачи',  icon:'tasks', pages:[{id:'mytasks', label:'Задачи'},{id:'mymeetings', label:'Встречи'}]},
     {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила'}]},
@@ -4057,6 +4167,12 @@ function init(){
         try{
           callAction('checkUserRole', {}).then(function(res){
             if(res && res.role){
+              // Свежий список резидентов надёжнее закешированного ответа о роли:
+              // активный резидент не должен откатываться в режим лида
+              try{
+                var meNow = (cache && cache.residents || []).find(function(r){ return String(r.chatId||'') === String(user.id); });
+                if(res.role === 'lead' && meNow && !meNow.isFired) return;
+              }catch(e){}
               var oldRole = viewAs;
               viewAs = res.role;
               try{ localStorage.setItem('bs_view_as', viewAs); }catch(e){}
@@ -4289,8 +4405,8 @@ function navGo(gid){
   if(gid === 'res') window._resFilter = 'all';
   // Верхних чипов больше нет: вкладка нижнего меню всегда открывает свой главный экран
   var target = g.pages[0].id;
-  showPage(target);
-  window.scrollTo(0, 0);
+  if(navRole() === 'lead' && gid === 'diag') target = 'diagnostic';
+  showPage(target, {root: true});
 }
 
 function isTabLocked(tab){
@@ -4342,7 +4458,7 @@ function showLockedPage(pageId, tab){
 }
 
 
-function showPage(id){
+function _showPageCore(id){
   var role = navRole();
   var tabsLocal = navFlat(role);
   const tab = tabsLocal.find(t => t.id === id);
@@ -4371,7 +4487,94 @@ function showPage(id){
   if(id === 'myprofile'){ try{ renderMyProfile(); }catch(e){ console.error('myprofile:', e); } }
   if(id === 'leadmagnets'){ try{ renderLeadmagnets(); }catch(e){ console.error('lm:', e); } }
   if(id === 'leadrazbor'){ try{ renderLeadRazbor(); }catch(e){ console.error('razbor:', e); } }
+  if(id === 'library'){ try{ renderLibrary(); }catch(e){ console.error('library:', e); } }
 }
+
+// ══════════ НАВИГАЦИЯ: ИСТОРИЯ, «НАЗАД», ПРОКРУТКА ══════════
+// Каждый переход запоминает, откуда пришли. Корневые экраны вкладок историю сбрасывают.
+// Кнопка «‹ Меню / ‹ Главная» сверху и системная «Назад» Telegram ведут на шаг назад
+window._navStack = [];
+function v9rootPages(role){
+  var out = {};
+  (NAV[role] || []).forEach(function(g){ if(g.pages && g.pages[0]) out[g.pages[0].id] = 1; });
+  if(role === 'lead') out.diagnostic = 1;
+  return out;
+}
+function v9title(id){
+  var role = navRole();
+  if(role === 'lead' && id === 'about') return 'Главная';
+  if(role !== 'admin' && id === 'residents') return 'Клуб';
+  if(role !== 'admin' && id === 'myprofile') return 'Мои данные';
+  if(role !== 'admin' && id === 'mystatus') return 'Профиль';
+  if(role === 'admin' && id === 'myprofile') return 'Мой профиль';
+  var T = {dashboard:'Сводка', schedule:'Встречи', residents:'Резиденты', more:'Меню', home:'Главная', myboard:'Разбор', mytasks:'Задачи',
+    mymeetings:'Встречи', mystatus:'Профиль', about:'О проекте', rules:'Правила', wheel:'Колесо', diagnostic:'Диагностика', leadmagnets:'Материалы',
+    library:'Библиотека', reports:'Отчёты', fines:'Штрафы', visits:'Посещения', restasks:'Задачи резидентов', crm:'CRM', subscribers:'Подписчики',
+    custdev:'CustDev', content:'Полезное', wheeladmin:'Колесо клуба', todos:'Задачи команды', leadrazbor:'Разбор'};
+  return T[id] || 'Назад';
+}
+function v9activeId(){ var a = document.querySelector('.page.active'); return a ? a.id.replace('page-', '') : ''; }
+function v9scrollTop(){
+  try{ window.scrollTo(0, 0); }catch(e){}
+  try{ if(document.scrollingElement) document.scrollingElement.scrollTop = 0; }catch(e){}
+  try{ document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }catch(e){}
+  var a = document.querySelector('.page.active'); if(a) a.scrollTop = 0;
+}
+function showPage(id, opts){
+  opts = opts || {};
+  var st = window._navStack;
+  var cur = v9activeId();
+  var roots = v9rootPages(navRole());
+  if(opts.root || roots[id]) st.length = 0;
+  else if(!opts.back && cur && cur !== id){ st.push(cur); if(st.length > 20) st.shift(); }
+  var k = st.lastIndexOf(id); if(k >= 0) st.length = k;
+  var dv = document.getElementById('detailView'); if(dv && dv.classList.contains('show')) dv.classList.remove('show');
+  _showPageCore(id);
+  v9scrollTop();
+  setTimeout(v9scrollTop, 0);
+  v9updateBack();
+}
+function v9detailOpen(){ var d = document.getElementById('detailView'); return !!(d && d.classList.contains('show')); }
+function v9updateBack(){
+  var st = window._navStack || [];
+  var cur = v9activeId();
+  var bar = document.getElementById('v9Back');
+  var show = st.length > 0 && !!cur;
+  if(bar){
+    bar.classList.toggle('show', show);
+    var l = document.getElementById('v9BackLbl'); if(l && show) l.textContent = v9title(st[st.length - 1]);
+  }
+  document.body.classList.toggle('v9-hasback', show);
+  try{
+    if(tg && tg.BackButton){
+      if(show || v9detailOpen()) tg.BackButton.show(); else tg.BackButton.hide();
+    }
+  }catch(e){}
+}
+function v9goBack(){
+  if(v9detailOpen()){ closeDetail(); return; }
+  var m = document.querySelector('.modal-bg.show');
+  if(m){ m.classList.remove('show'); v9updateBack(); return; }
+  var ov = document.querySelector('.add-menu-overlay'); if(ov){ ov.remove(); v9updateBack(); return; }
+  var st = window._navStack || [];
+  var prev = st.pop();
+  if(prev) showPage(prev, {back: true});
+  else v9updateBack();
+}
+function v9backToAdmin(e){
+  try{ if(e){ e.preventDefault(); e.stopPropagation(); } }catch(x){}
+  try{ closeDetail(); }catch(x){}
+  document.querySelectorAll('.modal-bg.show').forEach(function(m){ m.classList.remove('show'); });
+  window._navStack = [];
+  setRole('admin');
+}
+(function(){
+  // Системная кнопка «Назад» Telegram: один обработчик на всё приложение
+  function bind(){
+    try{ if(tg && tg.BackButton && !window._v9TgBackBound){ window._v9TgBackBound = true; tg.BackButton.onClick(v9goBack); } }catch(e){}
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else setTimeout(bind, 0);
+})()
 
 // ══════════ АВТООБНОВЛЕНИЕ ДАННЫХ ══════════
 // Раньше приходилось ждать и вручную перезагружать страницу. теперь свежие данные приходят сами
@@ -4403,8 +4606,7 @@ function setupAutoRefresh(){
   document.addEventListener('touchend', function(e){
     const dy = e.changedTouches[0].clientY - touchStartY;
     if(dy > 90 && window.scrollY < 5){
-      showToast('⟳ Обновляем...');
-      loadAllData();
+      loadAllData({fresh: true});
     }
   }, {passive:true});
 }
@@ -4601,22 +4803,8 @@ function preloadBsLogo(){
 }
 
 function refreshData(){
-  showToast('⟳ Обновляем...');
+  // Тихо: без тостов и кнопок, данные просто подтягиваются
   loadAllData({fresh: true, force: true});
-}
-
-function hardReload(){
-  // Полная перезагрузка: чистим все кеши и качаем свежую сборку
-  showToast('⟳ Загружаем свежую версию...');
-  try{ localStorage.removeItem('bs_cache'); }catch(e){}
-  try{ sessionStorage.clear(); }catch(e){}
-  try{
-    if(window.caches && caches.keys){
-      caches.keys().then(function(names){ names.forEach(function(n){ caches.delete(n); }); });
-    }
-  }catch(e){}
-  var base = location.href.split('?')[0].split('#')[0];
-  setTimeout(function(){ location.replace(base + '?v=' + Date.now()); }, 300);
 }
 
 window._loadedOnce = window._loadedOnce || {};
@@ -4849,7 +5037,7 @@ function renderResHome(){
   if(debt > 0){
     h += '<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank" style="display:block;margin-top:8px;text-decoration:none"><button class="v3-primary" style="height:50px;border-radius:12px">Оплатить ' + v2money(debt) + ' ₸ через Kaspi</button></a>';
   }
-  h += '<div class="v2-h">Следующая встреча</div>';
+  h += '<div class="v2-h">Следующая встреча' + (meets.length ? ' <span class="lnk" onclick="showPage(\'mymeetings\')">Все ' + meets.length + '</span>' : '') + '</div>';
   if(next){
     var dp = String(next.date).split('.');
     var online = v3isOnline(next);
@@ -4864,23 +5052,348 @@ function renderResHome(){
   } else {
     h += '<div class="v2-card v2-empty">Встреч в расписании пока нет</div>';
   }
-  var rows = [];
   if(b){
     var upd = b.updated ? new Date(b.updated).toLocaleDateString('ru-RU', {day:'numeric', month:'short'}) : '';
-    rows.push('<div class="v2-row" onclick="showPage(\'myboard\')"><div class="ic">' + navIcon('board',20) + '</div><div class="m"><b>Обновлён разбор · цикл ' + b.cycle + '</b><span>' + (b.diagnoses.length ? v2esc(b.diagnoses.map(function(d){return d.title;}).slice(0,2).join(', ')) : 'Доска с трекером') + (upd ? ' · ' + upd : '') + '</span></div><div class="ic">' + navIcon('chev',16) + '</div></div>');
+    h += '<div class="v2-h">Мой разбор</div><div class="v2-card">' + '<div class="v2-row" onclick="showPage(\'myboard\')"><div class="ic">' + navIcon('board',20) + '</div><div class="m"><b>Обновлён разбор · цикл ' + b.cycle + '</b><span>' + (b.diagnoses.length ? v2esc(b.diagnoses.map(function(d){return d.title;}).slice(0,2).join(', ')) : 'Доска с трекером') + (upd ? ' · ' + upd : '') + '</span></div><div class="ic">' + navIcon('chev',16) + '</div></div>' + '</div>';
   }
-  var lm = ((cache.leadmagnets||{}).items||[]).filter(function(x){ return x.fileId; }).slice(0, 2);
-  lm.forEach(function(x){
-    rows.push('<div class="v2-row" onclick="showPage(\'leadmagnets\')"><div class="ic">' + navIcon('doc',20) + '</div><div class="m"><b>' + v2esc(x.title||x.name||'Материал') + '</b><span>Материалы клуба</span></div><div class="ic">' + navIcon('chev',16) + '</div></div>');
-  });
-  if(rows.length){
-    h += '<div class="v2-h">Прислали вам <span class="lnk" onclick="showPage(\'leadmagnets\')">Все</span></div><div class="v2-card">' + rows.join('') + '</div>';
-  }
+  // Вместо «Прислали вам»: база знаний платформы
+  h += v9homeLibrary();
   el.innerHTML = h;
   if(!window._myBoard && !window._v3BoardTried){
     window._v3BoardTried = true;
     loadMyBoard(false).then(function(){ if(document.getElementById('page-home').classList.contains('active')) renderResHome(); });
   }
+}
+
+// ═══ ОРГАНЫ: подписи для ключей с платформы (бывают русские названия, английские и наши id) ═══
+var V9_ORGAN_ORDER = ['brain', 'heart', 'hands', 'spine', 'blood', 'dna', 'eyes'];
+var V9_ORGAN_LABEL = {brain:'Стратегия', heart:'Маркетинг', hands:'Продажи', spine:'Команда', blood:'Финансы', dna:'Процессы', eyes:'Аналитика'};
+var V9_ORGAN_ALIAS = {
+  brain:'brain', strategy:'brain', 'стратегия':'brain', 'мозг':'brain',
+  heart:'heart', marketing:'heart', 'маркетинг':'heart', 'сердце':'heart',
+  hands:'hands', sales:'hands', 'продажи':'hands', 'руки':'hands', 'руки и ноги':'hands',
+  spine:'spine', team:'spine', 'команда':'spine', 'костяк':'spine', 'скелет':'spine',
+  blood:'blood', finance:'blood', finances:'blood', 'финансы':'blood', 'кровь':'blood',
+  dna:'dna', process:'dna', processes:'dna', 'процессы':'dna', 'днк':'dna',
+  eyes:'eyes', eye:'eyes', analytics:'eyes', 'аналитика':'eyes', 'зрение':'eyes', 'глаза':'eyes'
+};
+function v9organId(k){ return V9_ORGAN_ALIAS[String(k || '').trim().toLowerCase()] || ''; }
+function v9organLabel(k){
+  var id = v9organId(k);
+  if(id) return V9_ORGAN_LABEL[id];
+  var s = String(k || '').replace(/[_-]+/g, ' ').trim();
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+}
+function v9open(url){
+  if(!url) return;
+  url = String(url);
+  try{
+    if(/^https?:\/\/t\.me\//i.test(url) && tg && tg.openTelegramLink){ tg.openTelegramLink(url); return; }
+    if(tg && tg.openLink){ tg.openLink(url); return; }
+  }catch(e){}
+  window.open(url, '_blank');
+}
+
+// ═══ БИБЛИОТЕКА: база знаний платформы (книги, инструменты, диагнозы, ресурсы) ═══
+var V9_LIB_KINDS = [['all', 'Все'], ['book', 'Книги'], ['tool', 'Инструменты'], ['diag', 'Диагнозы'], ['resource', 'Ресурсы']];
+var V9_LIB_ONE = {book:'Книга', tool:'Инструмент', diag:'Диагноз', resource:'Ресурс'};
+var V9_LIB_ICONS = {
+  book:'<path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z"/>',
+  tool:'<path d="M14.7 6.3a4 4 0 0 0 5 5l-8.4 8.4a2.1 2.1 0 0 1-3-3z"/><path d="M14.7 6.3L17 4l3 3-2.3 2.3"/>',
+  diag:'<path d="M3 12h4l2-5 4 10 2-5h6"/>',
+  resource:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'
+};
+function v9libIcon(kind, size){ return '<svg width="' + (size || 18) + '" height="' + (size || 18) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + (V9_LIB_ICONS[kind] || V9_LIB_ICONS.resource) + '</svg>'; }
+function v9libKind(x){ var k = String((x && x.kind) || '').toLowerCase(); return V9_LIB_ONE[k] ? k : 'resource'; }
+window._lib = null;
+function v9libCached(){ try{ var c = JSON.parse(localStorage.getItem('bs_lib') || 'null'); return Array.isArray(c) ? c : null; }catch(e){ return null; } }
+function loadLibrary(force){
+  if(!force && window._lib && !window._lib.error && Date.now() - window._lib.at < 300000) return Promise.resolve(window._lib);
+  if(window._libLoading) return window._libLoading;
+  var init = bsInitData();
+  if(!init){ window._lib = {items: v9libCached() || [], error: 'noinit', at: Date.now()}; return Promise.resolve(window._lib); }
+  window._libLoading = fetch(APP_SERVER + 'library?' + new URLSearchParams({_tg: init}).toString())
+    .then(function(r){
+      if(!r.ok) throw new Error('http ' + r.status);
+      return r.json();
+    })
+    .then(function(j){
+      var items = Array.isArray(j) ? j : ((j && j.items) || []);
+      items = items.filter(function(x){ return x && String(x.title || '').trim(); });
+      window._lib = {items: items, at: Date.now()};
+      try{ localStorage.setItem('bs_lib', JSON.stringify(items)); }catch(e){}
+      return window._lib;
+    })
+    .catch(function(e){
+      var c = (window._lib && window._lib.items && window._lib.items.length) ? window._lib.items : v9libCached();
+      window._lib = {items: c || [], error: String(e && e.message || 'network'), stale: !!(c && c.length), at: Date.now()};
+      return window._lib;
+    })
+    .then(function(l){ window._libLoading = null; return l; });
+  return window._libLoading;
+}
+function v9libTile(x, i){
+  var k = v9libKind(x);
+  return '<div class="v2-card v9-lib-tile" onclick="openLibItem(window._libHome[' + i + '])">' +
+    '<div class="k">' + v9libIcon(k, 14) + V9_LIB_ONE[k] + '</div>' +
+    '<div class="t">' + v2esc(x.title) + '</div>' +
+    (x.organ ? '<div class="o">' + v2esc(v9organLabel(x.organ)) + '</div>' : '') + '</div>';
+}
+// Блок «Библиотека» на главной резидента
+function v9homeLibrary(){
+  var L = window._lib;
+  var h = '<div class="v2-h">Библиотека <span class="lnk" onclick="showPage(\'library\')">Все' + (L && L.items && L.items.length ? ' ' + L.items.length : '') + '</span></div>';
+  if(!L){
+    if(!window._v9LibTried){
+      window._v9LibTried = true;
+      loadLibrary(false).then(function(){ if(v9activeId() === 'home') renderResHome(); });
+    }
+    return h + '<div class="v2-card v2-empty">Загружаем библиотеку...</div>';
+  }
+  var items = L.items || [];
+  if(!items.length){
+    if(L.error) return h + '<div class="v2-card v2-empty">Библиотека сейчас недоступна.<br><span class="v3-txtbtn" style="color:#fff" onclick="window._lib=null;window._v9LibTried=false;renderResHome()">Повторить</span></div>';
+    return h + '<div class="v2-card v2-empty">Скоро здесь появятся книги, инструменты и разборы клуба</div>';
+  }
+  window._libHome = items.slice(0, 4);
+  return h + '<div class="v9-lib-grid">' + window._libHome.map(v9libTile).join('') + '</div>';
+}
+function v9libFiltered(){
+  var items = (window._lib && window._lib.items) || [];
+  var f = window._libKind || 'all', q = String(window._libQ || '').toLowerCase().trim();
+  return items.filter(function(x){
+    if(f !== 'all' && v9libKind(x) !== f) return false;
+    if(q){
+      var hay = [x.title, x.short, x.why, x.organ, v9organLabel(x.organ), x.cat, x.example].concat(Array.isArray(x.how) ? x.how : [x.how]).join(' ').toLowerCase();
+      if(hay.indexOf(q) < 0) return false;
+    }
+    return true;
+  });
+}
+function v9libListHTML(){
+  var list = v9libFiltered();
+  window._libShown = list;
+  if(!list.length) return '<div class="v2-empty">' + (window._libQ ? 'Ничего не нашли' : 'В этом разделе пока пусто') + '</div>';
+  return list.map(function(x, i){
+    var k = v9libKind(x);
+    var meta = [V9_LIB_ONE[k], x.organ ? v9organLabel(x.organ) : '', x.cat || ''].filter(Boolean).join(' · ');
+    return '<div class="v9-lib-row" onclick="openLibItem(window._libShown[' + i + '])"><div class="ic">' + v9libIcon(k, 18) + '</div>' +
+      '<div class="m"><i>' + v2esc(meta) + '</i><b>' + v2esc(x.title) + '</b>' + (x.short ? '<span>' + v2esc(x.short) + '</span>' : '') + '</div></div>';
+  }).join('');
+}
+function v9setLibKind(k){ window._libKind = k; renderLibrary(); }
+function v9libSearch(v){ window._libQ = v; var el = document.getElementById('libList'); if(el) el.innerHTML = v9libListHTML(); }
+function renderLibrary(){
+  var el = document.getElementById('libraryContent');
+  if(!el) return;
+  // Библиотека только для резидентов и команды
+  if(navRole() === 'lead'){ el.innerHTML = ''; return; }
+  var L = window._lib;
+  var n = L && L.items ? L.items.length : 0;
+  var h = v3headBig(n ? n + ' ' + v3plural(n, 'материал', 'материала', 'материалов') + ' · синхронно с платформой' : 'База знаний клуба', 'Библиотека');
+  if(!L){
+    el.innerHTML = h + '<div class="loading"><div class="spinner"></div></div>';
+    loadLibrary(false).then(function(){ if(v9activeId() === 'library') renderLibrary(); });
+    return;
+  }
+  if(!n){
+    el.innerHTML = h + '<div class="v2-card v2-empty" style="margin-top:16px">' + (L.error ? 'Не получилось загрузить библиотеку.<br><button class="v3-outline" style="margin-top:12px" onclick="window._lib=null;renderLibrary()">Повторить</button>'
+      : '<div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:4px">Пока пусто</div>Книги, инструменты и диагнозы появятся здесь, как только трекеры добавят их на платформе.') + '</div>';
+    return;
+  }
+  var counts = {}; L.items.forEach(function(x){ var k = v9libKind(x); counts[k] = (counts[k] || 0) + 1; });
+  var f = window._libKind || 'all';
+  h += '<div class="v3-search" style="margin-top:16px">' + navIcon('search', 18) + '<input type="text" placeholder="Название, орган, тема" aria-label="Поиск" value="' + v2esc(window._libQ || '') + '" oninput="v9libSearch(this.value)"></div>';
+  h += '<div class="v9-chips">' + V9_LIB_KINDS.filter(function(c){ return c[0] === 'all' || counts[c[0]]; }).map(function(c){
+    return '<button class="' + (f === c[0] ? 'on' : '') + '" onclick="v9setLibKind(\'' + c[0] + '\')">' + c[1] + (c[0] !== 'all' ? ' · ' + counts[c[0]] : '') + '</button>';
+  }).join('') + '</div>';
+  if(L.error && L.stale) h += '<div class="v3-cap" style="margin:10px 4px 0">Показана сохранённая версия: сервер сейчас не ответил</div>';
+  h += '<div class="v2-card" id="libList" style="margin-top:12px">' + v9libListHTML() + '</div>';
+  el.innerHTML = h;
+}
+function v9libFileUrl(id){
+  var s = String(id || '');
+  if(/^https?:\/\//i.test(s)) return s;
+  return APP_SERVER + 'file/' + encodeURIComponent(s) + '?' + new URLSearchParams({_tg: bsInitData()}).toString();
+}
+function v9list(v){
+  if(!v) return [];
+  if(Array.isArray(v)) return v.map(function(x){ return typeof x === 'string' ? x : (x && (x.text || x.title)) || ''; }).filter(function(x){ return String(x).trim(); });
+  return String(v).split(/\n+/).map(function(x){ return x.replace(/^\s*(\d+[.)]|[-•])\s*/, '').trim(); }).filter(Boolean);
+}
+function openLibItem(x){
+  if(!x) return;
+  window._libItem = x;
+  var k = v9libKind(x);
+  document.getElementById('detailTitle').textContent = 'Библиотека';
+  var h = '<div class="v3-lbl" style="color:#8C8C8C;display:flex;align-items:center;gap:8px">' + v9libIcon(k, 14) + v2esc([V9_LIB_ONE[k], x.organ ? v9organLabel(x.organ) : '', x.cat || ''].filter(Boolean).join(' · ').toUpperCase()) + '</div>' +
+    '<h1 class="v3-h1" style="margin-top:8px;font-size:26px">' + v2esc(x.title) + '</h1>';
+  if(x.short) h += '<p class="v3-p" style="margin-top:8px;font-size:15px">' + v2esc(x.short) + '</p>';
+  if(x.why) h += '<div class="v9-sec"><div class="h">Зачем</div><div class="v2-card v3-text" style="font-size:14px;line-height:1.5">' + v2esc(x.why) + '</div></div>';
+  var how = v9list(x.how);
+  if(how.length) h += '<div class="v9-sec"><div class="h">Как применять</div><div class="v2-card">' + how.map(function(s, i){ return '<div class="v9-step"><div class="n">' + (i + 1) + '</div><div>' + v2esc(s) + '</div></div>'; }).join('') + '</div></div>';
+  if(x.example) h += '<div class="v9-sec"><div class="h">Пример</div><div class="v2-card v3-text" style="font-size:14px;line-height:1.5;white-space:pre-line">' + v2esc(x.example) + '</div></div>';
+  var chk = v9list(x.check);
+  if(chk.length) h += '<div class="v9-sec"><div class="h">Чек-лист</div><div class="v2-card">' + chk.map(function(s){ return '<div class="v9-step"><div class="c"></div><div>' + v2esc(s) + '</div></div>'; }).join('') + '</div></div>';
+  var mats = [];
+  var link = x.link || x.url;
+  if(link) mats.push(['link', 'Ссылка', link]);
+  if(x.video) mats.push(['video', 'Видео', x.video]);
+  if(x.sample && /^https?:\/\//i.test(String(x.sample))) mats.push(['sample', 'Образец', x.sample]);
+  if(x.file) mats.push(['file', x.fileName ? 'Файл' : 'Файл', v9libFileUrl(x.file)]);
+  window._libMats = mats;
+  if(x.sample && !/^https?:\/\//i.test(String(x.sample))) h += '<div class="v9-sec"><div class="h">Образец</div><div class="v2-card v3-text" style="font-size:14px;line-height:1.5;white-space:pre-line">' + v2esc(x.sample) + '</div></div>';
+  if(mats.length){
+    h += '<div class="v9-sec"><div class="h">Материалы</div><div class="v9-mats">' + mats.map(function(m, i){
+      return '<button class="' + (i === 0 ? 'w' : '') + '" onclick="v9open(window._libMats[' + i + '][2])">' + v2esc(m[1]) + '</button>';
+    }).join('') + '</div>' + (x.file && x.fileName ? '<div class="v3-cap" style="margin:8px 4px 0">Файл: ' + v2esc(x.fileName) + '</div>' : '') + '</div>';
+  }
+  if(!x.why && !how.length && !x.example && !chk.length && !mats.length && !x.short) h += '<div class="v2-card v2-empty" style="margin-top:16px">Описание появится позже</div>';
+  document.getElementById('detailContent').innerHTML = h;
+  showDetail();
+}
+
+// ═══ ЗАМЕРЫ: Gallup, диагностика по 7 органам, здоровье бизнеса (с платформы) ═══
+function v9tests(){
+  var d = window._myBoard || {};
+  var b = d.board || {};
+  return {tests: d.tests || b.tests || null, health: d.health || b.health || null};
+}
+function v9num(v){ var n = Number(String(v == null ? '' : v).replace(',', '.')); return isFinite(n) ? n : null; }
+function v9fmt1(n){ return (Math.round(n * 10) / 10).toString().replace('.', ','); }
+function v9barsHTML(obj, opts){
+  opts = opts || {};
+  var keys = Object.keys(obj || {}).filter(function(k){ return v9num(obj[k]) !== null; });
+  if(!keys.length) return '';
+  keys.sort(function(a, b){
+    var ia = V9_ORGAN_ORDER.indexOf(v9organId(a)), ib = V9_ORGAN_ORDER.indexOf(v9organId(b));
+    if(ia < 0) ia = 99; if(ib < 0) ib = 99;
+    return ia - ib;
+  });
+  var vals = keys.map(function(k){ return v9num(obj[k]); });
+  var max = opts.max || (Math.max.apply(null, vals) > 10 ? 100 : 10);
+  return keys.map(function(k, i){
+    var v = vals[i], pct = Math.max(0, Math.min(100, v / max * 100)), weak = pct < 50;
+    return '<div class="v9-bar"><div class="l">' + v2esc(v9organLabel(k)) + '</div><div class="b"><i class="' + (weak ? 'r' : '') + '" style="width:' + pct + '%"></i></div>' +
+      '<div class="v' + (weak ? ' red' : '') + '">' + (max === 10 ? v9fmt1(v) : Math.round(v)) + '</div></div>';
+  }).join('');
+}
+function v9measuresHTML(){
+  var T = v9tests(), tests = T.tests || {}, health = T.health;
+  var none = '<div class="v9-none">Пока нет: пройдёте на разборе</div>';
+  var loading = !window._myBoard;
+  var h = '';
+  // Здоровье бизнеса: с платформы, иначе собственный тест резидента
+  var hb = health && typeof health === 'object' ? v9barsHTML(health) : '';
+  var avg = '';
+  if(hb){
+    var hv = Object.keys(health).map(function(k){ return v9num(health[k]); }).filter(function(x){ return x !== null; });
+    if(hv.length){ var mx = Math.max.apply(null, hv) > 10 ? 100 : 10; avg = v9fmt1(hv.reduce(function(s, x){ return s + x; }, 0) / hv.length) + (mx === 10 ? ' из 10' : ' из 100'); }
+  } else {
+    try{
+      var dr = JSON.parse(localStorage.getItem('bs_diagnostic_result') || 'null');
+      if(dr && dr.results && dr.results.length){
+        var o = {}; dr.results.forEach(function(r){ o[r.id] = r.pct; });
+        hb = v9barsHTML(o, {max: 100}); avg = dr.totalPct + ' из 100 · ваш тест';
+      }
+    }catch(e){}
+  }
+  h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>Здоровье бизнеса</b><span>' + (avg || 'по органам') + '</span></div>' +
+    (hb ? '<div class="v9-bars">' + hb + '</div>' : (loading ? '<div class="v9-none">Загружаем...</div>' : none)) + '</div>';
+  // Диагностика по 7 органам
+  var dg = tests.diag && typeof tests.diag === 'object' ? v9barsHTML(tests.diag.axes || tests.diag) : '';
+  h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>Диагностика по 7 органам</b><span>с разбора</span></div>' +
+    (dg ? '<div class="v9-bars">' + dg + '</div>' : (loading ? '<div class="v9-none">Загружаем...</div>' : none)) + '</div>';
+  // Gallup
+  var g = tests.gallup || null;
+  var tal = g ? (Array.isArray(g) ? g : (g.talents || [])) : [];
+  tal = tal.map(function(t){ return typeof t === 'string' ? t : (t && (t.name || t.title)) || ''; }).filter(Boolean);
+  var gh = '';
+  if(tal.length){
+    gh = '<div class="v9-talents">' + tal.map(function(t, i){ return '<span class="' + (i < 5 ? 'top' : '') + '"><i>' + (i + 1) + '</i>' + v2esc(t) + '</span>'; }).join('') + '</div>';
+    if(g.note) gh += '<div class="v9-none" style="color:#BDBDBD;line-height:1.45;margin-top:-6px">' + v2esc(g.note) + '</div>';
+  }
+  h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>Gallup · таланты</b><span>' + (tal.length ? 'топ-' + Math.min(5, tal.length) + ' выделены' : 'CliftonStrengths') + '</span></div>' +
+    (gh || (loading ? '<div class="v9-none">Загружаем...</div>' : none)) + '</div>';
+  return h;
+}
+
+// ═══ РАБОЧИЙ КАЛЕНДАРЬ: задачи и их сроки (доска цикла + задания + свои) ═══
+var V9_MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+function v9dkey(s){
+  s = String(s || '').trim();
+  if(!s) return '';
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return m[1] + '-' + m[2] + '-' + m[3];
+  m = s.match(/^(\d{1,2})\.(\d{1,2})(?:\.(\d{2,4}))?/);
+  if(m){
+    var y = m[3] ? (m[3].length === 2 ? '20' + m[3] : m[3]) : String(new Date().getFullYear());
+    return y + '-' + String(m[2]).padStart(2, '0') + '-' + String(m[1]).padStart(2, '0');
+  }
+  return '';
+}
+function v9keyOf(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function v9workItems(me){
+  var out = [];
+  ((cache.resTasks && cache.resTasks.tasks) || []).filter(function(t){ return t.name === me.name; }).forEach(function(t){
+    var due = t.due || t.deadline || '';
+    out.push({text: t.task, key: v9dkey(due || t.date), hasDue: !!due, done: t.status === 'Выполнена', src: t.isOwn ? 'своя' : 'от трекера', row: t.row});
+  });
+  var b = window._myBoard && window._myBoard.board;
+  ((b && b.tasks) || []).forEach(function(t){
+    var due = t.due || t.deadline || t.date || '';
+    out.push({text: t.title, key: v9dkey(due), hasDue: !!due, done: !!t.done, src: 'цикл ' + ((b && b.cycle) || ''), organ: t.organ || '', cycle: true});
+  });
+  return out;
+}
+function v9calShift(n){
+  var c = window._v9calM || new Date();
+  window._v9calM = new Date(c.getFullYear(), c.getMonth() + n, 1);
+  loadMyTasks();
+}
+function v9calPick(k){ window._v9calSel = k; loadMyTasks(); }
+function v9workCalHTML(me){
+  var items = v9workItems(me);
+  var today = v9keyOf(new Date());
+  var byDay = {};
+  items.forEach(function(it){ if(it.key){ (byDay[it.key] = byDay[it.key] || []).push(it); } });
+  var base = window._v9calM || new Date();
+  var y = base.getFullYear(), mo = base.getMonth();
+  var first = new Date(y, mo, 1), start = (first.getDay() + 6) % 7, days = new Date(y, mo + 1, 0).getDate();
+  var sel = window._v9calSel || today;
+  var h = '<div class="v2-card v9-cal" style="margin-top:14px"><div class="v9-cal-head">' +
+    '<button aria-label="Предыдущий месяц" onclick="v9calShift(-1)">' + navIcon('back', 16) + '</button><b>' + V9_MONTHS[mo] + ' ' + y + '</b>' +
+    '<button aria-label="Следующий месяц" onclick="v9calShift(1)">' + navIcon('chev', 16) + '</button></div><div class="v9-cal-grid">' +
+    ['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС'].map(function(w){ return '<div class="wd">' + w + '</div>'; }).join('');
+  for(var i = 0; i < start; i++) h += '<div class="v9-cal-d out"></div>';
+  for(var d = 1; d <= days; d++){
+    var k = y + '-' + String(mo + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    var list = byDay[k] || [];
+    var dots = list.slice(0, 3).map(function(it){ return '<i class="' + (it.done ? 'g' : (k < today ? 'r' : '')) + '"></i>'; }).join('');
+    h += '<div class="v9-cal-d' + (k === today ? ' today' : '') + (k === sel ? ' sel' : '') + '" onclick="v9calPick(\'' + k + '\')"><span>' + d + '</span><div class="dots">' + dots + '</div></div>';
+  }
+  h += '</div><div class="v9-legend"><span><i></i>в работе</span><span><i class="r"></i>просрочено</span><span><i class="g"></i>сделано</span></div></div>';
+  // Задачи выбранного дня
+  var sp = sel.split('-');
+  var dl = byDay[sel] || [];
+  window._v9DayTasks = dl;
+  h += '<div class="v2-h">' + Number(sp[2]) + ' ' + (V3_MON[Number(sp[1]) - 1] || '').toLowerCase() + (sel === today ? ' · сегодня' : '') + ' · ' + dl.length + ' ' + v3plural(dl.length, 'задача', 'задачи', 'задач') + '</div>';
+  if(dl.length){
+    h += '<div class="v2-card">' + dl.map(function(it){
+      var meta = (it.hasDue ? 'срок' : 'поставлена') + ' · ' + it.src + (it.organ ? ' · ' + it.organ : '');
+      var canCheck = !it.done && !it.cycle && it.row;
+      return v3taskRow(it.done, it.text, meta, canCheck ? 'markTaskDone(' + it.row + ')' : null);
+    }).join('') + '</div>';
+  } else {
+    h += '<div class="v2-card v2-empty">На этот день задач нет</div>';
+  }
+  // Задачи цикла без срока
+  var nod = items.filter(function(it){ return !it.key && !it.done; });
+  if(nod.length){
+    h += '<div class="v2-h">Без срока · ' + nod.length + '</div><div class="v2-card">' + nod.map(function(it){ return v3taskRow(false, it.text, it.src + (it.organ ? ' · ' + it.organ : ''), null); }).join('') + '</div>';
+    h += '<div class="v3-cap" style="margin:10px 4px 0;line-height:1.45">Сроки задачам цикла ставит трекер на платформе. Как только срок появится, задача встанет в календарь.</div>';
+  }
+  return h;
 }
 
 // ═══ РЕЗИДЕНТ: МОЙ РАЗБОР (доска с платформы) ═══
@@ -5095,7 +5608,7 @@ function renderDashboard(){
     var shown = missing.slice(0, 6);
     window._v3Miss = shown;
     h += '<div class="v2-card v3-alert" style="margin-top:10px;padding:14px 16px">' +
-      '<div class="v3-row-sb" style="align-items:baseline"><div class="v3-lbl red">НЕ СДАЛИ ОТЧЁТ · ' + missing.length + '</div><div class="v3-cap">до 23:59 · штраф в 14:30</div></div>' +
+      '<div class="v3-row-sb" style="align-items:baseline"><div class="v3-lbl red lnkable" onclick="showPage(\'reports\')">НЕ СДАЛИ ОТЧЁТ · ' + missing.length + ' ›</div><div class="v3-cap">до 23:59 · штраф в 14:30</div></div>' +
       shown.map(function(r, i){
         var note = meetAt[r.name] ? 'встреча ' + meetAt[r.name] : '';
         return '<div class="v3-miss">' + v3av(r, 32) + '<div class="m" onclick="openResidentProfile(window._v3Miss[' + i + '])">' + v2esc(r.name) + (note ? ' <span>' + v2esc(note) + '</span>' : '') + '</div></div>';
@@ -6610,6 +7123,13 @@ function v3adminResidents(team, club){
   var chips = [['all', 'Все'], ['debt', 'Должники · ' + g.debt.length], ['noreport', 'Без отчёта · ' + g.noreport.length], ['renew', 'Продление · ' + g.renew.length]];
   var h = v3headBig(club.length + ' ' + v3plural(club.length, 'активный', 'активных', 'активных'), 'Резиденты',
     '<button class="v3-btn" onclick="openModal(\'addResidentModal\');initAddResident()">' + navIcon('plus', 14, 2.2) + 'Добавить</button>');
+  // Отчёты, штрафы, посещения и задачи открываются отсюда (в «Меню» их больше нет)
+  var ufN = (cache.fines || []).filter(function(x){ return x.status === 'Не оплатил'; }).length;
+  h += '<div class="v9-links">' +
+    '<button onclick="showPage(\'reports\')">Отчёты' + (g.noreport.length ? ' <b>' + g.noreport.length + '</b>' : '') + '</button>' +
+    '<button onclick="showPage(\'fines\')">Штрафы' + (ufN ? ' <b>' + ufN + '</b>' : '') + '</button>' +
+    '<button onclick="showPage(\'visits\')">Посещения</button>' +
+    '<button onclick="showPage(\'restasks\')">Задачи</button></div>';
   if(team.length){
     h += '<div class="v2-h">Команда</div><div class="v2-card">' + team.map(function(r, i){
       return '<div class="v2-row" style="padding:10px 14px" onclick="openResByIdx(' + (10000 + i) + ')">' + v3av(r, 32, true) + '<div class="m"><b>' + v2esc(r.name) + '</b></div><div class="v3-cap">' + v2esc(r.format || 'Команда') + '</div></div>';
@@ -6651,15 +7171,7 @@ function v3clubPage(team, club){
   h += '<div class="v2-h">Резиденты · ' + club.length + '</div>';
   h += '<div class="v3-search">' + navIcon('search', 18) + '<input type="text" placeholder="Имя или ниша" aria-label="Поиск" value="' + v2esc(window._resQuery || '') + '" oninput="filterRes(this.value)"></div>';
   h += '<div class="v2-card" id="resList" style="margin-top:10px">' + v3clubListHTML(club) + '</div>';
-  var items = ((cache.leadmagnets || {}).items || []);
-  h += '<div class="v2-h">Материалы от трекеров <span class="lnk" onclick="showPage(\'leadmagnets\')">Все' + (items.length ? ' ' + items.length : '') + '</span></div>';
-  if(items.length){
-    h += '<div class="v3-tiles">' + items.slice(0, 4).map(function(x){
-      return '<div class="v2-card v3-tile" onclick="showPage(\'leadmagnets\')"><span class="k">' + v3catLabel(x.category) + '</span><div class="t">' + v2esc(x.title || x.name || 'Материал') + '</div></div>';
-    }).join('') + '</div>';
-  } else {
-    h += '<div class="v2-card">' + v3row('doc', 'Материалы клуба', 'Шаблоны и гайды от трекеров', "showPage('leadmagnets')") + '</div>';
-  }
+  h += '<div class="v2-card" style="margin-top:10px">' + v3row('doc', 'Библиотека', 'Книги, инструменты, разборы', "showPage('library')") + '</div>';
   h += '<div class="v2-card" style="margin-top:10px">' + v3row('doc', 'Правила клуба', 'Отчёты, встречи, штрафы', "showPage('rules')") + '</div>';
   return h;
 }
@@ -6715,10 +7227,10 @@ function openResidentProfile(r0){
     var tasks = ((cache.resTasks && cache.resTasks.tasks) || []).filter(function(t){ return t.name === r.name; });
     var td = tasks.filter(function(t){ return t.status === 'Выполнена'; }).length;
     h += '<div class="v2-card" style="margin-top:10px;overflow:hidden"><div class="v3-grid2" style="border:none;margin:-1px 0 0 -1px">' +
-      '<div><div class="v3-k">Долг</div><div class="v3-v num' + (debt > 0 ? ' red' : '') + '">' + v2money(debt) + '</div><div class="v3-cap">' + v2esc(debtCap) + '</div></div>' +
+      '<div onclick="closeDetail();showPage(\'fines\')" style="cursor:pointer"><div class="v3-k">Долг · штрафы ›</div><div class="v3-v num' + (debt > 0 ? ' red' : '') + '">' + v2money(debt) + '</div><div class="v3-cap">' + v2esc(debtCap) + '</div></div>' +
       '<div><div class="v3-k">Встречи</div><div class="v3-v num">' + (Number(r.meetingsDone) || 0) + ' из ' + (Number(r.meetingsGranted) || 0) + '</div><div class="v3-cap">' + (nm ? v2esc(String(nm.date).slice(0, 5) + ' ' + (nm.time || '')) : 'нет записи') + '</div></div>' +
       '<div><div class="v3-k">Отчёты · 30 дней</div><div class="v3-v num">' + v3reports30(r) + '/30</div><div class="v3-cap">' + (v3reportSent(r) ? 'сегодня сдан' : 'сегодня нет') + '</div></div>' +
-      '<div><div class="v3-k">Задачи</div><div class="v3-v num">' + td + ' из ' + tasks.length + '</div><div class="v3-cap">' + (tasks.length - td) + ' в работе</div></div>' +
+      '<div onclick="closeDetail();showPage(\'restasks\')" style="cursor:pointer"><div class="v3-k">Задачи ›</div><div class="v3-v num">' + td + ' из ' + tasks.length + '</div><div class="v3-cap">' + (tasks.length - td) + ' в работе</div></div>' +
     '</div></div>';
   }
   if(r.nextRenewal){
@@ -7042,16 +7554,15 @@ function addToCalendar(date, time, res, link){
 
 function closeDetail(){
   document.getElementById('detailView').classList.remove('show');
+  try{ v9updateBack(); }catch(e){}
 }
 
 function showDetail(){
-  document.getElementById('detailView').classList.add('show');
-  if(tg&&tg.BackButton){
-    try{
-      tg.BackButton.show();
-      tg.BackButton.onClick(closeDetail);
-    }catch(e){}
-  }
+  var dv = document.getElementById('detailView');
+  dv.classList.add('show');
+  dv.scrollTop = 0;
+  setTimeout(function(){ dv.scrollTop = 0; }, 0);
+  try{ v9updateBack(); }catch(e){}
 }
 
 // ─── RESIDENT VIEW ─────────────────────────────────────────────────────────
@@ -7138,7 +7649,7 @@ function v3taskSeg(active, nCycle){
   return '<div class="v3-seg" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:14px">' +
     '<button class="' + (active === 'cycle' ? 'on' : '') + '" onclick="v3setTaskSeg(\'cycle\')">Цикл' + (nCycle ? ' · ' + nCycle : '') + '</button>' +
     '<button class="' + (active === 'tasks' ? 'on' : '') + '" onclick="v3setTaskSeg(\'tasks\')">Задания</button>' +
-    '<button class="' + (active === 'cal' ? 'on' : '') + '" onclick="showPage(\'mymeetings\');window.scrollTo(0,0)">Календарь</button></div>';
+    '<button class="' + (active === 'cal' ? 'on' : '') + '" onclick="v3setTaskSeg(\'cal\')">Календарь</button></div>';
 }
 function v3setTaskSeg(seg){
   window._v3TaskSeg = seg;
@@ -7169,7 +7680,14 @@ function loadMyTasks(){
     const tasks = ((cache.resTasks && cache.resTasks.tasks) || []).filter(function(t){ return t.name === me.name; });
     var h = v3headBig(b && b.cycle ? 'Цикл ' + b.cycle + ' · синхронно с платформой' : 'Синхронно с платформой', 'Задачи');
     h += v3taskSeg(seg, btasks.length);
-    if(seg === 'cycle'){
+    if(seg === 'cal'){
+      // Рабочий календарь: сроки задач, а не встречи (встречи на главной и в «Встречах»)
+      if(!bd && !window._v3BoardTried){
+        window._v3BoardTried = true;
+        loadMyBoard(false).then(function(){ loadMyTasks(); });
+      }
+      h += v9workCalHTML(me);
+    } else if(seg === 'cycle'){
       if(!bd && !window._v3BoardTried){
         window._v3BoardTried = true;
         h += '<div class="loading"><div class="spinner"></div></div>';
@@ -8073,10 +8591,15 @@ function renderMyStatus(){
   if(w.life && w.life[0]) rows += mrow('Колесо баланса', w.life[0], w.life[1]);
   try{
     var dr = JSON.parse(localStorage.getItem('bs_diagnostic_result') || 'null');
-    if(dr && dr.totalPct != null) rows += '<div class="v2-row" onclick="showPage(\'diagnostic\')"><div class="m"><b>Здоровье бизнеса</b></div><div class="num" style="font-size:15px;font-weight:800">' + dr.totalPct + '</div><div class="v3-cap" style="width:34px;text-align:right">/100</div></div>';
+    if(dr && dr.totalPct != null) rows += '<div class="v2-row" onclick="showPage(\'diagnostic\')"><div class="m"><b>Тест здоровья бизнеса</b></div><div class="num" style="font-size:15px;font-weight:800">' + dr.totalPct + '</div><div class="v3-cap" style="width:34px;text-align:right">/100</div></div>';
   }catch(e){}
   if(!rows) rows = v3row('', 'Колесо баланса', 'Сделайте первый замер', "showPage('wheel')");
-  h += '<div class="v2-h">Замеры <span class="lnk" onclick="showPage(\'wheel\')">Все</span></div><div class="v2-card">' + rows + '</div>';
+  h += '<div class="v2-h">Замеры <span class="lnk" onclick="showPage(\'wheel\')">Колесо</span></div><div class="v2-card">' + rows + '</div>';
+  h += v9measuresHTML();
+  if(!window._myBoard && !window._v9MeasTried){
+    window._v9MeasTried = true;
+    loadMyBoard(false).then(function(){ if(v9activeId() === 'mystatus') renderMyStatus(); });
+  }
   // Ближайшая встреча
   var next = (cache.schedule || []).filter(function(ev){ return ev.res === me.name && parseScheduleKey(ev) >= Date.now() - 3600000; })
     .sort(function(a, b){ return parseScheduleKey(a) - parseScheduleKey(b); })[0];
@@ -8610,7 +9133,7 @@ function renderMyMeetings(){
   const el = document.getElementById('mymeetingsContent');
   if(!el) return;
   var b = window._myBoard && window._myBoard.board;
-  var head = v3headBig('Встречи с трекером', 'Задачи') + v3taskSeg('cal', b && b.tasks ? b.tasks.length : 0);
+  var head = v3headBig('С трекером и клубом', 'Встречи');
   if(!me){
     el.innerHTML = head + '<div class="v2-card v2-empty" style="margin-top:14px">Профиль не найден</div>';
     return;
@@ -9146,7 +9669,10 @@ window.addEventListener('unhandledrejection', function(e){
 function openModal(id){
   // Если открыто меню выбора. закрываем его, чтобы не было двух слоёв
   var am = document.querySelector('.add-menu-overlay');
-  if(am && id === 'schedModal'){ /* меню закроется своим обработчиком */ } document.getElementById(id).classList.add('show'); }
+  if(am && id === 'schedModal'){ /* меню закроется своим обработчиком */ }
+  var mb = document.getElementById(id); mb.classList.add('show');
+  try{ mb.scrollTop = 0; var mm = mb.querySelector('.modal'); if(mm) mm.scrollTop = 0; }catch(e){}
+}
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 function showToast(text){
   const t = document.getElementById('toast');
@@ -9686,7 +10212,7 @@ function renderTodos(){
     var headerEl = document.createElement('div');
     headerEl.className = 'todos-header section-head';
     headerEl.innerHTML = 
-      '<div class="section-title">Задачи</div>' +
+      '<div class="section-title">Задачи команды</div>' +
       '<div style="display:flex;gap:8px;align-items:center">' +
         '<button class="icon-btn" id="todoSyncBtn" title="Импортировать из Google Doc">' +
           '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>' +
@@ -10037,10 +10563,6 @@ function renderRules(){
       <div class="rules-foot">
         <div class="rules-foot-quote">Правила существуют не для контроля.<br>Они держат рамку, внутри которой бизнес растёт.</div>
         <div class="rules-foot-brand">BUSINESS SURGERY · BXCLUB.KZ</div>
-      <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px;align-items:center">
-        <div style="font-size:11px;color:#555">Версия ${typeof APP_VERSION!=='undefined'?APP_VERSION:''}</div>
-        <button onclick="hardReload()" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.35);color:#FFFFFF;padding:9px 20px;border-radius:20px;font-size:12.5px;font-weight:800;font-family:inherit">Обновить приложение</button>
-      </div>
       </div>
     </div>
   `;
@@ -10103,8 +10625,6 @@ function renderAbout(){
     h += v3socials();
     h += '<div class="v2-card" style="margin-top:10px">' + v3row('msg', 'WhatsApp', '+7 702 403 50 36', "window.open('https://wa.me/77024035036','_blank')") + '</div>';
   } else {
-    if(role === 'admin') h += v3crumb('Меню', "showPage('more')");
-    else h += v3crumb('Клуб', "showPage('residents')");
     h += '<div style="margin:22px 4px 0"><div class="hero-logo-real" style="width:auto">' + (logo ? '<img class="v3-logo" src="' + logo + '" alt="business surgery">' : '') + '</div>' +
       '<div class="v3-gold">БИЗНЕС-ТРЕКИНГ</div>' +
       '<h1 class="v3-h1">Хирургия бизнеса</h1>' +
@@ -10183,12 +10703,6 @@ function renderAdminMore(){
   h += '<div class="v2-card v4-brand" style="margin-top:14px">' + (logo ? '<img src="' + logo + '" alt="business surgery">' : '') +
     '<div style="min-width:0"><div style="font-size:9px;font-weight:800;letter-spacing:2.6px;color:#D4B886">БИЗНЕС-ТРЕКИНГ</div>' +
     '<div class="t" style="margin-top:4px">Здоровье бизнеса и энергия роста</div></div></div>';
-  h += '<div class="v2-h">Резиденты</div><div class="v2-card">' +
-    v3row('doc', 'Отчёты', 'Кто сдал и кто нет', "showPage('reports')") +
-    v3row('check', 'Посещения', 'Отметки на встречах', "showPage('visits')") +
-    v3row('alert', 'Штрафы', 'Начисленные и оплаченные', "showPage('fines')") +
-    v3row('tasks', 'Задачи резидентов', 'Задачи циклов по клубу', "showPage('restasks')") +
-  '</div>';
   h += '<div class="v2-h">Продажи и маркетинг</div><div class="v2-card">' +
     v3row('club', 'CRM лиды', (leads ? leads + ' · ' : '') + 'кто прошёл диагностику и не записался', "showPage('crm')") +
     v3row('msg', 'Подписчики бота', 'Рассылки и дожимы', "showPage('subscribers')") +
@@ -10201,6 +10715,7 @@ function renderAdminMore(){
     v3row('doc', 'Правила и тексты бота', 'То, что видят резиденты', "showPage('rules')") +
     v3row('club', 'О клубе', 'Страница о проекте', "showPage('about')") +
     v3row('sum', 'Колесо клуба', 'Замеры резидентов', "showPage('wheeladmin')") +
+    v3row('doc', 'Библиотека', 'Книги, инструменты, диагнозы с платформы', "showPage('library')") +
     v3row('tasks', 'Задачи команды', 'Список дел Рустама и Береке', "showPage('todos')") +
     v3row('me', 'Мой профиль', 'Ниша, о себе, контакты', "showPage('myprofile')") +
   '</div>';
@@ -10745,18 +11260,18 @@ function renderDiagnostic(){
       <div class="diag-page">
         <div class="diag-hero">
           <div class="hero-label">Диагностика бизнеса</div>
-          <h1 class="hero-title">Узнай слабые<br>органы за 5 минут</h1>
-          <div class="hero-sub">Без рекомендаций. Только точный замер по 7 областям бизнеса. После результата решаешь. приходить на разбор или нет.</div>
+          <h1 class="hero-title">Узнай слабые<br>органы за 8 минут</h1>
+          <div class="hero-sub">Точный замер по 7 органам бизнеса. В результате: главная проблема, сильная сторона и что сделать уже на этой неделе.</div>
         </div>
         
         <div class="diag-orgs-preview">
-          <div class="diag-org-preview"><span></span><span>Стратегия</span></div>
-          <div class="diag-org-preview"><span></span><span>Маркетинг</span></div>
-          <div class="diag-org-preview"><span></span><span>Продажи</span></div>
-          <div class="diag-org-preview"><span></span><span>Команда</span></div>
-          <div class="diag-org-preview"><span></span><span>Финансы</span></div>
-          <div class="diag-org-preview"><span></span><span>Процессы</span></div>
-          <div class="diag-org-preview"><span></span><span>Аналитика</span></div>
+          <div class="diag-org-preview"><span>${v9organIcon('brain', 18)}</span><span>Стратегия</span></div>
+          <div class="diag-org-preview"><span>${v9organIcon('heart', 18)}</span><span>Маркетинг</span></div>
+          <div class="diag-org-preview"><span>${v9organIcon('hands', 18)}</span><span>Продажи</span></div>
+          <div class="diag-org-preview"><span>${v9organIcon('spine', 18)}</span><span>Команда</span></div>
+          <div class="diag-org-preview"><span>${v9organIcon('blood', 18)}</span><span>Финансы</span></div>
+          <div class="diag-org-preview"><span>${v9organIcon('dna', 18)}</span><span>Процессы</span></div>
+          <div class="diag-org-preview"><span>${v9organIcon('eyes', 18)}</span><span>Аналитика</span></div>
         </div>
         
         <div class="diag-meta">
@@ -10787,7 +11302,7 @@ function renderDiagnostic(){
         
         <div class="diag-note">
           <div class="diag-note-label">Что получишь в результате</div>
-          <div class="diag-note-text">% здоровья по каждому органу бизнеса и общий индекс. Покажем слабые места без конкретных решений. Решения разбираем на разборе вживую.</div>
+          <div class="diag-note-text">Индекс здоровья из 100, баллы по каждому органу, разбор главной проблемы, связи органов и шаги на неделю. Точные инструменты под ваш бизнес подбираем на разборе.</div>
         </div>
       </div>
     `;
@@ -10817,7 +11332,7 @@ function renderDiagnostic(){
       <div class="diag-page">
         <div class="diag-question-head">
           <div class="diag-area-tag" style="background:transparent;border:1px solid #2A2A2A;color:#FFFFFF">
-            <span style="font-size:18px">${area.icon}</span>
+            ${v9organIcon(area.id, 18)}
             ${area.organ} · ${area.label}
           </div>
           <div class="diag-progress">${currentNum} / ${totalInArea}</div>
@@ -10885,10 +11400,10 @@ function finishDiagnostic(){
   callAction('saveDiagnosticResult', {
     answers: JSON.stringify(diagState.answers)
   }).then(function(r){
-    renderDiagnostic();
+    renderDiagnostic(); v9scrollTop();
   }).catch(function(e){
     console.error(e);
-    renderDiagnostic();
+    renderDiagnostic(); v9scrollTop();
   });
 }
 
@@ -10915,56 +11430,261 @@ function requestLeadPhone(){
   });
 }
 
+var V4_ORGAN_ICONS = {};
+function renderBodyAnatomy(results, weakIds){
+  weakIds = weakIds || {};
+  // Органы бизнеса: кольцо прогресса вокруг иконки, слабые красным
+  var organHtml = results.map(function(r, idx){
+    var bad = !!weakIds[r.id] || r.pct < 40;
+    var color = bad ? '#FF6B6F' : '#FFFFFF';
+    var circumference = 2 * Math.PI * 36;
+    var dashOffset = circumference * (1 - r.pct/100);
+    return '<div class="anatomy-card" data-organ="' + r.id + '">' +
+        '<div class="anatomy-progress">' +
+          '<svg viewBox="0 0 84 84" class="anatomy-svg">' +
+            '<circle cx="42" cy="42" r="36" stroke="#1F1F1F" stroke-width="4" fill="none"/>' +
+            '<circle cx="42" cy="42" r="36" stroke="' + color + '" stroke-width="4" fill="none" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + dashOffset + '" stroke-linecap="round" transform="rotate(-90 42 42)" style="transition: stroke-dashoffset 0.8s ease ' + (idx * 0.1) + 's"/>' +
+          '</svg>' +
+          '<div class="anatomy-icon" style="color:' + color + '">' + v9organIcon(r.id, 26, 1.8) + '</div>' +
+        '</div>' +
+        '<div class="anatomy-pct num' + (bad ? ' red' : '') + '">' + r.pct + '</div>' +
+        '<div class="anatomy-name">' + v2esc(r.organ) + '</div>' +
+        '<div class="anatomy-label">' + v2esc(r.label) + '</div>' +
+      '</div>';
+  }).join('');
+  return '<div class="anatomy-grid">' + organHtml + '</div>';
+}
+
+
+// ═══ ДИАГНОСТИКА v9: иконки органов и глубокий разбор результата ═══
+// Единый набор линейных иконок: сетка 24, линия 1.8, скруглённые концы
+var V9_ORGAN_ICONS = {
+  brain:'<path d="M12 5.5a3 3 0 0 0-5.6-1.2A3 3 0 0 0 4 8a3 3 0 0 0-.6 5.2A3.2 3.2 0 0 0 6.5 18a3 3 0 0 0 5.5 1.2z"/><path d="M12 5.5a3 3 0 0 1 5.6-1.2A3 3 0 0 1 20 8a3 3 0 0 1 .6 5.2 3.2 3.2 0 0 1-3.1 4.8 3 3 0 0 1-5.5 1.2z"/><path d="M12 5.5v13.7"/><path d="M8.5 9.5a2 2 0 0 1 2 2M15.5 9.5a2 2 0 0 0-2 2M7.5 14.5a2.2 2.2 0 0 0 2.3-1M16.5 14.5a2.2 2.2 0 0 1-2.3-1"/>',
+  heart:'<path d="M12 20.5s-8-4.9-8-10.8A4.6 4.6 0 0 1 12 6.6a4.6 4.6 0 0 1 8 3.1c0 5.9-8 10.8-8 10.8z"/><path d="M6.5 12.5h3l1.5-2.5 2 4.5 1.5-2h3"/>',
+  hands:'<path d="M7 11.5V5.8a1.4 1.4 0 0 1 2.8 0v5"/><path d="M9.8 10.5V4.4a1.4 1.4 0 0 1 2.8 0v6.1"/><path d="M12.6 10.6V5.4a1.4 1.4 0 0 1 2.8 0v6"/><path d="M15.4 11V8a1.4 1.4 0 0 1 2.8 0v6a7 7 0 0 1-7 7h-.6a6 6 0 0 1-4.9-2.6l-2.3-3.5a1.5 1.5 0 0 1 2.4-1.8L7 15"/>',
+  spine:'<rect x="8.5" y="2.5" width="7" height="3.5" rx="1.5"/><rect x="7.5" y="8" width="9" height="3.5" rx="1.5"/><rect x="7.5" y="13.5" width="9" height="3.5" rx="1.5"/><rect x="8.5" y="19" width="7" height="2.5" rx="1.2"/><path d="M12 6v2M12 11.5v2M12 17v2"/>',
+  blood:'<path d="M12 3s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 10 12 3 12 3z"/><path d="M9 15a3 3 0 0 0 3 3"/>',
+  dna:'<path d="M7 2.5c0 4.8 10 5.2 10 9.5s-10 4.7-10 9.5"/><path d="M17 2.5c0 4.8-10 5.2-10 9.5s10 4.7 10 9.5"/><path d="M8.6 6h6.8M10.2 9h3.6M10.2 15h3.6M8.6 18h6.8"/>',
+  eyes:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3.2"/><circle cx="13.2" cy="10.8" r=".6" fill="currentColor"/>'
+};
+function v9organIcon(id, size, w){
+  return '<svg width="' + (size || 24) + '" height="' + (size || 24) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.8) + '" stroke-linecap="round" stroke-linejoin="round">' + (V9_ORGAN_ICONS[id] || '') + '</svg>';
+}
+// Старое имя: инфографика результата берёт иконки отсюда
+V4_ORGAN_ICONS = V9_ORGAN_ICONS;
+
+// Порог «слабого» органа и уровни
+var V9_WEAK = 60;
+function v9level(p){ return p < 40 ? 'low' : (p < 70 ? 'mid' : 'high'); }
+
+// Тексты по органам: состояние на трёх уровнях, симптомы, цена, как использовать силу,
+// что сделать на этой неделе и инструменты разбора
+var V9_DIAG = {
+  brain: {
+    state: {
+      low: 'Бизнес живёт без цели. Решения принимаются по ситуации, и каждый месяц начинается заново.',
+      mid: 'Цель есть, но она в голове. Команда её не видит, а план не сверяется с фактом.',
+      high: 'Вы понимаете, куда идёт бизнес, и решения подчинены цели.'
+    },
+    symptoms: ['Беретесь за всё, что приносит деньги прямо сейчас', 'Не можете за минуту объяснить, каким будет бизнес через год', 'Новые идеи постоянно сбивают с текущего плана'],
+    cost: 'Ресурсы распыляются на 5 направлений сразу. Бизнес растёт медленнее рынка, хотя вы работаете больше всех.',
+    use: 'Ясная цель помогает быстро говорить «нет» лишнему. Сделайте её видимой для команды: так она начнёт работать без вас.',
+    week: ['Запишите одной фразой, какой результат в цифрах нужен через 12 месяцев', 'Выпишите все текущие направления и уберите одно, которое не ведёт к цели', 'Назначьте 30 минут каждую пятницу на сверку недели с целью'],
+    tools: [['Точка Б на год', 'Цель в цифрах, от которой считаются все решения'], ['Фокус на одной нише', 'Один клиент, один продукт, один канал на старте'], ['План на 90 дней', 'Цель года, разбитая на 3 месяца и недельные шаги']]
+  },
+  heart: {
+    state: {
+      low: 'Клиенты приходят случайно: по сарафану или когда вы лично активны. Поток нельзя включить по желанию.',
+      mid: 'Каналы есть, но вы не знаете, какой из них окупается, и поток скачет от месяца к месяцу.',
+      high: 'Маркетинг даёт предсказуемый поток заявок, и вы понимаете его экономику.'
+    },
+    symptoms: ['Заявки идут волнами: месяц густо, месяц пусто', 'Не знаете, сколько стоит привести одного клиента', 'Клиенты сравнивают вас с конкурентами только по цене'],
+    cost: 'Без своего потока вы зависите от сезона и сарафана. Каждый тихий месяц съедает прибыль прошлых.',
+    use: 'Сильный поток заявок позволяет поднять цены и выбирать клиентов. Проверьте, не теряет ли их отдел продаж.',
+    week: ['Опросите 5 последних клиентов: почему выбрали вас, а не других', 'Соберите оффер на одну страницу: для кого, какой результат, почему вы', 'Посчитайте, сколько заявок дал каждый канал за прошлый месяц'],
+    tools: [['Оффер на одну страницу', 'Кому, какой результат и почему именно вы'], ['Контент-план', 'Регулярные публикации, которые приводят заявки'], ['Сарафан', 'Система рекомендаций от довольных клиентов']]
+  },
+  hands: {
+    state: {
+      low: 'Продаёте вы сами. Без вас заявки остывают, а выручка держится на вашем личном времени.',
+      mid: 'Продажи идут, но по-разному у разных людей. Никто не знает, где теряется больше всего клиентов.',
+      high: 'Продажи работают по системе и не зависят от одного человека.'
+    },
+    symptoms: ['Заявки теряются в мессенджерах и тетрадях', 'Менеджеры продают по-разному, результат не повторяется', 'Клиенту отвечают через час или на следующий день'],
+    cost: 'Каждая потерянная заявка уже оплачена маркетингом. Обычно утечка в воронке забирает 20-40% выручки.',
+    use: 'Сильные продажи дадут больше, если завести в них больше потока. Масштабируйте маркетинг: отдел продаж его переварит.',
+    week: ['Заведите все заявки недели в одну таблицу или CRM', 'Запишите 3 разговора с клиентами и найдите, где они уходят', 'Поставьте правило: ответ на заявку за 15 минут'],
+    tools: [['Скрипт продаж', 'Разговор по шагам от приветствия до оплаты'], ['Воронка', 'Конверсия каждого этапа и место главной утечки'], ['CRM', 'Ни одна заявка не теряется и не остывает']]
+  },
+  spine: {
+    state: {
+      low: 'Бизнес держится на вас. Команда ждёт указаний, и любое ваше отсутствие останавливает работу.',
+      mid: 'Команда есть, но зоны ответственности размыты. Вы закрываете дыры за других.',
+      high: 'Команда держит бизнес: роли понятны, люди отвечают за результат.'
+    },
+    symptoms: ['Без вас ничего не решается, телефон звонит и в отпуске', 'Сотрудники приходят и уходят, найм идёт по знакомству', 'Непонятно, кто за что отвечает, задачи падают между людьми'],
+    cost: 'Ваш час стоит дорого, а уходит на работу сотрудника. Рост упирается в ваш предел: 24 часа в сутки.',
+    use: 'Сильная команда позволяет вам заниматься стратегией. Освободите 1 день в неделю и вложите его в рост.',
+    week: ['Нарисуйте оргструктуру: роли, люди и кто за что отвечает', 'Выпишите 5 задач, которые делаете вы, но мог бы сотрудник', 'Проведите встречу один на один с ключевым человеком команды'],
+    tools: [['Оргструктура', 'Роли, зоны ответственности и подчинение на одной схеме'], ['Найм по профилю', 'Портрет кандидата, воронка найма, испытательный срок'], ['Регламенты ролей', 'Что делает человек и по каким цифрам его оценивать']]
+  },
+  blood: {
+    state: {
+      low: 'Деньги бизнеса и ваши смешаны. Вы не знаете точную прибыль и узнаёте о кассовом разрыве в день платежа.',
+      mid: 'Учёт есть, но запаздывает. Решения о тратах принимаются по остатку на счёте, а не по прибыли.',
+      high: 'Вы знаете прибыль, маржу и деньги на месяц вперёд. Финансы под контролем.'
+    },
+    symptoms: ['Выручка растёт, а денег больше не становится', 'Налоги и зарплаты каждый раз становятся сюрпризом', 'Берёте деньги из бизнеса, когда нужно, без системы'],
+    cost: 'Бизнес может быть убыточным, а вы узнаете об этом через полгода. Кассовые разрывы стоят штрафов, займов и нервов.',
+    use: 'Точные цифры дают право на смелые решения. Используйте их, чтобы найти самый прибыльный продукт и вложиться в него.',
+    week: ['Отделите личные деньги: назначьте себе фиксированную выплату', 'Откройте отдельный счёт и откладывайте туда налоги с каждого поступления', 'Распишите все платежи и поступления на 4 недели вперёд'],
+    tools: [['Платёжный календарь', 'Все платежи и поступления на 4 недели вперёд'], ['Управленческий учёт', 'Прибыль и маржа каждый месяц до 5 числа'], ['Отдельный счёт под налоги', 'Налоги откладываются с каждого поступления']]
+  },
+  dna: {
+    state: {
+      low: 'Каждый делает по-своему. Качество зависит от настроения сотрудника, ошибки повторяются.',
+      mid: 'Часть процессов описана, но регламентам не следуют, и вы всё равно проверяете вручную.',
+      high: 'Процессы описаны и работают. Результат повторяется без вашего контроля.'
+    },
+    symptoms: ['Одни и те же ошибки повторяются снова', 'Новый сотрудник учится месяцами и только у вас', 'Вы тратите на операционку больше 4 часов в день'],
+    cost: 'Хаос съедает время и деньги на переделки. Вы не можете открыть второй филиал: нечего копировать.',
+    use: 'Отлаженные процессы можно тиражировать. Это основа для второй точки, франшизы или нового продукта.',
+    week: ['Выберите процесс, где чаще всего ошибаются, и опишите его по шагам', 'Сделайте чек-лист на 5-7 пунктов для одной ежедневной задачи', 'Передайте одну регулярную задачу сотруднику вместе с чек-листом'],
+    tools: [['Регламенты', 'Ключевые процессы по шагам, понятные новичку'], ['Чек-листы', 'Короткие списки проверки для ежедневной работы'], ['Делегирование', 'Передача задач с результатом и контрольной точкой']]
+  },
+  eyes: {
+    state: {
+      low: 'Решения принимаются на ощущениях. Цифр нет или они собираются вручную раз в квартал.',
+      mid: 'Цифры есть, но разбросаны по таблицам и смотрятся нерегулярно. Проблемы видно поздно.',
+      high: 'Вы видите ключевые цифры каждую неделю и замечаете отклонения сразу.'
+    },
+    symptoms: ['Не можете сразу назвать выручку и прибыль прошлого месяца', 'Узнаёте о проблеме, когда она уже стоит денег', 'Спорите с командой о мнениях, а не о цифрах'],
+    cost: 'Вы управляете вслепую. Деньги уходят в каналы и людей, которые не окупаются, и это видно слишком поздно.',
+    use: 'Хорошая аналитика ускоряет все остальные органы. Ставьте команде цели в цифрах и разбирайте их каждую неделю.',
+    week: ['Выберите 5 цифр, которые показывают здоровье бизнеса', 'Соберите их в одну таблицу за последние 4 недели', 'Назначьте 20 минут в понедельник на разбор цифр с командой'],
+    tools: [['Дашборд 5 цифр', 'Главные показатели бизнеса на одном экране'], ['Еженедельный отчёт', 'Короткий разбор цифр недели с командой'], ['Юнит-экономика', 'Сколько приносит и стоит один клиент']]
+  }
+};
+
+// Связь органов: пары слабых органов и что это значит вместе
+var V9_PAIRS = [
+  ['blood', 'eyes', 'Нет цифр для решений', 'Слабые финансы и аналитика вместе значат, что вы не видите, где бизнес зарабатывает и где теряет. Любой рост в такой ситуации идёт наугад.'],
+  ['heart', 'hands', 'Клиенты не доходят до оплаты', 'Поток заявок нестабилен, а те, что приходят, теряются в продажах. Это двойная утечка: платите за рекламу и не получаете выручку.'],
+  ['spine', 'dna', 'Всё держится на вас', 'Нет команды с ролями и нет процессов. Бизнес работает, пока работаете вы, и остановится, как только вы остановитесь.'],
+  ['brain', 'blood', 'Рост без плана и без запаса', 'Нет ясной цели и нет контроля денег. Вложения делаются по настроению, а кассовые разрывы появляются в самый неудобный момент.'],
+  ['hands', 'eyes', 'Не видно, где теряются продажи', 'Продажи без цифр по воронке не улучшить: непонятно, на каком этапе уходят клиенты и что чинить первым.'],
+  ['brain', 'spine', 'Команда не знает, куда идём', 'Цель не сформулирована, а роли размыты. Люди заняты, но работа не складывается в результат.'],
+  ['heart', 'brain', 'Маркетинг без позиционирования', 'Без чёткой цели и ниши маркетинг говорит со всеми сразу. Реклама дорожает, а клиенты выбирают по цене.'],
+  ['dna', 'hands', 'Продажи не повторяются', 'Без процесса продаж каждый менеджер работает по-своему. Удачный месяц нельзя повторить, а провальный нельзя объяснить.'],
+  ['blood', 'spine', 'Фонд оплаты труда вслепую', 'Не видно, сколько приносит каждый сотрудник. Найм идёт по ощущениям, а зарплаты съедают прибыль.'],
+  ['heart', 'eyes', 'Реклама без окупаемости', 'Каналы не измеряются, поэтому бюджет уходит туда, где громче, а не туда, где окупается.'],
+  ['dna', 'eyes', 'Сбои видно слишком поздно', 'Процессы не описаны и не измеряются. О проблеме вы узнаёте от недовольного клиента.']
+];
+function v9pairInsight(results){
+  var by = {}; results.forEach(function(r){ by[r.id] = r; });
+  var weak = results.filter(function(r){ return r.pct < V9_WEAK; });
+  var hits = V9_PAIRS.filter(function(p){ return by[p[0]] && by[p[1]] && by[p[0]].pct < V9_WEAK && by[p[1]].pct < V9_WEAK; });
+  hits.sort(function(a, b){ return (by[a[0]].pct + by[a[1]].pct) - (by[b[0]].pct + by[b[1]].pct); });
+  if(hits.length) return {a: by[hits[0][0]], b: by[hits[0][1]], title: hits[0][2], text: hits[0][3]};
+  var s = results.slice().sort(function(a, b){ return a.pct - b.pct; });
+  var lo = s[0], hi = s[s.length - 1];
+  if(!lo || !hi || lo.id === hi.id) return null;
+  if(!weak.length) return {a: lo, b: hi, title: 'Слабое звено держит сильное', text: 'Разрыв между ' + lo.label.toLowerCase() + ' (' + lo.pct + ') и ' + hi.label.toLowerCase() + ' (' + hi.pct + ') небольшой, но бизнес растёт со скоростью самого слабого органа. Подтяните его, и сильные стороны дадут больше.'};
+  return {a: lo, b: hi, title: 'Сильная сторона вытянет слабую', text: hi.label + ' (' + hi.pct + ') сейчас лучший ресурс бизнеса. Используйте его, чтобы закрыть провал в зоне «' + lo.label.toLowerCase() + '» (' + lo.pct + '), а не распыляйтесь на всё сразу.'};
+}
+function v9verdict(t){
+  if(t < 40) return ['Бизнес в зоне риска', 'Несколько органов работают на износ. Без изменений бизнес будет зависеть от удачи и вашего личного ресурса.'];
+  if(t < 60) return ['Бизнес держится на вас', 'База есть, но система не сложилась. Рост упирается в слабые органы и в ваше время.'];
+  if(t < 80) return ['Крепкая база, есть узкие места', 'Большая часть работает. Одно-два слабых звена тормозят рост, и их видно.'];
+  return ['Бизнес в хорошей форме', 'Органы работают слаженно. Задача сейчас: масштаб без потери управляемости.'];
+}
+
 function renderDiagnosticResult(){
   var el = document.getElementById('page-diagnostic');
   if(!el) return;
-
   var results = DIAGNOSTIC_AREAS.map(function(area){
     var answers = diagState.answers[area.id] || [];
     var maxScore = area.questions.length * 4;
-    var actualScore = answers.reduce(function(s,v){ return s + (v || 0); }, 0);
+    var actualScore = answers.reduce(function(s, v){ return s + (v || 0); }, 0);
     var pct = Math.round((actualScore / maxScore) * 100);
-    return { id: area.id, organ: area.organ, label: area.label, icon: area.icon, color: area.color, body_pos: area.body_pos, pct: pct, score: actualScore, maxScore: maxScore };
+    return {id: area.id, organ: area.organ, label: area.label, icon: area.icon, color: area.color, body_pos: area.body_pos, pct: pct, score: actualScore, maxScore: maxScore};
   });
-  var totalScore = results.reduce(function(s,r){ return s + r.score; }, 0);
-  var totalMax = results.reduce(function(s,r){ return s + r.maxScore; }, 0);
+  var totalScore = results.reduce(function(s, r){ return s + r.score; }, 0);
+  var totalMax = results.reduce(function(s, r){ return s + r.maxScore; }, 0);
   var totalPct = Math.round((totalScore / totalMax) * 100);
-  var sorted = results.slice().sort(function(a,b){ return a.pct - b.pct; });
-  var weak = sorted.slice(0, 2);
-  var weakIds = {}; weak.forEach(function(w){ if(w.pct < 70) weakIds[w.id] = 1; });
-
-  // Сохраняем в localStorage для возврата к результату
+  var sorted = results.slice().sort(function(a, b){ return a.pct - b.pct; });
+  var worst = sorted[0], best = sorted[sorted.length - 1];
+  var weakList = sorted.filter(function(r){ return r.pct < V9_WEAK; });
+  if(!weakList.length) weakList = [worst];
+  var moreWeak = Math.max(0, weakList.length - 3);
+  var weakIds = {}; weakList.forEach(function(w){ weakIds[w.id] = 1; });
   try{
     localStorage.setItem('bs_diagnostic_done', '1');
-    localStorage.setItem('bs_diagnostic_result', JSON.stringify({ totalPct: totalPct, results: results, timestamp: Date.now() }));
+    localStorage.setItem('bs_diagnostic_result', JSON.stringify({totalPct: totalPct, results: results, timestamp: Date.now()}));
   }catch(e){}
 
-  var title = weak.length > 1 ? 'Слабые места:<br>' + v2esc(String(weak[0].label).toLowerCase()) + ' и ' + v2esc(String(weak[1].label).toLowerCase()) : 'Здоровье<br>вашего бизнеса';
-  var lead = totalPct >= 70 ? 'Бизнес в форме. Слабее всего: ' + weak[0].label.toLowerCase() + ', с этого и начнём.'
-    : 'Два слабых органа тянут остальные: ' + weak.map(function(w){ return String(w.organ).toLowerCase() + ' (' + w.pct + ' из 100)'; }).join(', ') + '.';
-  var rows = results.map(function(r){
-    var bad = !!weakIds[r.id] || r.pct < 40;
-    return '<div class="v3-organ"><div><div style="font-size:13px;font-weight:800">' + v2esc(r.organ) + '</div><div style="font-size:11px;color:#9A9A9A">' + v2esc(r.label) + '</div></div>' +
-      '<div class="bar"><i class="' + (bad ? 'r' : '') + '" style="width:' + r.pct + '%"></i></div>' +
-      '<div class="num' + (bad ? ' red' : '') + '" style="font-size:12px;text-align:right">' + r.pct + '</div></div>';
+  var vd = v9verdict(totalPct);
+  var W = V9_DIAG[worst.id], B = V9_DIAG[best.id];
+  var h = '<div style="display:flex;justify-content:flex-end;margin:0 2px">' + v3mark() + '</div>';
+  h += '<div style="margin:8px 2px 0"><div class="v3-lbl" style="color:#8C8C8C">РЕЗУЛЬТАТ ДИАГНОСТИКИ</div>' +
+    '<h1 class="v3-h1" style="margin-top:6px;font-size:28px">Здоровье бизнеса</h1></div>';
+  // Общий балл и вердикт
+  h += '<div class="v2-card v9-score" style="margin-top:14px"><div class="big num' + (totalPct < 40 ? ' red' : '') + '">' + totalPct + '<small>/100</small></div>' +
+    '<div style="min-width:0"><div class="vt">' + v2esc(vd[0]) + '</div><div class="vs">' + v2esc(vd[1]) + '</div></div></div>';
+  // Инфографика: кольца по органам
+  h += '<div class="v2-card v4-anat" style="margin-top:10px">' + renderBodyAnatomy(results, weakIds) + '</div>';
+  // Главная проблема
+  h += '<div class="v2-card v9-card" style="margin-top:10px;border-color:rgba(255,107,111,0.35)">' +
+    '<div class="tag red">Главная проблема</div>' +
+    '<div class="ttl"><div class="v9-oico r">' + v9organIcon(worst.id, 22) + '</div><div>' + v2esc(worst.organ) + ' · ' + v2esc(worst.label) + '</div><div class="sc num red">' + worst.pct + '</div></div>' +
+    '<div class="txt">' + v2esc(W.state[v9level(worst.pct)]) + '</div>' +
+    '<div class="sub">Типичные симптомы</div>' + W.symptoms.map(function(x){ return '<div class="v9-li r">' + v2esc(x) + '</div>'; }).join('') +
+    '<div class="v9-cost"><b>Чего это стоит.</b> ' + v2esc(W.cost) + '</div></div>';
+  // Сильная сторона
+  if(best.id !== worst.id){
+    h += '<div class="v2-card v9-card" style="margin-top:10px">' +
+      '<div class="tag">Сильная сторона</div>' +
+      '<div class="ttl"><div class="v9-oico">' + v9organIcon(best.id, 22) + '</div><div>' + v2esc(best.organ) + ' · ' + v2esc(best.label) + '</div><div class="sc num">' + best.pct + '</div></div>' +
+      '<div class="txt">' + v2esc(B.state[v9level(best.pct)]) + '</div>' +
+      '<div class="sub">Как использовать</div><div class="v9-li">' + v2esc(B.use) + '</div></div>';
+  }
+  // Что сделать на этой неделе: по каждому слабому органу
+  h += '<div class="v2-h">Что сделать на этой неделе</div>';
+  h += weakList.slice(0, 3).map(function(r){
+    var D = V9_DIAG[r.id];
+    return '<div class="v2-card v9-card" style="margin-top:8px">' +
+      '<div class="ttl" style="margin-top:0;font-size:16px"><div class="v9-oico' + (r.pct < V9_WEAK ? ' r' : '') + '" style="width:34px;height:34px;border-radius:10px">' + v9organIcon(r.id, 18) + '</div><div>' + v2esc(r.label) + '</div>' +
+      '<div class="sc num' + (r.pct < V9_WEAK ? ' red' : '') + '">' + r.pct + '</div></div>' +
+      D.week.map(function(x){ return '<div class="v9-li">' + v2esc(x) + '</div>'; }).join('') + '</div>';
   }).join('');
+  if(moreWeak) h += '<div class="v3-cap" style="margin:10px 4px 0;line-height:1.45">Ещё ' + moreWeak + ' ' + v3plural(moreWeak, 'орган', 'органа', 'органов') + ' ниже ' + V9_WEAK + '. Начните с трёх самых слабых: остальные подтянутся вслед.</div>';
+  // Связь органов
+  var ins = v9pairInsight(results);
+  if(ins){
+    h += '<div class="v2-card v9-card" style="margin-top:10px"><div class="tag">Связь органов · ' + v2esc(ins.a.label) + ' + ' + v2esc(ins.b.label) + '</div>' +
+      '<div class="ttl" style="font-size:17px">' + v2esc(ins.title) + '</div><div class="txt">' + v2esc(ins.text) + '</div></div>';
+  }
+  // Подводка к разбору: инструменты под слабые органы
+  var tools = [], seen = {};
+  var srcOrg = sorted.slice(0, 3);
+  for(var round = 0; tools.length < 3 && round < 3; round++){
+    srcOrg.forEach(function(r){
+      var t = V9_DIAG[r.id].tools[round];
+      if(t && tools.length < 3 && !seen[t[0]]){ seen[t[0]] = 1; tools.push([t[0], t[1], r.label]); }
+    });
+  }
   var isLeadView = viewAs !== 'resident';
-
-  el.innerHTML =
-    '<div class="v3-row-sb" style="margin:0 2px">' +
-      '<button class="v3-back" aria-label="Назад" onclick="showPage(navRole()===\'lead\'?\'about\':(navRole()===\'admin\'?\'more\':\'myboard\'))">' + navIcon('back', 18) + '</button>' + v3mark() + '</div>' +
-    '<div style="margin:16px 2px 0"><div class="v3-lbl" style="color:#8C8C8C">ДИАГНОЗ</div>' +
-      '<h1 class="v3-h1" style="margin-top:6px;font-size:28px">' + title + '</h1>' +
-      '<p class="v3-p" style="margin-top:10px;font-size:15px">' + v2esc(lead) + '</p></div>' +
-    '<div class="v2-card v4-anat" style="margin-top:14px">' + renderBodyAnatomy(results, weakIds) + '</div>' +
-    '<div class="v2-card" style="margin-top:10px;padding:14px;display:flex;flex-direction:column;gap:12px">' +
-      '<div class="v3-row-sb" style="align-items:baseline"><div style="font-size:15px;font-weight:800">Здоровье бизнеса</div>' +
-      '<div class="num" style="font-size:26px;font-weight:800">' + totalPct + '<span style="font-size:13px;color:#9A9A9A">/100</span></div></div>' +
-      rows + '</div>' +
-    '<div class="v3-p" style="margin:14px 2px 0;font-size:14px">Слабые места видны. На разборе с Рустамом и Береке разберём, что с этим делать. Уйдёте с планом задач на 10 дней.</div>' +
-    '<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">' +
-      (isLeadView ? '<button class="v3-primary" id="diagCtaBtn">Записаться на разбор</button>' : '') +
-      '<button class="v3-outline" id="diagRestartBtn">Пройти заново</button></div>';
+  h += '<div class="v2-card v9-card" style="margin-top:16px;background:#FFFFFF;color:#000;border-color:#FFFFFF">' +
+    '<div class="tag" style="color:#6E6E6E">Экспресс-разбор · 60 минут</div>' +
+    '<div class="ttl" style="font-size:20px">На экспресс-разборе разберём точные инструменты для вашего бизнеса</div>' +
+    '<div class="v9-tools">' + tools.map(function(t, i){
+      return '<div class="v9-tool" style="background:#F3F3F3;border-color:#E2E2E2"><div class="n">' + String(i + 1).padStart(2, '0') + '</div><div style="min-width:0"><b>' + v2esc(t[0]) + '</b><span style="color:#555">' + v2esc(t[1]) + ' · ' + v2esc(t[2].toLowerCase()) + '</span></div></div>';
+    }).join('') + '</div>' +
+    '<div class="txt" style="color:#333">Рустам и Береке найдут причину, а не симптом. Уйдёте с планом задач на 10 дней.</div></div>';
+  h += '<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">' +
+    (isLeadView ? '<button class="v3-primary" id="diagCtaBtn">Записаться на разбор</button>' : '') +
+    '<button class="v3-outline" id="diagRestartBtn">Пройти заново</button></div>';
+  el.innerHTML = h;
 
   var ctaBtn = el.querySelector('#diagCtaBtn');
   if(ctaBtn){
@@ -10981,44 +11701,11 @@ function renderDiagnosticResult(){
         localStorage.removeItem('bs_diagnostic_done');
         localStorage.removeItem('bs_diagnostic_result');
       }catch(e){}
-      diagState = { started: false, finished: false, currentArea: 0, currentQuestion: 0, answers: {} };
+      diagState = {started: false, finished: false, currentArea: 0, currentQuestion: 0, answers: {}};
       renderDiagnostic();
+      v9scrollTop();
     });
   }
-}
-
-// Иконки органов: тонкая линия, как в нижнем меню
-var V4_ORGAN_ICONS = {
-  brain:'<path d="M11 4.5a3 3 0 0 0-5 1.8A3 3 0 0 0 4 11a3 3 0 0 0 1.2 4.6A3.2 3.2 0 0 0 11 18.5z"/><path d="M13 4.5a3 3 0 0 1 5 1.8A3 3 0 0 1 20 11a3 3 0 0 1-1.2 4.6A3.2 3.2 0 0 1 13 18.5z"/><path d="M12 4v16"/>',
-  heart:'<path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.3a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z"/>',
-  hands:'<path d="M8 12V6.5a1.5 1.5 0 0 1 3 0V11"/><path d="M11 10.5V5a1.5 1.5 0 0 1 3 0v5.5"/><path d="M14 10.5V6.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7 6 6 0 0 1-5.2-3l-2-3.5a1.5 1.5 0 0 1 2.6-1.5L8 15"/>',
-  spine:'<rect x="9" y="2.5" width="6" height="3.5" rx="1.2"/><rect x="8.5" y="7.5" width="7" height="3.5" rx="1.2"/><rect x="8.5" y="12.5" width="7" height="3.5" rx="1.2"/><rect x="9" y="17.5" width="6" height="3.5" rx="1.2"/>',
-  blood:'<path d="M12 3s6 7 6 11.2A6 6 0 0 1 6 14.2C6 10 12 3 12 3z"/>',
-  dna:'<path d="M7 3c0 5 10 6 10 9s-10 4-10 9"/><path d="M17 3c0 5-10 6-10 9s10 4 10 9"/><path d="M8.5 6h7M8.5 18h7"/>',
-  eyes:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>'
-};
-function renderBodyAnatomy(results, weakIds){
-  weakIds = weakIds || {};
-  // Органы бизнеса: кольцо прогресса вокруг иконки, слабые красным
-  var organHtml = results.map(function(r, idx){
-    var bad = !!weakIds[r.id] || r.pct < 40;
-    var color = bad ? '#FF6B6F' : '#FFFFFF';
-    var circumference = 2 * Math.PI * 36;
-    var dashOffset = circumference * (1 - r.pct/100);
-    return '<div class="anatomy-card" data-organ="' + r.id + '">' +
-        '<div class="anatomy-progress">' +
-          '<svg viewBox="0 0 84 84" class="anatomy-svg">' +
-            '<circle cx="42" cy="42" r="36" stroke="#1F1F1F" stroke-width="4" fill="none"/>' +
-            '<circle cx="42" cy="42" r="36" stroke="' + color + '" stroke-width="4" fill="none" stroke-dasharray="' + circumference + '" stroke-dashoffset="' + dashOffset + '" stroke-linecap="round" transform="rotate(-90 42 42)" style="transition: stroke-dashoffset 0.8s ease ' + (idx * 0.1) + 's"/>' +
-          '</svg>' +
-          '<div class="anatomy-icon" style="color:' + color + '"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + (V4_ORGAN_ICONS[r.id] || '') + '</svg></div>' +
-        '</div>' +
-        '<div class="anatomy-pct num' + (bad ? ' red' : '') + '">' + r.pct + '</div>' +
-        '<div class="anatomy-name">' + v2esc(r.organ) + '</div>' +
-        '<div class="anatomy-label">' + v2esc(r.label) + '</div>' +
-      '</div>';
-  }).join('');
-  return '<div class="anatomy-grid">' + organHtml + '</div>';
 }
 
 
