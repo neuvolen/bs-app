@@ -3816,6 +3816,56 @@
   .v9-tool span { display: block; font-size: 12px; color: #9A9A9A; margin-top: 2px; line-height: 1.4; }
   .diag-area-tag svg { flex-shrink: 0; }
   .diag-org-preview span:first-child { display: inline-flex; align-items: center; justify-content: center; }
+  /* v10: рабочий календарь (как «Мой календарь» на платформе), ДНК-причина */
+  .v10-st { font-size: 12px; color: #8C8C8C; margin: 0 4px 10px; }
+  .v10-st.red { color: #FF6B6F; }
+  .v10-bar { display: flex; gap: 8px; align-items: center; justify-content: space-between; }
+  .v10-vseg { grid-template-columns: 1fr 1fr; flex: 0 0 150px; }
+  .v10-vseg button { height: 32px; }
+  .v10-nav { display: flex; gap: 6px; }
+  .v10-nav button { height: 42px; min-width: 42px; border-radius: 12px; border: 1px solid #262626; background: transparent; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .v10-nav button.t { padding: 0 12px; }
+  .v10-sum { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 14px 4px 10px; }
+  .v10-sum b { font-size: 16px; font-weight: 800; }
+  .v10-sum span { font-size: 12px; color: #9A9A9A; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .v10-types { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .v10-types button { min-width: 0; height: 52px; padding: 0 2px; border-radius: 12px; border: 1px solid #262626; background: transparent; color: #BDBDBD; font-family: inherit; font-size: 11px; font-weight: 700; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; }
+  .v10-types button.on { border-color: #FFFFFF; color: #FFFFFF; background: #161616; }
+  .v10-types i { width: 16px; height: 16px; border-radius: 5px; border: 1px solid #3A3A3A; }
+  .v10-grid { display: grid; gap: 2px; padding: 8px 6px; margin-top: 10px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .v10-hd { text-align: center; padding: 2px 0 6px; cursor: pointer; }
+  .v10-hd span { display: block; font-size: 9px; font-weight: 800; letter-spacing: 0.8px; color: #8C8C8C; }
+  .v10-hd b { display: inline-flex; width: 24px; height: 24px; align-items: center; justify-content: center; border-radius: 12px; font-size: 13px; font-weight: 800; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .v10-hd.today b { background: #FFFFFF; color: #000; }
+  .v10-hd em { display: block; height: 12px; font-style: normal; }
+  .v10-hd em i { display: inline-block; min-width: 14px; height: 12px; line-height: 12px; padding: 0 3px; border-radius: 6px; background: #FFFFFF; color: #000; font-size: 9px; font-weight: 800; font-style: normal; }
+  .v10-hd em i.r { background: #FF6B6F; color: #000; }
+  .v10-hd em i.g { background: #2A2A2A; color: #9A9A9A; }
+  .v10-hr { font-size: 10px; color: #6E6E6E; font-weight: 700; text-align: right; padding-right: 4px; line-height: 26px; font-variant-numeric: tabular-nums; }
+  .v10-c { position: relative; height: 26px; border-radius: 5px; background: #121212; border: 1px solid #1C1C1C; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .v10-c.f { border-color: transparent; }
+  .v10-c.bs { background: #000; border: 1px solid #FFFFFF; color: #FFFFFF; font-size: 9px; font-weight: 800; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; }
+  .v10-c s { position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; border-radius: 3px; background: #000; box-shadow: 0 0 0 1.5px #FFFFFF; text-decoration: none; }
+  .v10-day { padding: 8px 10px; margin-top: 10px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .v10-dr { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; align-items: center; padding: 2px 0; }
+  .v10-dr .v10-hr { line-height: 40px; }
+  .v10-dr .v10-c { height: 40px; border-radius: 8px; display: flex; align-items: center; gap: 8px; padding: 0 12px; overflow: hidden; }
+  .v10-dr .v10-c b { font-size: 13px; font-weight: 800; flex-shrink: 0; }
+  .v10-dr .v10-c span { font-size: 12px; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .v10-dr .v10-c.bs { justify-content: flex-start; font-size: 12px; }
+  .v10-legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 12px 4px 0; font-size: 11px; color: #9A9A9A; }
+  .v10-legend span { display: flex; align-items: center; gap: 6px; }
+  .v10-legend i { display: inline-flex; align-items: center; justify-content: center; font-style: normal; }
+  .v10-legend i.bs { height: 14px; padding: 0 4px; border: 1px solid #FFFFFF; border-radius: 4px; font-size: 8px; font-weight: 800; color: #FFFFFF; }
+  .v10-legend i.dot { min-width: 14px; height: 12px; border-radius: 6px; background: #FFFFFF; }
+  .v10-legend i.nt { width: 6px; height: 6px; border-radius: 3px; background: #000; box-shadow: 0 0 0 1.5px #FFFFFF; }
+  .v10-dna { margin-top: 10px; padding: 0; border-color: #333; }
+  .v10-dna-i { padding: 16px 18px; }
+  .v10-dna-i + .v10-dna-i { border-top: 1px solid #1F1F1F; }
+  .v10-dna-i .t { font-size: 18px; font-weight: 800; line-height: 1.3; margin-top: 6px; }
+  .v10-dna-i .d { font-size: 13px; color: #9A9A9A; line-height: 1.5; margin-top: 4px; }
+  .v9-mhead.v10-link { cursor: pointer; }
+  .v9-mhead.v10-link span { display: flex; align-items: center; gap: 4px; }
 </style>
 
 <div class="modal-bg" id="attendModal">
@@ -4219,7 +4269,8 @@ function init(){
       }
     }
     renderTabs();
-    try{ window._scheduleViewMode = localStorage.getItem('bs_schedule_view') || 'list'; }catch(e){}
+    // Расписание всегда открывается календарём (переключатель на список остаётся)
+    window._scheduleViewMode = 'calendar';
     
     // Deep-link: определяем начальную вкладку из параметра URL или Telegram startParam
     var initialPage = null;
@@ -4529,7 +4580,11 @@ function showPage(id, opts){
   else if(!opts.back && cur && cur !== id){ st.push(cur); if(st.length > 20) st.shift(); }
   var k = st.lastIndexOf(id); if(k >= 0) st.length = k;
   var dv = document.getElementById('detailView'); if(dv && dv.classList.contains('show')) dv.classList.remove('show');
+  // Расписание при каждом открытии показывается календарём
+  var v10sched = id === 'schedule' && cur !== 'schedule';
+  if(v10sched){ window._scheduleViewMode = 'calendar'; window._calMonthOffset = 0; }
   _showPageCore(id);
+  if(v10sched){ try{ renderSchedule(); }catch(e){ console.error('schedule:', e); } }
   v9scrollTop();
   setTimeout(v9scrollTop, 0);
   v9updateBack();
@@ -4990,9 +5045,10 @@ function v3meetFor(){
   try{ document.getElementById('schedResident').value = r.name; }catch(e){}
 }
 
+var V10_REPORT_URL = 'https://t.me/c/2494126345/9';
 function v3sendReport(){
-  // Отчёт пишется в группе клуба: открываем бота, он ведёт в тему «ОТЧЁТЫ»
-  var url = 'https://t.me/bsurgery_bot';
+  // Отчёт пишется в группе клуба, тема «ОТЧЁТЫ» (чат -1002494126345, тема 9)
+  var url = V10_REPORT_URL;
   try{ if(tg && tg.openTelegramLink){ tg.openTelegramLink(url); return; } }catch(e){}
   window.open(url, '_blank');
 }
@@ -5221,14 +5277,28 @@ function v9list(v){
   if(Array.isArray(v)) return v.map(function(x){ return typeof x === 'string' ? x : (x && (x.text || x.title)) || ''; }).filter(function(x){ return String(x).trim(); });
   return String(v).split(/\n+/).map(function(x){ return x.replace(/^\s*(\d+[.)]|[-•])\s*/, '').trim(); }).filter(Boolean);
 }
-function openLibItem(x){
+// Книга открывается сразу файлом; если файла ещё нет, показываем описание
+function v10openBook(x){
+  var f = x.file || x.fileId || x.file_id || '';
+  var url = f ? v9libFileUrl(f) : (x.link || x.url || '');
+  if(!url) return false;
+  try{ if(tg && tg.openLink){ tg.openLink(url); return true; } }catch(e){}
+  window.open(url, '_blank');
+  return true;
+}
+function openLibItem(x, opts){
   if(!x) return;
   window._libItem = x;
   var k = v9libKind(x);
+  if(k === 'book' && !(opts && opts.detail)){
+    if(v10openBook(x)) return;
+    showToast('Книга скоро появится');
+  }
   document.getElementById('detailTitle').textContent = 'Библиотека';
   var h = '<div class="v3-lbl" style="color:#8C8C8C;display:flex;align-items:center;gap:8px">' + v9libIcon(k, 14) + v2esc([V9_LIB_ONE[k], x.organ ? v9organLabel(x.organ) : '', x.cat || ''].filter(Boolean).join(' · ').toUpperCase()) + '</div>' +
     '<h1 class="v3-h1" style="margin-top:8px;font-size:26px">' + v2esc(x.title) + '</h1>';
   if(x.short) h += '<p class="v3-p" style="margin-top:8px;font-size:15px">' + v2esc(x.short) + '</p>';
+  if(k === 'book' && !(x.file || x.fileId || x.file_id || x.link || x.url)) h += '<div class="v2-card v2-empty" style="margin-top:14px">Книга скоро появится: файл добавят в библиотеку на платформе</div>';
   if(x.why) h += '<div class="v9-sec"><div class="h">Зачем</div><div class="v2-card v3-text" style="font-size:14px;line-height:1.5">' + v2esc(x.why) + '</div></div>';
   var how = v9list(x.how);
   if(how.length) h += '<div class="v9-sec"><div class="h">Как применять</div><div class="v2-card">' + how.map(function(s, i){ return '<div class="v9-step"><div class="n">' + (i + 1) + '</div><div>' + v2esc(s) + '</div></div>'; }).join('') + '</div></div>';
@@ -5298,11 +5368,11 @@ function v9measuresHTML(){
       }
     }catch(e){}
   }
-  h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>Здоровье бизнеса</b><span>' + (avg || 'по органам') + '</span></div>' +
+  h += '<div class="v2-card" style="margin-top:10px;cursor:pointer" onclick="v10openHealth()"><div class="v9-mhead v10-link"><b>Здоровье бизнеса</b><span>' + (avg || 'по органам') + navIcon('chev', 14) + '</span></div>' +
     (hb ? '<div class="v9-bars">' + hb + '</div>' : (loading ? '<div class="v9-none">Загружаем...</div>' : none)) + '</div>';
   // Диагностика по 7 органам
   var dg = tests.diag && typeof tests.diag === 'object' ? v9barsHTML(tests.diag.axes || tests.diag) : '';
-  h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>Диагностика по 7 органам</b><span>с разбора</span></div>' +
+  h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>' + (tests.diag && (('Продукт' in tests.diag) || ('Делегирование' in tests.diag)) ? 'Диагностика по зонам' : 'Диагностика по 7 органам') + '</b><span>с платформы</span></div>' +
     (dg ? '<div class="v9-bars">' + dg + '</div>' : (loading ? '<div class="v9-none">Загружаем...</div>' : none)) + '</div>';
   // Gallup
   var g = tests.gallup || null;
@@ -5396,6 +5466,465 @@ function v9workCalHTML(me){
   return h;
 }
 
+// ═══ v10: ОДНИ ДАННЫЕ С ПЛАТФОРМОЙ: тесты резидента и рабочий календарь ═══
+// Админ в режиме «как резидент» только смотрит: записи на платформу не уходят
+function v10preview(){ return !!(isRealAdmin && viewAs === 'resident'); }
+function v10q(){
+  var q = new URLSearchParams({_tg: bsInitData()});
+  if(isRealAdmin){ var me = getMyData(); if(me) q.set('name', me.name); }
+  return q.toString();
+}
+function v10dateLabel(){ return new Date().toLocaleDateString('ru-RU', {day: '2-digit', month: 'short'}); }
+function v10score(v){ var n = Number(v); if(!isFinite(n)) return null; return Math.round(Math.max(0, Math.min(10, n)) * 10) / 10; }
+
+// Оси колеса баланса: подписи приложения → названия платформы
+var V10_LIFE_MAP = {
+  'бизнес':'Бизнес', 'здоровье':'Здоровье', 'спорт':'Спорт', 'семья':'Семья', 'окружение':'Окружение',
+  'личные финансы':'Личные финансы', 'деньги':'Личные финансы', 'развитие':'Личностное развитие', 'личностное развитие':'Личностное развитие',
+  'саморазвитие':'Личностное развитие', 'хобби':'Хобби', 'энергия':'Энергия', 'отдых':'Отдых', 'смысл':'Смысл'
+};
+var V10_DIAG_AXES = ['Стратегия', 'Финансы', 'Команда', 'Процессы', 'Продажи', 'Маркетинг', 'Продукт', 'Делегирование'];
+function v10axesObj(axes, values, map){
+  var o = {}, n = 0;
+  (axes || []).forEach(function(a, i){
+    var key = map ? map[String(a || '').trim().toLowerCase()] : String(a || '').trim();
+    var v = v10score(values && values[i]);
+    if(key && v !== null){ o[key] = v; n++; }
+  });
+  return n ? o : null;
+}
+
+// Очередь неотправленных тестов: повторяем при следующем открытии
+function v10queue(){ try{ var a = JSON.parse(localStorage.getItem('bs_tests_queue') || '[]'); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
+function v10queueSave(a){ try{ if(a.length) localStorage.setItem('bs_tests_queue', JSON.stringify(a.slice(-20))); else localStorage.removeItem('bs_tests_queue'); }catch(e){} }
+// 'ok' | 'drop' (сервер отказал навсегда) | 'retry'
+function v10sendTests(body){
+  return fetch(APP_SERVER + 'mytests?' + v10q(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body)})
+    .then(function(r){
+      if(r.ok) return r.json().then(function(j){ return j && j.ok ? 'ok' : 'retry'; }, function(){ return 'ok'; });
+      return (r.status === 400 || r.status === 403) ? 'drop' : 'retry';
+    })
+    .catch(function(){ return 'retry'; });
+}
+function v10postTests(tests){
+  if(navRole() !== 'resident' || !tests || !Object.keys(tests).length) return Promise.resolve(false);
+  if(v10preview()){ showToast('Режим просмотра: на платформу не отправлено'); return Promise.resolve(false); }
+  var body = {tests: tests, date: v10dateLabel()};
+  if(!bsInitData()){ var q0 = v10queue(); q0.push(body); v10queueSave(q0); return Promise.resolve(false); }
+  return v10sendTests(body).then(function(res){
+    if(res === 'ok'){
+      showToast('Сохранено, тренер видит на платформе');
+      window._myBoardAt = 0;
+      loadMyBoard(true);
+      return true;
+    }
+    if(res === 'retry'){
+      var q = v10queue(); q.push(body); v10queueSave(q);
+      showToast('Сохранено. На платформу отправим при следующем открытии');
+    }
+    return false;
+  });
+}
+function v10flushTests(){
+  if(window._v10flushing || navRole() !== 'resident' || v10preview() || !bsInitData()) return;
+  var q = v10queue();
+  if(!q.length) return;
+  window._v10flushing = true;
+  var keep = [];
+  q.reduce(function(p, body){
+    return p.then(function(){ return v10sendTests(body).then(function(res){ if(res === 'retry') keep.push(body); }); });
+  }, Promise.resolve()).then(function(){
+    v10queueSave(keep);
+    window._v10flushing = false;
+    if(keep.length < q.length){ showToast('Сохранено, тренер видит на платформе'); window._myBoardAt = 0; }
+  });
+}
+// Колесо из формы → платформа
+function v10syncWheel(type){
+  try{
+    var d = _wheelData || {};
+    if(type === 'dna'){
+      var biz = (d.businesses || []).find(function(b){ return b.name === (window._wheelFormBiz || 'Основной'); }) || (d.businesses || [])[0];
+      var vals = biz && biz.rows && biz.rows[0] ? biz.rows[0].values : window._v10lastForm;
+      var o = v10axesObj(WHEEL_DNA_AXES, vals, null);
+      if(o) return v10postTests({diag: o});
+    } else {
+      var axes = d.lifeAxes || WHEEL_LIFE_AXES;
+      var lv = d.life && d.life[0] ? d.life[0].values : null;
+      if(!lv){
+        // Сервер не вернул свежий замер: ось «Бизнес» как среднее всех направлений
+        var avgs = (d.businesses || []).map(function(b){ return b.rows && b.rows[0] ? wheelAvg(b.rows[0].values) : null; }).filter(function(x){ return x !== null; });
+        lv = [avgs.length ? avgs.reduce(function(s, x){ return s + x; }, 0) / avgs.length : null].concat(window._v10lastForm || []);
+      }
+      var o2 = v10axesObj(axes, lv, V10_LIFE_MAP);
+      if(o2) return v10postTests({wheel: o2});
+    }
+  }catch(e){ console.error('v10syncWheel', e); }
+  return Promise.resolve(false);
+}
+// Диагностика по 7 органам → платформа: здоровье бизнеса и диагностика
+function v10diagTests(){
+  var dr = null;
+  try{ dr = JSON.parse(localStorage.getItem('bs_diagnostic_result') || 'null'); }catch(e){}
+  if(!dr || !dr.results || !dr.results.length) return null;
+  var h = {};
+  dr.results.forEach(function(r){ var lbl = V9_ORGAN_LABEL[r.id]; var v = v10score(Number(r.pct) / 10); if(lbl && v !== null) h[lbl] = v; });
+  if(!Object.keys(h).length) return null;
+  // Только здоровье органов: «diag» на платформе занят колесом бизнеса, не затираем его
+  return {health: h};
+}
+function v10saveDiag(btn){
+  var t = v10diagTests();
+  if(!t){ showToast('Нет результата диагностики'); return; }
+  if(btn){ btn.disabled = true; btn.textContent = 'Сохраняем...'; }
+  v10postTests(t).then(function(ok){
+    if(ok) window._v10diagSaved = 1;
+    if(btn){ btn.disabled = false; btn.textContent = ok ? 'Сохранено в разбор' : 'Сохранить в разбор'; }
+  });
+}
+
+// ═══ ПРОФИЛЬ: ДНК-причина и здоровье бизнеса ═══
+function v10dnaCause(){
+  var b = window._myBoard && window._myBoard.board;
+  var list = ((b && b.diagnoses) || []).filter(function(x){ return x && String(x.type || '').toLowerCase() === 'dna' && String(x.title || '').trim(); });
+  if(!list.length) return '';
+  return '<div class="v2-card v10-dna">' + list.map(function(x){
+    return '<div class="v10-dna-i"><div class="v3-lbl" style="color:#8C8C8C">ДНК ПРИЧИНА</div><div class="t">' + v2esc(x.title) + '</div>' +
+      (x.desc ? '<div class="d">' + v2esc(x.desc) + '</div>' : '') + '</div>';
+  }).join('') + '</div>';
+}
+function v10healthData(){
+  var T = v9tests(), tests = T.tests || {};
+  var o = null, src = '';
+  if(T.health && typeof T.health === 'object' && Object.keys(T.health).length){ o = T.health; src = 'с платформы'; }
+  else if(tests.diag && typeof tests.diag === 'object'){
+    var dd = tests.diag.axes || tests.diag;
+    if(Object.keys(dd).some(function(k){ return v9organId(k); })){ o = dd; src = 'диагностика с разбора'; }
+  }
+  if(!o){
+    try{
+      var dr = JSON.parse(localStorage.getItem('bs_diagnostic_result') || 'null');
+      if(dr && dr.results && dr.results.length){ o = {}; dr.results.forEach(function(r){ o[r.id] = Number(r.pct) / 10; }); src = 'ваш тест'; }
+    }catch(e){}
+  }
+  if(!o) return null;
+  var keys = Object.keys(o).filter(function(k){ return v9num(o[k]) !== null; });
+  if(!keys.length) return null;
+  var max = Math.max.apply(null, keys.map(function(k){ return v9num(o[k]); })) > 10 ? 100 : 10;
+  var norm = {};
+  keys.forEach(function(k){ norm[k] = v9num(o[k]) * 10 / max; });
+  var avg = keys.reduce(function(s, k){ return s + norm[k]; }, 0) / keys.length;
+  var worst = keys.slice().sort(function(a, b){ return norm[a] - norm[b]; })[0];
+  return {o: norm, avg: avg, worst: worst, src: src};
+}
+function v10openHealth(){
+  var H = v10healthData();
+  document.getElementById('detailTitle').textContent = 'Здоровье бизнеса';
+  var h = '<div class="v3-lbl" style="color:#8C8C8C">ЗДОРОВЬЕ БИЗНЕСА</div><h1 class="v3-h1" style="margin-top:6px;font-size:26px">По органам</h1>';
+  if(!H){
+    h += '<div class="v2-card v2-empty" style="margin-top:16px">Замера пока нет. Пройдите диагностику или дождитесь разбора с трекером.</div>' +
+      '<button class="v3-primary" style="margin-top:12px" onclick="closeDetail();showPage(\'diagnostic\')">Пройти диагностику</button>';
+  } else {
+    var pct = Math.round(H.avg * 10), vd = v9verdict(pct);
+    h += '<div class="v2-card v9-score" style="margin-top:14px"><div class="big num' + (pct < 40 ? ' red' : '') + '">' + pct + '<small>/100</small></div>' +
+      '<div style="min-width:0"><div class="vt">' + v2esc(vd[0]) + '</div><div class="vs">' + v2esc(vd[1]) + '</div></div></div>';
+    h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>Органы</b><span>' + v2esc(H.src) + '</span></div><div class="v9-bars">' + v9barsHTML(H.o, {max: 10}) + '</div></div>';
+    var wv = H.o[H.worst];
+    h += '<div class="v2-card v9-card" style="margin-top:10px' + (wv < 5 ? ';border-color:rgba(255,107,111,0.35)' : '') + '"><div class="tag' + (wv < 5 ? ' red' : '') + '">Слабое место</div>' +
+      '<div class="ttl"><div class="v9-oico' + (wv < 5 ? ' r' : '') + '">' + v9organIcon(v9organId(H.worst) || 'brain', 22) + '</div><div>' + v2esc(v9organLabel(H.worst)) + '</div><div class="sc num' + (wv < 5 ? ' red' : '') + '">' + v9fmt1(wv) + '</div></div>' +
+      '<div class="txt">Начните с этого органа: он сильнее всего тормозит остальные. Разберите его с трекером на ближайшей встрече.</div></div>';
+    var T = v9tests(), dg = T.tests && T.tests.diag;
+    if(dg && typeof dg === 'object' && H.src === 'с платформы'){
+      var bars = v9barsHTML(dg.axes || dg);
+      if(bars) h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>Диагностика</b><span>с разбора</span></div><div class="v9-bars">' + bars + '</div></div>';
+    }
+    h += '<button class="v3-outline" style="margin-top:12px" onclick="closeDetail();showPage(\'diagnostic\')">Пройти диагностику</button>';
+  }
+  document.getElementById('detailContent').innerHTML = h;
+  showDetail();
+}
+
+// ═══ РАБОЧИЙ КАЛЕНДАРЬ (= «Мой календарь» на платформе) ═══
+var V10_TYPES = [['work', 'Работа', '#FFFFFF', '#000'], ['meet', 'Встреча', '#8B8B8B', '#fff'], ['focus', 'Фокус', '#3DD68C', '#000'], ['rest', 'Отдых', '#B9B9B9', '#000'], ['busy', 'Занято', '#FF4D4D', '#fff']];
+var V10_T = {}; V10_TYPES.forEach(function(t){ V10_T[t[0]] = t; });
+var V10_H0 = 7, V10_H1 = 23;
+var V10_WD = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
+var V10_MS = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+window._v10cal = null;
+function v10parse(str){
+  var o = null;
+  try{ o = typeof str === 'string' ? JSON.parse(str || '{}') : str; }catch(e){}
+  if(!o || typeof o !== 'object' || Array.isArray(o)) o = {};
+  if(!o.slots || typeof o.slots !== 'object' || Array.isArray(o.slots)) o.slots = {};
+  if(!o.notes || typeof o.notes !== 'object' || Array.isArray(o.notes)) o.notes = {};
+  return o;
+}
+function v10apply(v, op){
+  if('t' in op){ if(op.t) v.slots[op.k] = op.t; else delete v.slots[op.k]; }
+  if('n' in op){ if(op.n) v.notes[op.k] = op.n; else delete v.notes[op.k]; }
+}
+function v10calState(){
+  var me = getMyData();
+  var key = 'bs_mycal_' + (me ? me.name : '');
+  var S = window._v10cal;
+  if(!S || S.key !== key){
+    var c = null; try{ c = JSON.parse(localStorage.getItem(key) || 'null'); }catch(e){}
+    S = window._v10cal = {key: key, value: v10parse(c && c.value), version: (c && Number(c.version)) || 0, ops: (c && Array.isArray(c.ops)) ? c.ops : [], loadedAt: 0};
+  }
+  return S;
+}
+function v10calStore(){
+  var S = window._v10cal; if(!S) return;
+  try{ localStorage.setItem(S.key, JSON.stringify({value: S.value, version: S.version, ops: S.ops})); }catch(e){}
+}
+function v10calLoad(force){
+  var S = v10calState();
+  if(S.loading) return S.loading;
+  if(!force && S.loadedAt && Date.now() - S.loadedAt < 30000) return Promise.resolve(S);
+  if(!bsInitData()){ S.loadedAt = Date.now(); S.error = 'noinit'; return Promise.resolve(S); }
+  S.loading = fetch(APP_SERVER + 'mycal?' + v10q())
+    .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function(j){
+      var v = v10parse(j.value);
+      S.ops.forEach(function(op){ v10apply(v, op); });
+      S.value = v; S.version = Number(j.version) || 0; S.error = null;
+      v10calStore();
+      if(S.ops.length && !v10preview()) v10calSave();
+    })
+    .catch(function(e){ S.error = String((e && e.message) || 'network'); })
+    .then(function(){ S.loading = null; S.loadedAt = Date.now(); v10calRefresh(); return S; });
+  return S.loading;
+}
+function v10put(S){
+  return fetch(APP_SERVER + 'mycal?' + v10q(), {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({value: JSON.stringify(S.value), version: S.version})});
+}
+async function v10calSave(){
+  var S = window._v10cal;
+  if(!S || v10preview() || !S.ops.length) return;
+  if(S.saving){ S.again = true; return; }
+  S.saving = true; v10calStatus();
+  var sent = S.ops.length;
+  try{
+    var r = await v10put(S);
+    if(r.status === 409){
+      // Календарь изменили на платформе: берём их версию и заново кладём свои правки
+      var j = {}; try{ j = await r.json(); }catch(e){}
+      var v = v10parse(j.value);
+      S.ops.forEach(function(op){ v10apply(v, op); });
+      S.value = v; S.version = Number(j.version) || 0; sent = S.ops.length;
+      r = await v10put(S);
+    }
+    if(r.ok){
+      var j2 = {}; try{ j2 = await r.json(); }catch(e){}
+      if(j2 && j2.version != null) S.version = Number(j2.version);
+      S.ops = S.ops.slice(sent); S.error = null;
+    } else S.error = 'http ' + r.status;
+  }catch(e){ S.error = 'network'; }
+  S.saving = false;
+  v10calStore();
+  if(S.again){ S.again = false; if(S.ops.length && !S.error){ v10calLater(); return; } }
+  // Перерисовка: после слияния могли появиться правки с платформы
+  if(!_v10p && !document.querySelector('.add-menu-overlay')) v10calRefresh(); else v10calStatus();
+}
+function v10calLater(){ var S = window._v10cal; if(!S) return; clearTimeout(S.timer); S.timer = setTimeout(v10calSave, 800); }
+function v10calStatusText(){
+  var S = window._v10cal;
+  if(v10preview()) return 'Режим просмотра: изменения не сохраняются';
+  if(!S || (!S.loadedAt && S.loading)) return 'Загружаем с платформы...';
+  if(S.saving || (S.ops.length && !S.error)) return 'Сохраняем...';
+  if(S.error && S.ops.length) return 'Не сохранено, повторим автоматически';
+  if(S.error) return 'Нет связи с платформой, показана сохранённая версия';
+  return 'Синхронно с платформой · Мой календарь';
+}
+function v10calStatus(){ var s = document.getElementById('v10calSt'); if(s){ s.textContent = v10calStatusText(); s.classList.toggle('red', !!(window._v10cal && window._v10cal.error && window._v10cal.ops.length)); } }
+function v10dk(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function v10fromKey(k){ var p = String(k).split('-'); return new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])); }
+function v10days(){
+  var a = v10fromKey(window._v10day || v10dk(new Date()));
+  if(window._v10view === 'day') return [a];
+  var m = new Date(a); m.setDate(m.getDate() - (m.getDay() + 6) % 7);
+  var out = []; for(var i = 0; i < 7; i++){ var d = new Date(m); d.setDate(m.getDate() + i); out.push(d); }
+  return out;
+}
+// Встречи с трекером из расписания клуба: «YYYY-MM-DD|H» → встреча
+function v10meets(me){
+  var o = {};
+  (cache.schedule || []).forEach(function(ev){
+    if(!ev || ev.res !== me.name) return;
+    var dk = v9dkey(ev.date), h = parseInt(String(ev.time || ''), 10);
+    if(dk && isFinite(h)) o[dk + '|' + h] = ev;
+  });
+  return o;
+}
+function v10dueByDay(me){
+  var o = {};
+  v9workItems(me).forEach(function(it){ if(it.key && it.hasDue) (o[it.key] = o[it.key] || []).push(it); });
+  return o;
+}
+function v10calShift(n){
+  var a = v10fromKey(window._v10day || v10dk(new Date()));
+  a.setDate(a.getDate() + n * (window._v10view === 'day' ? 1 : 7));
+  window._v10day = v10dk(a); v10calRefresh();
+}
+function v10calToday(){ window._v10day = v10dk(new Date()); v10calRefresh(); }
+function v10calView(v){ window._v10view = v; v10calRefresh(); }
+function v10calOpenDay(k){ window._v10day = k; window._v10view = 'day'; v10calRefresh(); }
+function v10calType(t){ window._v10type = t; v10calRefresh(); }
+// Тап: поставить/снять выбранный тип; долгое нажатие: заметка
+var _v10p = null;
+function v10pd(e, k){
+  if(e.button > 0) return;
+  v10pc();
+  _v10p = {k: k, x: e.clientX, y: e.clientY, lp: false};
+  _v10p.t = setTimeout(function(){
+    if(!_v10p || _v10p.k !== k) return;
+    _v10p.lp = true;
+    try{ tg.HapticFeedback.impactOccurred('medium'); }catch(x){}
+    v10noteSheet(k);
+  }, 520);
+}
+function v10pm(e){ if(_v10p && (Math.abs(e.clientX - _v10p.x) > 8 || Math.abs(e.clientY - _v10p.y) > 8)) v10pc(); }
+function v10pc(){ if(_v10p){ clearTimeout(_v10p.t); _v10p = null; } }
+function v10pu(e, k){
+  var p = _v10p; _v10p = null;
+  if(!p) return;
+  clearTimeout(p.t);
+  if(p.lp || p.k !== k) return;
+  v10tap(k);
+}
+function v10tap(k){
+  var me = getMyData(); if(!me) return;
+  var ev = v10meets(me)[k];
+  if(ev){ showToast('Встреча BS · ' + (ev.time || '') + (v3isOnline(ev) ? ' · онлайн' : ' · офлайн')); return; }
+  if(v10preview()){ showToast('Режим просмотра: изменения не сохраняются'); return; }
+  var S = v10calState();
+  var sel = window._v10type || 'work';
+  var op = {k: k, t: S.value.slots[k] === sel ? null : sel};
+  v10apply(S.value, op); S.ops.push(op); v10calStore();
+  try{ tg.HapticFeedback.selectionChanged(); }catch(x){}
+  v10calRefresh(); v10calLater();
+}
+function v10noteSheet(k){
+  if(v10preview()){ showToast('Режим просмотра: изменения не сохраняются'); return; }
+  if(document.querySelector('.add-menu-overlay')) return;
+  var S = v10calState();
+  var p = k.split('|'), d = v10fromKey(p[0]);
+  var cur = S.value.notes[k] || '';
+  var t = S.value.slots[k];
+  var m = document.createElement('div');
+  m.className = 'add-menu-overlay show';
+  m.onclick = function(e){ if(e.target === m) m.remove(); };
+  m.innerHTML = '<div class="add-menu">' +
+    '<div class="v3-row-sb" style="margin-bottom:12px"><div class="add-menu-title" style="margin:0;text-align:left">Заметка · ' + d.getDate() + ' ' + V10_MS[d.getMonth()] + ', ' + p[1] + ':00' + (t && V10_T[t] ? ' · ' + V10_T[t][1] : '') + '</div>' +
+    '<button class="v3-sheet-x" data-x="1" aria-label="Закрыть">' + navIcon('x', 16, 2) + '</button></div>' +
+    '<textarea id="v10note" class="field-input" rows="3" maxlength="200" placeholder="Например: созвон с поставщиком" style="width:100%;resize:none;min-height:84px">' + v2esc(cur) + '</textarea>' +
+    '<button class="v3-primary" data-s="1" style="margin-top:12px">Сохранить</button>' +
+    (cur ? '<button class="v3-outline" data-d="1" style="margin-top:8px">Удалить заметку</button>' : '') +
+  '</div>';
+  document.body.appendChild(m);
+  function done(n){
+    var op = {k: k, n: n};
+    v10apply(S.value, op); S.ops.push(op); v10calStore();
+    m.remove(); v10calRefresh(); v10calLater();
+  }
+  m.querySelector('[data-x]').onclick = function(){ m.remove(); };
+  m.querySelector('[data-s]').onclick = function(){ done(String(m.querySelector('#v10note').value || '').trim().slice(0, 200)); };
+  var del = m.querySelector('[data-d]'); if(del) del.onclick = function(){ done(''); };
+  setTimeout(function(){ try{ m.querySelector('#v10note').focus(); }catch(e){} }, 80);
+}
+function v10cellAttrs(k){ return ' onpointerdown="v10pd(event,\'' + k + '\')" onpointerup="v10pu(event,\'' + k + '\')" onpointermove="v10pm(event)" onpointercancel="v10pc()" oncontextmenu="return false"'; }
+function v10calInner(me){
+  var S = v10calState();
+  var view = window._v10view || 'week';
+  var days = v10days(), today = v10dk(new Date());
+  var meets = v10meets(me), due = v10dueByDay(me);
+  var sel = window._v10type || 'work';
+  // Счётчики за видимый период
+  var busyH = 0, focusH = 0;
+  days.forEach(function(d){
+    var dk = v10dk(d);
+    for(var h = V10_H0; h <= V10_H1; h++){
+      var k = dk + '|' + h, t = S.value.slots[k];
+      if(meets[k] || (t && t !== 'rest')) busyH++;
+      if(!meets[k] && t === 'focus') focusH++;
+    }
+  });
+  var a = days[0], z = days[days.length - 1];
+  var range = view === 'day'
+    ? V10_WD[(a.getDay() + 6) % 7].charAt(0) + V10_WD[(a.getDay() + 6) % 7].charAt(1).toLowerCase() + ', ' + a.getDate() + ' ' + V10_MS[a.getMonth()]
+    : a.getDate() + (a.getMonth() !== z.getMonth() ? ' ' + V10_MS[a.getMonth()] : '') + ' – ' + z.getDate() + ' ' + V10_MS[z.getMonth()];
+  var h = '<div class="v10-st' + (S.error && S.ops.length ? ' red' : '') + '" id="v10calSt">' + v2esc(v10calStatusText()) + '</div>';
+  h += '<div class="v10-bar">' +
+    '<div class="v3-seg v10-vseg"><button class="' + (view === 'week' ? 'on' : '') + '" onclick="v10calView(\'week\')">Неделя</button><button class="' + (view === 'day' ? 'on' : '') + '" onclick="v10calView(\'day\')">День</button></div>' +
+    '<div class="v10-nav"><button aria-label="Назад" onclick="v10calShift(-1)">' + navIcon('back', 16) + '</button><button class="t" onclick="v10calToday()">Сегодня</button><button aria-label="Вперёд" onclick="v10calShift(1)">' + navIcon('chev', 16) + '</button></div></div>';
+  h += '<div class="v10-sum"><b>' + v2esc(range) + '</b><span>Занято ' + busyH + ' ч · фокус ' + focusH + ' ч</span></div>';
+  h += '<div class="v10-types">' + V10_TYPES.map(function(t){
+    return '<button class="' + (sel === t[0] ? 'on' : '') + '" onclick="v10calType(\'' + t[0] + '\')"><i style="background:' + t[2] + '"></i>' + t[1] + '</button>';
+  }).join('') + '</div>';
+  if(view === 'week'){
+    h += '<div class="v2-card v10-grid" style="grid-template-columns:30px repeat(7,minmax(0,1fr))"><div class="v10-hd"></div>' + days.map(function(d){
+      var dk = v10dk(d), n = (due[dk] || []).length, open = (due[dk] || []).filter(function(it){ return !it.done; }).length;
+      return '<div class="v10-hd' + (dk === today ? ' today' : '') + '" onclick="v10calOpenDay(\'' + dk + '\')"><span>' + V10_WD[(d.getDay() + 6) % 7] + '</span><b>' + d.getDate() + '</b>' +
+        '<em>' + (n ? '<i class="' + (open ? (dk < today ? 'r' : '') : 'g') + '">' + n + '</i>' : '') + '</em></div>';
+    }).join('');
+    for(var hr = V10_H0; hr <= V10_H1; hr++){
+      h += '<div class="v10-hr">' + hr + '</div>';
+      days.forEach(function(d){
+        var k = v10dk(d) + '|' + hr, t = S.value.slots[k], ev = meets[k], note = S.value.notes[k];
+        if(ev){ h += '<div class="v10-c bs"' + v10cellAttrs(k) + '>BS</div>'; return; }
+        var T = t && V10_T[t];
+        h += '<div class="v10-c' + (T ? ' f' : '') + '"' + (T ? ' style="background:' + T[2] + ';color:' + T[3] + '"' : '') + v10cellAttrs(k) + '>' + (note ? '<s></s>' : '') + '</div>';
+      });
+    }
+    h += '</div>';
+  } else {
+    var dk0 = v10dk(days[0]);
+    h += '<div class="v2-card v10-day">';
+    for(var hd = V10_H0; hd <= V10_H1; hd++){
+      var k2 = dk0 + '|' + hd, t2 = S.value.slots[k2], ev2 = meets[k2], note2 = S.value.notes[k2];
+      var T2 = t2 && V10_T[t2];
+      h += '<div class="v10-dr"><div class="v10-hr">' + String(hd).padStart(2, '0') + ':00</div>';
+      if(ev2) h += '<div class="v10-c bs"' + v10cellAttrs(k2) + '><b>BS</b><span>' + (v3isOnline(ev2) ? 'Онлайн-трекинг' : 'Офлайн-встреча') + ' · ' + v2esc(ev2.time || '') + '</span></div>';
+      else h += '<div class="v10-c' + (T2 ? ' f' : '') + '"' + (T2 ? ' style="background:' + T2[2] + ';color:' + T2[3] + '"' : '') + v10cellAttrs(k2) + '>' +
+        (T2 ? '<b>' + T2[1] + '</b>' : '') + (note2 ? '<span>' + v2esc(note2) + '</span>' : '') + '</div>';
+      h += '</div>';
+    }
+    h += '</div>';
+    var dl = due[dk0] || [];
+    if(dl.length){
+      h += '<div class="v2-h">Срок в этот день · ' + dl.length + '</div><div class="v2-card">' + dl.map(function(it){
+        return v3taskRow(it.done, it.text, it.src + (it.organ ? ' · ' + it.organ : ''), (!it.done && !it.cycle && it.row) ? 'markTaskDone(' + it.row + ')' : null);
+      }).join('') + '</div>';
+    }
+  }
+  h += '<div class="v10-legend"><span><i class="bs">BS</i>встреча клуба</span><span><i class="dot"></i>срок задачи</span><span><i class="nt"></i>заметка</span></div>';
+  h += '<div class="v3-cap" style="margin:8px 4px 0;line-height:1.45">Выберите тип и нажмите на час, повторное нажатие снимает. Долгое нажатие добавляет заметку. Всё сразу видно на платформе в «Мой календарь».</div>';
+  return h;
+}
+function v10calHTML(me){
+  v10calState();
+  v10calLoad(false);
+  return '<div id="v10cal" style="margin-top:14px">' + v10calInner(me) + '</div>';
+}
+function v10calRefresh(){
+  var el = document.getElementById('v10cal'); if(!el) return;
+  var me = getMyData(); if(!me) return;
+  el.innerHTML = v10calInner(me);
+}
+// При открытии приложения: досылаем тесты и календарь, которые не ушли (ждём, пока загрузятся данные)
+(function(){
+  var tries = 0;
+  var iv = setInterval(function(){
+    tries++;
+    var me = null; try{ me = getMyData(); }catch(e){}
+    if(!me && tries < 20) return;
+    clearInterval(iv);
+    if(!me) return;
+    try{ v10flushTests(); }catch(e){}
+    try{ if(navRole() === 'resident' && !v10preview()){ var S = v10calState(); if(S.ops.length) v10calLoad(true); } }catch(e){}
+  }, 3000);
+})();
+
 // ═══ РЕЗИДЕНТ: МОЙ РАЗБОР (доска с платформы) ═══
 window._myBoard = null;
 window._myBoardAt = 0;
@@ -5464,7 +5993,7 @@ function renderMyBoard(){
   if(!b.diagnoses.length && !b.strategy && !b.tools.length && !b.tasks.length){
     h += '<div class="v2-card v2-empty" style="margin-top:16px">Трекер ещё заполняет доску. Диагноз и стратегия появятся здесь после встречи.</div>';
   }
-  h += '<button class="v3-outline" style="margin-top:12px" onclick="window._v3TaskSeg=\'cycle\';showPage(\'mytasks\')">Задачи цикла' + (b.tasks.length ? ' · ' + dn + ' из ' + b.tasks.length : '') + '</button>';
+  h += '<button class="v3-outline" style="margin-top:12px" onclick="window._v3TaskSeg=\'tasks\';showPage(\'mytasks\')">Задачи цикла' + (b.tasks.length ? ' · ' + dn + ' из ' + b.tasks.length : '') + '</button>';
   el.innerHTML = h;
 }
 
@@ -5645,7 +6174,7 @@ function renderSchedule(){
   });
   window._currentScheduleList = list;
   const el = document.getElementById('scheduleContent');
-  const viewMode = window._scheduleViewMode || 'list'; // list | calendar
+  const viewMode = window._scheduleViewMode || 'calendar'; // list | calendar
   
   // Кнопка + пропадала: шапка рисуется один раз, а роль админа определяется позже.
   // Поэтому наличие кнопки синхронизируем при КАЖДОМ рендере
@@ -7645,9 +8174,8 @@ function wheelAvg(values){
 }
 
 // ══════════ ЗАДАЧИ РЕЗИДЕНТА ══════════
-function v3taskSeg(active, nCycle){
-  return '<div class="v3-seg" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:14px">' +
-    '<button class="' + (active === 'cycle' ? 'on' : '') + '" onclick="v3setTaskSeg(\'cycle\')">Цикл' + (nCycle ? ' · ' + nCycle : '') + '</button>' +
+function v3taskSeg(active){
+  return '<div class="v3-seg" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-top:14px">' +
     '<button class="' + (active === 'tasks' ? 'on' : '') + '" onclick="v3setTaskSeg(\'tasks\')">Задания</button>' +
     '<button class="' + (active === 'cal' ? 'on' : '') + '" onclick="v3setTaskSeg(\'cal\')">Календарь</button></div>';
 }
@@ -7676,39 +8204,32 @@ function loadMyTasks(){
   try{
     var bd = window._myBoard, b = bd && bd.board;
     var btasks = (b && b.tasks) || [];
-    var seg = window._v3TaskSeg || (btasks.length ? 'cycle' : 'tasks');
+    var seg = window._v3TaskSeg === 'cal' ? 'cal' : 'tasks';
     const tasks = ((cache.resTasks && cache.resTasks.tasks) || []).filter(function(t){ return t.name === me.name; });
     var h = v3headBig(b && b.cycle ? 'Цикл ' + b.cycle + ' · синхронно с платформой' : 'Синхронно с платформой', 'Задачи');
-    h += v3taskSeg(seg, btasks.length);
+    h += v3taskSeg(seg);
+    if(!bd && !window._v3BoardTried){
+      window._v3BoardTried = true;
+      loadMyBoard(false).then(function(){ loadMyTasks(); });
+    }
     if(seg === 'cal'){
-      // Рабочий календарь: сроки задач, а не встречи (встречи на главной и в «Встречах»)
-      if(!bd && !window._v3BoardTried){
-        window._v3BoardTried = true;
-        loadMyBoard(false).then(function(){ loadMyTasks(); });
-      }
-      h += v9workCalHTML(me);
-    } else if(seg === 'cycle'){
-      if(!bd && !window._v3BoardTried){
-        window._v3BoardTried = true;
-        h += '<div class="loading"><div class="spinner"></div></div>';
-        loadMyBoard(false).then(function(){ loadMyTasks(); });
-      } else if(!btasks.length){
-        h += '<div class="v2-card v2-empty" style="margin-top:14px">Задачи цикла появятся на доске после разбора с трекером.<br><span class="v3-txtbtn" style="color:#fff" onclick="v3setTaskSeg(\'tasks\')">Открыть задания</span></div>';
-      } else {
-        var dn = btasks.filter(function(t){ return t.done; }).length;
-        h += v3progress(dn, btasks.length);
-        h += '<div class="v2-card" style="margin-top:12px">' + btasks.map(function(t){ return v3taskRow(t.done, t.title, (t.organ ? t.organ + ' · ' : '') + 'доска цикла', null); }).join('') + '</div>';
-        h += '<div class="v3-cap" style="margin:10px 4px 0;line-height:1.45">Отметки по задачам цикла ставит трекер на платформе. Свои задачи и задания трекера во вкладке «Задания».</div>';
-      }
+      // Рабочий планировщик недели: тот же «Мой календарь», что на платформе
+      h += v10calHTML(me);
     } else {
+      // Все задания: свои и от трекера + задачи с доски цикла (отметки по ним ставит трекер)
       var active = tasks.filter(function(t){ return t.status !== 'Выполнена'; });
       var done = tasks.filter(function(t){ return t.status === 'Выполнена'; });
+      var bOpen = btasks.filter(function(t){ return !t.done; }), bDone = btasks.filter(function(t){ return t.done; });
       window._v3TaskText = {};
       tasks.forEach(function(t){ window._v3TaskText[t.row] = t.task; });
-      if(!tasks.length){
-        h += '<div class="v2-card v2-empty" style="margin-top:14px">Заданий пока нет. Поставьте себе задачу или дождитесь трекинга.</div>';
+      if(!tasks.length && !btasks.length){
+        h += '<div class="v2-card v2-empty" style="margin-top:14px">' + (!bd ? 'Загружаем задачи...' : 'Заданий пока нет. Поставьте себе задачу или дождитесь трекинга.') + '</div>';
       } else {
-        h += v3progress(done.length, tasks.length);
+        h += v3progress(done.length + bDone.length, tasks.length + btasks.length);
+        var bRow = function(t){
+          var due = t.due ? ' · срок ' + (v9dkey(t.due) ? v9dkey(t.due).split('-').reverse().slice(0, 2).join('.') : t.due) : '';
+          return v3taskRow(t.done, t.title, 'от трекера · доска цикла' + (t.organ ? ' · ' + t.organ : '') + due, null);
+        };
         h += '<div class="v2-card" style="margin-top:12px">' +
           active.map(function(t){
             var meta = (t.date || '') + (t.isOwn ? ' · своя' : ' · от трекера') + (t.recurring ? ' · постоянная' : '');
@@ -7716,8 +8237,11 @@ function loadMyTasks(){
               '<button class="v3-icbtn" aria-label="Удалить" onclick="deleteOwnTask(' + t.row + ')">' + navIcon('x', 16) + '</button></div>' : '';
             return v3taskRow(false, t.task, meta, 'markTaskDone(' + t.row + ')', extra);
           }).join('') +
+          bOpen.map(bRow).join('') +
+          bDone.map(bRow).join('') +
           done.slice(-10).reverse().map(function(t){ return v3taskRow(true, t.task, (t.updated || t.date || '') + (t.isOwn ? ' · своя' : ' · от трекера'), null); }).join('') +
         '</div>';
+        if(btasks.length) h += '<div class="v3-cap" style="margin:10px 4px 0;line-height:1.45">Задачи с доски цикла отмечает трекер на платформе' + (b && b.cycle ? ' · цикл ' + b.cycle : '') + '.</div>';
       }
       h += '<button class="v3-outline" style="margin-top:12px" onclick="openOwnTaskModal()">+ Добавить</button>';
     }
@@ -8523,6 +9047,7 @@ async function submitWheelForm(){
   const inputs = document.querySelectorAll('#wheelFormBody input[type=range]');
   const values = Array.from(inputs).map(inp => inp.value).join(',');
   const type = _wheelFormType;
+  window._v10lastForm = Array.from(inputs).map(inp => Number(inp.value));
 
   _wheelSaveInFlight = true;
   try{
@@ -8530,6 +9055,8 @@ async function submitWheelForm(){
     if(r && r.ok){
       // Обновим кэш (чтобы Бизнес в life считался от свежего ДНК)
       _wheelData = await callAction('getWheel', {name: me.name});
+      // Тот же замер уходит на платформу: тренер видит его на доске
+      v10syncWheel(type);
       if(type === 'dna'){
         _wheelFormType = 'life';
         renderWheelForm();
@@ -8579,16 +9106,26 @@ function renderMyStatus(){
     '<div class="v2-stat" onclick="showPage(\'mymeetings\')"><div class="l">Встречи</div><div class="v num" style="font-size:18px">' + d + '/' + g + '</div></div>' +
     '<div class="v2-stat"><div class="l">Отчёты</div><div class="v num" style="font-size:18px">' + Math.round(v3reports30(me) / 30 * 100) + '%</div></div>' +
     '<div class="v2-stat"><div class="l">Штрафы</div><div class="v num" style="font-size:18px">' + fc + '</div></div></div>';
-  // Замеры: колёса и диагностика
+  // ДНК-причина с доски трекера (если есть)
+  h += v10dnaCause();
+  // Замеры: колёса и диагностика (с платформы приоритетнее, она видит и разборы трекера)
   var w = (cache.wheelAll && cache.wheelAll[me.name]) || {};
+  var PT = v9tests().tests || {};
   var mrow = function(name, cur, prev){
     var a = wheelAvg(cur.values), dl = prev ? Math.round((a - wheelAvg(prev.values)) * 10) / 10 : null;
     return '<div class="v2-row" onclick="showPage(\'wheel\')"><div class="m"><b>' + name + '</b></div><div class="num" style="font-size:15px;font-weight:800">' + String(a).replace('.', ',') + '</div>' +
       '<div class="num v3-cap" style="width:34px;text-align:right">' + (dl === null ? '' : (dl >= 0 ? '+' : '−') + String(Math.abs(dl)).replace('.', ',')) + '</div></div>';
   };
   var rows = '';
-  if(w.dna && w.dna[0]) rows += mrow('Колесо бизнеса', w.dna[0], w.dna[1]);
-  if(w.life && w.life[0]) rows += mrow('Колесо баланса', w.life[0], w.life[1]);
+  var prow = function(name, obj, go){
+    var vs = Object.keys(obj).map(function(k){ return v9num(obj[k]); }).filter(function(x){ return x !== null; });
+    if(!vs.length) return '';
+    return '<div class="v2-row" onclick="' + go + '"><div class="m"><b>' + name + '</b><span>с платформы</span></div><div class="num" style="font-size:15px;font-weight:800">' + v9fmt1(vs.reduce(function(a, x){ return a + x; }, 0) / vs.length) + '</div><div class="v3-cap" style="width:34px;text-align:right">/10</div></div>';
+  };
+  var pBiz = PT.diag && typeof PT.diag === 'object' && (('Продукт' in PT.diag) || ('Делегирование' in PT.diag)) ? prow('Колесо бизнеса', PT.diag, "showPage('wheel')") : '';
+  var pLife = PT.wheel && typeof PT.wheel === 'object' ? prow('Колесо баланса', PT.wheel, "showPage('wheel')") : '';
+  if(pBiz) rows += pBiz; else if(w.dna && w.dna[0]) rows += mrow('Колесо бизнеса', w.dna[0], w.dna[1]);
+  if(pLife) rows += pLife; else if(w.life && w.life[0]) rows += mrow('Колесо баланса', w.life[0], w.life[1]);
   try{
     var dr = JSON.parse(localStorage.getItem('bs_diagnostic_result') || 'null');
     if(dr && dr.totalPct != null) rows += '<div class="v2-row" onclick="showPage(\'diagnostic\')"><div class="m"><b>Тест здоровья бизнеса</b></div><div class="num" style="font-size:15px;font-weight:800">' + dr.totalPct + '</div><div class="v3-cap" style="width:34px;text-align:right">/100</div></div>';
@@ -8610,15 +9147,12 @@ function renderMyStatus(){
       (onl ? '<a href="' + v2esc(next.link) + '" target="_blank" class="v3-btn w" style="text-decoration:none">Meet</a>' : '') + '</div>';
   }
   if(me.partner) h += '<div class="v2-card v3-text" style="margin-top:10px;color:#9A9A9A">Партнёр: <b style="color:#fff">' + v2esc(me.partner) + '</b> · одна встреча на двоих</div>';
-  h += '<div class="v2-h">Цена нерешённого <span class="lnk" onclick="openProblemModal()">+ Добавить</span></div>' +
-    '<div class="v2-card" id="problemsCard" style="padding:14px 16px"><div id="problemsBody"></div></div>';
   h += '<div class="v2-h">Ещё</div><div class="v2-card">' +
     v3row('me', 'Мои данные', 'Ниша, о себе, контакты', "showPage('myprofile')") +
     v3row('club', 'Пригласить друга', 'Бонус 100 000 ₸ за резидента', 'copyReferralLink()') +
     v3row('doc', 'Рассказать о BS в Stories', 'Готовая картинка с вашим фото', 'shareStory()') +
   '</div>';
   el.innerHTML = h;
-  try{ loadProblems(); }catch(e){}
 }
 
 function onMeetingDoneClick(res, date, time, isOnline){
@@ -11400,13 +11934,23 @@ function finishDiagnostic(){
   callAction('saveDiagnosticResult', {
     answers: JSON.stringify(diagState.answers)
   }).then(function(r){
-    renderDiagnostic(); v9scrollTop();
+    renderDiagnostic(); v9scrollTop(); v10afterDiag();
   }).catch(function(e){
     console.error(e);
-    renderDiagnostic(); v9scrollTop();
+    renderDiagnostic(); v9scrollTop(); v10afterDiag();
   });
 }
 
+// Резидент прошёл диагностику: результат сразу на платформу (здоровье бизнеса и диагностика)
+function v10afterDiag(){
+  if(navRole() !== 'resident') return;
+  var t = v10diagTests(); if(!t) return;
+  v10postTests(t).then(function(ok){
+    if(!ok) return;
+    window._v10diagSaved = 1;
+    var b = document.getElementById('diagSaveBtn'); if(b) b.textContent = 'Сохранено в разбор';
+  });
+}
 function requestLeadPhone(){
   // Telegram сам подставит номер из профиля: человеку достаточно нажать одну кнопку
   if(!user || !user.id){ showToast('Откройте приложение через бота'); return; }
@@ -11674,6 +12218,17 @@ function renderDiagnosticResult(){
     });
   }
   var isLeadView = viewAs !== 'resident';
+  if(!isLeadView){
+    // Резидент: без записи на экспресс-разбор, результат уходит трекеру в разбор
+    h += '<div class="v2-card v9-card" style="margin-top:16px"><div class="tag">Инструменты под слабые органы</div>' +
+      '<div class="v9-tools">' + tools.map(function(t, i){
+        return '<div class="v9-tool"><div class="n">' + String(i + 1).padStart(2, '0') + '</div><div style="min-width:0"><b>' + v2esc(t[0]) + '</b><span>' + v2esc(t[1]) + ' · ' + v2esc(t[2].toLowerCase()) + '</span></div></div>';
+      }).join('') + '</div>' +
+      '<div class="txt">Результат сохраняется в ваш разбор: трекер видит его на платформе и разберёт с вами на встрече.</div></div>';
+    h += '<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">' +
+      '<button class="v3-primary" id="diagSaveBtn" onclick="v10saveDiag(this)">' + (window._v10diagSaved ? 'Сохранено в разбор' : 'Сохранить в разбор') + '</button>' +
+      '<button class="v3-outline" id="diagRestartBtn">Пройти заново</button></div>';
+  } else {
   h += '<div class="v2-card v9-card" style="margin-top:16px;background:#FFFFFF;color:#000;border-color:#FFFFFF">' +
     '<div class="tag" style="color:#6E6E6E">Экспресс-разбор · 60 минут</div>' +
     '<div class="ttl" style="font-size:20px">На экспресс-разборе разберём точные инструменты для вашего бизнеса</div>' +
@@ -11684,6 +12239,7 @@ function renderDiagnosticResult(){
   h += '<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">' +
     (isLeadView ? '<button class="v3-primary" id="diagCtaBtn">Записаться на разбор</button>' : '') +
     '<button class="v3-outline" id="diagRestartBtn">Пройти заново</button></div>';
+  }
   el.innerHTML = h;
 
   var ctaBtn = el.querySelector('#diagCtaBtn');
@@ -11702,6 +12258,7 @@ function renderDiagnosticResult(){
         localStorage.removeItem('bs_diagnostic_result');
       }catch(e){}
       diagState = {started: false, finished: false, currentArea: 0, currentQuestion: 0, answers: {}};
+      window._v10diagSaved = 0;
       renderDiagnostic();
       v9scrollTop();
     });
