@@ -13,8 +13,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="BS">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!-- R22: шрифт не задерживает первый экран (раньше импорт внутри стилей блокировал отрисовку) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
 
   :root {
     --black: #000000;
@@ -4637,6 +4640,24 @@
   }
   .v16-row .v16-tile.v17-cvt { height: auto; aspect-ratio: 5 / 6; }
   .v16-sk { height: auto; aspect-ratio: 5 / 6; }
+  /* R22: ближайшая встреча */
+  .v22-next { display: flex; align-items: center; gap: 14px; padding: 14px 16px; cursor: pointer; }
+  .v22-next .dt { width: 50px; flex-shrink: 0; text-align: center; padding-right: 14px; border-right: 1px solid #262626; }
+  .v22-next .dt .n { font-size: 24px; font-weight: 800; line-height: 1; }
+  .v22-next .dt .m { font-size: 10px; font-weight: 800; color: #9A9A9A; letter-spacing: 1px; margin-top: 4px; }
+  .v22-next .dt .w { font-size: 10px; font-weight: 800; color: #6E6E6E; letter-spacing: 1px; margin-top: 2px; }
+  .v22-next .c { flex: 1; min-width: 0; }
+  .v22-next .c b { display: block; font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .v22-next .c .s { font-size: 12px; color: #B5B5B5; margin-top: 3px; }
+  .v22-next .row { display: flex; align-items: center; gap: 8px; margin-top: 7px; flex-wrap: wrap; }
+  .v22-next .cd { font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 999px; background: #1C1C1C; color: #fff; white-space: nowrap; }
+  .v22-next .cd.soon { background: #fff; color: #000; }
+  .v22-next .kd { font-size: 11px; color: #8C8C8C; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+  .v22-next .go { color: #6E6E6E; flex-shrink: 0; display: flex; }
+  .v22-next .cnt { font-size: 12px; font-weight: 800; white-space: nowrap; flex-shrink: 0; }
+  .v22-rest { margin-top: 8px; }
+  .v22-rest .k { font-size: 10px; font-weight: 800; letter-spacing: 1.4px; color: #8C8C8C; padding: 12px 16px 2px; }
+  .v22-none .lnk { color: #fff; font-weight: 700; text-decoration: underline; cursor: pointer; }
 </style>
 
 <div class="modal-bg" id="attendModal">
@@ -5179,13 +5200,22 @@ function v15homeCard(){
 function bsInitData(){
   try{ return (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData) || ''; }catch(e){ return ''; }
 }
+// R22: чтение данных не висит бесконечно: сервер отвечает за 1-2 секунды, иначе он недоступен
+var V22_READ_MS = 20000;
+function v22fetch(url, opts, ms){
+  if(!ms || typeof AbortController === 'undefined') return fetch(url, opts);
+  var ac = new AbortController(), t = setTimeout(function(){ try{ ac.abort(); }catch(e){} }, ms);
+  return fetch(url, Object.assign({}, opts || {}, {signal: ac.signal})).finally(function(){ clearTimeout(t); });
+}
 async function appGet(params){
   var init = bsInitData();
   var qs = new URLSearchParams(params || {});
+  var act = String((params || {}).action || '');
+  var isRead = act === 'getBotCache' || act === 'checkUserRole';
   if(init){
     try{
       var sq = new URLSearchParams(params || {}); sq.set('_tg', init);
-      var r = await fetch(APP_SERVER + 'call?' + sq.toString());
+      var r = await v22fetch(APP_SERVER + 'call?' + sq.toString(), null, isRead ? V22_READ_MS : 0);
       if(r.ok) return await r.json();
       if(r.status === 401 || r.status === 400) console.warn('app server refused', r.status);
     }catch(e){ console.warn('app server unreachable', e); }
@@ -5645,10 +5675,17 @@ function init(){
       }catch(e){}
     }, 1200);
     // Автосохранение аватара из Telegram (для других пользователей)
+    // R22: только если фото сменилось (раньше каждое открытие писало в таблицу и сбрасывало кеш сервера)
     if(user && user.photo_url && user.id){
-      setTimeout(function(){
-        callAction('saveAvatar', {chatId: String(user.id), avatar: user.photo_url});
-      }, 2000);
+      var avSaved = ''; try{ avSaved = localStorage.getItem('bs_av_saved') || ''; }catch(e){}
+      if(avSaved !== String(user.id) + '|' + user.photo_url){
+        setTimeout(function(){
+          try{ localStorage.setItem('bs_av_saved', String(user.id) + '|' + user.photo_url); }catch(e){}
+          callAction('saveAvatar', {chatId: String(user.id), avatar: user.photo_url}).then(function(r){
+            if(!r || r.error){ try{ localStorage.removeItem('bs_av_saved'); }catch(e){} }
+          });
+        }, 4000);
+      }
     }
   } catch(e){
     console.error('init error:', e);
@@ -5980,6 +6017,17 @@ async function loadAllData(opts){
     if(user && user.id) bundleParams.chatId = user.id;
     if(opts.fresh) bundleParams.fresh = '1';
     var serverData = await appGet(bundleParams);
+    // R22: разделы, которых у сервера пока нет (скрипт ещё отвечает), берём из своей копии
+    // и спрашиваем снова через несколько секунд
+    try{
+      var partial = Array.isArray(serverData._partial) ? serverData._partial : [];
+      partial.forEach(function(k){ if(cache && cache[k] != null) serverData[k] = cache[k]; });
+      if(partial.length && (window._v22partialTries = (window._v22partialTries || 0) + 1) <= 3){
+        clearTimeout(window._v22partialT);
+        window._v22partialT = setTimeout(function(){ loadAllData({force: true}); }, 6000);
+      }
+      delete serverData._partial;
+    }catch(e){}
     // Сохраняем локальные изменения встреч
     var now = Date.now();
     var localPending = window._pendingMeetings || [];
@@ -6459,20 +6507,22 @@ function renderResHome(){
   h += v20platCard('resident');
   h += v15homeCard();
   if(!window._v15refTried && window._ref){ window._v15refTried = true; setTimeout(function(){ v15refLoad(); }, 600); }
-  h += '<div class="v2-h">Следующая встреча' + (meets.length ? ' <span class="lnk" onclick="showPage(\'mymeetings\')">Все ' + meets.length + '</span>' : '') + '</div>';
-  if(next){
-    var dp = String(next.date).split('.');
-    var online = v3isOnline(next);
+  // R22: «Ближайшая встреча»: дата, день недели, время, отсчёт; сегодняшняя, если есть
+  var v22mine = v22upcoming((cache.schedule || []).filter(function(ev){ return ev.res === me.name; }));
+  var v22m = v22mine[0];
+  h += '<div class="v2-h">Ближайшая встреча' + (v22mine.length > 1 ? ' <span class="lnk" onclick="showPage(\'mymeetings\')">Все ' + v22mine.length + '</span>' : '') + '</div>';
+  if(v22m){
+    var online = v3isOnline(v22m.ev);
     var g = Number(me.meetingsGranted)||0, dn = Number(me.meetingsDone)||0;
-    h += '<div class="v2-card" style="padding:14px 16px;display:flex;align-items:center;gap:14px">' +
-           '<div style="text-align:center;width:44px"><div class="num" style="font-size:22px;font-weight:800">' + v2esc(String(dp[0]).padStart(2, '0')) + '</div><div style="font-size:10px;font-weight:800;color:#9A9A9A;letter-spacing:1px">' + (V3_MON[Number(dp[1])-1]||'') + '</div></div>' +
-           '<div style="width:1px;align-self:stretch;background:#262626"></div>' +
-           '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:800">' + (online ? 'Онлайн-трекинг' : 'Офлайн-встреча') + '</div>' +
-           '<div style="font-size:12px;color:#9A9A9A;margin-top:2px">' + v2esc(next.time||'') + ' · ' + (online ? 'Google Meet' : v2esc(next.link||'Место уточняется')) + '</div></div>' +
-           (online ? '<a href="' + v2esc(next.link) + '" target="_blank" class="v3-btn w" style="text-decoration:none">Meet</a>' : (g ? '<div style="font-size:12px;font-weight:800;white-space:nowrap">' + dn + ' из ' + g + '</div>' : '')) +
-         '</div>';
+    window._v22Next = v22m.ev;
+    h += v22nextCard(v22m, {
+      title: v3isEvent(v22m.ev) ? v2esc(String(v22m.ev.res).replace(/^🎬\s*/, '')) : (online ? 'Онлайн-трекинг' : 'Офлайн-встреча'),
+      extra: online ? 'Google Meet' : v2esc(v22m.ev.link || 'место уточняется'),
+      right: online && v22m.ev.link ? '<a href="' + v2esc(v22m.ev.link) + '" target="_blank" class="v3-btn w" style="text-decoration:none" onclick="event.stopPropagation()">Meet</a>' : (g ? '<div class="cnt num">' + dn + ' из ' + g + '</div>' : ''),
+      onclick: "showPage('mymeetings')"
+    });
   } else {
-    h += '<div class="v2-card v2-empty">Встреч в расписании пока нет</div>';
+    h += '<div class="v2-card v2-empty v22-none">Ближайших встреч пока нет</div>';
   }
   if(b){
     var upd = b.updated ? new Date(b.updated).toLocaleDateString('ru-RU', {day:'numeric', month:'short'}) : '';
@@ -7575,7 +7625,7 @@ function renderDashboard(){
       var cachedPL = localStorage.getItem('bs_monthly_pl');
       if(cachedPL) window._monthlyPL = JSON.parse(cachedPL);
     }catch(e){}
-    if(!window._plLoading){
+    if(!window._plLoading && _lastDataLoad > 0){
       window._plLoading = true;
       callAction('getMonthlyPL', {}).then(function(r){
         window._plLoading = false;
@@ -7649,12 +7699,26 @@ function renderDashboard(){
       '<div style="flex:1"><div class="v3-lbl">ОТЧЁТЫ ЗА СЕГОДНЯ</div><div style="font-size:14px;font-weight:700;margin-top:2px">Сдали все ' + need.length + '</div></div></div>';
   }
 
-  h += '<div class="v2-h">Встречи сегодня · ' + todayMeets.length + ' <span class="lnk" onclick="showPage(\'schedule\')">Все</span></div><div class="v2-card">' +
-    (todayMeets.length ? todayMeets.map(function(ev, i){
-      var kind = v3isEvent(ev) ? 'событие' : (v3isOnline(ev) ? 'онлайн' : 'офлайн');
-      return '<div class="v2-row" style="padding:11px 16px" onclick="showMeetingDetail(window._v3TodayMeets[' + i + '])"><div class="num" style="width:46px;font-size:13px;font-weight:700">' + v2esc(ev.time||'') + '</div>' +
-        '<div class="m"><b>' + v2esc(ev.res) + '</b></div><div class="v3-cap">' + kind + '</div></div>';
-    }).join('') : '<div class="v2-empty">Сегодня встреч нет</div>') + '</div>';
+  // R22: «Ближайшая встреча» вместо «Встречи сегодня»: следующая по времени (сегодняшняя, если есть),
+  // ниже остальные встречи сегодня
+  var v22up = v22upcoming(cache.schedule || []);
+  var v22n = v22up[0];
+  window._v22Next = v22n ? v22n.ev : null;
+  h += '<div class="v2-h">Ближайшая встреча <span class="lnk" onclick="showPage(\'schedule\')">Все</span></div>';
+  if(v22n){
+    h += v22nextCard(v22n, {onclick: 'showMeetingDetail(window._v22Next)'});
+    var v22rest = v22up.slice(1).filter(function(x){ return v22dayDiff(x.t) === 0; });
+    window._v22Rest = v22rest.map(function(x){ return x.ev; });
+    if(v22rest.length){
+      h += '<div class="v2-card v22-rest"><div class="k">ЕЩЁ СЕГОДНЯ · ' + v22rest.length + '</div>' + v22rest.map(function(x, i){
+        var ev = x.ev, kind = v3isEvent(ev) ? 'событие' : (v3isOnline(ev) ? 'онлайн' : 'офлайн');
+        return '<div class="v2-row" style="padding:11px 16px" onclick="showMeetingDetail(window._v22Rest[' + i + '])"><div class="num" style="width:46px;font-size:13px;font-weight:700">' + v2esc(v22time(ev)) + '</div>' +
+          '<div class="m"><b>' + v2esc(ev.res) + '</b></div><div class="v3-cap">' + kind + '</div></div>';
+      }).join('') + '</div>';
+    }
+  } else {
+    h += '<div class="v2-card v2-empty v22-none">Ближайших встреч нет. <span class="lnk" onclick="showPage(\'schedule\')">Открыть расписание</span></div>';
+  }
 
   h += v20platCard('admin');
 
@@ -9127,6 +9191,67 @@ function v3filteredClub(club){
   if(q) list = list.filter(function(r){ var p = v3prof(r) || {}; return (r.name + ' ' + (r.niche || p.niche || '') + ' ' + (r.bio || p.bio || '')).toLowerCase().indexOf(q) >= 0; });
   if(f === 'debt') list = list.slice().sort(function(a,b){ return (Number(b.debt)||0) - (Number(a.debt)||0); });
   return list;
+}
+// ═══ R22: БЛИЖАЙШАЯ ВСТРЕЧА (вместо «Встреча сегодня» на главной) ═══
+var V22_WD = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+var V22_MON_G = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+// Начало встречи: дата дд.мм(.гггг) и время чч:мм; без года ближайший такой день (переход через Новый год)
+function v22start(ev){
+  if(!ev || !ev.date) return NaN;
+  var p = String(ev.date).split('.'), d = Number(p[0]), m = Number(p[1]) - 1;
+  if(!d || isNaN(m)) return NaN;
+  var now = new Date(), y = p[2] ? Number(String(p[2]).slice(0, 4)) : now.getFullYear();
+  var tm = /(\d{1,2})[:.](\d{2})/.exec(String(ev.time || '')), hh = tm ? Number(tm[1]) : 0, mm = tm ? Number(tm[2]) : 0;
+  var t = new Date(y, m, d, hh, mm).getTime();
+  if(!p[2] && t < now.getTime() - 180 * 86400000) t = new Date(y + 1, m, d, hh, mm).getTime();
+  return t;
+}
+// Ближайшие встречи: идущая сейчас (начало не раньше часа назад) или будущие, по времени
+function v22upcoming(list){
+  var now = Date.now();
+  return (list || []).map(function(ev){ return {ev: ev, t: v22start(ev)}; })
+    .filter(function(x){ return !isNaN(x.t) && x.t >= now - 3600000; })
+    .sort(function(a, b){ return a.t - b.t; });
+}
+function v22dayDiff(t){
+  var a = new Date(); a.setHours(0, 0, 0, 0);
+  var b = new Date(t); b.setHours(0, 0, 0, 0);
+  return Math.round((b - a) / 86400000);
+}
+// «идёт сейчас», «через 40 мин», «через 3 ч», «завтра», «через 2 дня»
+function v22countdown(t){
+  var diff = t - Date.now(), days = v22dayDiff(t);
+  if(diff <= 0) return 'идёт сейчас';
+  if(days === 0){
+    var min = Math.max(1, Math.round(diff / 60000));
+    if(min < 60) return 'через ' + min + ' мин';
+    var h = Math.floor(min / 60), r = min % 60;
+    return 'через ' + h + ' ч' + (r && h < 3 ? ' ' + r + ' мин' : '');
+  }
+  if(days === 1) return 'завтра';
+  return 'через ' + days + ' ' + v3plural(days, 'день', 'дня', 'дней');
+}
+function v22dayLabel(t){
+  var days = v22dayDiff(t), d = new Date(t);
+  if(days === 0) return 'Сегодня';
+  if(days === 1) return 'Завтра';
+  return V22_WD[d.getDay()];
+}
+function v22time(ev){ var tm = /(\d{1,2})[:.](\d{2})/.exec(String(ev && ev.time || '')); return tm ? String(tm[1]).padStart(2, '0') + ':' + tm[2] : ''; }
+// Карточка: дата слева, день недели · дата · время, кто, отсчёт
+function v22nextCard(x, opts){
+  opts = opts || {};
+  var ev = x.ev, d = new Date(x.t), tm = v22time(ev);
+  var kind = v3isEvent(ev) ? 'Событие' : (v3isOnline(ev) ? 'Онлайн' : 'Офлайн');
+  var cd = v22countdown(x.t), soon = (x.t - Date.now()) < 3 * 3600000;
+  var who = opts.title || v2esc(ev.res || '');
+  var sub = v22dayLabel(x.t) + ', ' + d.getDate() + ' ' + V22_MON_G[d.getMonth()] + (tm ? ' · ' + tm : '');
+  return '<div class="v2-card v22-next" id="v22next"' + (opts.onclick ? ' onclick="' + opts.onclick + '"' : '') + '>' +
+      '<div class="dt"><div class="n num">' + String(d.getDate()).padStart(2, '0') + '</div><div class="m">' + V3_MON[d.getMonth()] + '</div><div class="w">' + V15_WD[d.getDay()] + '</div></div>' +
+      '<div class="c"><b>' + who + '</b><div class="s">' + v2esc(sub) + '</div>' +
+        '<div class="row"><span class="cd' + (soon ? ' soon' : '') + '">' + v2esc(cd) + '</span><span class="kd">' + kind + (opts.extra ? ' · ' + opts.extra : '') + '</span></div></div>' +
+      (opts.right || '<div class="go">' + navIcon('chev', 18, 2.4) + '</div>') +
+    '</div>';
 }
 function v3resStatus(r, meet){
   var parts = [r.format || 'Офлайн'];
@@ -14113,6 +14238,17 @@ function v14data(){
 }
 function v14items(){ return ((v14data() || {}).items) || []; }
 function v14find(id){ return v14items().filter(function(x){ return x.id === id; })[0] || null; }
+// R22: каталог (110 КБ) грузим при открытии чек-листов; промо-блоки берут сохранённый каталог.
+// Если его ещё нет (первое открытие), подтягиваем в фоне, когда старт давно закончился
+function v14lazy(){
+  if(window._v14lazyT || window._gdLoading) return;
+  var c = v14data();
+  if(c && (c.at || (c.items && c.items.length))) return;
+  window._v14lazyT = setTimeout(function(){
+    var go = function(){ loadGuides(false); };
+    if(window.requestIdleCallback) requestIdleCallback(go, {timeout: 4000}); else go();
+  }, 6000);
+}
 function loadGuides(force){
   var cur = v14data();
   if(!force && cur && !cur.error && cur.at && Date.now() - cur.at < 600000) return Promise.resolve(cur);
@@ -15234,7 +15370,7 @@ function v14promo(kind){
   // R17: у резидента в разделах BS чек-листов для лидов нет
   if(navRole() === 'resident') return '';
   var L = v14data();
-  if(!L || !L.at) loadGuides(false);
+  if(!L || !L.at) v14lazy();
   var items = (L && L.items) || [];
   var total = items.length || 99;
   var ex = v14examples(3);
@@ -15257,7 +15393,7 @@ function v14promo(kind){
 function v14libFeatured(){
   if(navRole() === 'resident') return '';
   var L = v14data();
-  if(!L || !L.at) loadGuides(false);
+  if(!L || !L.at) v14lazy();
   var items = (L && L.items) || [];
   var total = items.length || 99;
   var started = items.filter(function(x){ return v14stat(x).d || v14started(x); }).length;
@@ -15296,7 +15432,7 @@ function v13exRows(set){
 function v13dots(n, k){ var h = ''; for(var i = 0; i < n; i++) h += '<i' + (i === k ? ' class="on"' : '') + '></i>'; return h; }
 function v13leadHero(){
   var L = v14data();
-  if(!L || !L.at) loadGuides(false);
+  if(!L || !L.at) v14lazy();
   var items = (L && L.items) || [];
   var total = items.length || 99;
   var steps = items.reduce(function(s, x){ return s + x.steps.length; }, 0);
