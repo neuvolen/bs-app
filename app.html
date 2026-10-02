@@ -4193,6 +4193,237 @@
   .v14-bar .ln { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; margin: 0; border-radius: 0; background: transparent; }
   .v14-bar .ln i { border-radius: 0; }
 
+  /* ═══ R16: 99 гайдов. Каталог обложками, ридер «сначала визуал, потом текст» ═══ */
+  .v16-ch { margin: 4px 4px 0; }
+  .v16-ch .k { font-size: 10px; font-weight: 800; letter-spacing: 2.4px; color: #8C8C8C; }
+  .v16-ch h1 { margin: 10px 0 0; font-size: 44px; font-weight: 800; letter-spacing: -1.8px; line-height: 0.95; color: #FFFFFF; }
+  .v16-ch p { margin: 10px 0 0; font-size: 14px; color: #9A9A9A; line-height: 1.4; font-weight: 600; }
+  .v16-oc { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 20px -16px 0; padding: 0 16px; scroll-padding: 0 16px; -webkit-overflow-scrolling: touch; }
+  .v16-oc::-webkit-scrollbar { display: none; }
+  .v16-oc button { flex-shrink: 0; height: 40px; padding: 0 14px 0 12px; border-radius: 20px; border: 1px solid #262626; background: #0B0B0B; color: #FFFFFF; font-family: inherit; display: inline-flex; align-items: center; gap: 7px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v16-oc button:first-child { padding: 0 16px; }
+  .v16-oc button .l { font-size: 13.5px; font-weight: 800; }
+  .v16-oc button .c { font-size: 11.5px; font-weight: 800; color: #6E6E6E; }
+  .v16-oc button.on { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v16-oc button.on .c { color: #6B6B6B; }
+  .v16-oc button:active { transform: scale(0.97); }
+  .v16-ocsk span { flex-shrink: 0; width: 104px; height: 40px; border-radius: 20px; }
+  .v16-tools { display: flex; align-items: center; gap: 8px; margin-top: 14px; min-height: 44px; }
+  .v16-cw { flex: 1; min-width: 0; }
+  .v16-cnt { margin: 0 0 0 4px; justify-content: flex-start; gap: 10px; }
+  .v16-cnt .num { color: #FFFFFF; }
+  .v16-tools { flex-wrap: wrap; }
+  .v16-tools.so .v16-cw { order: 5; flex-basis: 100%; margin-top: 6px; }
+  .v16-sq { display: none; flex: 1; min-width: 0; height: 44px; box-sizing: border-box; border-radius: 22px; }
+  .v16-sq.open { display: flex; }
+  .v16-ib, .v16-fb { height: 44px; border-radius: 22px; border: 1px solid #262626; background: transparent; color: #FFFFFF; font-family: inherit; cursor: pointer; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
+  .v16-ib { width: 44px; padding: 0; }
+  .v16-fb { padding: 0 15px 0 13px; gap: 8px; font-size: 13.5px; font-weight: 800; }
+  .v16-ib.on, .v16-fb.on { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v16-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+  .v16-span { grid-column: 1 / -1; }
+  .v16-tile { position: relative; box-sizing: border-box; min-width: 0; min-height: 200px; display: flex; flex-direction: column; padding: 14px 14px 16px; border-radius: 20px; background: #000; border: 1px solid #1F1F1F; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.12s ease; }
+  .v16-tile::before { content: ''; position: absolute; left: -30px; top: 6px; width: 170px; height: 170px; border-radius: 50%; background: radial-gradient(circle, #151515 0, rgba(21,21,21,0) 65%); pointer-events: none; }
+  .v16-tile > * { position: relative; }
+  .v16-tile:active { transform: scale(0.97); }
+  .v16-tile.done { border-color: #3A3A3A; }
+  .v16-tile .tp { display: flex; justify-content: space-between; align-items: center; height: 26px; }
+  .v16-tile .no { font-size: 11px; font-weight: 800; letter-spacing: 0.8px; color: #8C8C8C; }
+  .v16-tile .rt { display: inline-flex; align-items: center; gap: 6px; }
+  .v16-tile .ic { margin-top: 12px; width: 64px; height: 64px; border-radius: 22px; display: flex; align-items: center; justify-content: center; color: #FFFFFF; border: 1px solid #262626; background: radial-gradient(circle at 50% 35%, #1D1D1D 0, #070707 75%); }
+  .v16-tile .t { padding-top: 14px; }
+  .v16-lvb { display: inline-flex; align-items: flex-end; gap: 2px; height: 11px; }
+  .v16-lvb i { width: 3px; border-radius: 1px; background: #333; }
+  .v16-lvb i:nth-child(1) { height: 4px; } .v16-lvb i:nth-child(2) { height: 7px; } .v16-lvb i:nth-child(3) { height: 11px; }
+  .v16-lvb i.on { background: #CFCFCF; }
+  .v16-tile .t { margin-top: auto; font-size: 15.5px; font-weight: 800; line-height: 1.22; letter-spacing: -0.3px; color: #FFFFFF; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; hyphens: auto; }
+  .v16-ring { display: inline-flex; align-items: center; gap: 5px; }
+  .v16-ring svg { display: block; }
+  .v16-ring b { font-size: 11px; font-weight: 800; color: #FFFFFF; }
+  .v16-sk { height: 200px; border-radius: 20px; }
+  .v16-row { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 2px; scroll-padding: 0 16px; -webkit-overflow-scrolling: touch; }
+  .v16-row::-webkit-scrollbar { display: none; }
+  .v16-row .v16-tile { flex: 0 0 150px; min-height: 0; height: 186px; scroll-snap-align: start; }
+  .v16-row .v16-tile .ic { width: 52px; height: 52px; border-radius: 18px; }
+  .v16-row .v16-tile .ic svg { width: 30px; height: 30px; }
+  .v16-row .v16-tile .t { font-size: 14.5px; -webkit-line-clamp: 3; }
+  /* Лист «Фильтры» */
+  .v16-sheet .hd { display: flex; justify-content: space-between; align-items: center; padding: 6px 0 2px; }
+  .v16-sheet .hd b { font-size: 21px; font-weight: 800; letter-spacing: -0.4px; }
+  .v16-sheet .x { width: 36px; height: 36px; border-radius: 18px; border: 1px solid #262626; background: none; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .v16-sheet .cap { font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; text-transform: uppercase; margin: 16px 0 10px; }
+  .v16-sheet .lv { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .v16-lv { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 16px; border: 1px solid #262626; background: transparent; color: #FFFFFF; font-family: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v16-lv .bars { display: inline-flex; align-items: flex-end; gap: 3px; height: 14px; flex-shrink: 0; }
+  .v16-lv .bars i { width: 4px; border-radius: 1px; background: #3A3A3A; }
+  .v16-lv .bars i:nth-child(1) { height: 5px; } .v16-lv .bars i:nth-child(2) { height: 9px; } .v16-lv .bars i:nth-child(3) { height: 14px; }
+  .v16-lv .bars i.on { background: currentColor; }
+  .v16-lv .m { flex: 1; min-width: 0; }
+  .v16-lv .m b { display: block; font-size: 15px; font-weight: 800; }
+  .v16-lv .m span { display: block; font-size: 12.5px; color: #8C8C8C; margin-top: 2px; font-weight: 600; }
+  .v16-lv .c { font-size: 13px; font-weight: 800; color: #8C8C8C; }
+  .v16-lv.on { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v16-lv.on .m span, .v16-lv.on .c { color: #6B6B6B; }
+  .v16-lv.on .bars i { background: #C8C8C8; } .v16-lv.on .bars i.on { background: #000; }
+
+  /* Ридер */
+  .v16 .v14-p, .v16 .v14-thesis, .v16 .v14-lead { max-width: 34em; }
+  .v16-bd .v14-p { font-size: 15.5px; line-height: 1.65; color: #C8C8C8; }
+  .v16-cov { padding: 22px 20px 24px; }
+  .v16-cov .top { display: flex; align-items: center; gap: 18px; }
+  .v16-cov .art { width: 96px; height: 96px; border-radius: 30px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #FFFFFF; border: 1px solid #2A2A2A; background: radial-gradient(circle at 50% 38%, #1C1C1C 0, #060606 72%); box-shadow: 0 0 0 7px #000, 0 0 0 8px #151515; }
+  .v14-cover.v16-cov .k { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 8px; }
+  .v16-cov .k .o { font-size: 11px; letter-spacing: 2.2px; color: #CFCFCF; }
+  .v16-cov .k .no { font-size: 28px; font-weight: 800; letter-spacing: -0.8px; color: #FFFFFF; text-transform: none; line-height: 1; }
+  .v16-cov h1 { margin: 24px 0 0; font-size: 32px; line-height: 1.06; }
+  .v16-cov .sub { font-size: 15.5px; line-height: 1.45; margin-top: 10px; color: #A6A6A6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 30em; }
+  .v16-cov .meta { margin-top: 18px; }
+  .v16-cov .v12-chip svg { color: #8C8C8C; }
+  .v16 .v14-sec { margin-top: 36px; }
+  .v16 .v14-kick { font-size: 11px; }
+  .v16 .v14-kick span:only-child { color: #FFFFFF; }
+  .v16-key { margin-top: 26px !important; }
+  .v16-res { margin-top: 14px; border-radius: 22px; background: #0B0B0B; border: 1px solid #1F1F1F; padding: 16px 16px 4px; }
+  .v16-res .cap { font-size: 12.5px; font-weight: 800; color: #8C8C8C; }
+  .v16-hm { padding: 12px 0 18px; border-bottom: 1px solid #1A1A1A; }
+  .v16-hm .l, .v16-cmp .l { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .v16-hm .l b, .v16-cmp .l b { font-size: 15px; font-weight: 800; color: #FFFFFF; line-height: 1.3; min-width: 0; }
+  .v16-pill { flex-shrink: 0; display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border-radius: 13px; background: #FFFFFF; color: #000; font-size: 12.5px; font-weight: 800; white-space: nowrap; }
+  .v16-pill.neg { background: transparent; color: #E6E6E6; border: 1px solid #3A3A3A; }
+  .v16-hm .ba { display: flex; align-items: flex-end; gap: 12px; margin-top: 16px; }
+  .v16-hm .b, .v16-hm .a { display: flex; flex-direction: column; min-width: 0; }
+  .v16-hm em { font-style: normal; font-weight: 800; letter-spacing: -1.6px; line-height: 0.95; white-space: nowrap; }
+  .v16-hm .b em { font-size: 30px; color: #6E6E6E; }
+  .v16-hm .a em { font-size: 46px; color: #FFFFFF; letter-spacing: -2.2px; }
+  .v16-hm em.w { font-size: 20px !important; letter-spacing: -0.4px; white-space: normal; }
+  .v16-hm small, .v16-figs small { font-size: 12px; font-weight: 700; color: #8C8C8C; margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .v16-hm .a small { color: #CFCFCF; }
+  .v16-hm small.pre, .v16-figs small.pre { margin: 0 0 4px; }
+  .v16-hm .ar { color: #4A4A4A; padding-bottom: 24px; flex-shrink: 0; }
+  .v16-cmp { padding: 16px 0 16px; border-bottom: 1px solid #1A1A1A; }
+  .v16-cmp:last-child { border-bottom: none; }
+  .v16-bars { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .v16-bars .br { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+  .v16-bars .tg { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: #6E6E6E; text-transform: uppercase; }
+  .v16-bars .tr { height: 10px; border-radius: 5px; background: #161616; overflow: hidden; }
+  .v16-bars .tr i { display: block; height: 100%; border-radius: 5px; }
+  .v16-bars .tr i.b { background: #4A4A4A; }
+  .v16-bars .tr i.a { background: #FFFFFF; }
+  .v16-bars .tr i.neg { background: repeating-linear-gradient(135deg, #8C8C8C 0 3px, transparent 3px 6px); }
+  .v16-bars .v { font-size: 13px; font-weight: 800; color: #FFFFFF; white-space: nowrap; text-align: right; }
+  .v16-bars .br:first-child .v { color: #8C8C8C; }
+  .v16-tkh { display: flex; justify-content: space-between; align-items: baseline; margin: 24px 2px 10px; font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; text-transform: uppercase; }
+  .v16-tkh .hint { font-size: 12px; letter-spacing: 0; text-transform: none; color: #6E6E6E; }
+  .v16-tk { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; scroll-padding: 0 16px; -webkit-overflow-scrolling: touch; }
+  .v16-tk::-webkit-scrollbar { display: none; }
+  .v16-tk .c { flex: 0 0 82%; box-sizing: border-box; scroll-snap-align: start; display: flex; flex-direction: column; min-height: 168px; padding: 18px 18px 20px; border-radius: 22px; background: #FFFFFF; color: #000; }
+  .v16-tk .c .n { font-size: 34px; font-weight: 800; letter-spacing: -1.6px; line-height: 1; }
+  .v16-tk .c p { margin: auto 0 0; padding-top: 18px; font-size: 17px; line-height: 1.4; font-weight: 700; letter-spacing: -0.2px; }
+  .v16-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+  .v16-dots i { width: 6px; height: 6px; border-radius: 3px; background: #2E2E2E; transition: width 0.2s ease, background 0.2s ease; }
+  .v16-dots i.on { width: 18px; background: #FFFFFF; }
+  .v16-map { margin-top: 24px; border-radius: 22px; background: #0B0B0B; border: 1px solid #1F1F1F; padding: 2px 16px 8px; }
+  .v16-map .hd { display: flex; justify-content: space-between; padding: 14px 0 6px; font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; text-transform: uppercase; }
+  .v16-map .r { position: relative; display: flex; align-items: center; gap: 14px; padding: 8px 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v16-map .r::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 2px; background: #262626; }
+  .v16-map .hd + .r::before { top: 50%; }
+  .v16-map .r:last-child::before { bottom: 50%; }
+  .v16-map .r:active .t { color: #8C8C8C; }
+  .v16-map .d { position: relative; z-index: 1; box-sizing: border-box; width: 32px; height: 32px; border-radius: 16px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #0B0B0B; border: 2px solid #3A3A3A; color: #8C8C8C; font-size: 13px; font-weight: 800; }
+  .v16-map .d.part { border-color: #FFFFFF; color: #FFFFFF; }
+  .v16-map .d.ok, .v16-map .ep .d { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v16-map .t { flex: 1; min-width: 0; font-size: 14.5px; font-weight: 700; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .v16-map .c { flex-shrink: 0; font-size: 12px; font-weight: 800; color: #6E6E6E; }
+  .v16-lnk { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 6px 0; border: none; background: none; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v16-lnk svg, .v16-more svg { transition: transform 0.2s ease; }
+  [aria-expanded="true"] > svg { transform: rotate(180deg); }
+  /* История */
+  .v16-hc { margin-top: 14px; border-radius: 22px; background: #0B0B0B; border: 1px solid #1F1F1F; padding: 16px 16px 8px; }
+  .v16-hc .v14-who { margin-top: 0; }
+  .v16-hc .v14-who .av { width: 52px; height: 52px; border-radius: 26px; font-size: 21px; }
+  .v16-figs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 16px; border-top: 1px solid #1F1F1F; }
+  .v16-figs > div { display: flex; flex-direction: column; min-width: 0; padding: 14px 8px 2px 0; }
+  .v16-figs > div + div { padding-left: 12px; border-left: 1px solid #1F1F1F; }
+  .v16-figs b { display: flex; flex-direction: column; min-width: 0; }
+  .v16-figs em { font-style: normal; font-size: 28px; font-weight: 800; letter-spacing: -1.2px; line-height: 1; color: #FFFFFF; white-space: nowrap; }
+  .v16-figs em.w { font-size: 16px; letter-spacing: -0.2px; white-space: normal; }
+  .v16-figs small { font-size: 11px; color: #CFCFCF; margin-top: 4px; }
+  .v16-figs small.pre { color: #8C8C8C; }
+  .v16-figs > div > span { font-size: 11.5px; color: #8C8C8C; line-height: 1.35; margin-top: 6px; font-weight: 600; }
+  .v16-tx { margin-top: 14px; }
+  .v16-sty:not(.open) .v16-tx > :not(.first) { display: none; }
+  .v16-sty:not(.open) .v16-tx .first { margin-top: 0; color: #A6A6A6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .v16-tx .first { margin-top: 0; }
+  /* Метод */
+  .v16-s3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; border-top: none; }
+  .v16-s3 > div { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 0; padding: 14px 0 0; border-bottom: none; border-top: 2px solid #FFFFFF; }
+  .v16-s3 b { flex: none; font-size: 25px; letter-spacing: -1px; line-height: 1.05; }
+  .v16-s3 span { font-size: 12px; line-height: 1.4; color: #9A9A9A; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .v16-mth.open .v16-s3 span { display: block; }
+  .v16-mth .v14-thesis { margin-top: 18px; font-size: 16.5px; line-height: 1.55; }
+  .v16-mth:not(.open) .v14-thesis { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .v16-mth:not(.open) .v14-cond { display: none; }
+  /* Шаги-аккордеоны */
+  .v16-stps { margin-top: 36px; display: flex; flex-direction: column; gap: 12px; }
+  .v16 .v16-stp { margin-top: 0; padding: 18px 16px 6px; border-radius: 22px; background: #0B0B0B; border: 1px solid #1F1F1F; scroll-margin-top: 72px; }
+  .v16-stp .sh { display: flex; justify-content: space-between; align-items: center; }
+  .v16-stp .sh .big { font-size: 40px; font-weight: 800; line-height: 0.9; letter-spacing: -2px; color: #FFFFFF; }
+  .v16-stp .sh .big small { font-size: 15px; letter-spacing: 0; color: #4A4A4A; margin-left: 4px; }
+  .v16-stp .ics { display: inline-flex; gap: 6px; }
+  .v16-stp .ics i { width: 30px; height: 30px; border-radius: 15px; border: 1px solid #262626; color: #8C8C8C; display: flex; align-items: center; justify-content: center; }
+  .v16-kv { border: 1px solid #262626; border-radius: 16px; overflow: hidden; margin: 18px 0 0 !important; padding: 0 !important; background: #000; }
+  .v16-kv .hd { display: flex; justify-content: space-between; gap: 10px; padding: 11px 14px; background: #111; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; color: #8C8C8C; text-transform: uppercase; }
+  .v16-kv .r { padding: 12px 14px 13px; border-top: 1px solid #1A1A1A; }
+  .v16-kv .r b { display: block; font-size: 14px; font-weight: 800; color: #FFFFFF; line-height: 1.3; }
+  .v16-kv .r span { display: block; font-size: 13.5px; color: #A6A6A6; line-height: 1.5; margin-top: 3px; }
+  .v16-kv + .v14-tblh { display: none !important; }
+  .v16 .v16-tc { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 18px -16px 0; padding: 0 16px; scroll-padding: 0 16px; }
+  .v16-tc .c { flex: 0 0 80%; box-sizing: border-box; scroll-snap-align: start; border-radius: 18px; background: #000; border: 1px solid #262626; padding: 14px 16px 16px; }
+  .v16-tc .ct span { font-size: 11px; font-weight: 800; color: #6E6E6E; }
+  .v16-tc .ct b { display: block; margin-top: 6px; font-size: 17px; font-weight: 800; color: #FFFFFF; line-height: 1.25; letter-spacing: -0.2px; }
+  .v16-tc .f { margin-top: 12px; padding-top: 10px; border-top: 1px solid #1A1A1A; }
+  .v16-tc .f span { font-size: 10px; font-weight: 800; letter-spacing: 1.4px; color: #8C8C8C; text-transform: uppercase; }
+  .v16-tc .f p { margin: 4px 0 0; font-size: 14px; line-height: 1.5; color: #CFCFCF; }
+  .v16-stp h2 { margin-top: 14px; font-size: 21px; line-height: 1.2; letter-spacing: -0.5px; }
+  .v16-stp .v14-lead { margin-top: 8px; font-size: 15.5px; line-height: 1.45; font-weight: 600; color: #A6A6A6; }
+  .v16-stp .v14-cl { margin-top: 16px; background: #000; }
+  .v16-stp .v14-it { padding: 15px 14px; min-height: 56px; box-sizing: border-box; align-items: flex-start; }
+  .v16-stp .v14-it .tx { font-size: 15px; }
+  .v16-bd { display: none; }
+  .v16-stp.open .v16-bd { display: block; }
+  .v16-bdk { margin-top: 24px; font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; text-transform: uppercase; }
+  .v16-bdk + .v14-p { margin-top: 8px; }
+  .v16-more { width: 100%; height: 48px; margin: 14px 0 10px; border-radius: 14px; border: 1px solid #262626; background: transparent; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v16-more:active { background: #141414; }
+  .v16-fx { margin-top: 16px; background: #000; border: 1px solid #333; border-radius: 18px; padding: 14px 16px 16px; }
+  .v16-fx .lhs { margin-top: 8px; font-size: 19px; font-weight: 800; color: #FFFFFF; line-height: 1.25; letter-spacing: -0.3px; }
+  .v16-fx .rw { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; }
+  .v16-fx .op { width: 24px; height: 24px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border: 1px solid #3A3A3A; color: #FFFFFF; font-size: 14px; font-weight: 800; line-height: 1; }
+  .v16-fx .rw:nth-child(3) .op { background: #FFFFFF; color: #000; border-color: #FFFFFF; }
+  .v16-fx .rw .f { margin: 0; padding-top: 2px; font-size: 15px; font-weight: 700; color: #DCDCDC; line-height: 1.45; letter-spacing: 0; }
+  .v16 .v14-case { margin-top: 18px; position: relative; padding: 16px 16px 16px 18px; background: #161616; border-radius: 18px; }
+  .v16 .v14-case p { font-size: 15px; line-height: 1.6; color: #BDBDBD; }
+  .v16 .v14-case b, .v16 .v14-tbl b { color: #FFFFFF; font-weight: 800; }
+  .v16-q { margin: 22px 0 0; padding: 0; border-left: none; }
+  .v16-q::before { content: '«'; display: block; font-size: 64px; font-weight: 800; line-height: 0.6; height: 30px; color: #FFFFFF; }
+  .v16-q p { font-size: 20px; line-height: 1.4; letter-spacing: -0.3px; }
+  .v14-q.big.v16-q p::before, .v14-q.big.v16-q p::after { content: none; }
+  .v16 .v14-tbl { margin: 18px -16px 0; }
+  .v16 .v14-tbl table { font-size: 13px; }
+  .v16 .v14-tbl th:first-child, .v16 .v14-tbl td:first-child { position: sticky; left: 0; z-index: 1; }
+  .v16 .v14-tbl th:first-child { background: #111; }
+  .v16 .v14-tbl td:first-child { background: #0B0B0B; box-shadow: 1px 0 0 #1F1F1F; }
+  .v16 .v14-tbl td { color: #BDBDBD; }
+  /* Точка Б */
+  .v16 .v14-ep { margin-top: 44px; }
+  .v16 .v14-epl { border-radius: 22px; background: #0B0B0B; border-color: #1F1F1F; }
+  .v16 .v14-epl .r { display: block; padding: 16px; }
+  .v16 .v14-epl .tl { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .v16 .v14-epl .tl b { font-size: 15px; font-weight: 800; color: #FFFFFF; line-height: 1.3; min-width: 0; }
+  .v16 .v14-epl .chg { flex-shrink: 0; max-width: 46%; padding: 4px 10px; border-radius: 13px; border: 1px solid #3A3A3A; font-size: 13px; line-height: 1.3; text-align: right; }
+  .v16 .v14-epl .ba { margin-top: 8px; }
+  .v16-skr { display: flex; flex-direction: column; gap: 12px; margin-top: 26px; }
+
   /* ═══ R15: запись на экспресс-разбор и приглашения ═══ */
   .v15-head { margin: 2px 4px 0; }
   .v15-head .k { font-size: 11px; font-weight: 800; letter-spacing: 1.8px; color: #8C8C8C; }
@@ -13876,10 +14107,13 @@ function v14openFrom(id){ window._gdOrgan = 'all'; showPage('guides'); v14open(i
 // Глубокая ссылка guide_g12 → g012
 function v14normId(s){ var m = /^g?0*(\d{1,3})$/i.exec(String(s || '').trim()); return m ? 'g' + ('00' + m[1]).slice(-3) : ''; }
 
-// ── Каталог «99 гайдов» ──
-function v14filtered(){
+// ── Каталог «99 гайдов» (R16: обложки-плитки 2 в ряд, фильтр органов иконками, уровень в листе «Фильтры») ──
+var V16_FILTER_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>';
+var V16_CLOCK_ICON = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+var V16_CHEV = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+function v14filtered(lvAll){
   var items = v14items();
-  var o = window._gdOrgan || 'all', lv = window._gdLevel || 'all', q = String(window._gdQ || '').toLowerCase().trim();
+  var o = window._gdOrgan || 'all', lv = lvAll ? 'all' : (window._gdLevel || 'all'), q = String(window._gdQ || '').toLowerCase().trim();
   return items.filter(function(x){
     if(o !== 'all' && x.organ !== o) return false;
     if(lv !== 'all' && x.level !== lv) return false;
@@ -13887,41 +14121,81 @@ function v14filtered(){
     return true;
   });
 }
+// Маленькое кольцо на плитке: проценты отметок, а без отметок сколько прочитано
+function v16ring(p, full){
+  var r = 11, c = 2 * Math.PI * r;
+  return '<span class="v16-ring' + (full ? ' full' : '') + '"><svg width="26" height="26" viewBox="0 0 26 26">' +
+    (full ? '<circle cx="13" cy="13" r="13" fill="#FFFFFF"/><path d="M8 13.4l3.1 3 6.4-6.6" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>'
+      : '<circle cx="13" cy="13" r="' + r + '" fill="none" stroke="#2E2E2E" stroke-width="2.5"/><circle cx="13" cy="13" r="' + r + '" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - p / 100)).toFixed(1) + '" transform="rotate(-90 13 13)"/>') +
+    '</svg>' + (full ? '' : '<b class="num">' + p + '%</b>') + '</span>';
+}
 function v14card(x){
-  var s = v14stat(x), pos = v14pos(x.id), done = s.n && s.d >= s.n;
-  var hl = v14heroLine(x.hero), st = x.steps.length;
-  var meta = [];
-  if(x.time) meta.push('<span>' + gE(v14time(x.time)) + '</span>');
-  if(st) meta.push('<span class="num">' + st + ' ' + v3plural(st, 'шаг', 'шага', 'шагов') + '</span>');
-  if(x.existing) meta.push('<span>PDF' + (x.pdfKB ? ' · ' + (x.pdfKB >= 1024 ? (x.pdfKB / 1024).toFixed(1).replace('.', ',') + '\u00a0МБ' : x.pdfKB + '\u00a0КБ') : '') + '</span>');
-  if(done) meta.push('<span style="color:#FFFFFF">пройден</span>');
-  else if(!s.d && pos && pos.p >= 5) meta.push('<span style="color:#CFCFCF">прочитано ' + Math.min(100, pos.p) + '%</span>');
-  return '<div class="v12-card v14-card' + (done ? ' done' : '') + '" data-gid="' + v2esc(x.id) + '" onclick="v14open(\'' + v2esc(x.id) + '\')">' +
-    '<div class="top"><div class="v12-org">' + v12oIcon(x.organ, 14, 2) + v2esc(x.organ) + '</div><div class="v14-tr">' + (x.existing ? '<span class="v14-pdfb">PDF</span>' : '') + '<span class="v14-no num">№\u00a0' + v14no2(x.id) + '</span></div></div>' +
-    '<div class="row"><div class="m"><div class="t">' + gE(x.title) + '</div>' + (x.subtitle ? '<div class="s">' + gE(x.subtitle) + '</div>' : '') +
-    (hl ? '<div class="v14-hl"><i>' + v2esc((x.hero.name || '?').charAt(0)) + '</i><span>' + gE(hl) + '</span></div>' : '') +
-    '<div class="meta">' + v12lvl(x.level) + meta.join('<i></i>') + '</div></div>' +
-    (s.d ? v12ring(s.d, s.n) : '') + '</div></div>';
+  var s = v14stat(x), pos = v14pos(x.id), done = !!(s.n && s.d >= s.n);
+  var p = s.d && s.n ? Math.round(s.d / s.n * 100) : (pos && pos.p >= 5 && pos.p < 97 ? Math.round(pos.p) : 0);
+  return '<div class="v14-card v16-tile' + (done ? ' done' : '') + '" data-gid="' + v2esc(x.id) + '" data-lv="' + v2esc(x.level) + '" role="button" tabindex="0" aria-label="' + v2esc(x.organ) + ', № ' + v14no2(x.id) + '" onclick="v14open(\'' + v2esc(x.id) + '\')">' +
+    '<div class="tp"><span class="no num">№ ' + v14no2(x.id) + '</span><span class="rt">' + (x.existing ? '<span class="v14-pdfb">PDF</span>' : '') + (done || p ? v16ring(p, done) : v16lvb(x.level)) + '</span></div>' +
+    '<div class="ic">' + v12oIcon(x.organ, 38, 1.4) + '</div>' +
+    '<div class="t">' + gE(x.title) + '</div></div>';
+}
+function v16lvb(level){
+  var L = V12_LV().filter(function(z){ return z[0] === String(level || '').toLowerCase(); })[0] || V12_LV()[0];
+  return '<span class="v16-lvb" title="' + L[1] + '"><i class="on"></i><i' + (L[2] > 1 ? ' class="on"' : '') + '></i><i' + (L[2] > 2 ? ' class="on"' : '') + '></i></span>';
+}
+function v16cntHTML(n){
+  var filt = (window._gdOrgan && window._gdOrgan !== 'all') || (window._gdLevel && window._gdLevel !== 'all') || window._gdQ;
+  return '<div class="v12-cnt v16-cnt"><span>' + (filt ? 'Найдено ' + v12num(n) : 'Все гайды') + '</span>' + (filt ? '<span class="lnk" onclick="v14reset()">Сбросить</span>' : '<span class="num">' + v12num(n) + '</span>') + '</div>';
 }
 function v14listHTML(){
   var list = v14filtered();
-  var all = v14items();
-  var filt = (window._gdOrgan && window._gdOrgan !== 'all') || (window._gdLevel && window._gdLevel !== 'all') || window._gdQ;
-  var head = '<div class="v12-cnt"><span>' + (filt ? 'Найдено ' + v12num(list.length) : 'Все гайды') + '</span>' + (filt ? '<span class="lnk" onclick="v14reset()">Сбросить</span>' : '<span class="num">' + v12num(all.length) + '</span>') + '</div>';
-  if(!list.length) return head + '<div class="v2-card v12-empty">Ничего не нашли.<br>Попробуйте другой орган, уровень или слово</div>';
-  return head + list.map(v14card).join('');
+  if(!list.length) return '<div class="v2-card v12-empty v16-span">Ничего не нашли.<br>Попробуйте другой орган, уровень или слово</div>';
+  return list.map(v14card).join('');
 }
-// «Продолжить»: начатые гайды сразу под шапкой каталога, последние открытые сверху
+// «Продолжить»: начатые гайды лентой под шапкой, последние открытые первыми
 function v14contHTML(){
   var started = v14items().filter(v14started);
   if(!started.length) return '';
   started.sort(function(a, b){ var pa = v14pos(a.id), pb = v14pos(b.id); return ((pb && pb.t) || 0) - ((pa && pa.t) || 0); });
-  return '<div class="v12-cnt"><span>Продолжить</span><span class="num">' + started.length + '</span></div><div id="gdCont">' + started.slice(0, 5).map(v14card).join('') + '</div>';
+  return '<div class="v12-cnt"><span>Продолжить</span><span class="num">' + started.length + '</span></div><div id="gdCont" class="v16-row">' + started.slice(0, 6).map(v14card).join('') + '</div>';
 }
 function v14setOrgan(o){ window._gdOrgan = (window._gdOrgan === o && o !== 'all') ? 'all' : o; v14keep(renderGuides); }
-function v14setLevel(l){ window._gdLevel = l; v14keep(renderGuides); }
-function v14reset(){ window._gdOrgan = 'all'; window._gdLevel = 'all'; window._gdQ = ''; v14keep(renderGuides); }
-function v14search(v){ window._gdQ = v; var el = document.getElementById('gdList'); if(el) el.innerHTML = v14listHTML(); }
+function v14setLevel(l){ window._gdLevel = l; v14keep(renderGuides); v16fill(); }
+function v14reset(){ window._gdOrgan = 'all'; window._gdLevel = 'all'; window._gdQ = ''; window._gdSO = false; v14keep(renderGuides); }
+function v14search(v){ window._gdQ = v; var el = document.getElementById('gdList'); if(el) el.innerHTML = v14listHTML(); var c = document.getElementById('gdCnt'); if(c) c.innerHTML = v16cntHTML(v14filtered().length); }
+function v16srch(){
+  var box = document.getElementById('gdQBox'); if(!box) return;
+  var on = !box.classList.contains('open');
+  window._gdSO = on;
+  box.classList.toggle('open', on);
+  var tl = box.parentNode; if(tl) tl.classList.toggle('so', on);
+  var b = document.getElementById('gdSrchBtn'); if(b) b.classList.toggle('on', on);
+  var i = box.querySelector('input');
+  if(on){ if(i) setTimeout(function(){ try{ i.focus(); }catch(e){} }, 60); }
+  else if(window._gdQ){ window._gdQ = ''; if(i) i.value = ''; v14search(''); }
+}
+// Лист «Фильтры»: уровень глубины
+function v16filters(){
+  var old = document.getElementById('gdSheet'); if(old) old.remove();
+  var m = document.createElement('div'); m.className = 'add-menu-overlay show'; m.id = 'gdSheet';
+  m.onclick = function(e){ if(e.target === m) m.remove(); };
+  document.body.appendChild(m);
+  v16fill();
+}
+function v16fill(){
+  var m = document.getElementById('gdSheet'); if(!m) return;
+  var lv = window._gdLevel || 'all', base = v14filtered(true), cnt = {};
+  base.forEach(function(x){ cnt[x.level] = (cnt[x.level] || 0) + 1; });
+  var D = {'старт': 'Первые шаги, хватит часа в неделю', 'рост': 'Есть команда, наводим порядок', 'система': 'Масштаб, управление через цифры'};
+  var opts = [['all', 'Любой уровень', 'Все гайды выбранного органа', base.length, 0]].concat(V12_LV().map(function(l){ return [l[0], l[1], D[l[0]] || '', cnt[l[0]] || 0, l[2]]; }));
+  var shown = lv === 'all' ? base.length : (cnt[lv] || 0);
+  m.innerHTML = '<div class="add-menu v16-sheet"><div class="hd"><b>Фильтры</b><button class="x" aria-label="Закрыть" onclick="document.getElementById(\'gdSheet\').remove()">' + v3icon('x', 18, 2.2) + '</button></div>' +
+    '<div class="cap">Уровень глубины</div><div class="lv">' + opts.map(function(o){
+      return '<button class="v16-lv' + (lv === o[0] ? ' on' : '') + '" data-lv="' + o[0] + '" onclick="v14setLevel(\'' + o[0] + '\')">' +
+        '<span class="bars">' + (o[4] ? '<i class="on"></i><i' + (o[4] > 1 ? ' class="on"' : '') + '></i><i' + (o[4] > 2 ? ' class="on"' : '') + '></i>' : '<i class="on"></i><i class="on"></i><i class="on"></i>') + '</span>' +
+        '<span class="m"><b>' + o[1] + '</b><span>' + o[2] + '</span></span><span class="c num">' + o[3] + '</span></button>';
+    }).join('') + '</div>' +
+    '<button class="v3-primary" data-ok="1" onclick="document.getElementById(\'gdSheet\').remove()">Показать ' + shown + ' ' + v3plural(shown, 'гайд', 'гайда', 'гайдов') + '</button></div>';
+}
+function v16skelTiles(n){ var h = ''; for(var i = 0; i < n; i++) h += '<div class="v15-sk v16-sk"></div>'; return '<div class="v16-grid">' + h + '</div>'; }
 function renderGuides(){
   var el = document.getElementById('guidesContent');
   if(!el) return;
@@ -13929,77 +14203,165 @@ function renderGuides(){
   if(!L || !L.at) loadGuides(false);
   var items = (L && L.items) || [];
   var total = items.length || 99;
-  var steps = items.reduce(function(s, x){ return s + x.steps.length; }, 0);
-  var started = 0, finished = 0;
-  items.forEach(function(x){ var s = v14stat(x); if(s.d || v14started(x)) started++; if(s.n && s.d >= s.n) finished++; });
+  var started = 0;
+  items.forEach(function(x){ var s = v14stat(x); if(s.d || v14started(x)) started++; });
   var free = navRole() !== 'resident';
-  var h = '<div class="v12-hero v14-chero"><div class="k">' + (free ? 'БИБЛИОТЕКА BS · БЕСПЛАТНО' : 'БИБЛИОТЕКА BS') + '</div>' +
-    '<div class="top"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '<br>для вашего<br>бизнеса' + (free ? '.<br><b>Бесплатно</b>' : '') + '</div></div>' +
-    '<div class="s">Разборы на 10-12 страниц: история с цифрами, метод, шаги с таблицами и чек-листами, итог в точке Б</div>' +
-    '<div class="v12-stats">' +
-      '<div><b class="num">' + (steps ? v12num(steps) : '500+') + '</b><span>' + (steps ? v3plural(steps, 'шаг', 'шага', 'шагов') : 'шагов') + ' внутри</span></div>' +
-      '<div><b class="num">7+1</b><span>органов и собственник</span></div>' +
-      (finished ? '<div><b class="num">' + finished + '<span style="display:inline;font-size:13px;color:#6E6E6E;margin:0">/' + started + '</span></b><span>пройдено у вас</span></div>'
-               : (started ? '<div><b class="num">' + started + '</b><span>в работе у вас</span></div>' : '<div><b class="num">3</b><span>уровня глубины</span></div>')) +
-    '</div></div>';
+  var h = '<div class="v16-ch"><div class="k">' + (free ? 'БИБЛИОТЕКА BS · БЕСПЛАТНО' : 'БИБЛИОТЕКА BS') + '</div>' +
+    '<h1><span class="num">' + total + '</span> ' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '</h1>' +
+    '<p>Результат с цифрами, шаги и чек-листы в каждом</p></div>';
   if(!items.length){
     if(L && L.error) h += '<div class="v2-card v12-empty" style="margin-top:12px">Не получилось загрузить гайды.<br><button class="v3-outline" style="margin-top:12px" onclick="window._gd=null;loadGuides(true);renderGuides()">Повторить</button></div>';
-    else h += '<div class="loading"><div class="spinner"></div></div>';
+    else h += '<div class="v16-oc v16-ocsk">' + '<span class="v15-sk"></span><span class="v15-sk"></span><span class="v15-sk"></span>' + '</div>' + v16skelTiles(6);
     el.innerHTML = h;
     return;
   }
   h += v14contHTML();
   h += v13softBanner(started);
-  var cnt = {}, lcnt = {};
-  var o = window._gdOrgan || 'all', lv = window._gdLevel || 'all';
-  items.forEach(function(x){ cnt[x.organ] = (cnt[x.organ] || 0) + 1; if(o === 'all' || x.organ === o) lcnt[x.level] = (lcnt[x.level] || 0) + 1; });
-  h += '<div class="v12-og">' + V12_ORG().map(function(g){
-    return '<button class="' + (o === g[0] ? 'on' : '') + '" onclick="v14setOrgan(\'' + g[0] + '\')" aria-label="' + g[0] + '"><span class="i">' + v12oIcon(g[0], 22) + '</span><b class="num">' + (cnt[g[0]] || 0) + '</b><span class="l">' + g[0] + '</span></button>';
+  var cnt = {}, o = window._gdOrgan || 'all', lv = window._gdLevel || 'all';
+  items.forEach(function(x){ cnt[x.organ] = (cnt[x.organ] || 0) + 1; });
+  h += '<div class="v16-oc" id="gdOrg"><button class="' + (o === 'all' ? 'on' : '') + '" aria-label="Все" onclick="v14setOrgan(\'all\')"><span class="l">Все</span></button>' + V12_ORG().map(function(g){
+    return '<button class="' + (o === g[0] ? 'on' : '') + '" onclick="v14setOrgan(\'' + g[0] + '\')" aria-label="' + g[0] + '">' + v12oIcon(g[0], 18, 1.8) + '<span class="l">' + g[0] + '</span><span class="c num">' + (cnt[g[0]] || 0) + '</span></button>';
   }).join('') + '</div>';
+  var so = !!(window._gdSO || window._gdQ);
+  h += '<div class="v16-tools' + (so ? ' so' : '') + '"><div class="v16-cw" id="gdCnt">' + v16cntHTML(v14filtered().length) + '</div><div class="v3-search v16-sq' + (so ? ' open' : '') + '" id="gdQBox">' + navIcon('search', 17) + '<input type="text" placeholder="Касса, найм, клиника" aria-label="Поиск по гайдам" value="' + v2esc(window._gdQ || '') + '" oninput="v14search(this.value)"></div>' +
+    '<button class="v16-ib' + (so ? ' on' : '') + '" id="gdSrchBtn" aria-label="Поиск" onclick="v16srch()">' + navIcon('search', 18, 2) + '</button>' +
+    '<button class="v16-fb' + (lv !== 'all' ? ' on' : '') + '" id="gdFiltBtn" onclick="v16filters()">' + V16_FILTER_ICON + '<span>' + (lv !== 'all' ? (V12_LV().filter(function(l){ return l[0] === lv; })[0] || ['', 'Фильтры'])[1] : 'Фильтры') + '</span></button></div>';
   if(L.error && L.stale) h += '<div class="v3-cap" style="margin:10px 4px 0">Показана сохранённая версия: сервер сейчас не ответил</div>';
-  h += '<div class="v3-search" style="margin-top:14px">' + navIcon('search', 18) + '<input type="text" placeholder="Найти: касса, найм, клиника" aria-label="Поиск по гайдам" value="' + v2esc(window._gdQ || '') + '" oninput="v14search(this.value)"></div>';
-  h += '<div class="v9-chips v12-chips2">' + [['all', 'Любой уровень', 0]].concat(V12_LV().map(function(l){ return [l[0], l[1], lcnt[l[0]] || 0]; })).map(function(c){
-    return '<button class="' + (lv === c[0] ? 'on' : '') + '" onclick="v14setLevel(\'' + c[0] + '\')">' + c[1] + (c[0] !== 'all' ? ' <span class="num" style="opacity:.55">' + c[2] + '</span>' : '') + '</button>';
-  }).join('') + '</div>';
-  h += '<div id="gdList">' + v14listHTML() + '</div>';
+  h += '<div id="gdList" class="v16-grid">' + v14listHTML() + '</div>';
   el.innerHTML = h;
+  // Выбранный орган виден в ленте
+  var on = el.querySelector('#gdOrg button.on'); if(on && o !== 'all'){ var r = document.getElementById('gdOrg'); try{ r.scrollLeft = on.offsetLeft - 16; }catch(e){} }
 }
 
 // ── Ридер ──
 function v14tbl(t, cls, chg){
   if(!t || !Array.isArray(t.head) || !Array.isArray(t.rows)) return '';
+  // Длинные текстовые ячейки: строка таблицы = карточка, карточки листаются вбок
+  var longCell = t.rows.some(function(r){ return (r || []).some(function(c){ return String(c || '').length > 42; }); });
+  if(t.head.length > 2 && !cls && longCell) return '<div class="v14-tbl v16-tc">' + t.rows.map(function(r, k){
+    r = r || [];
+    return '<div class="c"><div class="ct"><span class="num">' + (k + 1) + '/' + t.rows.length + '</span><b>' + v16em(gE(r[0])) + '</b></div>' + t.head.slice(1).map(function(hd, i){ return '<div class="f"><span>' + gE(hd) + '</span><p>' + v16em(gE(r[i + 1])) + '</p></div>'; }).join('') + '</div>';
+  }).join('') + '</div><div class="v14-tblh">Листайте карточки →</div>';
+  if(t.head.length === 2 && !cls) return '<div class="v14-tbl v16-kv"><div class="hd"><span>' + gE(t.head[0]) + '</span><span>' + gE(t.head[1]) + '</span></div>' + t.rows.map(function(r){ r = r || []; return '<div class="r"><b>' + v16em(gE(r[0])) + '</b><span>' + v16em(gE(r[1])) + '</span></div>'; }).join('') + '</div>';
   var ci = chg ? t.head.length - 1 : -1;
   return '<div class="v14-tbl' + (cls ? ' ' + cls : '') + '"><table><thead><tr>' + t.head.map(function(c){ return '<th>' + gE(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
     t.rows.map(function(r){
       return '<tr>' + (r || []).map(function(c, i){
-        var neg = i === ci && /^\s*[-\u2212]\s*\d/.test(String(c));
-        return '<td' + (i === ci ? ' class="chg' + (neg ? ' neg' : '') + '"' : '') + '>' + gE(c) + '</td>';
+        var neg = i === ci && /^\s*[-−]\s*\d/.test(String(c));
+        return '<td' + (i === ci ? ' class="chg' + (neg ? ' neg' : '') + '"' : '') + '>' + v16em(gE(c)) + '</td>';
       }).join('') + '</tr>';
-    }).join('') + '</tbody></table></div><div class="v14-tblh">Таблицу можно листать вбок →</div>';
+    }).join('') + '</tbody></table></div><div class="v14-tblh">Листайте вбок →</div>';
 }
-// Точка Б: строки «показатель · до → после · изменение» карточками, без горизонтальной прокрутки
-function v14epTbl(t){
-  if(!t || !Array.isArray(t.head) || !Array.isArray(t.rows)) return '';
-  if(t.head.length !== 4) return v14tbl(t, 'ep', true);
-  return '<div class="v14-epl" role="table"><div class="hd" role="row"><span>' + gE(t.head[0]) + '</span><span>' + gE(t.head[1]) + ' → ' + gE(t.head[2]) + '</span><span>' + gE(t.head[3]) + '</span></div>' + t.rows.map(function(r){
-    r = r || [];
-    var neg = /^\s*[-\u2212]\s*\d/.test(String(r[3] || ''));
-    return '<div class="r" role="row"><div class="m"><b>' + gE(r[0]) + '</b><div class="ba"><span class="b">' + gE(r[1]) + '</span><span class="ar">→</span><span class="a">' + gE(r[2]) + '</span></div></div>' +
-      '<div class="chg' + (neg ? ' neg' : '') + '">' + gE(r[3]) + '</div></div>';
-  }).join('') + '</div>';
+// Число из строки: «2,84 млн ₸/мес» → 2840000 (₸), «32%» → 32 (%), «50 в неделю» → 50
+function v16parse(s){
+  var t = String(s == null ? '' : s).replace(/[  ⁠]/g, ' ').replace(/−/g, '-');
+  var m = /([-+]?)\s*(\d+(?: \d{3})*(?:[.,]\d+)?)\s*(млрд|млн|тыс)?/i.exec(t);
+  if(!m) return null;
+  var v = parseFloat(m[2].replace(/ /g, '').replace(',', '.')); if(isNaN(v)) return null;
+  var mul = {'млрд': 1e9, 'млн': 1e6, 'тыс': 1e3}[String(m[3] || '').toLowerCase()] || 1;
+  return {v: v * mul * (m[1] === '-' ? -1 : 1), k: /₸/.test(t) ? 'm' : (/%/.test(t) ? 'p' : 'n')};
+}
+// Крупное число: «около 5 млн ₸/мес» → «около» мелко, «5» крупно, «млн ₸/мес» мелко. Хвост после запятой убираем
+function v16big(s){
+  var t = v12clean(s).split(/,\s(?=[^\d])/)[0].replace(/\s*\(.*\)\s*$/, '');
+  var m = /^(.*?)([-+−]?\s?\d+(?:[\s ]\d{3})*(?:[.,]\d+)?(?:-\d+)?)(.*)$/.exec(t);
+  if(!m) return '<em class="w">' + gE(t) + '</em>';
+  return (m[1].trim() ? '<small class="pre">' + gE(m[1].trim()) + '</small>' : '') + '<em class="num">' + gE(m[2].replace(/\s/g, ' ')) + '</em>' + (m[3].trim() ? '<small>' + gE(m[3].trim()) + '</small>' : '');
+}
+// Цифры с ₸, %, млн, тыс выделяем жирным (кейсы, таблицы)
+function v16em(html){
+  return String(html).replace(/(?:[-+−]\s?)?\d+(?:[\s ]\d{3})*(?:[.,]\d+)?(?:-\d+(?:[.,]\d+)?)?(?: |\s)?(?:(?:млрд|млн|тыс\.?)(?: |\s)?₸?|₸|%|п\.п\.)/g, function(x){ return '<b>' + x + '</b>'; });
+}
+// Самые показательные строки точки Б: деньги, затем проценты, затем прочие числа
+function v16pick(t, k){
+  if(!t || !Array.isArray(t.rows)) return [];
+  var sc = {m: 3, p: 2, n: 1};
+  return t.rows.map(function(r, i){
+    r = r || []; var b = v16parse(r[1]), a = v16parse(r[2]);
+    return {r: r, i: i, b: b, a: a, s: b && a && b.k === a.k ? sc[a.k] : 0};
+  }).filter(function(o){ return o.s; }).sort(function(x, y){ return y.s - x.s || x.i - y.i; }).slice(0, k || 3);
+}
+function v16bars(o){
+  var bv = o.b.v, av = o.a.v, mx = Math.max(Math.abs(bv), Math.abs(av)) || 1;
+  var w = function(v){ return Math.max(3, Math.round(Math.abs(v) / mx * 100)); };
+  return '<div class="v16-bars"><div class="br"><span class="tg">Было</span><span class="tr"><i class="b' + (bv < 0 ? ' neg' : '') + '" style="width:' + w(bv) + '%"></i></span><span class="v">' + gE(o.r[1]) + '</span></div>' +
+    '<div class="br"><span class="tg">Стало</span><span class="tr"><i class="a' + (av < 0 ? ' neg' : '') + '" style="width:' + w(av) + '%"></i></span><span class="v">' + gE(o.r[2]) + '</span></div></div>';
+}
+function v16pill(c){ var neg = /^\s*[-−]\s*\d/.test(String(c || '')); return c ? '<span class="v16-pill' + (neg ? ' neg' : '') + '">' + gE(c) + '</span>' : ''; }
+function v16result(t, hero){
+  var P = v16pick(t, 3);
+  if(!P.length) return '';
+  var o = P[0];
+  var h = '<div class="v16-res" id="gdRes"><div class="cap">' + (hero && hero.name ? 'Результат ' + gE(v14gen(hero.name)) : 'Результат') + '</div>' +
+    '<div class="v16-hm"><div class="l"><b>' + gE(o.r[0]) + '</b>' + v16pill(o.r[3]) + '</div><div class="ba"><div class="b">' + v16big(o.r[1]) + '</div><div class="ar" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div><div class="a">' + v16big(o.r[2]) + '</div></div></div>';
+  P.slice(1).forEach(function(q){ h += '<div class="v16-cmp"><div class="l"><b>' + gE(q.r[0]) + '</b>' + v16pill(q.r[3]) + '</div>' + v16bars(q) + '</div>'; });
+  return h + '</div>';
+}
+function v16take(list){
+  if(!Array.isArray(list) || !list.length) return '';
+  return '<div class="v16-tkh"><span>Три вывода</span><span class="hint">листайте →</span></div><div class="v16-tk" id="gdTk" onscroll="v16tkDots()">' + list.map(function(t, i){
+    return '<div class="c"><span class="n num">0' + (i + 1) + '</span><p>' + gE(t) + '</p></div>';
+  }).join('') + '</div><div class="v16-dots" id="gdTkD">' + list.map(function(t, i){ return '<i' + (i ? '' : ' class="on"') + '></i>'; }).join('') + '</div>';
+}
+function v16tkDots(){
+  var c = document.getElementById('gdTk'), d = document.getElementById('gdTkD'); if(!c || !d) return;
+  var w = (c.firstElementChild && c.firstElementChild.offsetWidth) || c.clientWidth || 1;
+  var k = Math.round(c.scrollLeft / (w + 10));
+  if(c.scrollLeft + c.clientWidth >= c.scrollWidth - 4) k = d.children.length - 1;
+  [].forEach.call(d.children, function(e, i){ e.classList.toggle('on', i === k); });
+}
+// Точка на карте шагов: пусто, начат, пройден
+function v16dot(n, cd, c){ return c && cd >= c ? (V3_CHECK || '✓') : String(n); }
+function v16dotCls(cd, c){ return c && cd >= c ? ' ok' : (cd ? ' part' : ''); }
+function v16map(g, a){
+  return '<nav class="v16-map" id="gdToc"><div class="hd"><span>Карта шагов</span><span class="num">' + g.steps.length + ' ' + v3plural(g.steps.length, 'шаг', 'шага', 'шагов') + '</span></div>' + g.steps.map(function(s){
+    var c = s.checklist.length, cd = v14stepCnt(s, a);
+    return '<div class="r" onclick="v14go(\'gdS' + s.n + '\')"><span class="d' + v16dotCls(cd, c) + '" id="gdTc' + s.n + '">' + v16dot(s.n, cd, c) + '</span><span class="t">' + gE(s.title) + '</span>' +
+      (c ? '<span class="c num" id="gdTm' + s.n + '">' + cd + '/' + c + '</span>' : '') + '</div>';
+  }).join('') + '<div class="r ep" onclick="v14go(\'gdB\')"><span class="d">Б</span><span class="t">Точка Б: что изменилось</span></div></nav>';
+}
+// Раскрытые блоки ридера запоминаем, чтобы место чтения совпадало после возврата
+function v16opens(id){ try{ var m = JSON.parse(localStorage.getItem('bs_gd_open') || '{}'); return id ? (Array.isArray(m[id]) ? m[id] : []) : m; }catch(e){ return id ? [] : {}; } }
+function v16isOpen(id, k){ return v16opens(id).indexOf(k) >= 0; }
+function v16x(k){
+  var id = v14curId(), el = document.getElementById('gd' + k); if(!el) return;
+  var on = !el.classList.contains('open');
+  el.classList.toggle('open', on);
+  el.querySelectorAll('[data-on]').forEach(function(b){ var l = b.querySelector('.bl') || b; l.textContent = b.getAttribute(on ? 'data-on' : 'data-off'); b.setAttribute('aria-expanded', String(on)); });
+  try{
+    var m = v16opens(), a = (m[id] || []).filter(function(z){ return z !== k; }); if(on) a.push(k);
+    if(a.length) m[id] = a; else delete m[id];
+    var ks = Object.keys(m); if(ks.length > 40) delete m[ks[0]];
+    localStorage.setItem('bs_gd_open', JSON.stringify(m));
+  }catch(e){}
+  if(on) v14tblMark();
+  else if(el.getBoundingClientRect().top < 60) v14go('gd' + k);
+  try{ if(tg && tg.HapticFeedback) tg.HapticFeedback.selectionChanged(); }catch(e){}
+  v14onScroll();
+}
+function v16xBtn(k, off, on, open, cls){
+  return '<button class="' + (cls || 'v16-lnk') + '" data-off="' + off + '" data-on="' + on + '" aria-expanded="' + open + '" onclick="v16x(\'' + k + '\')"><span class="bl">' + (open ? on : off) + '</span>' + V16_CHEV + '</button>';
+}
+function v16line(sub){
+  var s = v12clean(sub).replace(/^\d+\s+[а-яё]+,?\s+/i, '');
+  return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
+}
+function v16time(t){
+  var s = v14time(t).split(',')[0].trim();
+  var m = /^(\d+(?:\s?[-–]\s?\d+)?\s+[а-яё]+)/i.exec(s);
+  return m ? m[1] : s;
 }
 function v14cover(x, g, s){
   var o = (g && g.organ) || (x && x.organ) || '', id = (g && g.id) || x.id;
   var title = (g && g.title) || x.title, sub = (g && g.subtitle) || x.subtitle;
   var time = (g && g.time) || (x && x.time) || '', level = (g && g.level) || (x && x.level) || '';
-  var nsteps = g ? g.steps.length : (x ? x.steps.length : 0);
-  var total = (v14items().length || 99);
-  var h = '<header class="v14-cover" id="gdCover"><div class="bgn num" aria-hidden="true">' + v14no2(id) + '</div>' +
-    '<div class="k"><span class="o">' + v12oIcon(o, 14, 2) + v2esc(o) + '</span><span class="num">№\u00a0' + v14no2(id) + '\u00a0/\u00a0' + total + '</span></div>' +
-    '<h1>' + gE(title) + '</h1>' + (sub ? '<p class="sub">' + gE(sub) + '</p>' : '') +
-    '<div class="meta">' + (time ? '<span class="v12-chip">' + navIcon('cal', 13, 2) + gE(v14time(time)) + '</span>' : '') + v12lvl(level) +
-      (nsteps ? '<span class="v12-chip num">' + nsteps + ' ' + v3plural(nsteps, 'шаг', 'шага', 'шагов') + '</span>' : '') +
-      (x && x.existing ? '<span class="v12-chip">PDF</span>' : '') + '</div>';
+  var nsteps = g ? g.steps.length : (x && !x.existing ? x.steps.length : 0);
+  var total = (v14items().length || 99), line = v16line(sub);
+  var h = '<header class="v14-cover v16-cov" id="gdCover"><div class="top"><div class="art">' + v12oIcon(o, 58, 1.2) + '</div>' +
+    '<div class="k"><span class="o">' + v2esc(o) + '</span><span class="no num">№ ' + v14no2(id) + ' / ' + total + '</span></div></div>' +
+    '<h1>' + gE(title) + '</h1>' + (line ? '<p class="sub">' + gE(line) + '</p>' : '') +
+    '<div class="meta">' + (time ? '<span class="v12-chip">' + V16_CLOCK_ICON + gE(v16time(time)) + '</span>' : '') +
+      (nsteps ? '<span class="v12-chip num">' + nsteps + ' ' + v3plural(nsteps, 'шаг', 'шага', 'шагов') + '</span>' : (x && x.existing ? '<span class="v12-chip">PDF</span>' : '')) + v12lvl(level) + '</div>';
   if(s && s.n) h += '<div class="v14-cprog" id="gdCProg">' + v14cprog(s.d, s.n) + '</div>';
   return h + '</header>';
 }
@@ -14008,7 +14370,7 @@ function v14cprog(d, n){
   return '<div class="r"><span>Чек-листы</span><b class="num">' + d + ' из ' + n + '</b></div><div class="bar"><i style="width:' + p + '%"></i></div>';
 }
 function v14pdfBtns(x){
-  var kb = x && x.pdfKB ? (x.pdfKB >= 1024 ? (x.pdfKB / 1024).toFixed(1).replace('.', ',') + '\u00a0МБ' : x.pdfKB + '\u00a0КБ') : '';
+  var kb = x && x.pdfKB ? (x.pdfKB >= 1024 ? (x.pdfKB / 1024).toFixed(1).replace('.', ',') + ' МБ' : x.pdfKB + ' КБ') : '';
   return '<div class="v14-pdf">' +
     '<button class="v14-b1" id="gdSend" onclick="v14send()">' + V14_SEND_ICON + '<span>Получить PDF в Telegram</span></button>' +
     '<button class="v14-b2" onclick="v14pdfOpen()">' + V14_PDF_ICON + '<span>Открыть PDF</span></button>' +
@@ -14029,17 +14391,92 @@ function v14cta(x, hide){
 function v14more(x){
   var more = v14items().filter(function(y){ return y.organ === x.organ && y.id !== x.id; });
   var k = more.findIndex(function(y){ return y.id > x.id; }); if(k > 0) more = more.slice(k).concat(more.slice(0, k));
-  more = more.slice(0, 3);
+  more = more.slice(0, 4);
   if(!more.length) return '';
-  return '<div class="v2-h" style="margin-top:26px">Ещё: ' + v2esc(x.organ) + ' <span class="lnk" onclick="v14openCat(\'' + v2esc(x.organ) + '\')">Все</span></div><div class="v2-card">' + more.map(function(y){
-    var s = v14stat(y);
-    return '<div class="v12-mini" onclick="v14open(\'' + v2esc(y.id) + '\')"><div class="ic">' + v12oIcon(y.organ, 18) + '</div><div class="m"><b>' + gE(y.title) + '</b><span>' + gE(v14heroLine(y.hero) || v14time(y.time)) + (s.d ? ' · ' + Math.round(s.d / s.n * 100) + '%' : '') + '</span></div><div style="color:#6E6E6E">' + v3icon('chev', 16) + '</div></div>';
-  }).join('') + '</div>';
+  return '<div class="v2-h" style="margin-top:30px">Ещё: ' + v2esc(x.organ) + ' <span class="lnk" onclick="v14openCat(\'' + v2esc(x.organ) + '\')">Все</span></div><div class="v16-row v16-more">' + more.map(v14card).join('') + '</div>';
 }
 function v14item(n, i, t, on){
   return '<div class="v14-it' + (on ? ' on' : '') + '" id="gdIt' + n + '_' + i + '" role="checkbox" tabindex="0" aria-checked="' + on + '" onclick="v14tick(' + n + ',' + i + ')"><div class="cb">' + (V3_CHECK || '') + '</div><div class="tx">' + gE(t) + '</div></div>';
 }
 function v14stepCnt(s, a){ return s.checklist.filter(function(t, i){ return a.indexOf(s.n + ':' + i) >= 0; }).length; }
+// Формула: итог крупно, слагаемые столбиком со знаками
+function v16formula(f){
+  var t = v12clean(f), k = t.indexOf(' = ');
+  var head = '<div class="v14-formula v16-fx"><div class="k">ФОРМУЛА</div>';
+  if(k < 0) return head + '<div class="f">' + gE(t) + '</div></div>';
+  var lhs = t.slice(0, k), rhs = t.slice(k + 3);
+  var h = head + '<div class="lhs">' + gE(lhs) + '</div>';
+  if(/[()]/.test(rhs) || !/\s[-+×*\/]\s/.test(rhs)) return h + '<div class="rw"><span class="op">=</span><span class="f">' + gE(rhs) + '</span></div></div>';
+  var parts = rhs.split(/\s([-+×*\/])\s/);
+  h += '<div class="rw"><span class="op">=</span><span class="f">' + gE(parts[0]) + '</span></div>';
+  for(var i = 1; i < parts.length; i += 2) h += '<div class="rw"><span class="op">' + (parts[i] === '-' ? '−' : parts[i] === '*' ? '×' : parts[i] === '/' ? '÷' : parts[i]) + '</span><span class="f">' + gE(parts[i + 1]) + '</span></div>';
+  return h + '</div>';
+}
+function v16step(s, g, a, id){
+  var k = 'S' + s.n, open = v16isOpen(id, k), hero = g.hero || {};
+  var parts = [];
+  if(s.body.length) parts.push('разбор');
+  if(s.table) parts.push('таблица');
+  if(s.case) parts.push('кейс');
+  if(s.quote && s.quote.text) parts.push('цитата');
+  var h = '<section class="v14-step v16-stp' + (open ? ' open' : '') + '" id="gdS' + s.n + '" data-sec="Шаг ' + s.n + ' из ' + g.steps.length + '">' +
+    '<div class="sh"><span class="big num">' + (s.n < 10 ? '0' : '') + s.n + '<small>/' + (g.steps.length < 10 ? '0' : '') + g.steps.length + '</small></span>' + v16stepIcons(s) + '</div>' +
+    '<h2>' + gE(s.title) + '</h2>' + (s.lead ? '<p class="v14-lead">' + gE(s.lead) + '</p>' : '');
+  if(s.formula) h += v16formula(s.formula);
+  if(s.checklist.length){
+    var cd = v14stepCnt(s, a);
+    h += '<div class="v14-cl"><div class="hd"><span>Чек-лист</span><b class="num" id="gdSc' + s.n + '">' + cd + '/' + s.checklist.length + '</b></div>' +
+      s.checklist.map(function(t, i){ return v14item(s.n, i, t, a.indexOf(s.n + ':' + i) >= 0); }).join('') + '</div>';
+  }
+  if(parts.length){
+    // Сначала визуальное (таблица, кейс, цитата), потом текст разбора
+    h += '<div class="v16-bd">';
+    if(s.table) h += v14tbl(s.table);
+    if(s.case) h += '<div class="v14-case"><div class="k">КЕЙС' + (hero.name ? ' · ' + v2esc(String(hero.name).toUpperCase()) : '') + '</div><p>' + v16em(gE(s.case)) + '</p></div>';
+    if(s.quote && s.quote.text) h += '<blockquote class="v14-q v16-q"><p>' + gE(s.quote.text) + '</p>' + (s.quote.author ? '<cite>' + gE(s.quote.author) + '</cite>' : '') + '</blockquote>';
+    if(s.body.length) h += '<div class="v16-bdk">Разбор</div>';
+    s.body.forEach(function(p){ h += '<p class="v14-p">' + gE(p) + '</p>'; });
+    h += '</div>' + v16xBtn(k, 'Подробнее: ' + parts.join(' · '), 'Свернуть', open, 'v16-more');
+  }
+  return h + '</section>';
+}
+// Что внутри шага: маленькие значки вместо слов
+function v16stepIcons(s){
+  var I = {f: '<path d="M5 7h14M5 12h9M5 17h6"/><path d="M16 15l4 4M20 15l-4 4"/>', t: '<rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16M10 10v9"/>', c: '<path d="M5 6h14v10H9l-4 3z"/>', l: '<path d="M5 7l2 2 3-3M5 15l2 2 3-3M13 8h6M13 16h6"/>'};
+  var k = []; if(s.formula) k.push(['f', 'Формула']); if(s.table) k.push(['t', 'Таблица']); if(s.checklist.length) k.push(['l', 'Чек-лист']); if(s.case) k.push(['c', 'Кейс']);
+  return '<span class="ics">' + k.map(function(z){ return '<i title="' + z[1] + '"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">' + I[z[0]] + '</svg></i>'; }).join('') + '</span>';
+}
+function v16storyHTML(g, id){
+  var hero = g.hero || {};
+  if(!hero.name && !(hero.story || []).length) return '';
+  var open = v16isOpen(id, 'A');
+  var figs = (hero.before || []).filter(function(b){ return b && /\d/.test(String(b.value)); }).slice(0, 3);
+  var h = '<section class="v14-sec v16-sty' + (open ? ' open' : '') + '" id="gdA" data-sec="История · Точка А"><div class="v14-kick"><span>История</span><i></i><span>Точка А</span></div><div class="v16-hc">';
+  if(hero.name){
+    h += '<div class="v14-who"><div class="av">' + v2esc(String(hero.name).charAt(0)) + '</div><div class="m"><b>' + gE(hero.name) + (hero.age ? ', <span class="num">' + v2esc(hero.age) + '</span>' : '') + '</b>' +
+      '<span>' + gE([hero.business, hero.city].filter(Boolean).join(' · ')) + '</span></div></div>';
+  }
+  if(figs.length) h += '<div class="v16-figs">' + figs.map(function(b){ return '<div><b>' + v16big(b.value) + '</b><span>' + gE(b.label) + '</span></div>'; }).join('') + '</div>';
+  h += '<div class="v16-tx">';
+  (hero.story || []).forEach(function(p, i){ h += '<p class="v14-p' + (i === 0 ? ' first' : '') + '">' + gE(p) + '</p>'; });
+  if(Array.isArray(hero.before) && hero.before.length){
+    h += '<div class="v14-before"><div class="hd">Точка А в цифрах</div><div class="gr">' + hero.before.map(function(b){
+      return '<div><b>' + gE(b.value) + '</b><span>' + gE(b.label) + '</span></div>';
+    }).join('') + '</div></div>';
+  }
+  h += '<div class="v14-note">История собирательная, цифры типичные для разборов BS</div></div>';
+  return h + v16xBtn('A', 'Читать историю', 'Свернуть историю', open) + '</div></section>';
+}
+function v16methodHTML(g, id){
+  var me = g.method || {};
+  if(!me.thesis && !(me.stats && me.stats.length)) return '';
+  var open = v16isOpen(id, 'M');
+  var h = '<section class="v14-sec v16-mth' + (open ? ' open' : '') + '" id="gdM" data-sec="Метод"><div class="v14-kick"><span>Метод</span></div>';
+  if(Array.isArray(me.stats) && me.stats.length) h += '<div class="v14-stats v16-s3">' + me.stats.slice(0, 3).map(function(s){ return '<div><b class="num">' + gE(s.value) + '</b><span>' + gE(s.label) + '</span></div>'; }).join('') + '</div>';
+  if(me.thesis) h += '<p class="v14-thesis">' + gE(me.thesis) + '</p>';
+  if(me.condition) h += '<div class="v14-cond"><div class="k">КОМУ ПОДХОДИТ</div><p>' + gE(me.condition) + '</p></div>';
+  return h + v16xBtn('M', 'ещё', 'свернуть', open) + '</section>';
+}
 function renderGuide(){
   var el = document.getElementById('guideContent');
   if(!el) return;
@@ -14058,7 +14495,9 @@ function renderGuide(){
       v14bar(null);
       return;
     }
-    el.innerHTML = (x ? v14cover(x, null, null) : '') + '<div class="loading"><div class="spinner"></div></div>';
+    // Скелет вместо спиннера: обложка из индекса и силуэты блоков
+    el.innerHTML = (x ? v14cover(x, null, null) : '<div class="v15-sk" style="height:260px;margin-top:8px"></div>') +
+      '<div class="v16-skr" aria-busy="true"><div class="v15-sk" style="height:14px;width:42%"></div><div class="v15-sk" style="height:188px"></div><div class="v15-sk" style="height:132px;width:84%"></div><div class="v15-sk" style="height:220px"></div></div>';
     v14bar(null);
     loadGuide(id);
     return;
@@ -14069,60 +14508,21 @@ function renderGuide(){
   var g = G.g;
   x = x || {id: g.id, organ: g.organ, title: g.title, subtitle: g.subtitle, time: g.time, level: g.level, steps: g.steps.map(function(s){ return s.title; }), hero: g.hero, items: v14keys(g).length};
   var a = v14prog(id), keys = v14keys(g), d = keys.filter(function(k){ return a.indexOf(k) >= 0; }).length, n = keys.length;
-  var hero = g.hero, me = g.method, ep = g.epilogue;
-  var h = '<article class="v14" id="gdArt">' + v14cover(x, g, {d: d, n: n});
-  if(g.promise) h += '<div class="v14-promise"><div class="k">ЧТО ВЫ ПОЛУЧИТЕ</div><p>' + gE(g.promise) + '</p></div>';
-  // Пролог
-  h += '<section class="v14-sec" id="gdA"><div class="v14-kick"><span>Пролог</span><i></i><span>Точка А</span></div>';
-  if(hero.name){
-    h += '<div class="v14-who"><div class="av">' + v2esc(String(hero.name).charAt(0)) + '</div><div class="m"><b>' + gE(hero.name) + (hero.age ? ', <span class="num">' + v2esc(hero.age) + '</span>' : '') + '</b>' +
-      '<span>' + gE([hero.business, hero.city].filter(Boolean).join(' · ')) + '</span></div></div>';
-  }
-  (hero.story || []).forEach(function(p, i){ h += '<p class="v14-p' + (i === 0 ? ' first' : '') + '">' + gE(p) + '</p>'; });
-  if(Array.isArray(hero.before) && hero.before.length){
-    h += '<div class="v14-before"><div class="hd">Точка А в цифрах</div><div class="gr">' + hero.before.map(function(b){
-      return '<div><b>' + gE(b.value) + '</b><span>' + gE(b.label) + '</span></div>';
-    }).join('') + '</div></div>';
-  }
-  h += '<div class="v14-note">История собирательная, цифры типичные для разборов BS</div></section>';
-  // Метод
-  if(me.thesis || (me.stats && me.stats.length)){
-    h += '<section class="v14-sec" id="gdM"><div class="v14-kick"><span>Метод</span></div>';
-    if(me.thesis) h += '<p class="v14-thesis">' + gE(me.thesis) + '</p>';
-    if(Array.isArray(me.stats) && me.stats.length) h += '<div class="v14-stats">' + me.stats.map(function(s){ return '<div><b class="num">' + gE(s.value) + '</b><span>' + gE(s.label) + '</span></div>'; }).join('') + '</div>';
-    if(me.condition) h += '<div class="v14-cond"><div class="k">КОМУ ПОДХОДИТ</div><p>' + gE(me.condition) + '</p></div>';
-    h += '</section>';
-  }
-  // Оглавление
-  h += '<nav class="v14-toc" id="gdToc"><div class="hd"><span>План</span><span class="num">' + g.steps.length + ' ' + v3plural(g.steps.length, 'шаг', 'шага', 'шагов') + '</span></div>' + g.steps.map(function(s){
-    var c = s.checklist.length, cd = v14stepCnt(s, a);
-    return '<div class="r" onclick="v14go(\'gdS' + s.n + '\')"><span class="n num">' + (s.n < 10 ? '0' : '') + s.n + '</span><span class="t">' + gE(s.title) + '</span>' +
-      (c ? '<span class="c num' + (cd >= c ? ' ok' : '') + '" id="gdTc' + s.n + '">' + (cd >= c ? (V3_CHECK || '') : cd + '/' + c) + '</span>' : '<span class="c">' + v3icon('chev', 14) + '</span>') + '</div>';
-  }).join('') + '<div class="r ep" onclick="v14go(\'gdB\')"><span class="n">Б</span><span class="t">Точка Б: что изменилось</span><span class="c">' + v3icon('chev', 14) + '</span></div></nav>';
-  // Шаги
-  g.steps.forEach(function(s){
-    h += '<section class="v14-step" id="gdS' + s.n + '"><div class="v14-sn"><span class="big num">' + (s.n < 10 ? '0' : '') + s.n + '</span><span class="of">Шаг ' + s.n + ' из ' + g.steps.length + '</span></div>' +
-      '<h2>' + gE(s.title) + '</h2>' + (s.lead ? '<p class="v14-lead">' + gE(s.lead) + '</p>' : '');
-    s.body.forEach(function(p){ h += '<p class="v14-p">' + gE(p) + '</p>'; });
-    if(s.formula) h += '<div class="v14-formula"><div class="k">ФОРМУЛА</div><div class="f">' + gE(s.formula) + '</div></div>';
-    if(s.table) h += v14tbl(s.table);
-    if(s.checklist.length){
-      var cd = v14stepCnt(s, a);
-      h += '<div class="v14-cl"><div class="hd"><span>Чек-лист шага</span><b class="num" id="gdSc' + s.n + '">' + cd + '/' + s.checklist.length + '</b></div>' +
-        s.checklist.map(function(t, i){ return v14item(s.n, i, t, a.indexOf(s.n + ':' + i) >= 0); }).join('') + '</div>';
-    }
-    if(s.case) h += '<div class="v14-case"><div class="k">КЕЙС' + (hero.name ? ' · ' + v2esc(String(hero.name).toUpperCase()) : '') + '</div><p>' + gE(s.case) + '</p></div>';
-    if(s.quote && s.quote.text) h += '<blockquote class="v14-q"><p>' + gE(s.quote.text) + '</p>' + (s.quote.author ? '<cite>' + gE(s.quote.author) + '</cite>' : '') + '</blockquote>';
-    h += '</section>';
-  });
+  var hero = g.hero, ep = g.epilogue;
+  var h = '<article class="v14 v16" id="gdArt">' + v14cover(x, g, {d: d, n: n});
+  // Главное за минуту: результат, три вывода, карта шагов
+  h += '<section class="v14-sec v16-key" id="gdK" data-sec="Главное за минуту"><div class="v14-kick"><span>Главное за минуту</span></div>' +
+    v16result(ep.table, hero) + v16take(ep.takeaways) + v16map(g, a) + '</section>';
+  h += v16storyHTML(g, id);
+  h += v16methodHTML(g, id);
+  h += '<div class="v16-stps">';
+  g.steps.forEach(function(s){ h += v16step(s, g, a, id); });
+  h += '</div>';
   // Точка Б
-  h += '<section class="v14-sec v14-ep" id="gdB"><div class="v14-kick"><span>Эпилог</span><i></i><span>Точка Б</span></div>' +
+  h += '<section class="v14-sec v14-ep" id="gdB" data-sec="Эпилог · Точка Б"><div class="v14-kick"><span>Эпилог</span><i></i><span>Точка Б</span></div>' +
     '<h2 class="v14-h2">' + (hero.name ? 'Что изменилось у ' + gE(v14gen(hero.name)) : 'Что изменилось') + '</h2>';
   if(ep.table) h += v14epTbl(ep.table);
-  if(ep.quote) h += '<blockquote class="v14-q big"><p>' + gE(ep.quote) + '</p>' + (hero.name ? '<cite>' + gE(hero.name) + (hero.business ? ', ' + gE(hero.business) : '') + '</cite>' : '') + '</blockquote>';
-  if(Array.isArray(ep.takeaways) && ep.takeaways.length){
-    h += '<div class="v14-take"><div class="hd">Главное</div>' + ep.takeaways.map(function(t, i){ return '<div class="r"><span class="n num">' + (i + 1) + '</span><p>' + gE(t) + '</p></div>'; }).join('') + '</div>';
-  }
+  if(ep.quote) h += '<blockquote class="v14-q big v16-q"><p>' + gE(ep.quote) + '</p>' + (hero.name ? '<cite>' + gE(hero.name) + (hero.business ? ', ' + gE(hero.business) : '') + '</cite>' : '') + '</blockquote>';
   h += '</section>';
   h += '<div id="gdDone">' + (n && d >= n ? v13doneHTML(x) : '') + '</div>';
   h += v14cta(x, n && d >= n) + v14pdfBtns(x);
@@ -14135,6 +14535,18 @@ function renderGuide(){
   v14gTouch(id);
   v14bar(x, d, n);
 }
+// Точка Б: строки «показатель · было → стало · изменение» с полосами сравнения, где обе цифры сравнимы
+function v14epTbl(t){
+  if(!t || !Array.isArray(t.head) || !Array.isArray(t.rows)) return '';
+  if(t.head.length !== 4) return v14tbl(t, 'ep', true);
+  return '<div class="v14-epl" role="table">' + t.rows.map(function(r){
+    r = r || [];
+    var neg = /^\s*[-−]\s*\d/.test(String(r[3] || ''));
+    var b = v16parse(r[1]), a = v16parse(r[2]), cmp = b && a && b.k === a.k;
+    return '<div class="r" role="row"><div class="m"><div class="tl"><b>' + gE(r[0]) + '</b><div class="chg' + (neg ? ' neg' : '') + '">' + gE(r[3]) + '</div></div>' +
+      (cmp ? v16bars({r: r, b: b, a: a}) : '<div class="ba"><span class="b">' + gE(r[1]) + '</span><span class="ar">→</span><span class="a">' + gE(r[2]) + '</span></div>') + '</div></div>';
+  }).join('') + '</div>';
+}
 function v14tblMark(){ document.querySelectorAll('#gdArt .v14-tbl').forEach(function(t){ t.classList.toggle('ovf', t.scrollWidth > t.clientWidth + 4); }); }
 // Родительный падеж имени героя для заголовка «Что изменилось у …»
 function v14gen(name){
@@ -14146,12 +14558,12 @@ function v14gen(name){
   return s;
 }
 function v14pdfOnly(x){
-  var h = '<article class="v14 v14-po" id="gdArt">' + v14cover(x, null, null);
+  var h = '<article class="v14 v16 v14-po" id="gdArt">' + v14cover(x, null, null);
   h += '<div class="v14-pobtn">' + v14pdfBtns(x) + '</div>';
   if(x.promise) h += '<div class="v14-promise"><div class="k">ВНУТРИ</div><p>' + gE(x.promise) + '</p></div>';
   var hl = v14heroLine(x.hero);
   if(hl) h += '<div class="v14-who solo"><div class="av">' + v2esc(String(x.hero.name).charAt(0)) + '</div><div class="m"><b>История героя</b><span>' + gE(hl) + '</span></div></div>';
-  h += '<div class="v14-ponote">' + V14_PDF_ICON + '<span>Этот гайд выходит в формате PDF: полная версия с примерами и таблицами. Удобно читать с телефона и переслать команде.</span></div>';
+  h += '<div class="v14-ponote">' + V14_PDF_ICON + '<span>Полная версия с примерами и таблицами в PDF. Удобно читать с телефона и переслать команде.</span></div>';
   h += v14cta(x) + v14more(x) + '</article>';
   return h;
 }
@@ -14188,7 +14600,7 @@ function v14onScroll(){
   var sub = document.getElementById('gdBarSub');
   if(sub){
     var cur = '';
-    document.querySelectorAll('#gdArt .v14-step, #gdArt .v14-sec').forEach(function(s){ if(s.getBoundingClientRect().top < 130){ var k = s.querySelector('.v14-sn .of, .v14-kick'); cur = k ? [].map.call(k.querySelectorAll('span'), function(z){ return z.textContent.trim(); }).filter(Boolean).join(' · ') || k.textContent.trim() : cur; } });
+    document.querySelectorAll('#gdArt [data-sec]').forEach(function(s){ if(s.getBoundingClientRect().top < 130) cur = s.getAttribute('data-sec') || cur; });
     sub.textContent = (cur || 'Обложка') + (f._n ? ' · отмечено ' + f._d + ' из ' + f._n : '');
   }
   // Место чтения запоминаем не чаще раза в 400 мс
@@ -14226,7 +14638,8 @@ function v14tick(sn, i){
   if(s){
     var cd = v14stepCnt(s, a), c = s.checklist.length;
     var sc = document.getElementById('gdSc' + sn); if(sc) sc.textContent = cd + '/' + c;
-    var tc = document.getElementById('gdTc' + sn); if(tc){ tc.innerHTML = cd >= c ? (V3_CHECK || '') : cd + '/' + c; tc.classList.toggle('ok', cd >= c); }
+    var tc = document.getElementById('gdTc' + sn); if(tc){ tc.innerHTML = v16dot(sn, cd, c); tc.className = 'd' + v16dotCls(cd, c); }
+    var tm = document.getElementById('gdTm' + sn); if(tm) tm.textContent = cd + '/' + c;
   }
   var cp = document.getElementById('gdCProg'); if(cp) cp.innerHTML = v14cprog(d, n);
   var f = document.getElementById('gdBar'); if(f){ f._d = d; f._n = n; v14onScroll(); }
