@@ -4559,6 +4559,49 @@
   .v15-home .t { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2; margin-top: 6px; }
   .v15-home .s { font-size: 12.5px; color: #9A9A9A; margin-top: 5px; line-height: 1.4; }
   .v15-home .go { width: 40px; height: 40px; border-radius: 12px; background: #FFFFFF; color: #000; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  /* ═══ R17: обложки чек-листов в стиле обложек диагнозов и инструментов платформы (cv16) ═══ */
+  .cv16 { position: absolute; inset: 0; overflow: hidden; color: #fff; isolation: isolate; border-radius: inherit;
+    --acc: #FFFFFF; --acc2: rgba(255,255,255,0.16); --accg: rgba(255,255,255,0.26); --cvk: #111112;
+    background: radial-gradient(circle at 70% 34%, rgba(255,255,255,0.2), transparent 55%), linear-gradient(150deg, #262626 0%, #0B0B0B 55%, #000 100%); }
+  .cv-glow { position: absolute; inset: 0; z-index: 0; opacity: 0.5; background: repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 3px); }
+  .cv-art { position: absolute; z-index: 1; color: rgba(255,255,255,0.95); }
+  .cv-art svg { width: 100%; height: auto; display: block; }
+  .cv-art.org { right: -6%; top: 9%; width: 62%; transform: rotate(-6deg); filter: drop-shadow(0 0 6px rgba(255,255,255,0.7)) drop-shadow(0 0 22px rgba(255,255,255,0.25)); }
+  .cv-art.il { right: -3%; top: 13%; width: 78%; color: #fff; filter: drop-shadow(0 0 1px rgba(255,255,255,0.35)) drop-shadow(0 6px 18px var(--accg)); }
+  .cv-art.il::before { content: ''; position: absolute; left: 8%; right: 8%; top: 6%; bottom: 6%; border-radius: 50%; z-index: -1; background: radial-gradient(closest-side, var(--accg), transparent); opacity: 0.55; }
+  .oa .oa-f { fill: currentColor; stroke: none; }
+  .cvi { width: 100%; height: auto; display: block; overflow: visible; }
+  .cvi .k { fill: var(--cvk); } .cvi .f { fill: rgba(255,255,255,0.08); } .cvi .a { stroke: var(--acc); }
+  .cvi .af { fill: var(--acc); stroke: none; } .cvi .af2 { fill: var(--acc2); } .cvi .w { fill: #fff; stroke: none; }
+  .cvi .th { stroke-width: 2; } .cvi .th5 { stroke-width: 4.5; } .cvi .dm { opacity: 0.45; } .cvi .dm2 { opacity: 0.6; }
+  .cvi .dash { stroke-dasharray: 4 5; } .cvi .acc { color: var(--acc); }
+  .cvi .tx { fill: #fff; stroke: none; font-family: 'Manrope', sans-serif; font-weight: 800; text-anchor: middle; }
+  .cvi .a-t { fill: var(--acc); } .cvi .tx.dk { fill: #000; } .cvi .dkl { stroke: #000; }
+  .cv-shade { position: absolute; inset: 0; z-index: 2; background: linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 34%, rgba(0,0,0,0.12) 66%, transparent 80%), linear-gradient(90deg, rgba(0,0,0,0.35) 0%, transparent 60%); }
+  .cv-org { font-size: 9px; font-weight: 800; letter-spacing: 1px; color: rgba(255,255,255,0.72); text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cv-title { font-weight: 900; line-height: 1.06; letter-spacing: -0.1px; text-transform: uppercase; color: #fff; text-shadow: 0 2px 2px rgba(0,0,0,0.55), 0 4px 18px rgba(0,0,0,0.85);
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; word-break: normal; overflow-wrap: normal; hyphens: manual; text-wrap: balance; }
+  /* Плитка каталога: обложка на всю плитку, сверху № и прогресс, снизу орган и название */
+  .v16-tile.v17-cvt { padding: 0; min-height: 0; aspect-ratio: 5 / 6; border-color: #262626; background: #000; }
+  .v16-tile.v17-cvt::before { display: none; }
+  .v16-tile.v17-cvt > .cv16 { position: absolute; }
+  .v17-cvt .tp { position: absolute; left: 10px; right: 10px; top: 10px; z-index: 4; height: 24px; }
+  .v17-cvt .tp .no { font-size: 9.5px; font-weight: 900; letter-spacing: 1.1px; padding: 4px 7px 3px; border-radius: 5px; background: #fff; color: #000; line-height: 1.1; }
+  .v17-cvt .rt { background: rgba(0,0,0,0.55); border-radius: 13px; padding: 0 2px; }
+  .v17-cvt .bt { position: absolute; left: 11px; right: 11px; bottom: 11px; z-index: 4; display: flex; flex-direction: column; gap: 6px; }
+  .v16-tile.v17-cvt .cv-title { font-size: calc(14.5px * var(--tf, 1)); margin-top: 0; padding-top: 0; line-height: 1.06; letter-spacing: -0.1px; overflow-wrap: normal; word-break: normal; hyphens: manual; -webkit-line-clamp: 4; }
+  .v17-cvt.done { border-color: #5A5A5A; }
+  .v16-tile.v17-cvt { container-type: inline-size; }
+  .v16-tile.v17-cvt .cv-title.long { font-size: calc(13px * var(--tf, 1)); }
+  .v16-tile.v17-cvt .cv-title.xl { font-size: calc(11.8px * var(--tf, 1)); -webkit-line-clamp: 5; }
+  @supports (font-size: 1cqw) {
+    .v16-tile.v17-cvt .cv-title { font-size: calc(8.2cqw * var(--tf, 1)); }
+    .v16-tile.v17-cvt .cv-title.long { font-size: calc(7.4cqw * var(--tf, 1)); }
+    .v16-tile.v17-cvt .cv-title.xl { font-size: calc(6.7cqw * var(--tf, 1)); }
+  }
+  .v16-row .v16-tile.v17-cvt { height: auto; aspect-ratio: 5 / 6; }
+  .v16-sk { height: auto; aspect-ratio: 5 / 6; }
 </style>
 
 <div class="modal-bg" id="attendModal">
@@ -4627,7 +4670,7 @@ const APP_SERVER = 'https://bs-platform-production.up.railway.app/api/v1/app/';
 var V15_WD = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
 var V15_WDL = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
 var V15_MG = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
-var V15_PRICE = 30000;
+var V15_PRICE = 50000;
 window._bk = window._bk || {st: 'idle', data: null, at: 0, day: '', slotId: '', form: null, busy: false, q: ''};
 function v15nb(n){ return v2money(n).replace(/ /g, ' '); }
 function v15t(iso){
@@ -4687,7 +4730,8 @@ function v15free(){
     var t = s && s.id && v15t(s.start); return t && t.ms > now && t.ms <= lim && !s.taken && !s.busy;
   }).sort(function(a, b){ return Date.parse(a.start) - Date.parse(b.start); });
 }
-function v15price(){ var d = window._bk.data || {}; var p = Number(d.price); return p > 0 ? p : V15_PRICE; }
+// R17: разбор стоит 50 000 ₸. Старое значение 30 000 (умолчание сервера) не показываем, пока сервер не обновлён
+function v15price(){ var d = window._bk.data || {}; var p = Number(d.price); return p > 0 && p !== 30000 ? p : V15_PRICE; }
 function v15offerHTML(){
   return '<div class="v15-offer"><div class="t">Разберём одну проблему вашего бизнеса до причины</div>' +
     '<div class="s">Рустам и Береке вдвоём смотрят ваши цифры и находят, где на самом деле болит. Уходите с диагнозом и планом на 10 дней.</div>' +
@@ -5145,10 +5189,10 @@ const NAV = {
     {id:'meet', label:'Встречи',   icon:'cal',  pages:[{id:'schedule', label:'Расписание'}]},
     {id:'plus', plus:true},
     {id:'res',  label:'Резиденты', icon:'club', pages:[{id:'residents', label:'Резиденты'},{id:'reports', label:'Отчёты'},{id:'visits', label:'Посещения'},{id:'fines', label:'Штрафы'},{id:'restasks', label:'Задачи'}]},
-    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'99 гайдов', hidden:true},{id:'guide', label:'Гайд', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'leadrazbor', label:'Экспресс-разбор', hidden:true}]}
+    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'leadrazbor', label:'Экспресс-разбор', hidden:true}]}
   ],
   resident: [
-    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'},{id:'guides', label:'99 гайдов', hidden:true},{id:'guide', label:'Гайд', hidden:true},{id:'referral', label:'Приглашение', hidden:true}]},
+    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true}]},
     {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Мой разбор'},{id:'wheel', label:'Колесо'},{id:'diagnostic', label:'Диагностика'}]},
     {id:'tasks', label:'Задачи',  icon:'tasks', pages:[{id:'mytasks', label:'Задачи'},{id:'mymeetings', label:'Встречи'}]},
     {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила', hidden:true}]},
@@ -5156,7 +5200,7 @@ const NAV = {
   ],
   lead: [
     {id:'home', label:'Главная',     icon:'home',  pages:[{id:'about', label:'Главная'}]},
-    {id:'cl',   label:'Гайды',       icon:'book',  pages:[{id:'guides', label:'99 гайдов'},{id:'guide', label:'Гайд', hidden:true}]},
+    {id:'cl',   label:'Чек-листы',   icon:'book',  pages:[{id:'guides', label:'Интерактивные чек-листы'},{id:'guide', label:'Чек-лист', hidden:true}]},
     {id:'diag', label:'Диагностика', icon:'board', pages:[{id:'diagnostic', label:'Диагностика'}]},
     {id:'razbor', label:'Разбор',    icon:'cal',   pages:[{id:'leadrazbor', label:'Разбор'}]}
   ]
@@ -5705,7 +5749,7 @@ function v9title(id){
     mymeetings:'Встречи', mystatus:'Профиль', about:'О проекте', rules:'Правила', wheel:'Колесо', diagnostic:'Диагностика', leadmagnets:'Материалы',
     library:'Библиотека', reports:'Отчёты', fines:'Штрафы', visits:'Посещения', restasks:'Задачи резидентов', crm:'CRM', subscribers:'Подписчики',
     custdev:'CustDev', content:'Полезное', wheeladmin:'Колесо клуба', todos:'Задачи команды', leadrazbor:'Разбор',
-    guides:'99 гайдов', guide:'Гайд', referral:'Приглашение'};
+    guides:'Чек-листы', guide:'Чек-лист', referral:'Приглашение'};
   return T[id] || 'Назад';
 }
 function v9activeId(){ var a = document.querySelector('.page.active'); return a ? a.id.replace('page-', '') : ''; }
@@ -6479,7 +6523,6 @@ function v11homeLib(){
   return '<div class="v11-lib" onclick="showPage(\'library\')"><div class="v3-row-sb" style="align-items:flex-start;gap:12px"><div style="min-width:0">' +
     '<div class="k">БАЗА ЗНАНИЙ КЛУБА</div><div class="t">Библиотека BS</div><div class="s">' + v2esc(sub) + '</div></div>' +
     (items.length ? '<div class="n num">' + items.length + '</div>' : '') + '</div>' + tiles +
-    '<div class="v12-libcl" onclick="event.stopPropagation();v14openCat()"><div>+ 99 гайдов <span>разборы с цифрами и чек-листами</span></div>' + v3icon('chev', 16) + '</div>' +
     '<button onclick="event.stopPropagation();showPage(\'library\')">Открыть</button></div>';
 }
 function v9libFiltered(){
@@ -9463,61 +9506,89 @@ const WHEEL_LIFE_AXES = ["Бизнес","Здоровье","Семья","Окр�
 let _wheelData = null;
 let _wheelFormType = 'dna';
 
+// R17: подпись оси в одну-две строки. Длинное слово переносим по слогу: «Делеги-/рование», два слова по пробелу
+function v17radarLines(name){
+  name = String(name == null ? '' : name).trim();
+  if(name.length <= 11) return [name];
+  var mid = name.length / 2, best = -1;
+  for(var k = 0; k < name.length; k++) if(name[k] === ' ' && (best < 0 || Math.abs(k - mid) < Math.abs(best - mid))) best = k;
+  if(best > 0){
+    var a = name.slice(0, best), b = name.slice(best + 1);
+    return [a.length > 14 ? a.slice(0, 13) + '…' : a, b.length > 14 ? b.slice(0, 13) + '…' : b];
+  }
+  var V = 'аеёиоуыэюяaeiouy', cut = -1;
+  for(var d = 0; d < name.length && cut < 0; d++){
+    [Math.round(mid) - d, Math.round(mid) + d].forEach(function(q){
+      if(cut < 0 && q >= 3 && q <= name.length - 3 && V.indexOf(name[q - 1].toLowerCase()) >= 0 && V.indexOf(name[q].toLowerCase()) < 0) cut = q;
+    });
+  }
+  if(cut < 0) cut = Math.round(mid);
+  return [name.slice(0, cut) + '-', name.slice(cut)];
+}
 function drawRadar(axes, current, previous, color, big){
-  // SVG радар. big=true: крупная версия для детального просмотра
-  // Широкий viewBox с запасом чтобы подписи не обрезались
-  const W = 420, H = 380, cx = W/2, cy = H/2 + 4, maxR = big ? 128 : 112;
+  // SVG радар. big=true: крупная версия для детального просмотра.
+  // R17: подписи не обрезаются ни при какой ширине: якорь по углу, длинные названия в две строки,
+  // viewBox считается по фактическим подписям (с запасом на широкий шрифт), overflow видим
+  const maxR = big ? 128 : 112, cx = 0, cy = 0, FS = 12, LH = 13.5, CW = FS * 0.68;
   const n = axes.length;
   const angle = i => (Math.PI * 2 * i / n) - Math.PI/2;
   const pt = (i, val) => {
     const r = maxR * val / 10;
     return [cx + r * Math.cos(angle(i)), cy + r * Math.sin(angle(i))];
   };
-  let svg = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;margin:0 auto">`;
+  const f1 = v => Math.round(v * 10) / 10;
+  let body = '';
   for(let ring = 2; ring <= 10; ring += 2){
     let pts = [];
-    for(let i = 0; i < n; i++) pts.push(pt(i, ring).join(','));
-    svg += `<polygon points="${pts.join(' ')}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+    for(let i = 0; i < n; i++) pts.push(pt(i, ring).map(f1).join(','));
+    body += `<polygon points="${pts.join(' ')}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
   }
   for(let i = 0; i < n; i++){
     const [x, y] = pt(i, 10);
-    svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+    body += `<line x1="${cx}" y1="${cy}" x2="${f1(x)}" y2="${f1(y)}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
   }
   if(previous && previous.length === n){
     let pts = [];
-    for(let i = 0; i < n; i++) pts.push(pt(i, previous[i]).join(','));
-    svg += `<polygon points="${pts.join(' ')}" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+    for(let i = 0; i < n; i++) pts.push(pt(i, previous[i]).map(f1).join(','));
+    body += `<polygon points="${pts.join(' ')}" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" stroke-dasharray="4 3"/>`;
   }
   if(current && current.length === n){
     let pts = [];
-    for(let i = 0; i < n; i++) pts.push(pt(i, current[i]).join(','));
-    svg += `<polygon points="${pts.join(' ')}" fill="${color}22" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    for(let i = 0; i < n; i++) pts.push(pt(i, current[i]).map(f1).join(','));
+    body += `<polygon points="${pts.join(' ')}" fill="${color}22" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>`;
     for(let i = 0; i < n; i++){
       const [x, y] = pt(i, current[i]);
-      svg += `<circle cx="${x}" cy="${y}" r="4" fill="${color}"/>`;
+      body += `<circle cx="${f1(x)}" cy="${f1(y)}" r="4" fill="${color}"/>`;
     }
   }
-  // Подписи: с умным анкором и укладкой в границы
+  let x0 = cx - maxR - 6, x1 = cx + maxR + 6, y0 = cy - maxR - 6, y1 = cy + maxR + 6;
+  const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   for(let i = 0; i < n; i++){
-    const a = angle(i);
-    const lr = maxR + 16;
-    let x = cx + lr * Math.cos(a);
-    let y = cy + lr * Math.sin(a);
+    const a = angle(i), ca = Math.cos(a), sa = Math.sin(a);
+    const lr = maxR + 14;
+    let x = cx + lr * ca;
+    const py = cy + lr * sa;
     let anchor = 'middle';
-    if(Math.cos(a) > 0.35){ anchor = 'start'; x += 2; }
-    else if(Math.cos(a) < -0.35){ anchor = 'end'; x -= 2; }
-    // Вертикальная поправка для верхней/нижней подписи
-    if(Math.sin(a) < -0.8) y -= 14;
-    if(Math.sin(a) > 0.8) y += 8;
-    const val = current && current[i] !== undefined ? current[i] : '';
-    const label = axes[i].length > 14 ? axes[i].substring(0,13)+'…' : axes[i];
-    svg += `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="12" font-weight="700" fill="rgba(255,255,255,0.78)">${label}</text>`;
+    if(ca > 0.3){ anchor = 'start'; x += 2; }
+    else if(ca < -0.3){ anchor = 'end'; x -= 2; }
+    const lines = v17radarLines(axes[i]);
+    const val = current && current[i] !== undefined && current[i] !== null ? current[i] : '';
+    const h = lines.length * LH + (val !== '' ? LH + 1 : 0);
+    // Верхняя подпись над точкой, нижняя под ней, боковые по центру
+    const top = py - h / 2 + sa * (h / 2 + 2);
+    const w = Math.max.apply(null, lines.map(l => l.length * CW).concat([String(val).length * CW]));
+    const lx = anchor === 'start' ? x : (anchor === 'end' ? x - w : x - w / 2);
+    x0 = Math.min(x0, lx); x1 = Math.max(x1, lx + w); y0 = Math.min(y0, top); y1 = Math.max(y1, top + h);
+    let tx = '';
+    lines.forEach((l, k) => { tx += `<tspan x="${f1(x)}" y="${f1(top + FS * 0.9 + k * LH)}">${esc(l)}</tspan>`; });
+    body += `<text class="v17-rl" text-anchor="${anchor}" font-size="${FS}" font-weight="700" fill="rgba(255,255,255,0.78)">${tx}</text>`;
     if(val !== ''){
-      svg += `<text x="${x}" y="${y+14}" text-anchor="${anchor}" font-size="12" font-weight="800" fill="${color}">${val}</text>`;
+      body += `<text class="v17-rv" x="${f1(x)}" y="${f1(top + FS * 0.9 + lines.length * LH + 1)}" text-anchor="${anchor}" font-size="${FS}" font-weight="800" fill="${color}">${esc(val)}</text>`;
     }
   }
-  svg += '</svg>';
-  return svg;
+  const P = 6;
+  x0 = Math.floor(x0 - P); y0 = Math.floor(y0 - P); x1 = Math.ceil(x1 + P); y1 = Math.ceil(y1 + P);
+  return `<svg class="v17-radar" viewBox="${x0} ${y0} ${x1 - x0} ${y1 - y0}" overflow="visible" style="width:100%;max-width:${big ? 440 : 420}px;height:auto;display:block;margin:0 auto;overflow:visible;font-family:inherit">` + body + '</svg>';
 }
 
 function wheelAvg(values){
@@ -12537,7 +12608,7 @@ function renderAbout(){
     h += '<div class="v11-rules" onclick="showPage(\'rules\')"><div class="k">6 ДОГОВОРЁННОСТЕЙ</div>' +
       '<div class="t">Правила клуба →</div><div class="s">Отчёты, встречи, штрафы и оплата. Как устроена работа в клубе</div></div>';
     h += '<div class="v2-h">Клуб</div><div class="v2-card">' +
-      (role === 'resident' ? v3row('board', 'Как пользоваться', 'Разбор, задачи, отчёт за 2 минуты', "showPage('myboard')") : v3row('board', 'Материалы', 'Шаблоны и гайды клуба', "showPage('leadmagnets')")) +
+      (role === 'resident' ? v3row('board', 'Как пользоваться', 'Разбор, задачи, отчёт за 2 минуты', "showPage('myboard')") : v3row('board', 'Материалы', 'Шаблоны и чек-листы клуба', "showPage('leadmagnets')")) +
       (role === 'resident' || role === 'admin' ? v3row('club', 'Пригласить предпринимателя', '100\u00a0000 ₸ за приглашённого резидента', "showPage('referral')") : '') +
     '</div>';
     h += v3socials();
@@ -12644,7 +12715,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
       pg('msg', 'Подписчики бота', 'Рассылки и дожимы', "showPage('subscribers')"),
       pg('board', 'Диагностика', 'Тест здоровья бизнеса', "showPage('diagnostic')"),
       pg('cal', 'Экспресс-разбор', 'Запись лида: окна, оплата Kaspi', "showPage('leadrazbor')"),
-      pg('doc', 'Материалы', 'Чек-листы и гайды для лидов', "showPage('leadmagnets')"),
+      pg('doc', 'Материалы', 'PDF и подкасты для лидов', "showPage('leadmagnets')"),
       ext('sum', 'Конверсии', 'Воронка CRM', 'crmFunnel'),
       ext('sum', 'План продаж', 'План и факт', 'salesPlan'),
       ext('doc', 'Скрипты', 'Скрипты продаж', 'scripts'),
@@ -12657,7 +12728,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
     ]],
     ['BS', [
       ext('doc', 'Полезное', 'Ссылки и материалы команды', 'useful'),
-      pg('book', '99 гайдов', 'Каталог и ридер для лидов и резидентов', "showPage('guides')"),
+      pg('book', 'Интерактивные чек-листы', '99 чек-листов: каталог и прохождение для лидов', "showPage('guides')"),
       pg('tasks', 'Цели и задачи', 'Задачи команды: Рустам и Береке', "showPage('todos')"),
       ext('msg', 'Рекомендации ИИ', 'Подсказки по клубу', 'aiRec'),
       ext('doc', 'Google Doc', 'Документ проекта', 'gdoc'),
@@ -12785,7 +12856,7 @@ function renderLeadmagnets(){
     <div class="lm-min">
       <div class="lm-min-head">
         <div class="hero-label">Материалы BS</div>
-        <h1 class="hero-title">Гайды и подкасты</h1>
+        <h1 class="hero-title">Чек-листы и подкасты</h1>
         <div class="hero-sub">Реальные кейсы резидентов с цифрами «было / стало». Концентрат того что мы делаем на разборах.</div>
       </div>
       ${v14promo('lm')}
@@ -14132,10 +14203,357 @@ function v16ring(p, full){
 function v14card(x){
   var s = v14stat(x), pos = v14pos(x.id), done = !!(s.n && s.d >= s.n);
   var p = s.d && s.n ? Math.round(s.d / s.n * 100) : (pos && pos.p >= 5 && pos.p < 97 ? Math.round(pos.p) : 0);
-  return '<div class="v14-card v16-tile' + (done ? ' done' : '') + '" data-gid="' + v2esc(x.id) + '" data-lv="' + v2esc(x.level) + '" role="button" tabindex="0" aria-label="' + v2esc(x.organ) + ', № ' + v14no2(x.id) + '" onclick="v14open(\'' + v2esc(x.id) + '\')">' +
-    '<div class="tp"><span class="no num">№ ' + v14no2(x.id) + '</span><span class="rt">' + (x.existing ? '<span class="v14-pdfb">PDF</span>' : '') + (done || p ? v16ring(p, done) : v16lvb(x.level)) + '</span></div>' +
-    '<div class="ic">' + v12oIcon(x.organ, 38, 1.4) + '</div>' +
-    '<div class="t">' + gE(x.title) + '</div></div>';
+  return '<div class="v14-card v16-tile v17-cvt' + (done ? ' done' : '') + '" data-gid="' + v2esc(x.id) + '" data-lv="' + v2esc(x.level) + '" role="button" tabindex="0" aria-label="' + v2esc(x.organ) + ', № ' + v14no2(x.id) + ', ' + v2esc(v12clean(x.title)) + '" onclick="v14open(\'' + v2esc(x.id) + '\')">' +
+    v17cover(x) +
+    '<div class="tp"><span class="no num">№ ' + v14no2(x.id) + '</span><span class="rt">' + (x.existing ? '<span class="v14-pdfb">PDF</span>' : '') + (done || p ? v16ring(p, done) : v16lvb(x.level)) + '</span></div></div>';
+}
+// ═══ R17: обложки чек-листов в стиле обложек диагнозов и инструментов платформы ═══
+// Иллюстрация по смыслу названия (CV_RULES → CV_ART), иначе орган линиями. Перенесено с платформы (coverArt и словарь)
+var V17_ORG_LBL = {'Стратегия': 'Мозг', 'Маркетинг': 'Сердце', 'Продажи': 'Руки', 'Команда': 'Костяк', 'Финансы': 'Кровь', 'Процессы': 'ДНК', 'Аналитика': 'Зрение'};
+// Длинное слово не рвётся посередине: шрифт уменьшается, чтобы слово влезло в строку плитки
+function v17titleFit(title, perLine){
+  var L = String(title || '').split(/[\s\-]+/).reduce(function(m, w){ return Math.max(m, w.length); }, 0);
+  return L > perLine ? ' style="--tf:' + Math.max(0.62, perLine / L).toFixed(2) + '"' : '';
+}
+function v17cover(x){
+  var lab = V17_ORG_LBL[x.organ];
+  var t = v12clean(x.title);
+  return '<div class="cv16 tool"><div class="cv-glow"></div>' + coverArt(t, x.organ) + '<div class="cv-shade"></div></div>' +
+    '<div class="bt"><div class="cv-org">' + v2esc((lab ? lab + ' · ' : '') + x.organ) + '</div>' +
+    '<div class="cv-title t' + (t.length > 44 ? ' xl' : (t.length > 30 ? ' long' : '')) + '"' + v17titleFit(t, t.length > 44 ? 17 : (t.length > 30 ? 15 : 13)) + '>' + gE(x.title) + '</div></div>';
+}
+var ORGAN_ART_KEY = {'Стратегия':'brain','Маркетинг':'heart','Продажи':'hands','Команда':'spine',
+  'Финансы':'blood','Процессы':'dna','Аналитика':'eye'};
+var ORGAN_ART = {
+  brain: '<path d="M40 92C28 90 22 78 26 66 22 54 30 40 44 38 48 26 62 20 74 26 82 18 98 18 106 28 120 26 132 36 132 50 142 56 144 72 136 82 138 94 128 104 116 102 110 112 96 114 88 106 80 112 66 110 62 102 52 106 42 100 40 92Z"/>' +
+    '<path d="M48 60c8-8 18-4 16 6M70 40c8 6 6 16 14 18M92 36c8 8 4 16 12 20M112 48c8 8 4 18 12 22M56 84c8-8 20-4 22 6M86 72c8-6 18-2 20 8M98 92c8-4 16 0 18 6M80 26c4 22-2 44 6 78" opacity=".75"/>' +
+    '<path d="M88 106c2 10 4 18 10 26M104 102c8 10 20 10 24 2" opacity=".85"/>',
+  heart: '<path d="M80 140C58 124 40 104 40 80c0-20 14-32 30-30 4 0 8 2 10 4 6-8 20-10 30-4 14 8 16 30 6 50-8 16-20 28-36 40Z"/>' +
+    '<path d="M76 52c-2-12 0-22 10-26 10-4 18 2 18 10M86 26V12M96 24l4-12M90 52c2-12 12-14 20-12l8-6"/>' +
+    '<path d="M70 70c8 14 6 30 14 46M96 64c-4 16 2 32-4 46M58 92c8 4 14 2 20-4" opacity=".7"/>',
+  hands: '<path d="M56 140v-36c-10-8-16-20-14-30 2-6 8-6 12 0l6 12V40c0-7 10-7 10 0v34l2-44c0-7 10-7 10 0v44l4-40c0-7 10-7 10 0l-2 42 6-30c0-7 10-6 9 1l-5 49c-2 16-8 26-12 44Z"/>' +
+    '<path d="M64 108c10-4 22-2 32-8M66 118c10-2 20 0 26-4" opacity=".7"/>',
+  spine: (function(){
+      var o = '<circle cx="80" cy="24" r="13"/><path d="M73 36v6h14v-6" opacity=".8"/><circle cx="75" cy="23" r="2.6" opacity=".8"/><circle cx="85" cy="23" r="2.6" opacity=".8"/>';
+      for(var y=46;y<=124;y+=9) o += '<rect x="74" y="'+y+'" width="12" height="6" rx="2"/>';
+      [54,64,74,84].forEach(function(y,i){
+        var w = 30 - i*2;
+        o += '<path d="M74 '+y+'C'+(60-i)+' '+(y-3)+' '+(46+i*2)+' '+(y+6)+' '+(50+i*3)+' '+(y+16+i)+'" opacity=".85"/>';
+        o += '<path d="M86 '+y+'C'+(100+i)+' '+(y-3)+' '+(114-i*2)+' '+(y+6)+' '+(110-i*3)+' '+(y+16+i)+'" opacity=".85"/>';
+      });
+      return o + '<path d="M58 136c6-10 38-10 44 0-4 10-40 10-44 0Z"/><path d="M60 40l-18 8M100 40l18 8" opacity=".7"/>';
+    })(),
+  blood: '<path d="M80 22S44 70 44 96c0 22 16 38 36 38s36-16 36-38C116 70 80 22 80 22Z"/>' +
+    '<path d="M62 98c0 12 8 20 18 22" opacity=".75"/>' +
+    '<path d="M126 38s-9 13-9 19c0 5 4 8 9 8s9-3 9-8c0-6-9-19-9-19Z" opacity=".8"/>' +
+    '<path d="M34 112s-6 8-6 12c0 3 3 6 6 6s6-3 6-6c0-4-6-12-6-12Z" opacity=".6"/>',
+  dna: (function(){
+      var a='', b='', r='';
+      for(var y=14;y<=146;y+=4){
+        var t = (y-14)/20;
+        a += (y===14?'M':'L')+(80+Math.sin(t)*28).toFixed(1)+' '+y;
+        b += (y===14?'M':'L')+(80+Math.sin(t+Math.PI)*28).toFixed(1)+' '+y;
+      }
+      for(var yy=20;yy<146;yy+=10){
+        var tt = (yy-14)/20, x1 = 80+Math.sin(tt)*28, x2 = 80+Math.sin(tt+Math.PI)*28;
+        r += '<path d="M'+x1.toFixed(1)+' '+yy+'H'+x2.toFixed(1)+'" opacity=".55"/>' +
+          '<circle cx="'+x1.toFixed(1)+'" cy="'+yy+'" r="2.4" class="oa-f"/><circle cx="'+x2.toFixed(1)+'" cy="'+yy+'" r="2.4" class="oa-f" opacity=".7"/>';
+      }
+      return '<g transform="rotate(-24 80 80)"><path d="'+a+'"/><path d="'+b+'" opacity=".75"/>'+r+'</g>';
+    })(),
+  eye: '<path d="M18 80c24-36 100-36 124 0-24 36-100 36-124 0Z"/>' +
+    '<circle cx="80" cy="80" r="23"/><circle cx="80" cy="80" r="9" class="oa-f"/><circle cx="87" cy="73" r="3.5" class="oa-f" opacity=".9"/>' +
+    '<path d="M40 56l-6-10M60 48l-3-12M80 45V32M100 48l3-12M120 56l6-10" opacity=".7"/>',
+  pulse: '<path d="M14 84h30l8-22 12 46 12-60 12 54 8-18h44"/><circle cx="80" cy="80" r="56" opacity=".35"/>'
+};
+// ── Обложки по смыслу названия: библиотека иллюстраций линиями и подбор по словам ──
+// Белые линии на тёмном, акцент: красный у диагнозов, белый у инструментов. Поле 200x150
+var CV_ART = (function(){
+  function person(x, y, s, cls){
+    s = s || 1;
+    return '<g class="' + (cls || '') + '" transform="translate(' + x + ' ' + y + ') scale(' + s + ')">' +
+      '<circle cx="0" cy="-9" r="7.5" class="k"/><path d="M-13 13c0-9 6-14 13-14s13 5 13 14" class="k"/></g>';
+  }
+  function gear(cx, cy, r, n, cls){
+    var p = '', ro = r, ri = r * 0.8, st = Math.PI * 2 / n;
+    for(var i = 0; i < n; i++){
+      var a = i * st;
+      [[a - st * 0.18, ri], [a - st * 0.1, ro], [a + st * 0.1, ro], [a + st * 0.18, ri], [a + st * 0.5, ri]].forEach(function(q, j){
+        p += (i === 0 && j === 0 ? 'M' : 'L') + (cx + Math.cos(q[0]) * q[1]).toFixed(1) + ' ' + (cy + Math.sin(q[0]) * q[1]).toFixed(1);
+      });
+    }
+    return '<path d="' + p + 'Z" class="' + (cls || 'k') + '"/><circle cx="' + cx + '" cy="' + cy + '" r="' + (r * 0.32).toFixed(1) + '"/>';
+  }
+  function flame(x, y, s, cls){
+    return '<path transform="translate(' + x + ' ' + y + ') scale(' + s + ')" class="' + (cls || 'a af2') + '" ' +
+      'd="M0 0C-13-5-15-20-6-31-6-24-1-21 2-25 3-34-1-40 3-48 14-40 20-25 15-12 19-15 20-19 20-23 26-14 24-3 14 1 9 3 4 2 0 0Z"/>';
+  }
+  function coin(x, y, r, cls){
+    return '<g class="' + (cls || '') + '"><circle cx="' + x + '" cy="' + y + '" r="' + r + '" class="k a"/>' +
+      '<circle cx="' + x + '" cy="' + y + '" r="' + (r * 0.68).toFixed(1) + '" class="a th" opacity=".7"/>' +
+      '<text x="' + x + '" y="' + (y + r * 0.36).toFixed(1) + '" class="tx a-t" font-size="' + (r * 1.05).toFixed(1) + '">₸</text></g>';
+  }
+  var A = {};
+  // Календарь: лист с кольцами, шапка акцентом, числа в клетках
+  A.calendar = (function(){
+    var o = '<rect x="36" y="22" width="128" height="114" rx="13" class="k"/>' +
+      '<path d="M49 22h102a13 13 0 0 1 13 13v15H36V35a13 13 0 0 1 13-13Z" class="af2"/>' +
+      '<path d="M36 50h128"/><path d="M68 12v18M132 12v18" class="th5"/>' +
+      '<text x="100" y="42" class="tx a-t" font-size="11">МАЙ</text>';
+    var n = 1;
+    for(var r = 0; r < 4; r++) for(var c = 0; c < 5; c++){
+      var x = 46 + c * 22.4, y = 58 + r * 19;
+      var hot = (r === 1 && c === 2), ring = (r === 2 && c === 4);
+      if(hot) o += '<rect x="' + (x - 1) + '" y="' + (y - 1) + '" width="20" height="16" rx="4" class="af"/>';
+      if(ring) o += '<circle cx="' + (x + 9) + '" cy="' + (y + 7) + '" r="10" class="a"/>';
+      o += '<text x="' + (x + 9) + '" y="' + (y + 11) + '" class="tx' + (hot ? ' dk' : '') + '" font-size="9" opacity="' + (hot || ring ? 1 : .72) + '">' + (n++) + '</text>';
+    }
+    return o;
+  })();
+  // Учёт и отчёт: таблица и график
+  A.report = '<rect x="30" y="14" width="98" height="122" rx="10" class="k"/>' +
+    '<path d="M44 32h48" class="a th5"/><path d="M44 45h32" class="dm"/>' +
+    '<path d="M42 62h74M42 78h74M42 94h74M42 110h74M72 56v62" class="dm th"/>' +
+    '<path d="M48 70h14M80 70h26M48 86h12M80 86h30M48 102h16M80 102h20" class="th"/>' +
+    '<rect x="102" y="58" width="76" height="72" rx="10" class="k"/>' +
+    '<rect x="114" y="104" width="10" height="16" rx="2" class="w"/><rect x="129" y="92" width="10" height="28" rx="2" class="w"/>' +
+    '<rect x="144" y="98" width="10" height="22" rx="2" class="w"/><rect x="159" y="76" width="10" height="44" rx="2" class="af"/>' +
+    '<path d="M112 121h60" class="th"/><path d="M116 84l14-8 14 6 20-14" class="a th"/>';
+  // Деньги: кошелёк, купюра, монеты
+  A.wallet = '<rect x="46" y="22" width="84" height="40" rx="6" class="f" transform="rotate(-9 88 42)"/>' +
+    '<circle cx="88" cy="41" r="9" class="th" transform="rotate(-9 88 42)"/>' +
+    '<rect x="24" y="46" width="120" height="82" rx="15" class="k"/><path d="M24 66h120" class="dm"/>' +
+    '<rect x="110" y="76" width="40" height="28" rx="9" class="k"/><circle cx="124" cy="90" r="5" class="af"/>' +
+    '<ellipse cx="166" cy="128" rx="20" ry="7" class="k a"/><path d="M146 128v-10M186 128v-10" class="a"/>' +
+    '<ellipse cx="166" cy="118" rx="20" ry="7" class="k a"/><path d="M146 118v-10M186 118v-10" class="a"/>' +
+    '<ellipse cx="166" cy="108" rx="20" ry="7" class="k a"/>' + coin(170, 66, 15);
+  // Кассовый разрыв: звено цепи лопнуло, искры, монеты падают
+  A.brokenchain = '<g transform="rotate(-12 100 70)">' +
+      '<rect x="2" y="54" width="66" height="32" rx="16" class="k th5"/>' +
+      '<path d="M94 54H66a16 16 0 0 0 0 32h28" class="th5"/>' +
+      '<path d="M108 54h28a16 16 0 0 1 0 32h-28" class="th5"/>' +
+      '<rect x="132" y="54" width="66" height="32" rx="16" class="k th5"/>' +
+      '<path d="M94 54l4 6M94 86l4-6M108 54l-4 6M108 86l-4-6" class="a th"/></g>' +
+    '<path d="M101 44V30M112 50l9-9M90 50l-9-9M101 100v12M112 94l9 9M90 94l-9 9" class="a th"/>' +
+    '<circle cx="101" cy="72" r="5" class="af"/>' +
+    coin(62, 124, 12) + coin(146, 132, 9, 'dm2');
+  // Воронка: много точек сверху, мало снизу
+  A.funnel = '<ellipse cx="100" cy="30" rx="70" ry="11" class="k"/>' +
+    '<path d="M30 30l52 56v36l36 12V86l52-56" class="th"/><path d="M30 30c0 6 31 11 70 11s70-5 70-11l-52 56H82Z" class="f"/>' +
+    '<path d="M54 56h92M68 72h64" class="dm th"/>' +
+    '<g class="w"><circle cx="62" cy="16" r="4"/><circle cx="80" cy="10" r="4"/><circle cx="98" cy="16" r="4"/><circle cx="118" cy="9" r="4"/><circle cx="136" cy="17" r="4"/><circle cx="72" cy="27" r="4" opacity=".6"/><circle cx="126" cy="27" r="4" opacity=".6"/></g>' +
+    '<circle cx="100" cy="142" r="6" class="af"/><path d="M100 124v8" class="a th"/>' +
+    '<text x="164" y="132" class="tx a-t" font-size="13">7%</text>';
+  // Звонки и скрипт: трубка и облако с текстом
+  A.phone = '<g transform="translate(14 46) scale(4.4)"><path vector-effect="non-scaling-stroke" class="k" d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></g>' +
+    '<path d="M78 74a14 14 0 0 1 10 10M80 58a30 30 0 0 1 24 24" class="a th"/>' +
+    '<path d="M104 14h66a12 12 0 0 1 12 12v34a12 12 0 0 1-12 12h-40l-16 14V72h-10a12 12 0 0 1-12-12V26a12 12 0 0 1 12-12Z" class="k"/>' +
+    '<path d="M108 32h46" class="a th5"/><path d="M108 45h62M108 57h38" class="th"/>' +
+    '<circle cx="170" cy="57" r="3" class="af"/>';
+  // Заявки и CRM: лоток и карточки
+  A.inbox = '<rect x="58" y="14" width="66" height="44" rx="7" class="k" transform="rotate(-10 91 36)"/>' +
+    '<path d="M68 30h30M68 40h44" class="th dm" transform="rotate(-10 91 36)"/>' +
+    '<rect x="80" y="30" width="66" height="44" rx="7" class="k a" transform="rotate(7 113 52)"/>' +
+    '<path d="M90 46h28" class="a th5" transform="rotate(7 113 52)"/><path d="M90 58h42" class="th" transform="rotate(7 113 52)"/>' +
+    '<path d="M24 94l20-28h112l20 28v30a8 8 0 0 1-8 8H32a8 8 0 0 1-8-8Z" class="k"/>' +
+    '<path d="M24 94h42l8 12h52l8-12h42"/>' +
+    '<circle cx="166" cy="28" r="14" class="af"/><text x="166" y="33" class="tx dk" font-size="13">+5</text>';
+  // Команда и найм: оргструктура
+  A.orgchart = '<rect x="72" y="8" width="56" height="46" rx="11" class="k a"/>' + person(100, 34, 1, 'acc') +
+    '<path d="M100 54v14M38 68h124M38 68v14M100 68v14M162 68v14" class="th"/>' +
+    '<rect x="14" y="82" width="48" height="42" rx="10" class="k"/>' + person(38, 106, .85) +
+    '<rect x="76" y="82" width="48" height="42" rx="10" class="k"/>' + person(100, 106, .85) +
+    '<rect x="138" y="82" width="48" height="42" rx="10" class="k dash"/>' +
+    '<path d="M162 96v18M153 105h18" class="a th5"/>';
+  // Делегирование: рука передаёт коробку другой руке
+  A.delegate = (function(){
+    var hand = '<rect x="6" y="100" width="22" height="26" rx="4" class="f"/>' +
+      '<path d="M28 104h46a7 7 0 0 1 0 14H58c-6 0-10 8-20 8H28Z" class="k"/>' +
+      '<path d="M40 104c2-9 8-13 16-13h4a4 4 0 0 1 0 8h-4" class="th"/><path d="M58 111h14" class="th dm"/>';
+    return hand + '<g transform="translate(200 0) scale(-1 1)">' + hand + '</g>' +
+      '<rect x="32" y="58" width="44" height="38" rx="5" class="k"/><path d="M32 70h44" class="dm"/><path d="M54 58v38" class="a th5"/>' +
+      '<rect x="124" y="58" width="44" height="38" rx="5" class="a th dash"/>' +
+      '<path d="M60 44c18-24 62-24 80 0" class="a th5"/><path d="M128 40l12 4-2 12" class="a th5"/>';
+  })();
+  // Регламент и процесс: планшет с галочками
+  A.checklist = (function(){
+    var o = '<rect x="46" y="18" width="108" height="124" rx="12" class="k"/><rect x="76" y="9" width="48" height="18" rx="6" class="f"/>';
+    for(var i = 0; i < 4; i++){
+      var y = 42 + i * 24, dn = i < 3;
+      o += '<rect x="60" y="' + y + '" width="15" height="15" rx="4" class="' + (dn ? 'a' : '') + '"/>' +
+        (dn ? '<path d="M63 ' + (y + 8) + 'l3.5 3.5 6-7" class="a th5"/>' : '') +
+        '<path d="M86 ' + (y + 7.5) + 'h' + [50, 38, 46, 30][i] + '" class="' + (dn ? 'th dm' : 'th') + '"/>';
+    }
+    return o + '<circle cx="160" cy="128" r="16" class="af"/><path d="M152 128l6 6 10-12" class="dkl th5"/>';
+  })();
+  // Стратегия и цель: мишень и стрела
+  A.target = '<circle cx="88" cy="82" r="56" class="k"/><circle cx="88" cy="82" r="40"/><circle cx="88" cy="82" r="24" class="a"/>' +
+    '<circle cx="88" cy="82" r="9" class="af"/>' +
+    '<path d="M88 82L172 16" class="th5"/><path d="M88 82l14-3-3 12Z" class="w"/>' +
+    '<path d="M172 16l-2 14M172 16l-14 2M162 24l-2 14M162 24l-14 2" class="a th"/>';
+  // Аналитика: монитор, датчик и линия
+  A.dashboard = '<rect x="18" y="14" width="164" height="104" rx="11" class="k"/><path d="M86 118v14M64 134h44" class="th"/>' +
+    '<path d="M32 84a28 28 0 0 1 56 0" class="th5 dm"/><path d="M32 84a28 28 0 0 1 44-23" class="a th5"/>' +
+    '<path d="M60 84l14-16" class="th"/><circle cx="60" cy="84" r="4" class="w"/>' +
+    '<text x="60" y="104" class="tx" font-size="10">72%</text>' +
+    '<path d="M102 32h30M102 42h18" class="th dm"/><path d="M142 30h26" class="a th5"/>' +
+    '<path d="M102 98l16-14 14 6 18-24 18-8" class="a th"/><circle cx="168" cy="58" r="4" class="af"/>' +
+    '<path d="M102 104h66" class="th dm"/>';
+  // Маркетинг: рупор и волны
+  A.megaphone = '<path d="M44 62l76-34v100L44 94Z" class="k"/><ellipse cx="120" cy="78" rx="11" ry="50" class="k"/>' +
+    '<rect x="26" y="60" width="20" height="36" rx="5" class="k"/>' +
+    '<path d="M64 98l8 30h15l-6-24" class="k"/>' +
+    '<path d="M142 58c10 12 10 28 0 40" class="a th5"/><path d="M156 44c18 20 18 48 0 68" class="a th"/><path d="M170 30c26 28 26 68 0 96" class="a th dm"/>';
+  // Контент и бренд: телефон с постами
+  A.phoneposts = '<rect x="62" y="8" width="76" height="134" rx="15" class="k"/><path d="M90 18h20" class="th5"/>' +
+    '<rect x="72" y="28" width="56" height="40" rx="6" class="af2"/><path d="M80 58l12-14 10 10 8-6 10 10" class="a th"/><circle cx="114" cy="38" r="4" class="af"/>' +
+    '<path d="M74 78h40M74 87h28" class="th dm"/>' +
+    '<rect x="72" y="96" width="56" height="34" rx="6" class="f"/>' +
+    '<path d="M166 40c-6-8-20-4-16 6 3 7 16 14 16 14s13-7 16-14c4-10-10-14-16-6Z" class="af"/>' +
+    '<path d="M22 86h30a8 8 0 0 1 8 8v12a8 8 0 0 1-8 8H38l-10 8v-8h-6a8 8 0 0 1-8-8V94a8 8 0 0 1 8-8Z" class="k"/><path d="M26 98h22M26 106h14" class="th dm"/>';
+  // Цена и средний чек: ценник
+  A.pricetag = '<path d="M34 76L92 18h62v62l-58 58Z" class="k"/><circle cx="134" cy="38" r="8"/>' +
+    '<path d="M134 38c10-12 30-16 46-6" class="th dm"/>' +
+    '<text x="96" y="96" class="tx a-t" font-size="42" transform="rotate(-45 96 84)">₸</text>' +
+    '<path d="M56 112l-12 12M70 124l-6 10" class="a th"/>';
+  // Продукт и отличие: коробка со звездой
+  A.productstar = '<path d="M100 44l52 20-52 20-52-20Z" class="f"/><path d="M48 64v52l52 20V84Z" class="k"/><path d="M152 64v52l-52 20V84Z" class="k"/>' +
+    '<path d="M100 44l52 20-52 20-52-20Z"/><path d="M74 54l52 20v14" class="a th5"/>' +
+    '<path d="M148 6l6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2Z" class="af"/>' +
+    '<path d="M34 30l4 8M26 46h9M182 66l-8 4" class="a th"/>';
+  // Время и операционка: часы в огне
+  A.clockfire = flame(54, 66, 1.15) + flame(146, 60, 1.35) + flame(104, 34, .9) +
+    '<circle cx="98" cy="88" r="46" class="k"/><circle cx="98" cy="88" r="38" class="dm th"/>' +
+    '<path d="M98 54v6M98 116v6M64 88h6M126 88h6" class="th"/>' +
+    '<path d="M98 88V64M98 88l18 10" class="th5"/><circle cx="98" cy="88" r="4" class="af"/>';
+  // Энергия и выгорание: батарея на исходе
+  A.battery = '<rect x="30" y="46" width="124" height="62" rx="12" class="k th5"/><rect x="154" y="64" width="12" height="26" rx="4" class="w"/>' +
+    '<rect x="40" y="56" width="22" height="42" rx="5" class="af"/>' +
+    '<path d="M108 52l-18 26h15l-9 24 22-30h-15l9-20Z" class="w"/>' +
+    '<text x="58" y="132" class="tx a-t" font-size="13">10%</text>' +
+    '<path d="M150 24h12l-12 14h12M170 10h8l-8 9h8" class="th dm"/>';
+  // Окружение: круг людей, один в стороне
+  A.peoplecircle = (function(){
+    var o = '<circle cx="84" cy="78" r="46" class="dash dm"/>';
+    for(var i = 0; i < 6; i++){
+      var a = -Math.PI / 2 + i * Math.PI / 3;
+      o += person(84 + Math.cos(a) * 46, 80 + Math.sin(a) * 46, .82);
+    }
+    o += person(84, 80, 1.05, 'acc');
+    return o + '<path d="M136 80h22" class="a th dash"/>' + person(176, 82, .9, 'dm2');
+  })();
+  // Знает, но не делает: книга и стрелка к действию
+  A.bookarrow = '<rect x="40" y="38" width="74" height="98" rx="7" class="k"/><path d="M54 38v98" class="th"/>' +
+    '<path d="M66 60h34M66 72h26" class="th dm"/><rect x="66" y="88" width="34" height="22" rx="4" class="af2"/>' +
+    '<path d="M100 96L164 24" class="a th5"/><path d="M146 22h20v20" class="a th5"/>' +
+    '<circle cx="168" cy="96" r="18" class="k a"/><path d="M160 96l6 6 10-12" class="a th5"/>';
+  // Перепроизводство и запасы: штабель коробок
+  A.boxes = (function(){
+    var o = '';
+    [[22, 92], [76, 92], [130, 92], [49, 50], [103, 50], [76, 8]].forEach(function(b, i){
+      o += '<rect x="' + b[0] + '" y="' + b[1] + '" width="50" height="40" rx="4" class="k' + (i === 5 ? ' a' : '') + '"/>' +
+        '<path d="M' + (b[0] + 25) + ' ' + b[1] + 'v12" class="' + (i === 5 ? 'a ' : '') + 'th5"/>' +
+        '<path d="M' + (b[0] + 8) + ' ' + (b[1] + 30) + 'h14" class="th dm"/>';
+    });
+    return o + '<path d="M184 128V60M176 70l8-10 8 10" class="a th"/>';
+  })();
+  // Собственник в центре: всё замкнуто на одного
+  A.owner = (function(){
+    var o = '', pts = [[30, 30], [170, 30], [16, 96], [184, 96], [56, 138], [144, 138]];
+    pts.forEach(function(p){ o += '<path d="M100 78L' + p[0] + ' ' + p[1] + '" class="a th dm"/>'; });
+    pts.forEach(function(p){ o += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="11" class="k"/><circle cx="' + p[0] + '" cy="' + (p[1] - 2) + '" r="3.5" class="w"/>'; });
+    return o + '<circle cx="100" cy="78" r="30" class="k a th5"/>' + person(100, 82, 1.1, 'acc');
+  })();
+  // Книга: раскрытая книга с закладкой
+  A.openbook = '<path d="M100 40C80 26 50 24 22 30v92c28-6 58-4 78 10Z" class="k"/><path d="M100 40c20-14 50-16 78-10v92c-28-6-58-4-78 10Z" class="k"/>' +
+    '<path d="M100 40v92"/><path d="M36 50c16-3 34-2 50 4M36 64c16-3 34-2 50 4M36 78c16-3 34-2 50 4M36 92c16-3 26-2 36 1" class="th dm"/>' +
+    '<path d="M114 54c16-6 34-7 50-4M114 68c16-6 34-7 50-4M114 82c16-6 24-7 34-5" class="th dm"/>' +
+    '<path d="M148 26v42l9-7 9 7V26" class="af"/>';
+  // Рост выручки: столбцы и стрелка вверх
+  A.chartup = '<path d="M24 130h156" class="th"/>' +
+    '<rect x="34" y="96" width="22" height="34" rx="4" class="k"/><rect x="66" y="80" width="22" height="50" rx="4" class="k"/>' +
+    '<rect x="98" y="62" width="22" height="68" rx="4" class="k"/><rect x="130" y="40" width="22" height="90" rx="4" class="af"/>' +
+    '<path d="M30 78L70 52l26 12 54-44" class="a th5"/><path d="M134 18h18v18" class="a th5"/>';
+  // Юрист и риски: весы
+  A.scales = '<path d="M100 18v108M66 132h68" class="th5"/><circle cx="100" cy="18" r="6" class="af"/>' +
+    '<path d="M40 40h120" class="th5"/><path d="M40 40l-20 46M40 40l20 46M160 40l-20 38M160 40l20 38" class="th"/>' +
+    '<path d="M16 86h48a24 12 0 0 1-48 0Z" class="k"/><path d="M136 78h48a24 12 0 0 1-48 0Z" class="k a"/>';
+  // Автоматизация и система: шестерни
+  A.gears = gear(78, 82, 46, 10, 'k') + gear(148, 46, 28, 8, 'k a') + '<circle cx="78" cy="82" r="6" class="af"/><path d="M150 112c14 0 26-10 28-24M172 86l6 2 2-6" class="a th"/>';
+  // Идеи и решения: лампочка
+  A.bulb = '<path d="M100 18c-26 0-44 20-44 42 0 16 10 26 18 34 4 4 6 10 6 16h40c0-6 2-12 6-16 8-8 18-18 18-34 0-22-18-42-44-42Z" class="k"/>' +
+    '<path d="M82 120h36M86 130h28M92 140h16" class="th"/><path d="M90 108V78l10 10 10-10v30" class="a th"/>' +
+    '<path d="M100 2v8M44 24l6 6M156 24l-6 6M30 60h10M160 60h10" class="a th"/>';
+  // Отзывы и качество: звёзды и облако
+  A.stars = '<path d="M30 30h112a12 12 0 0 1 12 12v40a12 12 0 0 1-12 12H76l-22 18V94H30a12 12 0 0 1-12-12V42a12 12 0 0 1 12-12Z" class="k"/>' +
+    (function(){ var o = ''; for(var i = 0; i < 5; i++){ var x = 42 + i * 22; o += '<path transform="translate(' + x + ' 62)" d="M0-11l3.2 6.6 7.2 1-5.2 5.1 1.2 7.2L0 5.5-6.4 8.9-5.2 1.7-10.4-3.4-3.2-4.4Z" class="' + (i < 4 ? 'af' : 'th') + '"/>'; } return o; })() +
+    '<circle cx="168" cy="112" r="20" class="k"/><text x="168" y="118" class="tx" font-size="15">4.8</text>';
+  // Запуск и масштаб: ракета
+  A.rocket = '<path d="M100 12c22 16 30 44 26 78H74c-4-34 4-62 26-78Z" class="k"/><circle cx="100" cy="50" r="10" class="a th5"/>' +
+    '<path d="M74 70L54 96l22-2M126 70l20 26-22-2" class="k"/>' +
+    '<path d="M86 96c0 18 6 30 14 40 8-10 14-22 14-40Z" class="af2 a"/>' +
+    '<path d="M30 120h22M148 130h22M40 36h10M156 42h14" class="th dm"/>';
+  // Сроки и откладывание: песочные часы
+  A.hourglass = '<path d="M62 14h76M62 136h76" class="th5"/><path d="M70 14c0 34 26 44 26 61S70 102 70 136h60c0-34-26-44-26-61s26-27 26-61Z" class="k"/>' +
+    '<path d="M80 36h40l-20 26Z" class="af"/><path d="M78 128c4-12 14-18 22-20 8 2 18 8 22 20Z" class="af2"/><path d="M100 76v28" class="a th dash"/>' +
+    '<path d="M156 70a26 26 0 1 1-6-16" class="th dm"/><path d="M148 44l2 10 10-2" class="th dm"/>';
+  return A;
+})();
+var CV_RULES = [
+  [/книг/, 'openbook'],
+  [/календар/, 'calendar'],
+  [/разрыв/, 'brokenchain'],
+  [/чек-?лист|регламент|инструкц|стандарт/, 'checklist'],
+  [/учет|управленческ|отчет|p&l|(^|[^a-z])pl([^a-z]|$)|ддс|баланс/, 'report'],
+  [/воронк|конверси/, 'funnel'],
+  [/время|времени|операционк|пожар|туш|рутин|хаос/, 'clockfire'],
+  [/энерги|выгоран|устал|отдых/, 'battery'],
+  [/срок|дедлайн|откладыв|прокрастин|опаздыв/, 'hourglass'],
+  [/продаю только|только я|все на мне|собственник|владел/, 'owner'],
+  [/скрипт|звонок|звонк|прозвон|продаж|продава/, 'phone'],
+  [/заявк|(^|[^а-я])лид|crm|срм/, 'inbox'],
+  [/делегир/, 'delegate'],
+  [/найм|наним|команд|сотрудник|оргструктур|персонал|кадр|(^|[^a-z])hr/, 'orgchart'],
+  [/процесс/, 'checklist'],
+  [/стратеги|(^|[^а-я])цел[ьеия]|фокус|приоритет|миссия|видени/, 'target'],
+  [/аналитик|цифр|метрик|дашборд|kpi|показател|данн|ощущени|интуици|на глаз/, 'dashboard'],
+  [/контент|smm|бренд|инстаграм|соцсет|постинг|блог|reels/, 'phoneposts'],
+  [/отзыв|качеств|nps|сервис|лояльн|повторн/, 'stars'],
+  [/маркетинг|реклам|сарафан|клиент|трафик|продвижени|охват/, 'megaphone'],
+  [/цен[аыуео]([^а-я]|$)|ценообраз|прайс|(^|[^а-я])чек|средн|скидк|маржин|наценк/, 'pricetag'],
+  [/продукт|отличи|уникальн|оффер|ассортимент|упаковк/, 'productstar'],
+  [/окружени|одинок|нетворк|сообществ|знакомств/, 'peoplecircle'],
+  [/знает|делает|обучени|обуча|навык|знани|курс|учеб/, 'bookarrow'],
+  [/перепроизвод|запас|склад|остатк|закуп/, 'boxes'],
+  [/автоматиз|систем|конвейер|механизм/, 'gears'],
+  [/юрист|договор|риск|закон|суд/, 'scales'],
+  [/(^|[^а-я])иде[яийюе]|иннова|креатив|гипотез|решени/, 'bulb'],
+  [/запуск|старт|масштаб|экспанси|филиал|франшиз/, 'rocket'],
+  [/рост|выручк|оборот|доход/, 'chartup'],
+  [/касс|деньг|денег|финанс|прибыл|налог|сч[её]т|бюджет|долг|кредит|платеж|оплат/, 'wallet']
+];
+function coverKey(title){
+  var s = String(title || '').toLowerCase().replace(/ё/g, 'е');
+  for(var i = 0; i < CV_RULES.length; i++) if(CV_RULES[i][0].test(s)) return CV_RULES[i][1];
+  return '';
+}
+function coverArt(title, organ){
+  var k = coverKey(title);
+  if(!k || !CV_ART[k]) return '<div class="cv-art org">' + organArt(organ) + '</div>';
+  return '<div class="cv-art il" data-art="' + k + '"><svg class="cvi" viewBox="0 0 200 150" fill="none" stroke="currentColor" stroke-width="3" ' +
+    'stroke-linecap="round" stroke-linejoin="round">' + CV_ART[k] + '</svg></div>';
+}
+function organArt(organ, size){
+  var k = ORGAN_ART_KEY[organ] || 'pulse';
+  return '<svg class="oa" viewBox="0 0 160 160" width="'+(size||160)+'" height="'+(size||160)+'" fill="none" stroke="currentColor" ' +
+    'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'+ORGAN_ART[k]+'</svg>';
+}
+// Длинное слово не рвётся посередине: шрифт заголовка уменьшается, чтобы слово влезло в строку
+function cvTitleFit(title){
+  var t = String(title || ''), n = t.length;
+  var L = t.split(/[\s\-]+/).reduce(function(m, w){ return Math.max(m, w.length); }, 0);
+  var f0 = n > 38 ? 13.5 : (n > 24 ? 16 : 19), maxC = 200 / f0;
+  return L > maxC ? ' style="--tf:' + Math.max(.55, maxC / L).toFixed(2) + '"' : '';
 }
 function v16lvb(level){
   var L = V12_LV().filter(function(z){ return z[0] === String(level || '').toLowerCase(); })[0] || V12_LV()[0];
@@ -14143,7 +14561,7 @@ function v16lvb(level){
 }
 function v16cntHTML(n){
   var filt = (window._gdOrgan && window._gdOrgan !== 'all') || (window._gdLevel && window._gdLevel !== 'all') || window._gdQ;
-  return '<div class="v12-cnt v16-cnt"><span>' + (filt ? 'Найдено ' + v12num(n) : 'Все гайды') + '</span>' + (filt ? '<span class="lnk" onclick="v14reset()">Сбросить</span>' : '<span class="num">' + v12num(n) + '</span>') + '</div>';
+  return '<div class="v12-cnt v16-cnt"><span>' + (filt ? 'Найдено ' + v12num(n) : 'Все чек-листы') + '</span>' + (filt ? '<span class="lnk" onclick="v14reset()">Сбросить</span>' : '<span class="num">' + v12num(n) + '</span>') + '</div>';
 }
 function v14listHTML(){
   var list = v14filtered();
@@ -14185,7 +14603,7 @@ function v16fill(){
   var lv = window._gdLevel || 'all', base = v14filtered(true), cnt = {};
   base.forEach(function(x){ cnt[x.level] = (cnt[x.level] || 0) + 1; });
   var D = {'старт': 'Первые шаги, хватит часа в неделю', 'рост': 'Есть команда, наводим порядок', 'система': 'Масштаб, управление через цифры'};
-  var opts = [['all', 'Любой уровень', 'Все гайды выбранного органа', base.length, 0]].concat(V12_LV().map(function(l){ return [l[0], l[1], D[l[0]] || '', cnt[l[0]] || 0, l[2]]; }));
+  var opts = [['all', 'Любой уровень', 'Все чек-листы выбранного органа', base.length, 0]].concat(V12_LV().map(function(l){ return [l[0], l[1], D[l[0]] || '', cnt[l[0]] || 0, l[2]]; }));
   var shown = lv === 'all' ? base.length : (cnt[lv] || 0);
   m.innerHTML = '<div class="add-menu v16-sheet"><div class="hd"><b>Фильтры</b><button class="x" aria-label="Закрыть" onclick="document.getElementById(\'gdSheet\').remove()">' + v3icon('x', 18, 2.2) + '</button></div>' +
     '<div class="cap">Уровень глубины</div><div class="lv">' + opts.map(function(o){
@@ -14193,7 +14611,7 @@ function v16fill(){
         '<span class="bars">' + (o[4] ? '<i class="on"></i><i' + (o[4] > 1 ? ' class="on"' : '') + '></i><i' + (o[4] > 2 ? ' class="on"' : '') + '></i>' : '<i class="on"></i><i class="on"></i><i class="on"></i>') + '</span>' +
         '<span class="m"><b>' + o[1] + '</b><span>' + o[2] + '</span></span><span class="c num">' + o[3] + '</span></button>';
     }).join('') + '</div>' +
-    '<button class="v3-primary" data-ok="1" onclick="document.getElementById(\'gdSheet\').remove()">Показать ' + shown + ' ' + v3plural(shown, 'гайд', 'гайда', 'гайдов') + '</button></div>';
+    '<button class="v3-primary" data-ok="1" onclick="document.getElementById(\'gdSheet\').remove()">Показать ' + shown + ' ' + v3plural(shown, 'чек-лист', 'чек-листа', 'чек-листов') + '</button></div>';
 }
 function v16skelTiles(n){ var h = ''; for(var i = 0; i < n; i++) h += '<div class="v15-sk v16-sk"></div>'; return '<div class="v16-grid">' + h + '</div>'; }
 function renderGuides(){
@@ -14206,11 +14624,11 @@ function renderGuides(){
   var started = 0;
   items.forEach(function(x){ var s = v14stat(x); if(s.d || v14started(x)) started++; });
   var free = navRole() !== 'resident';
-  var h = '<div class="v16-ch"><div class="k">' + (free ? 'БИБЛИОТЕКА BS · БЕСПЛАТНО' : 'БИБЛИОТЕКА BS') + '</div>' +
-    '<h1><span class="num">' + total + '</span> ' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '</h1>' +
-    '<p>Результат с цифрами, шаги и чек-листы в каждом</p></div>';
+  var h = '<div class="v16-ch"><div class="k">' + (free ? 'ИНТЕРАКТИВНЫЕ ЧЕК-ЛИСТЫ · БЕСПЛАТНО' : 'ИНТЕРАКТИВНЫЕ ЧЕК-ЛИСТЫ') + '</div>' +
+    '<h1><span class="num">' + total + '</span> ' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '</h1>' +
+    '<p>Отмечайте шаги: прогресс сохраняется, результат с цифрами в каждом</p></div>';
   if(!items.length){
-    if(L && L.error) h += '<div class="v2-card v12-empty" style="margin-top:12px">Не получилось загрузить гайды.<br><button class="v3-outline" style="margin-top:12px" onclick="window._gd=null;loadGuides(true);renderGuides()">Повторить</button></div>';
+    if(L && L.error) h += '<div class="v2-card v12-empty" style="margin-top:12px">Не получилось загрузить чек-листы.<br><button class="v3-outline" style="margin-top:12px" onclick="window._gd=null;loadGuides(true);renderGuides()">Повторить</button></div>';
     else h += '<div class="v16-oc v16-ocsk">' + '<span class="v15-sk"></span><span class="v15-sk"></span><span class="v15-sk"></span>' + '</div>' + v16skelTiles(6);
     el.innerHTML = h;
     return;
@@ -14223,7 +14641,7 @@ function renderGuides(){
     return '<button class="' + (o === g[0] ? 'on' : '') + '" onclick="v14setOrgan(\'' + g[0] + '\')" aria-label="' + g[0] + '">' + v12oIcon(g[0], 18, 1.8) + '<span class="l">' + g[0] + '</span><span class="c num">' + (cnt[g[0]] || 0) + '</span></button>';
   }).join('') + '</div>';
   var so = !!(window._gdSO || window._gdQ);
-  h += '<div class="v16-tools' + (so ? ' so' : '') + '"><div class="v16-cw" id="gdCnt">' + v16cntHTML(v14filtered().length) + '</div><div class="v3-search v16-sq' + (so ? ' open' : '') + '" id="gdQBox">' + navIcon('search', 17) + '<input type="text" placeholder="Касса, найм, клиника" aria-label="Поиск по гайдам" value="' + v2esc(window._gdQ || '') + '" oninput="v14search(this.value)"></div>' +
+  h += '<div class="v16-tools' + (so ? ' so' : '') + '"><div class="v16-cw" id="gdCnt">' + v16cntHTML(v14filtered().length) + '</div><div class="v3-search v16-sq' + (so ? ' open' : '') + '" id="gdQBox">' + navIcon('search', 17) + '<input type="text" placeholder="Касса, найм, клиника" aria-label="Поиск по чек-листам" value="' + v2esc(window._gdQ || '') + '" oninput="v14search(this.value)"></div>' +
     '<button class="v16-ib' + (so ? ' on' : '') + '" id="gdSrchBtn" aria-label="Поиск" onclick="v16srch()">' + navIcon('search', 18, 2) + '</button>' +
     '<button class="v16-fb' + (lv !== 'all' ? ' on' : '') + '" id="gdFiltBtn" onclick="v16filters()">' + V16_FILTER_ICON + '<span>' + (lv !== 'all' ? (V12_LV().filter(function(l){ return l[0] === lv; })[0] || ['', 'Фильтры'])[1] : 'Фильтры') + '</span></button></div>';
   if(L.error && L.stale) h += '<div class="v3-cap" style="margin:10px 4px 0">Показана сохранённая версия: сервер сейчас не ответил</div>';
@@ -14380,10 +14798,10 @@ function v14cta(x, hide){
   var role = navRole();
   var h = '<div class="v14-cta" id="gdCta"' + (hide ? ' style="display:none"' : '') + '><div class="k">ВНЕДРЕНИЕ С ТРЕКЕРОМ</div><div class="t">Внедрить это в твоём бизнесе</div>';
   if(role === 'resident'){
-    h += '<div class="s">Принесите гайд на разбор: трекер посмотрит ваши отметки и поможет довести шаги до результата.</div>' +
+    h += '<div class="s">Принесите чек-лист на разбор: трекер посмотрит ваши отметки и поможет довести шаги до результата.</div>' +
       '<button onclick="showPage(\'myboard\')">Обсудить на разборе с трекером</button>';
   } else {
-    h += '<div class="s">60 минут с трекером: найдём, где этот гайд даст деньги первым, и соберём план на 10 дней.</div>' +
+    h += '<div class="s">60 минут с трекером: найдём, где этот чек-лист даст деньги первым, и соберём план на 10 дней.</div>' +
       '<button onclick="v13book()">Записаться на разбор</button>';
   }
   return h + '</div>';
@@ -14489,9 +14907,9 @@ function renderGuide(){
   if(!G || !G.g){
     var gl = v14F()[id];
     if(gl && gl.error && !gl.g){
-      el.innerHTML = (x ? v14cover(x, null, null) : '') + '<div class="v2-card v12-empty" style="margin-top:12px">' + (gl.error === 'not_found' ? 'Гайд не найден.' : 'Не получилось загрузить гайд. Проверьте связь.') + '<br>' +
+      el.innerHTML = (x ? v14cover(x, null, null) : '') + '<div class="v2-card v12-empty" style="margin-top:12px">' + (gl.error === 'not_found' ? 'Чек-лист не найден.' : 'Не получилось загрузить чек-лист. Проверьте связь.') + '<br>' +
         '<button class="v3-outline" style="margin-top:12px" onclick="delete v14F()[\'' + v2esc(id) + '\'];renderGuide()">Повторить</button>' +
-        '<button class="v3-outline" style="margin-top:8px" onclick="showPage(\'guides\')">Все гайды</button></div>';
+        '<button class="v3-outline" style="margin-top:8px" onclick="showPage(\'guides\')">Все чек-листы</button></div>';
       v14bar(null);
       return;
     }
@@ -14685,7 +15103,7 @@ function v14send(){
     .then(function(j){
       if(j && j.ok) return done('PDF отправлен в чат с ботом', true);
       var e = String((j && j.error) || '');
-      var map = {not_found: 'Гайд не найден', no_pdf: 'PDF этого гайда ещё готовится. Откройте его ниже', unauthorized: 'Откройте приложение заново из Telegram'};
+      var map = {not_found: 'Чек-лист не найден', no_pdf: 'PDF этого чек-листа ещё готовится. Откройте его ниже', unauthorized: 'Откройте приложение заново из Telegram'};
       done(map[e] || (/^http /.test(e) || !e ? 'Не получилось отправить PDF. Попробуйте ещё раз' : e), false);
     })
     .catch(function(){ done('Нет связи. Попробуйте ещё раз', false); });
@@ -14708,6 +15126,8 @@ function v14examples(k){
 }
 function v14exMeta(x){ var hl = x.hero && x.hero.name ? v12clean(x.hero.name) + (x.hero.age ? ', ' + x.hero.age : '') : ''; return v2esc(x.organ) + (hl ? ' · история: ' + gE(hl) : ''); }
 function v14promo(kind){
+  // R17: у резидента в разделах BS чек-листов для лидов нет
+  if(navRole() === 'resident') return '';
   var L = v14data();
   if(!L || !L.at) loadGuides(false);
   var items = (L && L.items) || [];
@@ -14716,8 +15136,8 @@ function v14promo(kind){
   var compact = kind === 'lm';
   var h = '<div class="v12-promo' + (compact ? ' compact' : '') + '" data-v14promo="' + kind + '" onclick="v14openCat()">' +
     '<div class="k"><span>БИБЛИОТЕКА BS</span><span class="free">БЕСПЛАТНО</span></div>' +
-    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '<br>для вашего бизнеса</div></div>' +
-    '<div class="s">Гайды-чек-листы на 10-12 страниц: реальная история с цифрами, метод и шаги, которые можно внедрить за неделю.</div>';
+    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'интерактивный', 'интерактивных', 'интерактивных') + '<br>' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + ' для бизнеса</div></div>' +
+    '<div class="s">Интерактивные чек-листы: реальная история с цифрами, метод и шаги, которые можно внедрить за неделю. Отмечайте, что сделали.</div>';
   if(ex.length){
     h += '<div class="ex">' + ex.map(function(x){
       return '<div onclick="event.stopPropagation();v14openFrom(\'' + v2esc(x.id) + '\')"><span class="o">' + v12oIcon(x.organ, 16) + '</span><span class="x">' + gE(x.title) + '<i>' + v14exMeta(x) + '</i></span>' + v3icon('chev', 16) + '</div>';
@@ -14725,11 +15145,12 @@ function v14promo(kind){
   } else {
     h += '<div class="icons">' + V12_ORG().map(function(g){ return '<span>' + v12oIcon(g[0], 16) + '</span>'; }).join('') + '</div>';
   }
-  h += '<button onclick="event.stopPropagation();v14openCat()">Открыть ' + total + ' ' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '</button></div>';
+  h += '<button onclick="event.stopPropagation();v14openCat()">Открыть ' + total + ' ' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '</button></div>';
   return h;
 }
 // Карточка в Библиотеке
 function v14libFeatured(){
+  if(navRole() === 'resident') return '';
   var L = v14data();
   if(!L || !L.at) loadGuides(false);
   var items = (L && L.items) || [];
@@ -14737,10 +15158,10 @@ function v14libFeatured(){
   var started = items.filter(function(x){ return v14stat(x).d || v14started(x); }).length;
   return '<div class="v12-promo compact" data-v14feat="1" style="margin-top:16px" onclick="v14openCat()">' +
     '<div class="k"><span>НОВОЕ В БИБЛИОТЕКЕ</span><span class="free">' + (started ? 'В РАБОТЕ ' + started : V12_ORG().length + ' ОРГАНОВ') + '</span></div>' +
-    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '<br>для вашего бизнеса</div></div>' +
+    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'интерактивный', 'интерактивных', 'интерактивных') + '<br>' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + ' для бизнеса</div></div>' +
     '<div class="s">История с цифрами, метод, шаги с таблицами и чек-листами. Отмечайте, что внедрили: трекер видит прогресс.</div>' +
     '<div class="icons">' + V12_ORG().map(function(g){ return '<span>' + v12oIcon(g[0], 16) + '</span>'; }).join('') + '</div>' +
-    '<button onclick="event.stopPropagation();v14openCat()">Открыть гайды</button></div>';
+    '<button onclick="event.stopPropagation();v14openCat()">Открыть чек-листы</button></div>';
 }
 
 // ═══ R13 → R14: 99 гайдов как главный бесплатный оффер лида, конверсия после гайда, прогресс на сервер ═══
@@ -14779,7 +15200,7 @@ function v13leadHero(){
   var k = sets.length ? (window._v13ex || 0) % sets.length : 0;
   var h = '<div class="v13-hero" data-v13hero="1" onclick="v14openCat()">' +
     '<div class="k"><span>BUSINESS SURGERY</span><span class="free">БЕСПЛАТНО</span></div>' +
-    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '<br>для вашего бизнеса.<br><b>Бесплатно</b></div></div>' +
+    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'интерактивный', 'интерактивных', 'интерактивных') + '<br>' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + ' для бизнеса.<br><b>Бесплатно</b></div></div>' +
     '<div class="s">Разборы реальных ситуаций с цифрами: метод, шаги с таблицами и чек-листами. Читаете и сразу внедряете.</div>';
   if(sets.length){
     h += '<div class="ex" id="v13ex" aria-live="polite">' + v13exRows(sets[k]) + '</div>' +
@@ -14787,8 +15208,8 @@ function v13leadHero(){
   } else {
     h += '<div class="icons">' + V12_ORG().map(function(g){ return '<span>' + v12oIcon(g[0], 16) + '</span>'; }).join('') + '</div>';
   }
-  h += '<button class="go" onclick="event.stopPropagation();v14openCat()">Открыть гайды' + v3icon('chev', 18, 2.4) + '</button>' +
-    '<div class="ft">' + (started ? 'В работе у вас: <b class="num">' + started + '</b> ' + v3plural(started, 'гайд', 'гайда', 'гайдов')
+  h += '<button class="go" onclick="event.stopPropagation();v14openCat()">Открыть чек-листы' + v3icon('chev', 18, 2.4) + '</button>' +
+    '<div class="ft">' + (started ? 'В работе у вас: <b class="num">' + started + '</b> ' + v3plural(started, 'чек-лист', 'чек-листа', 'чек-листов')
       : '<span class="num">' + (steps ? v12num(steps) : '500+') + '</span> шагов · 7 органов и собственник · 3 уровня') + '</div></div>';
   if(sets.length > 1) v13rotStart();
   return h;
@@ -14814,7 +15235,7 @@ function v13diagDone(){ try{ return !!localStorage.getItem('bs_diagnostic_result
 function v13softBanner(started){
   if(navRole() !== 'lead' || started < 3) return '';
   var done = v13diagDone();
-  return '<div class="v13-soft" onclick="showPage(\'diagnostic\')"><div class="m"><b>' + (done ? 'Сверьте гайды с вашей диагностикой' : 'Вы начали ' + started + ' ' + v3plural(started, 'гайд', 'гайда', 'гайдов') + '. Пора увидеть картину целиком') + '</b>' +
+  return '<div class="v13-soft" onclick="showPage(\'diagnostic\')"><div class="m"><b>' + (done ? 'Сверьте чек-листы с вашей диагностикой' : 'Вы начали ' + started + ' ' + v3plural(started, 'чек-лист', 'чек-листа', 'чек-листов') + '. Пора увидеть картину целиком') + '</b>' +
     '<span>' + (done ? 'Результат покажет, какой орган тянет остальные и что внедрять первым' : 'Диагностика: семь органов за 5 минут. Покажем, какой орган тянет остальные и с чего начать') + '</span>' +
     '<em>' + (done ? 'Мой результат' : 'Пройти диагностику') + '</em></div><div class="go">' + v3icon('chev', 18, 2.2) + '</div></div>';
 }
@@ -14833,23 +15254,23 @@ function v13clNext(){
 }
 function v13book(){
   var x = v14find(v14curId()) || ((v14guide(v14curId()) || {}).g);
-  v15book(x ? 'Прочитал гайд «' + x.title + '». Хочу разобрать, как внедрить это в моём бизнесе' : '');
+  v15book(x ? 'Прошёл чек-лист «' + x.title + '». Хочу разобрать, как внедрить это в моём бизнесе' : '');
 }
 function v13leadDoneHTML(x){
   var y = v13nextCL(x);
-  return '<div class="v13-done" id="gdConv"><div class="k"><span class="ic">' + (V3_CHECK || '') + '</span>Гайд пройден.</div>' +
+  return '<div class="v13-done" id="gdConv"><div class="k"><span class="ic">' + (V3_CHECK || '') + '</span>Чек-лист пройден.</div>' +
     '<div class="t">Следующий шаг: разобрать, как внедрить это в вашем бизнесе</div>' +
-    '<div class="s">60 минут с трекером: найдём, где этот гайд даст деньги первым, и соберём план на 10 дней.</div>' +
+    '<div class="s">60 минут с трекером: найдём, где этот чек-лист даст деньги первым, и соберём план на 10 дней.</div>' +
     '<button class="b1" onclick="v13book()">Записаться на разбор</button>' +
-    '<button class="b2" onclick="v13clNext()"><span class="l">Следующий гайд</span>' + (y ? '<span class="n">' + gE(y.title) + '</span>' : '<span class="n">Все гайды: ' + v2esc(x.organ) + '</span>') + '</button></div>';
+    '<button class="b2" onclick="v13clNext()"><span class="l">Следующий чек-лист</span>' + (y ? '<span class="n">' + gE(y.title) + '</span>' : '<span class="n">Все чек-листы: ' + v2esc(x.organ) + '</span>') + '</button></div>';
 }
 function v13resDoneHTML(x){
   var y = v13nextCL(x);
-  return '<div class="v13-done" id="gdConv"><div class="k"><span class="ic">' + (V3_CHECK || '') + '</span>Гайд пройден.</div>' +
+  return '<div class="v13-done" id="gdConv"><div class="k"><span class="ic">' + (V3_CHECK || '') + '</span>Чек-лист пройден.</div>' +
     '<div class="t">Все пункты отмечены. Закрепите результат на разборе</div>' +
     '<div class="s">Трекер видит отметки и поможет довести внедрение до цифр в точке Б.</div>' +
     '<button class="b1" onclick="showPage(\'myboard\')">Обсудить на разборе с трекером</button>' +
-    '<button class="b2" onclick="v13clNext()"><span class="l">Следующий гайд</span>' + (y ? '<span class="n">' + gE(y.title) + '</span>' : '<span class="n">Все гайды: ' + v2esc(x.organ) + '</span>') + '</button></div>';
+    '<button class="b2" onclick="v13clNext()"><span class="l">Следующий чек-лист</span>' + (y ? '<span class="n">' + gE(y.title) + '</span>' : '<span class="n">Все чек-листы: ' + v2esc(x.organ) + '</span>') + '</button></div>';
 }
 function v13doneHTML(x){ return navRole() === 'resident' ? v13resDoneHTML(x) : v13leadDoneHTML(x); }
 
