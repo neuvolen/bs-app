@@ -913,8 +913,8 @@
 <div class="page" id="page-more"><div id="moreContent"></div></div>
 <div class="page" id="page-home"><div id="homeContent"></div></div>
 <div class="page" id="page-library"><div id="libraryContent"></div></div>
-<div class="page" id="page-checklists"><div id="checklistsContent"></div></div>
-<div class="page" id="page-checklist"><div id="checklistContent"></div></div>
+<div class="page" id="page-guides"><div id="guidesContent"></div></div>
+<div class="page" id="page-guide"><div id="guideContent"></div></div>
 <div class="page" id="page-myboard"><div id="myboardContent"></div></div>
 <div class="page" id="page-leadmagnets"></div>
 <div class="page" id="page-diagnostic"></div>
@@ -3908,7 +3908,7 @@
   .v10-dna-i .d { font-size: 13px; color: #9A9A9A; line-height: 1.5; margin-top: 4px; }
   .v9-mhead.v10-link { cursor: pointer; }
   .v9-mhead.v10-link span { display: flex; align-items: center; gap: 4px; }
-  /* ═══ 99 ЧЕК-ЛИСТОВ ═══ */
+  /* ═══ 99 ГАЙДОВ: каталог и промо ═══ */
   .v12-hero { position: relative; margin: 6px 0 0; padding: 22px 18px 18px; border-radius: 22px; background: #0B0B0B; border: 1px solid #1F1F1F; overflow: hidden; }
   .v12-hero::after { content: ''; position: absolute; right: -70px; top: -70px; width: 220px; height: 220px; border-radius: 50%; border: 1px solid #1C1C1C; box-shadow: 0 0 0 26px #0B0B0B, 0 0 0 27px #181818, 0 0 0 54px #0B0B0B, 0 0 0 55px #141414; pointer-events: none; }
   .v12-hero > * { position: relative; z-index: 1; }
@@ -3956,43 +3956,7 @@
   .v12-ring span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; }
   .v12-ring.full span { color: #000; }
   .v12-empty { padding: 34px 18px; text-align: center; color: #9A9A9A; font-size: 13px; line-height: 1.5; }
-  /* Экран чек-листа */
-  .v12-cl-h { font-size: 28px; font-weight: 800; line-height: 1.1; letter-spacing: -0.8px; margin: 12px 0 0; }
-  .v12-cl-sub { font-size: 15px; color: #9A9A9A; line-height: 1.5; margin-top: 10px; }
-  .v12-cl-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
-  .v12-cl-meta .v12-lvl { height: 28px; padding: 0 11px; border-radius: 14px; font-size: 12px; }
   .v12-chip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 14px; border: 1px solid #2E2E2E; font-size: 12px; font-weight: 800; color: #CFCFCF; }
-  .v12-prog { margin: 14px 0 0; padding: 12px 2px; }
-  .v12-progfix { position: fixed; left: 0; right: 0; top: 0; z-index: 60; margin: 0; background: rgba(0,0,0,0.94); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid #1A1A1A; padding: calc(10px + var(--tg-safe-top, 0px)) 18px 12px; transform: translateY(-110%); transition: transform 0.2s ease; }
-  .v12-progfix.show { transform: none; }
-  .v12-progfix .tt { font-size: 12px; color: #8C8C8C; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 6px; }
-  .v12-prog .r { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; font-weight: 800; }
-  .v12-prog .r span { color: #8C8C8C; font-weight: 700; }
-  .v12-prog .r b { font-size: 13px; }
-  .v12-prog .bar { height: 6px; border-radius: 3px; background: #1F1F1F; margin-top: 8px; overflow: hidden; }
-  .v12-prog .bar i { display: block; height: 100%; background: #FFFFFF; border-radius: 3px; transition: width 0.35s ease; }
-  .v12-items { padding: 4px 0; }
-  .v12-it { display: flex; gap: 14px; padding: 14px 16px; border-bottom: 1px solid #1A1A1A; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
-  .v12-it:last-child { border-bottom: none; }
-  .v12-it .cb { width: 26px; height: 26px; border-radius: 8px; border: 1.5px solid #4A4A4A; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: transparent; transition: background 0.15s, border-color 0.15s; }
-  .v12-it .tx { font-size: 15px; line-height: 1.45; padding-top: 2px; transition: color 0.15s; }
-  .v12-it .tx em { font-style: normal; font-size: 11px; font-weight: 800; color: #5A5A5A; margin-right: 8px; letter-spacing: 0.4px; }
-  .v12-it.on .cb { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
-  .v12-it.on .tx { color: #6E6E6E; }
-  .v12-it:active .cb { transform: scale(0.92); }
-  .v12-box { margin-top: 10px; border-radius: 16px; padding: 16px 18px; }
-  .v12-box .k { font-size: 10px; font-weight: 800; letter-spacing: 2px; display: flex; align-items: center; gap: 8px; }
-  .v12-box .t { font-size: 15px; line-height: 1.5; margin-top: 8px; }
-  .v12-box.res { background: #FFFFFF; color: #000; }
-  .v12-box.res .k { color: #6B6B6B; }
-  .v12-box.err { background: #0E0E0E; border: 1px solid #1F1F1F; border-left: 3px solid #FF6B6F; border-radius: 6px 16px 16px 6px; }
-  .v12-box.err .k { color: #FF6B6F; }
-  .v12-box.err .t { color: #E6E6E6; }
-  .v12-done { margin-top: 12px; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; border: 1px solid #FFFFFF; }
-  .v12-done .ic { width: 34px; height: 34px; border-radius: 10px; background: #FFFFFF; color: #000; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .v12-done b { display: block; font-size: 15px; font-weight: 800; }
-  .v12-done span { display: block; font-size: 12px; color: #9A9A9A; margin-top: 2px; }
-  .v12-share { margin-top: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
   .v12-reset { display: block; margin: 14px auto 0; background: none; border: none; color: #8C8C8C; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
   .v12-mini { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid #1A1A1A; cursor: pointer; }
   .v12-mini:last-child { border-bottom: none; }
@@ -4014,7 +3978,7 @@
   .v12-promo .ex div span.x { flex: 1; min-width: 0; }
   .v12-promo .ex div span.x i { display: block; font-style: normal; font-size: 11.5px; color: #8C8C8C; font-weight: 700; margin-top: 2px; }
   .v12-promo .ex div > svg { color: #B0B0B0; flex-shrink: 0; }
-  /* R13: герой лида «99 чек-листов», конверсия после чек-листа */
+  /* R13/R14: герой лида «99 гайдов», конверсия после гайда */
   .v13-hero { margin: 2px -2px 0; background: #FFFFFF; color: #000; border-radius: 24px; padding: 18px 18px 16px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .v13-hero .k { font-size: 10px; font-weight: 800; letter-spacing: 2.2px; color: #6B6B6B; display: flex; justify-content: space-between; align-items: center; }
   .v13-hero .k .free { color: #FFFFFF; background: #000; border-radius: 6px; padding: 4px 8px; letter-spacing: 1.4px; }
@@ -4066,6 +4030,167 @@
   .v12-promo.compact .t { font-size: 17px; }
   .v12-libcl { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; border-radius: 12px; background: #F2F2F2; font-size: 14px; font-weight: 800; }
   .v12-libcl span { font-size: 12px; color: #6B6B6B; font-weight: 700; }
+  /* ═══ R14: 99 гайдов, каталог и ридер ═══ */
+  .v14-chero .t b { display: inline-block; margin-top: 3px; border-bottom: 3px solid #FFFFFF; line-height: 1.05; }
+  .v14-card .v14-tr { display: flex; align-items: center; gap: 6px; }
+  .v14-no { font-size: 11px; font-weight: 800; color: #6E6E6E; letter-spacing: 0.4px; }
+  .v14-pdfb { font-size: 9.5px; font-weight: 800; letter-spacing: 1.2px; color: #000; background: #FFFFFF; border-radius: 5px; padding: 3px 6px; }
+  .v14-hl { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 12.5px; color: #CFCFCF; font-weight: 600; min-width: 0; }
+  .v14-hl i { flex-shrink: 0; width: 22px; height: 22px; border-radius: 11px; background: #1F1F1F; color: #FFFFFF; font-style: normal; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .v14-hl span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .v14-card .meta { flex-wrap: wrap; row-gap: 6px; }
+  .v14-card .meta .v12-lvl { height: 20px; padding: 0 7px; font-size: 10.5px; }
+  /* Ридер */
+  .v14 { color: #E6E6E6; }
+  .v14-cover { position: relative; margin: 0 -16px; padding: 26px 20px 22px; background: #000; border-bottom: 1px solid #1A1A1A; overflow: hidden; }
+  .v14-cover .bgn { position: absolute; right: -14px; top: -34px; font-size: 220px; font-weight: 800; letter-spacing: -14px; line-height: 1; color: transparent; -webkit-text-stroke: 1px #222; pointer-events: none; user-select: none; }
+  .v14-cover > *:not(.bgn) { position: relative; }
+  .v14-cover .k { display: flex; justify-content: space-between; align-items: center; font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; text-transform: uppercase; }
+  .v14-cover .k .o { display: inline-flex; align-items: center; gap: 7px; color: #CFCFCF; }
+  .v14-cover .k .o svg { color: #FFFFFF; }
+  .v14-cover .k .num { letter-spacing: 1px; }
+  .v14-cover h1 { font-size: 34px; font-weight: 800; line-height: 1.04; letter-spacing: -1.2px; color: #FFFFFF; margin: 54px 0 0; max-width: 330px; }
+  .v14-cover .sub { font-size: 16px; line-height: 1.5; color: #A6A6A6; margin: 14px 0 0; }
+  .v14-cover .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+  .v14-cover .meta .v12-lvl { height: 28px; padding: 0 11px; border-radius: 14px; font-size: 12px; }
+  .v14-cprog { margin-top: 18px; padding-top: 14px; border-top: 1px solid #1F1F1F; }
+  .v14-cprog .r { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; font-weight: 800; color: #8C8C8C; letter-spacing: 0.3px; }
+  .v14-cprog .r b { color: #FFFFFF; font-size: 13px; }
+  .v14-cprog .bar, .v14-bar .ln { height: 4px; border-radius: 2px; background: #1F1F1F; margin-top: 8px; overflow: hidden; }
+  .v14-cprog .bar i, .v14-bar .ln i { display: block; height: 100%; width: 0; background: #FFFFFF; border-radius: 2px; transition: width 0.3s ease; }
+  .v14-promise { margin: 18px 0 0; background: #FFFFFF; color: #000; border-radius: 18px; padding: 16px 18px 17px; }
+  .v14-promise .k { font-size: 10px; font-weight: 800; letter-spacing: 2px; color: #6B6B6B; }
+  .v14-promise p { margin: 8px 0 0; font-size: 16px; line-height: 1.5; font-weight: 700; }
+  .v14-sec { margin-top: 40px; }
+  .v14-kick { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 800; letter-spacing: 2.2px; color: #8C8C8C; text-transform: uppercase; }
+  .v14-kick i { width: 18px; height: 1px; background: #4A4A4A; }
+  .v14-kick span:last-child { color: #FFFFFF; }
+  .v14-who { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
+  .v14-who .av { width: 46px; height: 46px; border-radius: 23px; background: #FFFFFF; color: #000; font-size: 19px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .v14-who .m { min-width: 0; }
+  .v14-who b { display: block; font-size: 19px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.3px; }
+  .v14-who .m > span { display: block; font-size: 13px; color: #9A9A9A; line-height: 1.4; margin-top: 2px; }
+  .v14-who.solo { margin-top: 18px; padding: 14px 16px; border: 1px solid #1F1F1F; border-radius: 16px; background: #0B0B0B; }
+  .v14-who.solo b { font-size: 12px; color: #8C8C8C; letter-spacing: 1.6px; text-transform: uppercase; }
+  .v14-who.solo .m > span { font-size: 15px; color: #FFFFFF; font-weight: 700; }
+  .v14-p { font-size: 16px; line-height: 1.68; color: #DCDCDC; margin: 14px 0 0; letter-spacing: 0.05px; }
+  .v14-p.first { margin-top: 16px; }
+  .v14-before { margin-top: 20px; border: 1px solid #1F1F1F; border-radius: 18px; background: #0B0B0B; overflow: hidden; }
+  .v14-before .hd { font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; text-transform: uppercase; padding: 14px 16px 0; }
+  .v14-before .gr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 6px; }
+  .v14-before .gr div { padding: 12px 16px 14px; border-top: 1px solid #1A1A1A; }
+  .v14-before .gr div:nth-child(2n) { border-left: 1px solid #1A1A1A; }
+  .v14-before .gr b { display: block; font-size: 17px; font-weight: 800; color: #FFFFFF; line-height: 1.25; letter-spacing: -0.3px; }
+  .v14-before .gr span { display: block; font-size: 12px; color: #8C8C8C; line-height: 1.4; margin-top: 4px; }
+  .v14-note { margin-top: 10px; font-size: 11.5px; color: #6E6E6E; line-height: 1.4; }
+  .v14-thesis { margin: 16px 0 0; font-size: 18px; line-height: 1.55; font-weight: 600; color: #F2F2F2; letter-spacing: -0.1px; }
+  .v14-stats { margin-top: 20px; border-top: 1px solid #1F1F1F; }
+  .v14-stats div { display: flex; align-items: baseline; gap: 16px; padding: 16px 0; border-bottom: 1px solid #1F1F1F; }
+  .v14-stats b { flex: 0 0 118px; font-size: 30px; font-weight: 800; color: #FFFFFF; letter-spacing: -1.2px; line-height: 1; overflow-wrap: anywhere; }
+  .v14-stats span { flex: 1; min-width: 0; font-size: 13.5px; color: #A6A6A6; line-height: 1.45; }
+  .v14-cond { margin-top: 16px; padding: 14px 16px; border-radius: 14px; border: 1px dashed #3A3A3A; }
+  .v14-cond .k, .v14-case .k, .v14-formula .k { font-size: 10px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; }
+  .v14-cond p { margin: 6px 0 0; font-size: 14.5px; line-height: 1.55; color: #DCDCDC; }
+  .v14-toc { margin-top: 40px; border-radius: 20px; background: #0B0B0B; border: 1px solid #1F1F1F; padding: 6px 0; }
+  .v14-toc .hd { display: flex; justify-content: space-between; padding: 12px 16px 8px; font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; text-transform: uppercase; }
+  .v14-toc .r { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-top: 1px solid #1A1A1A; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .v14-toc .r:active { background: #141414; }
+  .v14-toc .r .n { width: 30px; flex-shrink: 0; font-size: 15px; font-weight: 800; color: #6E6E6E; }
+  .v14-toc .r.ep .n { color: #FFFFFF; }
+  .v14-toc .r .t { flex: 1; min-width: 0; font-size: 15px; font-weight: 700; color: #FFFFFF; line-height: 1.35; }
+  .v14-toc .r .c { flex-shrink: 0; font-size: 11.5px; font-weight: 800; color: #8C8C8C; min-width: 28px; height: 22px; padding: 0 6px; border-radius: 11px; border: 1px solid #2E2E2E; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; }
+  .v14-toc .r .c:has(svg) { border: none; padding: 0; }
+  .v14-toc .r .c.ok { background: #FFFFFF; border-color: #FFFFFF; color: #000; padding: 0; width: 22px; min-width: 22px; }
+  .v14-step { margin-top: 48px; scroll-margin-top: 72px; }
+  .v14-sec { scroll-margin-top: 72px; }
+  .v14-sn { display: flex; align-items: flex-end; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid #1F1F1F; }
+  .v14-sn .big { font-size: 64px; font-weight: 800; line-height: 0.82; letter-spacing: -4px; color: #FFFFFF; }
+  .v14-sn .of { font-size: 11px; font-weight: 800; letter-spacing: 1.8px; color: #8C8C8C; text-transform: uppercase; padding-bottom: 3px; }
+  .v14-step h2, .v14-h2 { font-size: 25px; font-weight: 800; line-height: 1.15; letter-spacing: -0.7px; color: #FFFFFF; margin: 16px 0 0; }
+  .v14-lead { margin: 10px 0 0; font-size: 17px; line-height: 1.5; font-weight: 700; color: #BDBDBD; }
+  .v14-formula { margin-top: 20px; background: #000; border: 1.5px solid #FFFFFF; border-radius: 16px; padding: 14px 16px 16px; }
+  .v14-formula .k { color: #8C8C8C; }
+  .v14-formula .f { margin-top: 8px; font-size: 17px; font-weight: 800; color: #FFFFFF; line-height: 1.45; letter-spacing: -0.2px; }
+  .v14-tbl { margin: 20px -16px 0; padding: 0 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .v14-tbl::-webkit-scrollbar { display: none; }
+  .v14-tbl table { border-collapse: separate; border-spacing: 0; min-width: 100%; font-size: 13.5px; line-height: 1.45; border: 1px solid #262626; border-radius: 14px; overflow: hidden; }
+  .v14-tbl th { text-align: left; font-size: 10.5px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: #8C8C8C; background: #111; padding: 11px 12px; white-space: nowrap; }
+  .v14-tbl td { padding: 11px 12px; border-top: 1px solid #1F1F1F; color: #DCDCDC; vertical-align: top; min-width: 84px; max-width: 220px; }
+  .v14-tbl td:first-child { font-weight: 700; color: #FFFFFF; min-width: 104px; }
+  .v14-tbl th + th, .v14-tbl td + td { border-left: 1px solid #1A1A1A; }
+  .v14-tbl.ep td { white-space: normal; }
+  .v14-tblh { display: none; margin-top: 8px; font-size: 11.5px; color: #6E6E6E; font-weight: 700; text-align: right; }
+  .v14-tbl.ovf + .v14-tblh { display: block; }
+  .v14-epl { margin-top: 18px; border: 1px solid #262626; border-radius: 18px; overflow: hidden; }
+  .v14-epl .hd { display: flex; justify-content: space-between; gap: 10px; padding: 11px 16px; background: #111; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; color: #8C8C8C; text-transform: uppercase; }
+  .v14-epl .hd span:nth-child(2) { flex: 1; }
+  .v14-epl .hd span:first-child { display: none; }
+  .v14-epl .r { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-top: 1px solid #1F1F1F; }
+  .v14-epl .m { flex: 1; min-width: 0; }
+  .v14-epl .m b { display: block; font-size: 15px; font-weight: 800; color: #FFFFFF; line-height: 1.3; }
+  .v14-epl .ba { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin-top: 5px; font-size: 13.5px; line-height: 1.4; }
+  .v14-epl .ba .b { color: #7A7A7A; }
+  .v14-epl .ba .ar { color: #4A4A4A; }
+  .v14-epl .ba .a { color: #E6E6E6; font-weight: 700; }
+  .v14-epl .chg { flex-shrink: 0; max-width: 42%; text-align: right; font-size: 17px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.3px; line-height: 1.25; }
+  .v14-epl .chg.neg { color: inherit; }
+  .v14-tbl.ep td.chg { font-weight: 800; color: #FFFFFF; white-space: nowrap; min-width: 0; }
+  .v14-tbl.ep td.chg.neg { color: inherit; }
+  .v14-cl { margin-top: 20px; border-radius: 18px; background: #0B0B0B; border: 1px solid #262626; overflow: hidden; }
+  .v14-cl .hd { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; text-transform: uppercase; border-bottom: 1px solid #1A1A1A; }
+  .v14-cl .hd b { color: #FFFFFF; letter-spacing: 0.4px; font-size: 12px; }
+  .v14-it { display: flex; gap: 14px; padding: 14px 16px; border-bottom: 1px solid #1A1A1A; cursor: pointer; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+  .v14-it:last-child { border-bottom: none; }
+  .v14-it .cb { width: 26px; height: 26px; border-radius: 8px; border: 1.5px solid #4A4A4A; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: transparent; transition: background 0.15s, border-color 0.15s; }
+  .v14-it .tx { font-size: 15.5px; line-height: 1.5; color: #E6E6E6; padding-top: 2px; transition: color 0.15s; }
+  .v14-it.on .cb { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v14-it.on .tx { color: #7A7A7A; }
+  .v14-it:active .cb { transform: scale(0.92); }
+  .v14-case { margin-top: 20px; background: #161616; border-radius: 16px; padding: 15px 16px 16px; }
+  .v14-case p { margin: 8px 0 0; font-size: 15px; line-height: 1.6; color: #D4D4D4; }
+  .v14-q { margin: 24px 0 0; padding: 2px 0 2px 18px; border-left: 3px solid #FFFFFF; }
+  .v14-q p { margin: 0; font-size: 18px; line-height: 1.5; font-weight: 700; color: #FFFFFF; letter-spacing: -0.2px; }
+  .v14-q cite { display: block; margin-top: 10px; font-style: normal; font-size: 12.5px; color: #8C8C8C; font-weight: 700; }
+  .v14-q.big { border-left: none; padding: 0; margin-top: 26px; }
+  .v14-q.big p { font-size: 21px; line-height: 1.42; }
+  .v14-q.big p::before { content: '«'; } .v14-q.big p::after { content: '»'; }
+  .v14-ep { margin-top: 56px; padding-top: 28px; border-top: 1px solid #262626; }
+  .v14-take { margin-top: 26px; background: #FFFFFF; color: #000; border-radius: 20px; padding: 16px 18px 6px; }
+  .v14-take .hd { font-size: 10.5px; font-weight: 800; letter-spacing: 2px; color: #6B6B6B; text-transform: uppercase; }
+  .v14-take .r { display: flex; gap: 12px; padding: 12px 0 14px; border-bottom: 1px solid #EDEDED; }
+  .v14-take .r:last-child { border-bottom: none; }
+  .v14-take .n { flex-shrink: 0; width: 26px; height: 26px; border-radius: 13px; background: #000; color: #FFFFFF; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .v14-take p { margin: 0; font-size: 15.5px; line-height: 1.5; font-weight: 700; }
+  .v14-cta { margin-top: 28px; border-radius: 22px; background: #FFFFFF; color: #000; padding: 20px 18px 18px; }
+  .v14-cta .k { font-size: 10px; font-weight: 800; letter-spacing: 2.2px; color: #6B6B6B; }
+  .v14-cta .t { font-size: 26px; font-weight: 800; line-height: 1.1; letter-spacing: -0.8px; margin-top: 10px; }
+  .v14-cta .s { font-size: 14px; color: #4A4A4A; line-height: 1.5; margin-top: 10px; }
+  .v14-cta button { margin-top: 16px; width: 100%; height: 56px; border-radius: 14px; border: none; background: #000; color: #FFFFFF; font-family: inherit; font-size: 15.5px; font-weight: 800; cursor: pointer; }
+  .v14-pdf { margin-top: 12px; }
+  .v14-pdf button { width: 100%; height: 54px; border-radius: 14px; font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px; -webkit-tap-highlight-color: transparent; }
+  .v14-pdf .v14-b1 { border: 1.5px solid #FFFFFF; background: transparent; color: #FFFFFF; }
+  .v14-pdf .v14-b1.busy { opacity: 0.6; }
+  .v14-pdf .v14-b1.sent { background: #FFFFFF; color: #000; }
+  .v14-pdf .v14-b2 { margin-top: 8px; border: 1px solid #2E2E2E; background: #0B0B0B; color: #FFFFFF; }
+  .v14-pdf button:active { transform: scale(0.99); }
+  .v14-pdfc { text-align: center; font-size: 11.5px; color: #6E6E6E; font-weight: 600; margin-top: 8px; }
+  .v14-po .v14-cover h1 { margin-top: 40px; }
+  .v14-pobtn .v14-pdf { margin-top: 18px; }
+  .v14-pobtn .v14-b1 { background: #FFFFFF; color: #000; border-color: #FFFFFF; height: 58px; }
+  .v14-pobtn .v14-b1.sent { background: #FFFFFF; }
+  .v14-ponote { display: flex; gap: 12px; align-items: flex-start; margin-top: 16px; padding: 14px 16px; border-radius: 14px; border: 1px dashed #333; color: #9A9A9A; font-size: 13px; line-height: 1.5; }
+  .v14-ponote svg { flex-shrink: 0; color: #FFFFFF; margin-top: 1px; }
+  #gdDone .v13-done { margin-top: 28px; }
+  /* Липкая панель ридера */
+  .v14-bar { position: fixed; left: 0; right: 0; top: 0; z-index: 140; display: flex; align-items: center; gap: 8px; padding: calc(8px + var(--tg-safe-top, 0px)) 14px 10px 6px; background: rgba(0,0,0,0.95); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid #1A1A1A; transform: translateY(-110%); transition: transform 0.2s ease; }
+  .v14-bar.show { transform: none; }
+  .v14-bar .bk { width: 38px; height: 38px; border: none; background: none; color: #FFFFFF; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+  .v14-bar .m { flex: 1; min-width: 0; }
+  .v14-bar .tt { font-size: 14px; font-weight: 800; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .v14-bar .sb { font-size: 11.5px; color: #8C8C8C; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+  .v14-bar .pc { flex-shrink: 0; font-size: 12px; font-weight: 800; color: #CFCFCF; }
+  .v14-bar .ln { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; margin: 0; border-radius: 0; background: transparent; }
+  .v14-bar .ln i { border-radius: 0; }
 </style>
 
 <div class="modal-bg" id="attendModal">
@@ -4083,7 +4208,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202608291536";
+var APP_VERSION = "202610021400";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0].replace(/[^/]*$/, '');
@@ -4216,6 +4341,7 @@ const NAV_ICONS = {
   pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
   minus:'<path d="M5 12h14"/>',
   check:'<path d="M5 12l5 5 9-10"/>',
+  book:'<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19"/><path d="M9 7.5h6M9 11h4"/>',
   cl:'<rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M8 8.5l1.5 1.5 2.5-2.8M8 14.5l1.5 1.5 2.5-2.8M14.5 9h2M14.5 15h2"/>'
 };
 function navIcon(k, size, w){
@@ -4227,10 +4353,10 @@ const NAV = {
     {id:'meet', label:'Встречи',   icon:'cal',  pages:[{id:'schedule', label:'Расписание'}]},
     {id:'plus', plus:true},
     {id:'res',  label:'Резиденты', icon:'club', pages:[{id:'residents', label:'Резиденты'},{id:'reports', label:'Отчёты'},{id:'visits', label:'Посещения'},{id:'fines', label:'Штрафы'},{id:'restasks', label:'Задачи'}]},
-    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true}]}
+    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'99 гайдов', hidden:true},{id:'guide', label:'Гайд', hidden:true}]}
   ],
   resident: [
-    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'}]},
+    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'},{id:'guides', label:'99 гайдов', hidden:true},{id:'guide', label:'Гайд', hidden:true}]},
     {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Мой разбор'},{id:'wheel', label:'Колесо'},{id:'diagnostic', label:'Диагностика'}]},
     {id:'tasks', label:'Задачи',  icon:'tasks', pages:[{id:'mytasks', label:'Задачи'},{id:'mymeetings', label:'Встречи'}]},
     {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила', hidden:true}]},
@@ -4238,7 +4364,7 @@ const NAV = {
   ],
   lead: [
     {id:'home', label:'Главная',     icon:'home',  pages:[{id:'about', label:'Главная'}]},
-    {id:'cl',   label:'Чек-листы',   icon:'cl',    pages:[{id:'checklists', label:'99 чек-листов'}]},
+    {id:'cl',   label:'Гайды',       icon:'book',  pages:[{id:'guides', label:'99 гайдов'},{id:'guide', label:'Гайд', hidden:true}]},
     {id:'diag', label:'Диагностика', icon:'board', pages:[{id:'diagnostic', label:'Диагностика'}]},
     {id:'mat',  label:'Материалы',   icon:'doc',   pages:[{id:'leadmagnets', label:'Материалы'}]},
     {id:'razbor', label:'Разбор',    icon:'cal',   pages:[{id:'leadrazbor', label:'Разбор'}]}
@@ -4530,16 +4656,20 @@ function init(){
       // Платформа
       'platform':     {admin:'about',       resident:'myboard',     lead:'about'},
       'board':        {admin:'about',       resident:'myboard',     lead:'about'},
-      // 99 чек-листов: для всех ролей
-      'checklists':   {admin:'checklists',  resident:'checklists',  lead:'checklists'},
-      '99':           {admin:'checklists',  resident:'checklists',  lead:'checklists'}
+      // 99 гайдов: для всех ролей (старые ссылки на чек-листы ведут в каталог)
+      'guides':       {admin:'guides',      resident:'guides',      lead:'guides'},
+      'checklists':   {admin:'guides',      resident:'guides',      lead:'guides'},
+      'checklist':    {admin:'guides',      resident:'guides',      lead:'guides'},
+      '99':           {admin:'guides',      resident:'guides',      lead:'guides'}
     };
     
     function _resolveInitialPage(rawPage, role){
       if(!rawPage) return null;
-      // #checklist_c012: витрина, затем сам чек-лист
-      var clm = /^(?:checklists?|cl)[_-](c\d{1,4})$/i.exec(String(rawPage));
-      if(clm){ window._clDeep = clm[1].toLowerCase(); return 'checklists'; }
+      // #guide_g012 и start_param guide_g012: каталог, затем ридер гайда
+      var gdm = /^(?:guides?|g)[_-](g?\d{1,3})$/i.exec(String(rawPage));
+      if(gdm && v14normId(gdm[1])){ window._gdDeep = v14normId(gdm[1]); return 'guides'; }
+      // Старые #checklist_c012: просто каталог гайдов
+      if(/^(?:checklists?|cl)[_-]c\d{1,4}$/i.test(String(rawPage))) return 'guides';
       var aliases = PAGE_ALIASES[String(rawPage).toLowerCase()];
       if(aliases && aliases[role]) return aliases[role];
       // Если алиас не найден, проверим что такая страница есть в доступных
@@ -4644,7 +4774,7 @@ function renderTabs(){
   var pages = grp.pages || [];
   var act = document.querySelector('.page.active');
   var actId = act ? act.id.replace('page-','') : '';
-  var hideChips = pages.length < 2 ||
+  var hideChips = pages.filter(function(t){ return !t.hidden; }).length < 2 ||
     (role === 'resident' && (grp.id === 'tasks' || actId === 'residents' || actId === 'mystatus' || actId === 'about')) ||
     (role === 'admin' && actId === 'more');
   if(wrap) wrap.classList.toggle('single', hideChips);
@@ -4748,9 +4878,9 @@ function _showPageCore(id){
   if(id === 'leadmagnets'){ try{ renderLeadmagnets(); }catch(e){ console.error('lm:', e); } }
   if(id === 'leadrazbor'){ try{ renderLeadRazbor(); }catch(e){ console.error('razbor:', e); } }
   if(id === 'library'){ try{ renderLibrary(); }catch(e){ console.error('library:', e); } }
-  if(id === 'checklists'){ try{ renderChecklists(); }catch(e){ console.error('checklists:', e); } }
-  if(id === 'checklist'){ try{ renderChecklist(); }catch(e){ console.error('checklist:', e); } }
-  try{ if(typeof v12progFixSync === 'function') v12progFixSync(); }catch(e){}
+  if(id === 'guides'){ try{ renderGuides(); }catch(e){ console.error('guides:', e); } }
+  if(id === 'guide'){ try{ renderGuide(); }catch(e){ console.error('guide:', e); } }
+  try{ if(typeof v14barSync === 'function') v14barSync(); }catch(e){}
 }
 
 // ══════════ НАВИГАЦИЯ: ИСТОРИЯ, «НАЗАД», ПРОКРУТКА ══════════
@@ -4774,7 +4904,7 @@ function v9title(id){
     mymeetings:'Встречи', mystatus:'Профиль', about:'О проекте', rules:'Правила', wheel:'Колесо', diagnostic:'Диагностика', leadmagnets:'Материалы',
     library:'Библиотека', reports:'Отчёты', fines:'Штрафы', visits:'Посещения', restasks:'Задачи резидентов', crm:'CRM', subscribers:'Подписчики',
     custdev:'CustDev', content:'Полезное', wheeladmin:'Колесо клуба', todos:'Задачи команды', leadrazbor:'Разбор',
-    checklists:'99 чек-листов', checklist:'Чек-лист'};
+    guides:'99 гайдов', guide:'Гайд'};
   return T[id] || 'Назад';
 }
 function v9activeId(){ var a = document.querySelector('.page.active'); return a ? a.id.replace('page-', '') : ''; }
@@ -4805,7 +4935,13 @@ function showPage(id, opts){
 // Глубокая ссылка: Правила открываются поверх «О проекте», чтобы «Назад» вёл туда
 function v11openDeep(id){
   if(id === 'rules'){ showPage('about'); window._navStack.length = 0; showPage('rules'); return; }
-  if(id === 'checklists'){ var r0 = navRole(); showPage(r0 === 'admin' ? 'more' : (r0 === 'lead' ? 'about' : 'home')); window._navStack.length = 0; showPage('checklists'); return; }
+  if(id === 'guides'){
+    var r0 = navRole();
+    if(r0 !== 'lead'){ showPage(r0 === 'admin' ? 'more' : 'home'); window._navStack.length = 0; }
+    showPage('guides');
+    if(window._gdDeep){ var gid = window._gdDeep; window._gdDeep = null; v14open(gid); }
+    return;
+  }
   showPage(id);
 }
 function v9detailOpen(){ var d = document.getElementById('detailView'); return !!(d && d.classList.contains('show')); }
@@ -5538,7 +5674,7 @@ function v11homeLib(){
   return '<div class="v11-lib" onclick="showPage(\'library\')"><div class="v3-row-sb" style="align-items:flex-start;gap:12px"><div style="min-width:0">' +
     '<div class="k">БАЗА ЗНАНИЙ КЛУБА</div><div class="t">Библиотека BS</div><div class="s">' + v2esc(sub) + '</div></div>' +
     (items.length ? '<div class="n num">' + items.length + '</div>' : '') + '</div>' + tiles +
-    '<div class="v12-libcl" onclick="event.stopPropagation();v12openCL()"><div>+ 99 чек-листов <span>по органам бизнеса</span></div>' + v3icon('chev', 16) + '</div>' +
+    '<div class="v12-libcl" onclick="event.stopPropagation();v14openCat()"><div>+ 99 гайдов <span>разборы с цифрами и чек-листами</span></div>' + v3icon('chev', 16) + '</div>' +
     '<button onclick="event.stopPropagation();showPage(\'library\')">Открыть</button></div>';
 }
 function v9libFiltered(){
@@ -5574,7 +5710,7 @@ function renderLibrary(){
   var L = window._lib;
   var n = L && L.items ? L.items.length : 0;
   var h = v3headBig(n ? n + ' ' + v3plural(n, 'материал', 'материала', 'материалов') + ' · синхронно с платформой' : 'База знаний клуба', 'Библиотека');
-  h += v12libFeatured();
+  h += v14libFeatured();
   if(!L){
     el.innerHTML = h + '<div class="loading"><div class="spinner"></div></div>';
     loadLibrary(false).then(function(){ if(v9activeId() === 'library') renderLibrary(); });
@@ -11569,7 +11705,7 @@ function renderAbout(){
     if(ready < areas) nextArea = AREAS[ready] || null;
     var diagText = ready >= areas ? 'Диагностика пройдена. Результат: ' + (dr && dr.totalPct != null ? dr.totalPct + ' из 100' : 'готов') + '.'
       : (ready && nextArea ? 'Готово органов: ' + ready + '. Дальше ' + nextArea.organ + ': ' + String(nextArea.label).toLowerCase() + '.' : 'Семь органов бизнеса, 5 минут. Покажем слабые места.');
-    // Главный бесплатный оффер: 99 чек-листов, сразу на первом экране
+    // Главный бесплатный оффер: 99 гайдов, сразу на первом экране
     h += v13leadHero();
     h += '<div class="v2-card" style="margin-top:12px;padding:16px 18px;cursor:pointer" onclick="showPage(\'diagnostic\')">' +
       '<div class="v3-row-sb" style="align-items:baseline"><div style="font-size:16px;font-weight:800">Диагностика бизнеса</div><div class="num" style="font-size:13px;color:#9A9A9A">' + ready + '/' + areas + '</div></div>' +
@@ -11743,7 +11879,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
     ]],
     ['BS', [
       ext('doc', 'Полезное', 'Ссылки и материалы команды', 'useful'),
-      pg('check', '99 чек-листов', 'Витрина для лидов и резидентов', "showPage('checklists')"),
+      pg('book', '99 гайдов', 'Каталог и ридер для лидов и резидентов', "showPage('guides')"),
       pg('tasks', 'Цели и задачи', 'Задачи команды: Рустам и Береке', "showPage('todos')"),
       ext('msg', 'Рекомендации ИИ', 'Подсказки по клубу', 'aiRec'),
       ext('doc', 'Google Doc', 'Документ проекта', 'gdoc'),
@@ -11864,17 +12000,17 @@ function renderLeadmagnets(){
     <div class="lm-min">
       <div class="lm-min-head">
         <div class="hero-label">Материалы BS</div>
-        <h1 class="hero-title">Чек-листы и подкасты</h1>
+        <h1 class="hero-title">Гайды и подкасты</h1>
         <div class="hero-sub">Реальные кейсы резидентов с цифрами «было / стало». Концентрат того что мы делаем на разборах.</div>
       </div>
-      ${v12promo('lm')}
+      ${v14promo('lm')}
       
       <div class="lm-section">
-        <div class="section-min-label" id="lmCountLabel">Чек-листы</div>
+        <div class="section-min-label" id="lmCountLabel">PDF-материалы</div>
         
         <!-- Поиск -->
         <div class="lm-search-row">
-          <input type="text" id="lmSearch" class="lm-search-input" placeholder="Найти чек-лист..."/>
+          <input type="text" id="lmSearch" class="lm-search-input" placeholder="Найти материал..."/>
         </div>
         
         <!-- Категории-фильтры (dropdown с явным индикатором) -->
@@ -12036,7 +12172,7 @@ function renderLeadmagnets(){
       
       // Обновим счётчик
       var lbl = document.getElementById('lmCountLabel');
-      if(lbl) lbl.textContent = filtered.length + ' чек-' + (filtered.length === 1 ? 'лист' : (filtered.length<5 && filtered.length>0 ? 'листа' : 'листов'));
+      if(lbl) lbl.textContent = filtered.length + ' ' + v3plural(filtered.length, 'материал', 'материала', 'материалов');
       
       if(!filtered.length){
         listEl.innerHTML = '<div class="lm-empty-result">Ничего не найдено</div>';
@@ -12941,101 +13077,220 @@ function selectMonth(idx){
   document.querySelectorAll('#plMonthsRow .v3-mchip').forEach(function(c, i){ c.classList.toggle('on', i === idx); });
 }
 
-// ═══ 99 ЧЕК-ЛИСТОВ: витрина, экран чек-листа, промо-блоки для всех ролей ═══
-// Данные: GET app/checklists → {version, items}. Кэш с версией в localStorage, без сети показываем кэш.
-// Отметки хранятся на устройстве: bs_cl_p_<id> = [номера выполненных пунктов]
+// ═══ 99 ГАЙДОВ: каталог, ридер, промо-блоки для всех ролей ═══
+// Индекс: GET app/guides → {version, items}. Полный гайд: GET app/guide/<id>. PDF: POST app/guide/<id>/send или публичная ссылка.
+// Кэш: bs_guides (индекс с версией), bs_guide_<id> (полные гайды, не больше 15, вытесняем самые давние).
+// Отметки на устройстве: bs_gd_p_<id> = ["<номер шага>:<номер пункта>"], место чтения: bs_gd_pos = {id: {y, p, t}}
 function V12_ORG(){ return [['Финансы', 'blood'], ['Стратегия', 'brain'], ['Маркетинг', 'heart'], ['Продажи', 'hands'], ['Команда', 'spine'], ['Процессы', 'dna'], ['Аналитика', 'eyes'], ['Собственник', 'owner']]; }
 function V12_LV(){ return [['старт', 'Старт', 1], ['рост', 'Рост', 2], ['система', 'Система', 3]]; }
 function V12_OWNER_ICON(){ return '<circle cx="10" cy="7" r="3.5"/><path d="M3.5 20.5c0-3.9 2.9-6.6 6.5-6.6 1.3 0 2.5.3 3.4.9"/><path d="M18.2 11.5l-2.7 4.5h3.6l-2.7 4.5"/>'; }
-function V12_SHARE_ICON(){ return '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L10 14"/><path d="M21 3l-6.5 18-3.5-7-7-3.5z"/></svg>'; }
 function v12organId(o){ for(var i = 0; i < V12_ORG().length; i++) if(V12_ORG()[i][0] === o) return V12_ORG()[i][1]; return 'brain'; }
 function v12oIcon(organ, size, w){
   var id = v12organId(organ);
   return '<svg width="' + (size || 20) + '" height="' + (size || 20) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.8) + '" stroke-linecap="round" stroke-linejoin="round">' + (id === 'owner' ? V12_OWNER_ICON() : (((typeof V9_ORGAN_ICONS === 'object' && V9_ORGAN_ICONS) || {})[id] || '')) + '</svg>';
 }
-function v12num(n){ return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+function v12num(n){ return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0'); }
 function v12lvl(level){
   var L = V12_LV().filter(function(x){ return x[0] === String(level || '').toLowerCase(); })[0] || V12_LV()[0];
   return '<span class="v12-lvl l' + L[2] + '"><span class="bars"><i class="on"></i><i' + (L[2] > 1 ? ' class="on"' : '') + '></i><i' + (L[2] > 2 ? ' class="on"' : '') + '></i></span>' + L[1] + '</span>';
 }
 function v12clean(s){ return String(s == null ? '' : s).replace(/\s*[\u2014\u2013]\s*/g, ': ').trim(); }
+// Цифры не разрываются: «1 450 000 ₸», «19 млн ₸», «32 %»
+function v14nb(s){
+  return String(s == null ? '' : s)
+    .replace(/(\d) (?=\d{3}(?!\d))/g, '$1\u00a0')
+    .replace(/(\d) (?=\d{3}(?!\d))/g, '$1\u00a0')
+    .replace(/ ₸/g, '\u00a0₸')
+    .replace(/₸\/(?=\S)/g, '₸/\u2060')
+    .replace(/(\d) (млн|млрд|тыс\.?|%|п\.п\.)/g, '$1\u00a0$2');
+}
+function gE(s){ return v14nb(v2esc(v12clean(s))); }
+function v14no(id){ return String(id || '').replace(/^g0*/, ''); }
+function v14no2(id){ var n = v14no(id); return n.length < 2 ? '0' + n : n; }
+function v14time(t){ return String(t || '').split(':')[0].trim(); }
+function v14heroLine(h){
+  if(!h || !h.name) return '';
+  var b = String(h.business || '').trim();
+  return v12clean(h.name) + (h.age ? ', ' + h.age : '') + (b ? ' · ' + v12clean(b) : '');
+}
+var V14_PDF_BASE = 'https://bs-platform-production.up.railway.app/api/v1/public/guide/';
+var V14_SEND_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3L10 14"/><path d="M21 3l-6.5 18-3.5-7-7-3.5z"/></svg>';
+var V14_PDF_ICON = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M12 11v6M9.5 14.5L12 17l2.5-2.5"/></svg>';
 
-// ── Данные ──
-window._cl = null;
-function v12clCached(){ try{ var c = JSON.parse(localStorage.getItem('bs_checklists') || 'null'); return c && Array.isArray(c.items) && c.items.length ? c : null; }catch(e){ return null; } }
-function v12clNorm(j){
+// Старые короткие чек-листы (r12/r13) больше не используются: убираем их кэш один раз
+(function(){
+  try{
+    if(localStorage.getItem('bs_gd_clean') === '1') return;
+    var del = [];
+    for(var i = 0; i < localStorage.length; i++){ var k = localStorage.key(i); if(k === 'bs_checklists' || /^bs_cl_p_/.test(k)) del.push(k); }
+    del.forEach(function(k){ localStorage.removeItem(k); });
+    localStorage.setItem('bs_gd_clean', '1');
+  }catch(e){}
+  try{ sessionStorage.removeItem('bs_cl_cur'); }catch(e){}
+})();
+
+// ── Индекс ──
+window._gd = window._gd || null;
+function v14idxCached(){ try{ var c = JSON.parse(localStorage.getItem('bs_guides') || 'null'); return c && Array.isArray(c.items) && c.items.length ? c : null; }catch(e){ return null; } }
+function v14norm(j){
   var arr = Array.isArray(j) ? j : ((j && j.items) || []);
   var items = arr.filter(function(x){ return x && x.id && String(x.title || '').trim(); }).map(function(x){
-    return {id: String(x.id), organ: String(x.organ || ''), title: v12clean(x.title), subtitle: v12clean(x.subtitle), level: String(x.level || 'старт').toLowerCase(), time: v12clean(x.time),
-      items: (Array.isArray(x.items) ? x.items : v9list(x.items)).map(v12clean).filter(Boolean), result: v12clean(x.result), mistake: v12clean(x.mistake)};
+    var h = x.hero || {};
+    return {id: String(x.id), organ: String(x.organ || ''), title: v12clean(x.title), subtitle: v12clean(x.subtitle), promise: v12clean(x.promise),
+      time: v12clean(x.time), level: String(x.level || 'старт').toLowerCase(), existing: !!x.existing,
+      hero: {name: String(h.name || ''), age: h.age || '', business: String(h.business || ''), city: String(h.city || '')},
+      steps: Array.isArray(x.steps) ? x.steps.map(v12clean) : [], items: Number(x.items) || 0, pdfKB: Number(x.pdfKB) || 0};
   });
   return {version: (j && !Array.isArray(j) && j.version != null) ? String(j.version) : '', items: items};
 }
-function v12clData(){
-  if(!window._cl){
-    var c = v12clCached();
-    if(c) window._cl = {items: c.items, version: c.version || '', at: 0, cached: true};
+function v14data(){
+  if(!window._gd){
+    var c = v14idxCached();
+    if(c) window._gd = {items: c.items, version: c.version || '', at: 0, cached: true};
   }
-  return window._cl;
+  return window._gd;
 }
-function loadChecklists(force){
-  var cur = v12clData();
+function v14items(){ return ((v14data() || {}).items) || []; }
+function v14find(id){ return v14items().filter(function(x){ return x.id === id; })[0] || null; }
+function loadGuides(force){
+  var cur = v14data();
   if(!force && cur && !cur.error && cur.at && Date.now() - cur.at < 600000) return Promise.resolve(cur);
-  if(window._clLoading) return window._clLoading;
+  if(window._gdLoading) return window._gdLoading;
   var init = bsInitData();
   if(!init){
-    var c0 = v12clCached();
-    window._cl = {items: c0 ? c0.items : [], version: c0 ? c0.version : '', error: 'noinit', stale: !!c0, at: Date.now()};
-    return Promise.resolve(window._cl);
+    var c0 = v14idxCached();
+    window._gd = {items: c0 ? c0.items : [], version: c0 ? c0.version : '', error: 'noinit', stale: !!c0, at: Date.now()};
+    return Promise.resolve(window._gd);
   }
-  window._clLoading = fetch(APP_SERVER + 'checklists?' + new URLSearchParams({_tg: init}).toString())
+  window._gdLoading = fetch(APP_SERVER + 'guides?' + new URLSearchParams({_tg: init}).toString())
     .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
     .then(function(j){
-      var d = v12clNorm(j), c = v12clCached();
+      var d = v14norm(j), c = v14idxCached();
       if(!d.items.length && c) d = {items: c.items, version: c.version};
       else if(d.items.length && (!c || String(c.version || '') !== d.version || !d.version || c.items.length !== d.items.length)){
-        try{ localStorage.setItem('bs_checklists', JSON.stringify({version: d.version, items: d.items, saved: Date.now()})); }catch(e){}
+        try{ localStorage.setItem('bs_guides', JSON.stringify({version: d.version, items: d.items, saved: Date.now()})); }catch(e){}
       }
-      window._cl = {items: d.items, version: d.version, at: Date.now()};
-      return window._cl;
+      window._gd = {items: d.items, version: d.version, at: Date.now()};
+      return window._gd;
     })
     .catch(function(e){
-      var c = v12clCached();
-      var items = (window._cl && window._cl.items && window._cl.items.length) ? window._cl.items : (c ? c.items : []);
-      window._cl = {items: items, version: c ? c.version : '', error: String(e && e.message || 'network'), stale: items.length > 0, at: Date.now()};
-      return window._cl;
+      var c = v14idxCached();
+      var items = (window._gd && window._gd.items && window._gd.items.length) ? window._gd.items : (c ? c.items : []);
+      window._gd = {items: items, version: c ? c.version : '', error: String(e && e.message || 'network'), stale: items.length > 0, at: Date.now()};
+      return window._gd;
     })
-    .then(function(l){ window._clLoading = null; v12clRefresh(); return l; });
-  return window._clLoading;
+    .then(function(l){ window._gdLoading = null; v14refresh(); return l; });
+  return window._gdLoading;
 }
-// После загрузки: перерисовываем открытый экран чек-листов и промо-блоки на месте
-function v12clRefresh(){
+// После загрузки: перерисовываем открытый экран и промо-блоки на месте
+function v14refresh(){
   var a = v9activeId();
-  if(a === 'checklists'){ v12clKeepScroll(renderChecklists); return; }
-  if(a === 'checklist'){ v12clKeepScroll(renderChecklist); return; }
-  document.querySelectorAll('[data-v12promo]').forEach(function(el){
-    var t = document.createElement('div'); t.innerHTML = v12promo(el.getAttribute('data-v12promo'));
+  if(a === 'guides'){ v14keep(renderGuides); return; }
+  if(a === 'guide'){ v14keep(renderGuide); return; }
+  document.querySelectorAll('[data-v14promo]').forEach(function(el){
+    var t = document.createElement('div'); t.innerHTML = v14promo(el.getAttribute('data-v14promo'));
     if(t.firstChild) el.replaceWith(t.firstChild);
   });
   document.querySelectorAll('[data-v13hero]').forEach(function(el){
     var t = document.createElement('div'); t.innerHTML = v13leadHero();
     if(t.firstChild) el.replaceWith(t.firstChild);
   });
-  document.querySelectorAll('[data-v12feat]').forEach(function(el){
-    var t = document.createElement('div'); t.innerHTML = v12libFeatured();
+  document.querySelectorAll('[data-v14feat]').forEach(function(el){
+    var t = document.createElement('div'); t.innerHTML = v14libFeatured();
     if(t.firstChild) el.replaceWith(t.firstChild);
   });
 }
-function v12clKeepScroll(fn){ var y = window.scrollY; try{ fn(); }catch(e){ console.error('checklists:', e); } try{ window.scrollTo(0, y); }catch(e){} }
+function v14keep(fn){ var y = window.scrollY; try{ fn(); }catch(e){ console.error('guides:', e); } try{ window.scrollTo(0, y); }catch(e){} }
 
-// ── Прогресс ──
-function v12prog(id){
-  try{ var a = JSON.parse(localStorage.getItem('bs_cl_p_' + id) || '[]'); return Array.isArray(a) ? a.filter(function(n){ return typeof n === 'number'; }) : []; }catch(e){ return []; }
+// ── Полные гайды: память, затем localStorage, затем сеть ──
+window._gfull = window._gfull || {};
+function v14F(){ return window._gfull || (window._gfull = {}); }
+function v14gCached(id){ try{ var c = JSON.parse(localStorage.getItem('bs_guide_' + id) || 'null'); return c && c.g && c.g.id ? c : null; }catch(e){ return null; } }
+function v14lru(){ try{ var a = JSON.parse(localStorage.getItem('bs_guide_lru') || '[]'); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
+function v14gSave(id, g, v){
+  var lru = v14lru().filter(function(x){ return x !== id; }); lru.push(id);
+  while(lru.length > 15) try{ localStorage.removeItem('bs_guide_' + lru.shift()); }catch(e){}
+  var val = JSON.stringify({v: v || '', at: Date.now(), g: g});
+  for(var k = 0; k < 4; k++){
+    try{ localStorage.setItem('bs_guide_' + id, val); break; }
+    catch(e){ // место кончилось: вытесняем половину старых
+      var drop = lru.splice(0, Math.max(1, Math.floor((lru.length - 1) / 2)));
+      drop.forEach(function(x){ if(x !== id) try{ localStorage.removeItem('bs_guide_' + x); }catch(e2){} });
+      lru = lru.filter(function(x){ return drop.indexOf(x) < 0 || x === id; }); if(lru.indexOf(id) < 0) lru.push(id);
+    }
+  }
+  try{ localStorage.setItem('bs_guide_lru', JSON.stringify(lru)); }catch(e){}
 }
-function v12progSave(id, arr){
-  try{ if(arr.length) localStorage.setItem('bs_cl_p_' + id, JSON.stringify(arr)); else localStorage.removeItem('bs_cl_p_' + id); }catch(e){}
+function v14gTouch(id){ var lru = v14lru(); if(lru[lru.length - 1] === id) return; lru = lru.filter(function(x){ return x !== id; }); if(v14gCached(id)) lru.push(id); try{ localStorage.setItem('bs_guide_lru', JSON.stringify(lru)); }catch(e){} }
+function v14gNorm(g){
+  if(!g || !g.id || !Array.isArray(g.steps)) return null;
+  g.steps = g.steps.filter(Boolean).map(function(s, i){ s.n = Number(s.n) || i + 1; s.body = Array.isArray(s.body) ? s.body : (s.body ? [String(s.body)] : []); s.checklist = Array.isArray(s.checklist) ? s.checklist : []; return s; });
+  g.hero = g.hero || {}; g.method = g.method || {}; g.epilogue = g.epilogue || {};
+  return g;
 }
-function v12progDone(x){ var n = x.items.length; return v12prog(x.id).filter(function(i){ return i >= 0 && i < n; }).length; }
+function v14guide(id){
+  var m = v14F()[id];
+  if(m && m.g) return m;
+  var c = v14gCached(id);
+  if(c){ v14F()[id] = {g: v14gNorm(c.g), v: c.v, at: 0, cached: true}; return v14F()[id]; }
+  return null;
+}
+function loadGuide(id){
+  var m = v14F()[id];
+  if(m && m.at && !m.error && Date.now() - m.at < 3600000) return Promise.resolve(m);
+  window._gLoading = window._gLoading || {};
+  if(window._gLoading[id]) return window._gLoading[id];
+  var init = bsInitData();
+  if(!init){ var c0 = v14guide(id); v14F()[id] = {g: c0 && c0.g, error: 'noinit', at: Date.now()}; return Promise.resolve(v14F()[id]); }
+  var p = fetch(APP_SERVER + 'guide/' + encodeURIComponent(id) + '?' + new URLSearchParams({_tg: init}).toString())
+    .then(function(r){ if(r.status === 404) throw new Error('not_found'); if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function(j){
+      var g = v14gNorm(j); if(!g) throw new Error('bad');
+      var v = (v14data() || {}).version || '';
+      v14gSave(id, g, v);
+      v14F()[id] = {g: g, v: v, at: Date.now()};
+      return v14F()[id];
+    })
+    .catch(function(e){
+      var c = v14gCached(id);
+      v14F()[id] = {g: c ? v14gNorm(c.g) : null, error: String(e && e.message || 'network'), stale: !!c, at: Date.now()};
+      return v14F()[id];
+    })
+    .then(function(r){
+      delete window._gLoading[id];
+      if(v9activeId() === 'guide' && v14curId() === id && !document.getElementById('gdArt')) renderGuide();
+      return r;
+    });
+  window._gLoading[id] = p;
+  return p;
+}
+
+// ── Прогресс: отметки пунктов и место чтения ──
+function v14prog(id){
+  try{ var a = JSON.parse(localStorage.getItem('bs_gd_p_' + id) || '[]'); return Array.isArray(a) ? a.filter(function(k){ return typeof k === 'string' && /^\d+:\d+$/.test(k); }) : []; }catch(e){ return []; }
+}
+function v14progSave(id, arr){
+  try{ if(arr.length) localStorage.setItem('bs_gd_p_' + id, JSON.stringify(arr)); else localStorage.removeItem('bs_gd_p_' + id); }catch(e){}
+}
+function v14keys(g){ var out = []; (g.steps || []).forEach(function(s){ s.checklist.forEach(function(t, i){ out.push(s.n + ':' + i); }); }); return out; }
+// Без полного гайда считаем по индексу: число пунктов знает сервер
+function v14stat(x){
+  var f = v14F()[x.id];
+  if(f && f.g){ var keys = v14keys(f.g), a = v14prog(x.id); return {d: keys.filter(function(k){ return a.indexOf(k) >= 0; }).length, n: keys.length}; }
+  var n = Number(x.items) || 0;
+  return {d: Math.min(v14prog(x.id).length, n), n: n};
+}
+function v14pos(id){ try{ var m = JSON.parse(localStorage.getItem('bs_gd_pos') || '{}'); return id ? (m[id] || null) : m; }catch(e){ return id ? null : {}; } }
+function v14posSave(id, y, p){
+  try{
+    var m = v14pos() || {};
+    m[id] = {y: Math.round(y), p: Math.round(p), t: Date.now()};
+    var ks = Object.keys(m); if(ks.length > 60){ ks.sort(function(a, b){ return m[a].t - m[b].t; }); ks.slice(0, ks.length - 60).forEach(function(k){ delete m[k]; }); }
+    localStorage.setItem('bs_gd_pos', JSON.stringify(m));
+  }catch(e){}
+}
+// Начатый гайд: есть отметки или прочитан хотя бы на 5%
+function v14started(x){ var s = v14stat(x); if(s.n && s.d >= s.n) return false; if(s.d) return true; var p = v14pos(x.id); return !!(p && p.p >= 5 && p.p < 97); }
 function v12ring(done, total){
   var r = 19, c = 2 * Math.PI * r, p = total ? done / total : 0, full = total && done >= total;
   return '<div class="v12-ring' + (full ? ' full' : '') + '"><svg width="44" height="44" viewBox="0 0 44 44">' +
@@ -13046,278 +13301,485 @@ function v12ring(done, total){
 }
 
 // ── Открытие ──
-function v12openCL(organ){
-  if(organ) window._clOrgan = organ;
-  showPage('checklists');
+function v14openCat(organ){
+  if(organ) window._gdOrgan = organ;
+  showPage('guides');
 }
-function v12clOpen(id){
-  window._clCur = id;
-  try{ sessionStorage.setItem('bs_cl_cur', id); }catch(e){}
-  showPage('checklist');
+function v14curId(){
+  var id = window._gdCur;
+  if(!id){ try{ id = sessionStorage.getItem('bs_gd_cur'); }catch(e){} }
+  return id || '';
 }
+function v14open(id){
+  id = String(id || '').toLowerCase();
+  window._gdCur = id;
+  try{ sessionStorage.setItem('bs_gd_cur', id); }catch(e){}
+  showPage('guide');
+  v14restore(id);
+}
+// Из промо: сначала каталог, потом гайд, чтобы «Назад» вёл в каталог
+function v14openFrom(id){ window._gdOrgan = 'all'; showPage('guides'); v14open(id); }
+// Глубокая ссылка guide_g12 → g012
+function v14normId(s){ var m = /^g?0*(\d{1,3})$/i.exec(String(s || '').trim()); return m ? 'g' + ('00' + m[1]).slice(-3) : ''; }
 
-// ── Витрина «99 чек-листов» ──
-function v12clFiltered(){
-  var L = v12clData(); var items = (L && L.items) || [];
-  var o = window._clOrgan || 'all', lv = window._clLevel || 'all', q = String(window._clQ || '').toLowerCase().trim();
+// ── Каталог «99 гайдов» ──
+function v14filtered(){
+  var items = v14items();
+  var o = window._gdOrgan || 'all', lv = window._gdLevel || 'all', q = String(window._gdQ || '').toLowerCase().trim();
   return items.filter(function(x){
     if(o !== 'all' && x.organ !== o) return false;
     if(lv !== 'all' && x.level !== lv) return false;
-    if(q){ var hay = [x.title, x.subtitle, x.organ, x.result, x.mistake].concat(x.items).join(' ').toLowerCase(); if(hay.indexOf(q) < 0) return false; }
+    if(q){ var hay = [x.title, x.subtitle, x.hero.business, x.hero.name, x.organ].join(' ').toLowerCase(); if(hay.indexOf(q) < 0) return false; }
     return true;
   });
 }
-function v12card(x){
-  var d = v12progDone(x), n = x.items.length;
-  return '<div class="v12-card' + (d && d >= n ? ' done' : '') + '" onclick="v12clOpen(\'' + v2esc(x.id) + '\')">' +
-    '<div class="top"><div class="v12-org">' + v12oIcon(x.organ, 14, 2) + v2esc(x.organ) + '</div>' + v12lvl(x.level) + '</div>' +
-    '<div class="row"><div class="m"><div class="t">' + v2esc(x.title) + '</div>' + (x.subtitle ? '<div class="s">' + v2esc(x.subtitle) + '</div>' : '') +
-    '<div class="meta">' + (x.time ? '<span>' + v2esc(x.time) + '</span><i></i>' : '') + '<span class="num">' + n + ' ' + v3plural(n, 'пункт', 'пункта', 'пунктов') + '</span>' +
-    (d && d < n ? '<i></i><span style="color:#CFCFCF">в работе</span>' : '') + (d && d >= n ? '<i></i><span style="color:#FFFFFF">пройден</span>' : '') + '</div></div>' +
-    (d ? v12ring(d, n) : '') + '</div></div>';
+function v14card(x){
+  var s = v14stat(x), pos = v14pos(x.id), done = s.n && s.d >= s.n;
+  var hl = v14heroLine(x.hero), st = x.steps.length;
+  var meta = [];
+  if(x.time) meta.push('<span>' + gE(v14time(x.time)) + '</span>');
+  if(st) meta.push('<span class="num">' + st + ' ' + v3plural(st, 'шаг', 'шага', 'шагов') + '</span>');
+  if(x.existing) meta.push('<span>PDF' + (x.pdfKB ? ' · ' + (x.pdfKB >= 1024 ? (x.pdfKB / 1024).toFixed(1).replace('.', ',') + '\u00a0МБ' : x.pdfKB + '\u00a0КБ') : '') + '</span>');
+  if(done) meta.push('<span style="color:#FFFFFF">пройден</span>');
+  else if(!s.d && pos && pos.p >= 5) meta.push('<span style="color:#CFCFCF">прочитано ' + Math.min(100, pos.p) + '%</span>');
+  return '<div class="v12-card v14-card' + (done ? ' done' : '') + '" data-gid="' + v2esc(x.id) + '" onclick="v14open(\'' + v2esc(x.id) + '\')">' +
+    '<div class="top"><div class="v12-org">' + v12oIcon(x.organ, 14, 2) + v2esc(x.organ) + '</div><div class="v14-tr">' + (x.existing ? '<span class="v14-pdfb">PDF</span>' : '') + '<span class="v14-no num">№\u00a0' + v14no2(x.id) + '</span></div></div>' +
+    '<div class="row"><div class="m"><div class="t">' + gE(x.title) + '</div>' + (x.subtitle ? '<div class="s">' + gE(x.subtitle) + '</div>' : '') +
+    (hl ? '<div class="v14-hl"><i>' + v2esc((x.hero.name || '?').charAt(0)) + '</i><span>' + gE(hl) + '</span></div>' : '') +
+    '<div class="meta">' + v12lvl(x.level) + meta.join('<i></i>') + '</div></div>' +
+    (s.d ? v12ring(s.d, s.n) : '') + '</div></div>';
 }
-function v12clListHTML(){
-  var list = v12clFiltered();
-  var all = (v12clData() || {}).items || [];
-  var filt = (window._clOrgan && window._clOrgan !== 'all') || (window._clLevel && window._clLevel !== 'all') || window._clQ;
-  var head = '<div class="v12-cnt"><span>' + (filt ? 'Найдено ' + v12num(list.length) : 'Все чек-листы') + '</span>' + (filt ? '<span class="lnk" onclick="v12clReset()">Сбросить</span>' : '<span>' + v12num(all.length) + '</span>') + '</div>';
-  if(!list.length) return head + '<div class="v2-card v12-empty">Ничего не нашли.<br>Попробуйте другой орган или уровень</div>';
-  // Начатые и незавершённые: наверх, чтобы продолжить
-  var started = list.filter(function(x){ var d = v12progDone(x); return d && d < x.items.length; });
-  var rest = list.filter(function(x){ return started.indexOf(x) < 0; });
-  var h = '';
-  if(started.length && !filt) h += '<div class="v12-cnt"><span>Продолжить</span><span class="num">' + started.length + '</span></div>' + started.map(v12card).join('') + head;
-  else { h += head; rest = list; }
-  return h + rest.map(v12card).join('');
+function v14listHTML(){
+  var list = v14filtered();
+  var all = v14items();
+  var filt = (window._gdOrgan && window._gdOrgan !== 'all') || (window._gdLevel && window._gdLevel !== 'all') || window._gdQ;
+  var head = '<div class="v12-cnt"><span>' + (filt ? 'Найдено ' + v12num(list.length) : 'Все гайды') + '</span>' + (filt ? '<span class="lnk" onclick="v14reset()">Сбросить</span>' : '<span class="num">' + v12num(all.length) + '</span>') + '</div>';
+  if(!list.length) return head + '<div class="v2-card v12-empty">Ничего не нашли.<br>Попробуйте другой орган, уровень или слово</div>';
+  return head + list.map(v14card).join('');
 }
-function v12clSetOrgan(o){ window._clOrgan = (window._clOrgan === o && o !== 'all') ? 'all' : o; v12clKeepScroll(renderChecklists); }
-function v12clSetLevel(l){ window._clLevel = l; v12clKeepScroll(renderChecklists); }
-function v12clReset(){ window._clOrgan = 'all'; window._clLevel = 'all'; window._clQ = ''; v12clKeepScroll(renderChecklists); }
-function v12clSearch(v){ window._clQ = v; var el = document.getElementById('clList'); if(el) el.innerHTML = v12clListHTML(); }
-function renderChecklists(){
-  var el = document.getElementById('checklistsContent');
+// «Продолжить»: начатые гайды сразу под шапкой каталога, последние открытые сверху
+function v14contHTML(){
+  var started = v14items().filter(v14started);
+  if(!started.length) return '';
+  started.sort(function(a, b){ var pa = v14pos(a.id), pb = v14pos(b.id); return ((pb && pb.t) || 0) - ((pa && pa.t) || 0); });
+  return '<div class="v12-cnt"><span>Продолжить</span><span class="num">' + started.length + '</span></div><div id="gdCont">' + started.slice(0, 5).map(v14card).join('') + '</div>';
+}
+function v14setOrgan(o){ window._gdOrgan = (window._gdOrgan === o && o !== 'all') ? 'all' : o; v14keep(renderGuides); }
+function v14setLevel(l){ window._gdLevel = l; v14keep(renderGuides); }
+function v14reset(){ window._gdOrgan = 'all'; window._gdLevel = 'all'; window._gdQ = ''; v14keep(renderGuides); }
+function v14search(v){ window._gdQ = v; var el = document.getElementById('gdList'); if(el) el.innerHTML = v14listHTML(); }
+function renderGuides(){
+  var el = document.getElementById('guidesContent');
   if(!el) return;
-  var L = v12clData();
-  if(!L || !L.at) loadChecklists(false);
+  var L = v14data();
+  if(!L || !L.at) loadGuides(false);
   var items = (L && L.items) || [];
   var total = items.length || 99;
-  var points = items.reduce(function(s, x){ return s + x.items.length; }, 0);
+  var steps = items.reduce(function(s, x){ return s + x.steps.length; }, 0);
   var started = 0, finished = 0;
-  items.forEach(function(x){ var d = v12progDone(x); if(d) started++; if(d && d >= x.items.length) finished++; });
-  var h = '<div class="v12-hero"><div class="k">' + (navRole() === 'lead' ? 'БИБЛИОТЕКА BS · БЕСПЛАТНО' : 'БИБЛИОТЕКА BS') + '</div>' +
-    '<div class="top"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '<br>для вашего<br>бизнеса</div></div>' +
-    '<div class="s">Проверенные шаги по семи органам бизнеса: от финансов до команды</div>' +
+  items.forEach(function(x){ var s = v14stat(x); if(s.d || v14started(x)) started++; if(s.n && s.d >= s.n) finished++; });
+  var free = navRole() !== 'resident';
+  var h = '<div class="v12-hero v14-chero"><div class="k">' + (free ? 'БИБЛИОТЕКА BS · БЕСПЛАТНО' : 'БИБЛИОТЕКА BS') + '</div>' +
+    '<div class="top"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '<br>для вашего<br>бизнеса' + (free ? '.<br><b>Бесплатно</b>' : '') + '</div></div>' +
+    '<div class="s">Разборы на 10-12 страниц: история с цифрами, метод, шаги с таблицами и чек-листами, итог в точке Б</div>' +
     '<div class="v12-stats">' +
-      '<div><b class="num">' + (points ? v12num(points) : '1 000+') + '</b><span>' + (points ? v3plural(points, 'шаг', 'шага', 'шагов') : 'шагов') + ' внутри</span></div>' +
+      '<div><b class="num">' + (steps ? v12num(steps) : '500+') + '</b><span>' + (steps ? v3plural(steps, 'шаг', 'шага', 'шагов') : 'шагов') + ' внутри</span></div>' +
       '<div><b class="num">7+1</b><span>органов и собственник</span></div>' +
       (finished ? '<div><b class="num">' + finished + '<span style="display:inline;font-size:13px;color:#6E6E6E;margin:0">/' + started + '</span></b><span>пройдено у вас</span></div>'
                : (started ? '<div><b class="num">' + started + '</b><span>в работе у вас</span></div>' : '<div><b class="num">3</b><span>уровня глубины</span></div>')) +
     '</div></div>';
   if(!items.length){
-    if(L && L.error) h += '<div class="v2-card v12-empty" style="margin-top:12px">Не получилось загрузить чек-листы.<br><button class="v3-outline" style="margin-top:12px" onclick="window._cl=null;loadChecklists(true);renderChecklists()">Повторить</button></div>';
+    if(L && L.error) h += '<div class="v2-card v12-empty" style="margin-top:12px">Не получилось загрузить гайды.<br><button class="v3-outline" style="margin-top:12px" onclick="window._gd=null;loadGuides(true);renderGuides()">Повторить</button></div>';
     else h += '<div class="loading"><div class="spinner"></div></div>';
     el.innerHTML = h;
     return;
   }
+  h += v14contHTML();
   h += v13softBanner(started);
   var cnt = {}, lcnt = {};
-  var o = window._clOrgan || 'all', lv = window._clLevel || 'all';
+  var o = window._gdOrgan || 'all', lv = window._gdLevel || 'all';
   items.forEach(function(x){ cnt[x.organ] = (cnt[x.organ] || 0) + 1; if(o === 'all' || x.organ === o) lcnt[x.level] = (lcnt[x.level] || 0) + 1; });
   h += '<div class="v12-og">' + V12_ORG().map(function(g){
-    return '<button class="' + (o === g[0] ? 'on' : '') + '" onclick="v12clSetOrgan(\'' + g[0] + '\')" aria-label="' + g[0] + '"><span class="i">' + v12oIcon(g[0], 22) + '</span><b class="num">' + (cnt[g[0]] || 0) + '</b><span class="l">' + g[0] + '</span></button>';
+    return '<button class="' + (o === g[0] ? 'on' : '') + '" onclick="v14setOrgan(\'' + g[0] + '\')" aria-label="' + g[0] + '"><span class="i">' + v12oIcon(g[0], 22) + '</span><b class="num">' + (cnt[g[0]] || 0) + '</b><span class="l">' + g[0] + '</span></button>';
   }).join('') + '</div>';
   if(L.error && L.stale) h += '<div class="v3-cap" style="margin:10px 4px 0">Показана сохранённая версия: сервер сейчас не ответил</div>';
-  h += '<div class="v3-search" style="margin-top:14px">' + navIcon('search', 18) + '<input type="text" placeholder="Найти: касса, найм, воронка" aria-label="Поиск по чек-листам" value="' + v2esc(window._clQ || '') + '" oninput="v12clSearch(this.value)"></div>';
-  h += '<div class="v9-chips">' + [['all', 'Все', items.length]].concat(V12_ORG().map(function(g){ return [g[0], g[0], cnt[g[0]] || 0]; })).filter(function(c){ return c[0] === 'all' || c[2]; }).map(function(c){
-    return '<button class="' + (o === c[0] ? 'on' : '') + '" onclick="v12clSetOrgan(\'' + c[0] + '\')">' + c[1] + ' <span class="num" style="opacity:.55">' + c[2] + '</span></button>';
-  }).join('') + '</div>';
+  h += '<div class="v3-search" style="margin-top:14px">' + navIcon('search', 18) + '<input type="text" placeholder="Найти: касса, найм, клиника" aria-label="Поиск по гайдам" value="' + v2esc(window._gdQ || '') + '" oninput="v14search(this.value)"></div>';
   h += '<div class="v9-chips v12-chips2">' + [['all', 'Любой уровень', 0]].concat(V12_LV().map(function(l){ return [l[0], l[1], lcnt[l[0]] || 0]; })).map(function(c){
-    return '<button class="' + (lv === c[0] ? 'on' : '') + '" onclick="v12clSetLevel(\'' + c[0] + '\')">' + c[1] + (c[0] !== 'all' ? ' <span class="num" style="opacity:.55">' + c[2] + '</span>' : '') + '</button>';
+    return '<button class="' + (lv === c[0] ? 'on' : '') + '" onclick="v14setLevel(\'' + c[0] + '\')">' + c[1] + (c[0] !== 'all' ? ' <span class="num" style="opacity:.55">' + c[2] + '</span>' : '') + '</button>';
   }).join('') + '</div>';
-  h += '<div id="clList">' + v12clListHTML() + '</div>';
+  h += '<div id="gdList">' + v14listHTML() + '</div>';
   el.innerHTML = h;
-  // Глубокая ссылка на конкретный чек-лист
-  if(window._clDeep){
-    var id = window._clDeep; window._clDeep = null;
-    if(items.some(function(x){ return x.id === id; })) setTimeout(function(){ v12clOpen(id); }, 0);
-  }
 }
 
-// ── Экран чек-листа ──
-function v12clCur(){
-  var id = window._clCur;
-  if(!id){ try{ id = sessionStorage.getItem('bs_cl_cur'); }catch(e){} }
-  var items = (v12clData() || {}).items || [];
-  return items.filter(function(x){ return x.id === id; })[0] || null;
+// ── Ридер ──
+function v14tbl(t, cls, chg){
+  if(!t || !Array.isArray(t.head) || !Array.isArray(t.rows)) return '';
+  var ci = chg ? t.head.length - 1 : -1;
+  return '<div class="v14-tbl' + (cls ? ' ' + cls : '') + '"><table><thead><tr>' + t.head.map(function(c){ return '<th>' + gE(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    t.rows.map(function(r){
+      return '<tr>' + (r || []).map(function(c, i){
+        var neg = i === ci && /^\s*[-\u2212]\s*\d/.test(String(c));
+        return '<td' + (i === ci ? ' class="chg' + (neg ? ' neg' : '') + '"' : '') + '>' + gE(c) + '</td>';
+      }).join('') + '</tr>';
+    }).join('') + '</tbody></table></div><div class="v14-tblh">Таблицу можно листать вбок →</div>';
 }
-function v12progHTML(d, n){
-  var p = n ? Math.round(d / n * 100) : 0;
-  return '<div class="r"><b>Выполнено <span class="num" style="color:#fff">' + d + '</span> из <span class="num" style="color:#fff">' + n + '</span></b><span class="num">' + p + '%</span></div><div class="bar"><i style="width:' + p + '%"></i></div>';
-}
-function v12doneHTML(){
-  return '<div class="v12-done"><div class="ic">' + (V3_CHECK || '') + '</div><div><b>Чек-лист пройден</b><span>Все шаги отмечены. Поделитесь с командой или возьмите следующий</span></div></div>';
-}
-function renderChecklist(){
-  var el = document.getElementById('checklistContent');
-  if(!el) return;
-  var x = v12clCur();
-  if(!x){
-    var L = v12clData();
-    if(!L || !L.at){ el.innerHTML = '<div class="loading"><div class="spinner"></div></div>'; loadChecklists(false); return; }
-    el.innerHTML = '<div class="v2-card v12-empty" style="margin-top:12px">Чек-лист не найден.<br><button class="v3-outline" style="margin-top:12px" onclick="showPage(\'checklists\')">Все чек-листы</button></div>';
-    return;
-  }
-  var n = x.items.length, done = v12prog(x.id), d = v12progDone(x);
-  var h = '<div class="v12-org" style="margin-top:6px">' + v12oIcon(x.organ, 16, 2) + v2esc(x.organ) + '<span style="color:#4A4A4A">·</span><span class="num">' + v2esc(x.id.replace(/^c0*/, '№ ')) + '</span></div>' +
-    '<h1 class="v12-cl-h">' + v2esc(x.title) + '</h1>' +
-    (x.subtitle ? '<div class="v12-cl-sub">' + v2esc(x.subtitle) + '</div>' : '') +
-    '<div class="v12-cl-meta">' + (x.time ? '<span class="v12-chip">' + navIcon('cal', 13, 2) + v2esc(x.time) + '</span>' : '') + v12lvl(x.level) +
-      '<span class="v12-chip num">' + n + ' ' + v3plural(n, 'пункт', 'пункта', 'пунктов') + '</span></div>';
-  h += '<div class="v12-prog" id="clProg">' + v12progHTML(d, n) + '</div>';
-  h += '<div class="v2-card v12-items" style="margin-top:4px">' + x.items.map(function(s, i){
-    var on = done.indexOf(i) >= 0;
-    return '<div class="v12-it' + (on ? ' on' : '') + '" id="clIt' + i + '" role="checkbox" aria-checked="' + on + '" onclick="v12clTick(' + i + ')"><div class="cb">' + (V3_CHECK || '') + '</div><div class="tx"><em class="num">' + String(i + 1).padStart(2, '0') + '</em>' + v2esc(s) + '</div></div>';
+// Точка Б: строки «показатель · до → после · изменение» карточками, без горизонтальной прокрутки
+function v14epTbl(t){
+  if(!t || !Array.isArray(t.head) || !Array.isArray(t.rows)) return '';
+  if(t.head.length !== 4) return v14tbl(t, 'ep', true);
+  return '<div class="v14-epl" role="table"><div class="hd" role="row"><span>' + gE(t.head[0]) + '</span><span>' + gE(t.head[1]) + ' → ' + gE(t.head[2]) + '</span><span>' + gE(t.head[3]) + '</span></div>' + t.rows.map(function(r){
+    r = r || [];
+    var neg = /^\s*[-\u2212]\s*\d/.test(String(r[3] || ''));
+    return '<div class="r" role="row"><div class="m"><b>' + gE(r[0]) + '</b><div class="ba"><span class="b">' + gE(r[1]) + '</span><span class="ar">→</span><span class="a">' + gE(r[2]) + '</span></div></div>' +
+      '<div class="chg' + (neg ? ' neg' : '') + '">' + gE(r[3]) + '</div></div>';
   }).join('') + '</div>';
-  h += '<div id="clDone">' + (n && d >= n ? v13doneHTML(x) : '') + '</div>';
-  if(x.result) h += '<div class="v12-box res" style="margin-top:14px"><div class="k">' + (V3_CHECK || '') + 'РЕЗУЛЬТАТ</div><div class="t">' + v2esc(x.result) + '</div></div>';
-  if(x.mistake) h += '<div class="v12-box err"><div class="k"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 7v6"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9.5"/></svg>ТИПИЧНАЯ ОШИБКА</div><div class="t">' + v2esc(x.mistake) + '</div></div>';
-  h += '<button class="v3-primary v12-share" onclick="v12clShare()">' + V12_SHARE_ICON() + 'Поделиться чек-листом</button>';
-  h += '<button class="v12-reset" id="clReset" onclick="v12clResetProg()" style="' + (d ? '' : 'display:none') + '">Сбросить отметки</button>';
-  if(navRole() === 'resident') h += '<div class="v13-seen">' + navIcon('me', 13, 2) + 'Трекер видит ваш прогресс</div>';
-  // Лиду: внедрить с трекером (после прохождения вместо него карточка «Чек-лист пройден»)
-  if(navRole() === 'lead'){
-    h += '<div class="v3-hero" id="clLeadCta" style="margin-top:18px;' + (n && d >= n ? 'display:none' : '') + '"><div class="k">ВНЕДРИТЬ С ТРЕКЕРОМ</div><div class="t">Разберём ваш бизнес и выберем чек-листы, которые дадут деньги первыми</div>' +
-      '<button onclick="showPage(\'leadrazbor\')">Записаться на разбор</button></div>';
+}
+function v14cover(x, g, s){
+  var o = (g && g.organ) || (x && x.organ) || '', id = (g && g.id) || x.id;
+  var title = (g && g.title) || x.title, sub = (g && g.subtitle) || x.subtitle;
+  var time = (g && g.time) || (x && x.time) || '', level = (g && g.level) || (x && x.level) || '';
+  var nsteps = g ? g.steps.length : (x ? x.steps.length : 0);
+  var total = (v14items().length || 99);
+  var h = '<header class="v14-cover" id="gdCover"><div class="bgn num" aria-hidden="true">' + v14no2(id) + '</div>' +
+    '<div class="k"><span class="o">' + v12oIcon(o, 14, 2) + v2esc(o) + '</span><span class="num">№\u00a0' + v14no2(id) + '\u00a0/\u00a0' + total + '</span></div>' +
+    '<h1>' + gE(title) + '</h1>' + (sub ? '<p class="sub">' + gE(sub) + '</p>' : '') +
+    '<div class="meta">' + (time ? '<span class="v12-chip">' + navIcon('cal', 13, 2) + gE(v14time(time)) + '</span>' : '') + v12lvl(level) +
+      (nsteps ? '<span class="v12-chip num">' + nsteps + ' ' + v3plural(nsteps, 'шаг', 'шага', 'шагов') + '</span>' : '') +
+      (x && x.existing ? '<span class="v12-chip">PDF</span>' : '') + '</div>';
+  if(s && s.n) h += '<div class="v14-cprog" id="gdCProg">' + v14cprog(s.d, s.n) + '</div>';
+  return h + '</header>';
+}
+function v14cprog(d, n){
+  var p = n ? Math.round(d / n * 100) : 0;
+  return '<div class="r"><span>Чек-листы</span><b class="num">' + d + ' из ' + n + '</b></div><div class="bar"><i style="width:' + p + '%"></i></div>';
+}
+function v14pdfBtns(x){
+  var kb = x && x.pdfKB ? (x.pdfKB >= 1024 ? (x.pdfKB / 1024).toFixed(1).replace('.', ',') + '\u00a0МБ' : x.pdfKB + '\u00a0КБ') : '';
+  return '<div class="v14-pdf">' +
+    '<button class="v14-b1" id="gdSend" onclick="v14send()">' + V14_SEND_ICON + '<span>Получить PDF в Telegram</span></button>' +
+    '<button class="v14-b2" onclick="v14pdfOpen()">' + V14_PDF_ICON + '<span>Открыть PDF</span></button>' +
+    '<div class="v14-pdfc">Бот пришлёт файл в чат' + (kb ? ' · PDF, ' + kb : '') + '</div></div>';
+}
+function v14cta(x, hide){
+  var role = navRole();
+  var h = '<div class="v14-cta" id="gdCta"' + (hide ? ' style="display:none"' : '') + '><div class="k">ВНЕДРЕНИЕ С ТРЕКЕРОМ</div><div class="t">Внедрить это в твоём бизнесе</div>';
+  if(role === 'resident'){
+    h += '<div class="s">Принесите гайд на разбор: трекер посмотрит ваши отметки и поможет довести шаги до результата.</div>' +
+      '<button onclick="showPage(\'myboard\')">Обсудить на разборе с трекером</button>';
+  } else {
+    h += '<div class="s">60 минут с трекером: найдём, где этот гайд даст деньги первым, и соберём план на 10 дней.</div>' +
+      '<button onclick="v13book()">Записаться на разбор</button>';
   }
-  var more = ((v12clData() || {}).items || []).filter(function(y){ return y.organ === x.organ && y.id !== x.id; });
+  return h + '</div>';
+}
+function v14more(x){
+  var more = v14items().filter(function(y){ return y.organ === x.organ && y.id !== x.id; });
   var k = more.findIndex(function(y){ return y.id > x.id; }); if(k > 0) more = more.slice(k).concat(more.slice(0, k));
   more = more.slice(0, 3);
-  if(more.length){
-    h += '<div class="v2-h" style="margin-top:24px">Ещё: ' + v2esc(x.organ) + ' <span class="lnk" onclick="v12openCL(\'' + v2esc(x.organ) + '\')">Все</span></div><div class="v2-card">' + more.map(function(y){
-      var dd = v12progDone(y);
-      return '<div class="v12-mini" onclick="v12clOpen(\'' + v2esc(y.id) + '\')"><div class="ic">' + v12oIcon(y.organ, 18) + '</div><div class="m"><b>' + v2esc(y.title) + '</b><span class="num">' + v2esc(y.time) + ' · ' + y.items.length + ' ' + v3plural(y.items.length, 'пункт', 'пункта', 'пунктов') + (dd ? ' · ' + Math.round(dd / y.items.length * 100) + '%' : '') + '</span></div><div style="color:#6E6E6E">' + v3icon('chev', 16) + '</div></div>';
-    }).join('') + '</div>';
+  if(!more.length) return '';
+  return '<div class="v2-h" style="margin-top:26px">Ещё: ' + v2esc(x.organ) + ' <span class="lnk" onclick="v14openCat(\'' + v2esc(x.organ) + '\')">Все</span></div><div class="v2-card">' + more.map(function(y){
+    var s = v14stat(y);
+    return '<div class="v12-mini" onclick="v14open(\'' + v2esc(y.id) + '\')"><div class="ic">' + v12oIcon(y.organ, 18) + '</div><div class="m"><b>' + gE(y.title) + '</b><span>' + gE(v14heroLine(y.hero) || v14time(y.time)) + (s.d ? ' · ' + Math.round(s.d / s.n * 100) + '%' : '') + '</span></div><div style="color:#6E6E6E">' + v3icon('chev', 16) + '</div></div>';
+  }).join('') + '</div>';
+}
+function v14item(n, i, t, on){
+  return '<div class="v14-it' + (on ? ' on' : '') + '" id="gdIt' + n + '_' + i + '" role="checkbox" tabindex="0" aria-checked="' + on + '" onclick="v14tick(' + n + ',' + i + ')"><div class="cb">' + (V3_CHECK || '') + '</div><div class="tx">' + gE(t) + '</div></div>';
+}
+function v14stepCnt(s, a){ return s.checklist.filter(function(t, i){ return a.indexOf(s.n + ':' + i) >= 0; }).length; }
+function renderGuide(){
+  var el = document.getElementById('guideContent');
+  if(!el) return;
+  var id = v14curId();
+  var x = v14find(id);
+  if(!x && !(v14data() || {}).at) loadGuides(false);
+  // PDF-гайд: только обложка и кнопки
+  if(x && x.existing){ el.innerHTML = v14pdfOnly(x); v14bar(null); return; }
+  var G = v14guide(id);
+  if(!G || !G.g){
+    var gl = v14F()[id];
+    if(gl && gl.error && !gl.g){
+      el.innerHTML = (x ? v14cover(x, null, null) : '') + '<div class="v2-card v12-empty" style="margin-top:12px">' + (gl.error === 'not_found' ? 'Гайд не найден.' : 'Не получилось загрузить гайд. Проверьте связь.') + '<br>' +
+        '<button class="v3-outline" style="margin-top:12px" onclick="delete v14F()[\'' + v2esc(id) + '\'];renderGuide()">Повторить</button>' +
+        '<button class="v3-outline" style="margin-top:8px" onclick="showPage(\'guides\')">Все гайды</button></div>';
+      v14bar(null);
+      return;
+    }
+    el.innerHTML = (x ? v14cover(x, null, null) : '') + '<div class="loading"><div class="spinner"></div></div>';
+    v14bar(null);
+    loadGuide(id);
+    return;
   }
+  // Есть кэш: показываем сразу, свежую версию тянем в фоне, если индекс сменил версию
+  var ver = (v14data() || {}).version || '';
+  if(G.cached && bsInitData() && (!G.v || (ver && G.v !== ver))) loadGuide(id).then(function(r){ if(r && r.g && !r.error && v9activeId() === 'guide' && v14curId() === id) v14keep(renderGuide); });
+  var g = G.g;
+  x = x || {id: g.id, organ: g.organ, title: g.title, subtitle: g.subtitle, time: g.time, level: g.level, steps: g.steps.map(function(s){ return s.title; }), hero: g.hero, items: v14keys(g).length};
+  var a = v14prog(id), keys = v14keys(g), d = keys.filter(function(k){ return a.indexOf(k) >= 0; }).length, n = keys.length;
+  var hero = g.hero, me = g.method, ep = g.epilogue;
+  var h = '<article class="v14" id="gdArt">' + v14cover(x, g, {d: d, n: n});
+  if(g.promise) h += '<div class="v14-promise"><div class="k">ЧТО ВЫ ПОЛУЧИТЕ</div><p>' + gE(g.promise) + '</p></div>';
+  // Пролог
+  h += '<section class="v14-sec" id="gdA"><div class="v14-kick"><span>Пролог</span><i></i><span>Точка А</span></div>';
+  if(hero.name){
+    h += '<div class="v14-who"><div class="av">' + v2esc(String(hero.name).charAt(0)) + '</div><div class="m"><b>' + gE(hero.name) + (hero.age ? ', <span class="num">' + v2esc(hero.age) + '</span>' : '') + '</b>' +
+      '<span>' + gE([hero.business, hero.city].filter(Boolean).join(' · ')) + '</span></div></div>';
+  }
+  (hero.story || []).forEach(function(p, i){ h += '<p class="v14-p' + (i === 0 ? ' first' : '') + '">' + gE(p) + '</p>'; });
+  if(Array.isArray(hero.before) && hero.before.length){
+    h += '<div class="v14-before"><div class="hd">Точка А в цифрах</div><div class="gr">' + hero.before.map(function(b){
+      return '<div><b>' + gE(b.value) + '</b><span>' + gE(b.label) + '</span></div>';
+    }).join('') + '</div></div>';
+  }
+  h += '<div class="v14-note">История собирательная, цифры типичные для разборов BS</div></section>';
+  // Метод
+  if(me.thesis || (me.stats && me.stats.length)){
+    h += '<section class="v14-sec" id="gdM"><div class="v14-kick"><span>Метод</span></div>';
+    if(me.thesis) h += '<p class="v14-thesis">' + gE(me.thesis) + '</p>';
+    if(Array.isArray(me.stats) && me.stats.length) h += '<div class="v14-stats">' + me.stats.map(function(s){ return '<div><b class="num">' + gE(s.value) + '</b><span>' + gE(s.label) + '</span></div>'; }).join('') + '</div>';
+    if(me.condition) h += '<div class="v14-cond"><div class="k">КОМУ ПОДХОДИТ</div><p>' + gE(me.condition) + '</p></div>';
+    h += '</section>';
+  }
+  // Оглавление
+  h += '<nav class="v14-toc" id="gdToc"><div class="hd"><span>План</span><span class="num">' + g.steps.length + ' ' + v3plural(g.steps.length, 'шаг', 'шага', 'шагов') + '</span></div>' + g.steps.map(function(s){
+    var c = s.checklist.length, cd = v14stepCnt(s, a);
+    return '<div class="r" onclick="v14go(\'gdS' + s.n + '\')"><span class="n num">' + (s.n < 10 ? '0' : '') + s.n + '</span><span class="t">' + gE(s.title) + '</span>' +
+      (c ? '<span class="c num' + (cd >= c ? ' ok' : '') + '" id="gdTc' + s.n + '">' + (cd >= c ? (V3_CHECK || '') : cd + '/' + c) + '</span>' : '<span class="c">' + v3icon('chev', 14) + '</span>') + '</div>';
+  }).join('') + '<div class="r ep" onclick="v14go(\'gdB\')"><span class="n">Б</span><span class="t">Точка Б: что изменилось</span><span class="c">' + v3icon('chev', 14) + '</span></div></nav>';
+  // Шаги
+  g.steps.forEach(function(s){
+    h += '<section class="v14-step" id="gdS' + s.n + '"><div class="v14-sn"><span class="big num">' + (s.n < 10 ? '0' : '') + s.n + '</span><span class="of">Шаг ' + s.n + ' из ' + g.steps.length + '</span></div>' +
+      '<h2>' + gE(s.title) + '</h2>' + (s.lead ? '<p class="v14-lead">' + gE(s.lead) + '</p>' : '');
+    s.body.forEach(function(p){ h += '<p class="v14-p">' + gE(p) + '</p>'; });
+    if(s.formula) h += '<div class="v14-formula"><div class="k">ФОРМУЛА</div><div class="f">' + gE(s.formula) + '</div></div>';
+    if(s.table) h += v14tbl(s.table);
+    if(s.checklist.length){
+      var cd = v14stepCnt(s, a);
+      h += '<div class="v14-cl"><div class="hd"><span>Чек-лист шага</span><b class="num" id="gdSc' + s.n + '">' + cd + '/' + s.checklist.length + '</b></div>' +
+        s.checklist.map(function(t, i){ return v14item(s.n, i, t, a.indexOf(s.n + ':' + i) >= 0); }).join('') + '</div>';
+    }
+    if(s.case) h += '<div class="v14-case"><div class="k">КЕЙС' + (hero.name ? ' · ' + v2esc(String(hero.name).toUpperCase()) : '') + '</div><p>' + gE(s.case) + '</p></div>';
+    if(s.quote && s.quote.text) h += '<blockquote class="v14-q"><p>' + gE(s.quote.text) + '</p>' + (s.quote.author ? '<cite>' + gE(s.quote.author) + '</cite>' : '') + '</blockquote>';
+    h += '</section>';
+  });
+  // Точка Б
+  h += '<section class="v14-sec v14-ep" id="gdB"><div class="v14-kick"><span>Эпилог</span><i></i><span>Точка Б</span></div>' +
+    '<h2 class="v14-h2">' + (hero.name ? 'Что изменилось у ' + gE(v14gen(hero.name)) : 'Что изменилось') + '</h2>';
+  if(ep.table) h += v14epTbl(ep.table);
+  if(ep.quote) h += '<blockquote class="v14-q big"><p>' + gE(ep.quote) + '</p>' + (hero.name ? '<cite>' + gE(hero.name) + (hero.business ? ', ' + gE(hero.business) : '') + '</cite>' : '') + '</blockquote>';
+  if(Array.isArray(ep.takeaways) && ep.takeaways.length){
+    h += '<div class="v14-take"><div class="hd">Главное</div>' + ep.takeaways.map(function(t, i){ return '<div class="r"><span class="n num">' + (i + 1) + '</span><p>' + gE(t) + '</p></div>'; }).join('') + '</div>';
+  }
+  h += '</section>';
+  h += '<div id="gdDone">' + (n && d >= n ? v13doneHTML(x) : '') + '</div>';
+  h += v14cta(x, n && d >= n) + v14pdfBtns(x);
+  if(navRole() === 'resident' && n) h += '<div class="v13-seen">' + navIcon('me', 13, 2) + 'Трекер видит ваш прогресс по чек-листам</div>';
+  h += '<button class="v12-reset" id="gdReset" onclick="v14resetProg()" style="' + (d ? '' : 'display:none') + '">Сбросить отметки</button>';
+  if(G.error && G.stale) h += '<div class="v3-cap" style="margin:12px 4px 0;text-align:center">Сохранённая версия: сервер сейчас не ответил</div>';
+  h += v14more(x) + '</article>';
   el.innerHTML = h;
-  v12progFix(x, d, n);
+  v14tblMark();
+  v14gTouch(id);
+  v14bar(x, d, n);
 }
-// Прогресс всегда на виду: при прокрутке списка сверху выезжает компактная полоса
-function v12progFix(x, d, n){
-  var f = document.getElementById('clProgFix');
+function v14tblMark(){ document.querySelectorAll('#gdArt .v14-tbl').forEach(function(t){ t.classList.toggle('ovf', t.scrollWidth > t.clientWidth + 4); }); }
+// Родительный падеж имени героя для заголовка «Что изменилось у …»
+function v14gen(name){
+  var s = String(name || '').trim();
+  if(/[ая]$/.test(s)) return s.slice(0, -1) + (/[гкхжчшщ]а$/.test(s) ? 'и' : (/я$/.test(s) ? 'и' : 'ы'));
+  if(/ь$/.test(s)) return s.slice(0, -1) + 'я';
+  if(/й$/.test(s)) return s.slice(0, -1) + 'я';
+  if(/[бвгджзклмнпрстфхцчшщ]$/.test(s)) return s + 'а';
+  return s;
+}
+function v14pdfOnly(x){
+  var h = '<article class="v14 v14-po" id="gdArt">' + v14cover(x, null, null);
+  h += '<div class="v14-pobtn">' + v14pdfBtns(x) + '</div>';
+  if(x.promise) h += '<div class="v14-promise"><div class="k">ВНУТРИ</div><p>' + gE(x.promise) + '</p></div>';
+  var hl = v14heroLine(x.hero);
+  if(hl) h += '<div class="v14-who solo"><div class="av">' + v2esc(String(x.hero.name).charAt(0)) + '</div><div class="m"><b>История героя</b><span>' + gE(hl) + '</span></div></div>';
+  h += '<div class="v14-ponote">' + V14_PDF_ICON + '<span>Этот гайд выходит в формате PDF: полная версия с примерами и таблицами. Удобно читать с телефона и переслать команде.</span></div>';
+  h += v14cta(x) + v14more(x) + '</article>';
+  return h;
+}
+
+// ── Липкая панель: название, шаг, отметки и сколько прочитано ──
+function v14bar(x, d, n){
+  var f = document.getElementById('gdBar');
   if(!f){
-    f = document.createElement('div'); f.id = 'clProgFix'; f.className = 'v12-progfix v12-prog';
+    f = document.createElement('div'); f.id = 'gdBar'; f.className = 'v14-bar';
     document.body.appendChild(f);
-    window.addEventListener('scroll', v12progFixSync, {passive: true});
+    window.addEventListener('scroll', v14onScroll, {passive: true});
+    window.addEventListener('resize', v14onScroll, {passive: true});
   }
-  f.innerHTML = '<div class="tt">' + v2esc(x.title) + '</div><div id="clProgFixIn">' + v12progHTML(d, n) + '</div>';
-  v12progFixSync();
+  if(!x){ f.innerHTML = ''; f.classList.remove('show'); return; }
+  f.innerHTML = '<button class="bk" onclick="v9goBack()" aria-label="Назад">' + v3icon('back', 20, 2.2) + '</button>' +
+    '<div class="m"><div class="tt">' + gE(x.title) + '</div><div class="sb" id="gdBarSub"></div></div>' +
+    '<div class="pc num" id="gdBarPct">0%</div><div class="ln"><i id="gdBarLn"></i></div>';
+  f._d = d || 0; f._n = n || 0;
+  v14onScroll();
 }
-function v12progFixSync(){
-  var f = document.getElementById('clProgFix'); if(!f) return;
-  var p = document.getElementById('clProg');
-  var on = v9activeId() === 'checklist' && p && p.getBoundingClientRect().bottom < 0;
-  f.classList.toggle('show', !!on);
+function v14barSync(){ v14onScroll(); }
+function v14onScroll(){
+  var f = document.getElementById('gdBar'); if(!f) return;
+  var art = document.getElementById('gdArt'), cov = document.getElementById('gdCover');
+  var act = v9activeId() === 'guide' && art && f.innerHTML;
+  if(!act){ f.classList.remove('show'); return; }
+  var r = art.getBoundingClientRect(), vh = window.innerHeight;
+  var span = Math.max(1, r.height - vh * 0.6);
+  var p = Math.max(0, Math.min(100, Math.round(-r.top / span * 100)));
+  f.classList.toggle('show', !!(cov && cov.getBoundingClientRect().bottom < 0));
+  var pc = document.getElementById('gdBarPct'); if(pc) pc.textContent = p + '%';
+  var ln = document.getElementById('gdBarLn'); if(ln) ln.style.width = p + '%';
+  // Текущий раздел
+  var sub = document.getElementById('gdBarSub');
+  if(sub){
+    var cur = '';
+    document.querySelectorAll('#gdArt .v14-step, #gdArt .v14-sec').forEach(function(s){ if(s.getBoundingClientRect().top < 130){ var k = s.querySelector('.v14-sn .of, .v14-kick'); cur = k ? [].map.call(k.querySelectorAll('span'), function(z){ return z.textContent.trim(); }).filter(Boolean).join(' · ') || k.textContent.trim() : cur; } });
+    sub.textContent = (cur || 'Обложка') + (f._n ? ' · отмечено ' + f._d + ' из ' + f._n : '');
+  }
+  // Место чтения запоминаем не чаще раза в 400 мс
+  var id = v14curId();
+  if(id && !window._gdRestoring){
+    clearTimeout(window._gdPosT);
+    window._gdPosT = setTimeout(function(){ if(v9activeId() === 'guide' && v14curId() === id && document.getElementById('gdArt')) v14posSave(id, window.scrollY, p); }, 400);
+  }
 }
-function v12clTick(i){
-  var x = v12clCur(); if(!x) return;
-  var a = v12prog(x.id), k = a.indexOf(i);
-  if(k >= 0) a.splice(k, 1); else a.push(i);
-  a.sort(function(p, q){ return p - q; });
-  v12progSave(x.id, a);
-  var n = x.items.length, d = v12progDone(x);
-  var it = document.getElementById('clIt' + i);
+// Возврат к месту, где остановились
+function v14restore(id){
+  var pos = v14pos(id);
+  if(!pos || pos.y < 400) return;
+  window._gdRestoring = true;
+  var go = function(){ if(v9activeId() === 'guide' && v14curId() === id && document.getElementById('gdArt')) window.scrollTo(0, pos.y); };
+  setTimeout(go, 30); setTimeout(function(){ go(); window._gdRestoring = false; v14onScroll(); if(window.scrollY > 300) showToast('Продолжаем с места, где вы остановились'); }, 120);
+}
+function v14go(elId){
+  var e = document.getElementById(elId); if(!e) return;
+  var y = e.getBoundingClientRect().top + window.scrollY - 72;
+  try{ window.scrollTo({top: y, behavior: 'smooth'}); }catch(err){ window.scrollTo(0, y); }
+}
+
+// ── Отметки ──
+function v14tick(sn, i){
+  var id = v14curId(), G = v14guide(id); if(!G || !G.g) return;
+  var g = G.g, key = sn + ':' + i;
+  var a = v14prog(id), k = a.indexOf(key);
+  if(k >= 0) a.splice(k, 1); else a.push(key);
+  v14progSave(id, a);
+  var keys = v14keys(g), n = keys.length, d = keys.filter(function(z){ return a.indexOf(z) >= 0; }).length;
+  var it = document.getElementById('gdIt' + sn + '_' + i);
   if(it){ it.classList.toggle('on', k < 0); it.setAttribute('aria-checked', String(k < 0)); }
-  var pr = document.getElementById('clProg'); if(pr) pr.innerHTML = v12progHTML(d, n);
-  var pf = document.getElementById('clProgFixIn'); if(pf) pf.innerHTML = v12progHTML(d, n);
-  var rs = document.getElementById('clReset'); if(rs) rs.style.display = d ? '' : 'none';
-  var dn = document.getElementById('clDone'); if(dn) dn.innerHTML = (n && d >= n) ? v13doneHTML(x) : '';
-  var lc = document.getElementById('clLeadCta'); if(lc) lc.style.display = (n && d >= n) ? 'none' : '';
-  if(n && d >= n && k < 0 && dn && dn.firstChild){ try{ var rb = dn.getBoundingClientRect(); if(rb.bottom > window.innerHeight - 90) window.scrollBy({top: rb.bottom - window.innerHeight + 110, behavior: 'smooth'}); }catch(e){} }
-  v13report(x);
+  var s = g.steps.filter(function(z){ return z.n === sn; })[0];
+  if(s){
+    var cd = v14stepCnt(s, a), c = s.checklist.length;
+    var sc = document.getElementById('gdSc' + sn); if(sc) sc.textContent = cd + '/' + c;
+    var tc = document.getElementById('gdTc' + sn); if(tc){ tc.innerHTML = cd >= c ? (V3_CHECK || '') : cd + '/' + c; tc.classList.toggle('ok', cd >= c); }
+  }
+  var cp = document.getElementById('gdCProg'); if(cp) cp.innerHTML = v14cprog(d, n);
+  var f = document.getElementById('gdBar'); if(f){ f._d = d; f._n = n; v14onScroll(); }
+  var rs = document.getElementById('gdReset'); if(rs) rs.style.display = d ? '' : 'none';
+  var x = v14find(id) || {id: id, title: g.title, organ: g.organ, hero: g.hero};
+  var dn = document.getElementById('gdDone'); if(dn) dn.innerHTML = (n && d >= n) ? v13doneHTML(x) : '';
+  var ct = document.getElementById('gdCta'); if(ct) ct.style.display = (n && d >= n) ? 'none' : '';
+  v13report({id: id, title: g.title, organ: g.organ, done: d, total: n});
   try{
     if(tg && tg.HapticFeedback){
       if(n && d >= n && k < 0) tg.HapticFeedback.notificationOccurred('success'); else tg.HapticFeedback.selectionChanged();
     }
   }catch(e){}
-  if(n && d >= n && k < 0) showToast('Чек-лист пройден');
+  if(n && d >= n && k < 0) showToast('Гайд пройден: все пункты отмечены');
 }
-function v12clResetProg(){
-  var x = v12clCur(); if(!x) return;
-  v12progSave(x.id, []);
-  v12clKeepScroll(renderChecklist);
-  v13report(x);
+function v14resetProg(){
+  var id = v14curId(), G = v14guide(id); if(!G || !G.g) return;
+  v14progSave(id, []);
+  v14keep(renderGuide);
+  v13report({id: id, title: G.g.title, organ: G.g.organ, done: 0, total: v14keys(G.g).length});
 }
-function v12clShareText(x){
-  var t = x.title + (x.subtitle ? '\n' + x.subtitle : '') + '\n\n' + x.items.map(function(s, i){ return (i + 1) + '. ' + s; }).join('\n');
-  if(x.result) t += '\n\nРезультат: ' + x.result;
-  if(x.mistake) t += '\nТипичная ошибка: ' + x.mistake;
-  t += '\n\n99 чек-листов Business Surgery';
-  return t;
+
+// ── PDF ──
+function v14pdfUrl(id){ return V14_PDF_BASE + encodeURIComponent(id) + '.pdf'; }
+function v14pdfOpen(){
+  var url = v14pdfUrl(v14curId());
+  try{ if(tg && tg.openLink){ tg.openLink(url); return; } }catch(e){}
+  window.open(url, '_blank');
 }
-function v12clShare(){
-  var x = v12clCur(); if(!x) return;
-  var url = 'https://t.me/bsurgery_bot?start=checklists';
-  var link = 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(v12clShareText(x));
-  try{ if(tg && tg.openTelegramLink){ tg.openTelegramLink(link); return; } }catch(e){}
-  window.open(link, '_blank');
+function v14send(){
+  var id = v14curId(), init = bsInitData();
+  var b = document.getElementById('gdSend');
+  if(!init){ showToast('Откройте приложение в Telegram, чтобы получить PDF'); return; }
+  if(b){ if(b.disabled) return; b.disabled = true; b.classList.add('busy'); var l = b.querySelector('span'); if(l) l.textContent = 'Отправляем…'; }
+  var done = function(msg, ok){
+    showToast(msg);
+    var bb = document.getElementById('gdSend');
+    if(bb){ bb.disabled = false; bb.classList.remove('busy'); var ll = bb.querySelector('span'); if(ll) ll.textContent = ok ? 'PDF отправлен' : 'Получить PDF в Telegram'; if(ok) bb.classList.add('sent'); }
+    try{ if(tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred(ok ? 'success' : 'error'); }catch(e){}
+  };
+  fetch(APP_SERVER + 'guide/' + encodeURIComponent(id) + '/send?' + new URLSearchParams({_tg: init}).toString(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: '{}'})
+    .then(function(r){ return r.json().catch(function(){ return {error: 'http ' + r.status}; }); })
+    .then(function(j){
+      if(j && j.ok) return done('PDF отправлен в чат с ботом', true);
+      var e = String((j && j.error) || '');
+      var map = {not_found: 'Гайд не найден', no_pdf: 'PDF этого гайда ещё готовится. Откройте его ниже', unauthorized: 'Откройте приложение заново из Telegram'};
+      done(map[e] || (/^http /.test(e) || !e ? 'Не получилось отправить PDF. Попробуйте ещё раз' : e), false);
+    })
+    .catch(function(){ done('Нет связи. Попробуйте ещё раз', false); });
 }
 
 // ── Промо-блоки ──
 // Три примера из разных органов, меняются раз в день
-function v12examples(k){
-  var items = ((v12clData() || {}).items) || [];
+function v14examples(k){
+  var items = v14items();
   if(!items.length) return [];
   var pref = ['Финансы', 'Продажи', 'Команда', 'Маркетинг', 'Стратегия', 'Процессы', 'Аналитика', 'Собственник'];
   var day = Math.floor(Date.now() / 86400000);
   var out = [];
   for(var j = 0; j < pref.length && out.length < (k || 3); j++){
     var org = pref[(j + day) % pref.length];
-    var pool = items.filter(function(x){ return x.organ === org; });
+    var pool = items.filter(function(x){ return x.organ === org && !x.existing; });
     if(pool.length) out.push(pool[day % pool.length]);
   }
   return out;
 }
-function v12promo(kind){
-  var L = v12clData();
-  if(!L || !L.at) loadChecklists(false);
+function v14exMeta(x){ var hl = x.hero && x.hero.name ? v12clean(x.hero.name) + (x.hero.age ? ', ' + x.hero.age : '') : ''; return v2esc(x.organ) + (hl ? ' · история: ' + gE(hl) : ''); }
+function v14promo(kind){
+  var L = v14data();
+  if(!L || !L.at) loadGuides(false);
   var items = (L && L.items) || [];
   var total = items.length || 99;
-  var ex = v12examples(3);
+  var ex = v14examples(3);
   var compact = kind === 'lm';
-  var h = '<div class="v12-promo' + (compact ? ' compact' : '') + '" data-v12promo="' + kind + '" onclick="v12openCL()">' +
+  var h = '<div class="v12-promo' + (compact ? ' compact' : '') + '" data-v14promo="' + kind + '" onclick="v14openCat()">' +
     '<div class="k"><span>БИБЛИОТЕКА BS</span><span class="free">БЕСПЛАТНО</span></div>' +
-    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '<br>для вашего бизнеса</div></div>' +
-    '<div class="s">Пошаговые инструкции по семи органам бизнеса: делаете по пунктам и видите результат.</div>';
+    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '<br>для вашего бизнеса</div></div>' +
+    '<div class="s">Гайды-чек-листы на 10-12 страниц: реальная история с цифрами, метод и шаги, которые можно внедрить за неделю.</div>';
   if(ex.length){
     h += '<div class="ex">' + ex.map(function(x){
-      return '<div onclick="event.stopPropagation();window._clOrgan=\'all\';v12clOpenFrom(\'' + v2esc(x.id) + '\')"><span class="o">' + v12oIcon(x.organ, 16) + '</span><span class="x">' + v2esc(x.title) + '<i>' + v2esc(x.organ) + ' · ' + x.items.length + ' ' + v3plural(x.items.length, 'шаг', 'шага', 'шагов') + '</i></span>' + v3icon('chev', 16) + '</div>';
+      return '<div onclick="event.stopPropagation();v14openFrom(\'' + v2esc(x.id) + '\')"><span class="o">' + v12oIcon(x.organ, 16) + '</span><span class="x">' + gE(x.title) + '<i>' + v14exMeta(x) + '</i></span>' + v3icon('chev', 16) + '</div>';
     }).join('') + '</div>';
   } else {
     h += '<div class="icons">' + V12_ORG().map(function(g){ return '<span>' + v12oIcon(g[0], 16) + '</span>'; }).join('') + '</div>';
   }
-  h += '<button onclick="event.stopPropagation();v12openCL()">Открыть ' + total + ' ' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '</button></div>';
+  h += '<button onclick="event.stopPropagation();v14openCat()">Открыть ' + total + ' ' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '</button></div>';
   return h;
 }
-// Пример из промо: сначала витрина, потом чек-лист, чтобы «Назад» вёл в витрину
-function v12clOpenFrom(id){ showPage('checklists'); v12clOpen(id); }
 // Карточка в Библиотеке
-function v12libFeatured(){
-  var L = v12clData();
-  if(!L || !L.at) loadChecklists(false);
+function v14libFeatured(){
+  var L = v14data();
+  if(!L || !L.at) loadGuides(false);
   var items = (L && L.items) || [];
   var total = items.length || 99;
-  var started = items.filter(function(x){ return v12progDone(x); }).length;
-  return '<div class="v12-promo compact" data-v12feat="1" style="margin-top:16px" onclick="v12openCL()">' +
+  var started = items.filter(function(x){ return v14stat(x).d || v14started(x); }).length;
+  return '<div class="v12-promo compact" data-v14feat="1" style="margin-top:16px" onclick="v14openCat()">' +
     '<div class="k"><span>НОВОЕ В БИБЛИОТЕКЕ</span><span class="free">' + (started ? 'В РАБОТЕ ' + started : V12_ORG().length + ' ОРГАНОВ') + '</span></div>' +
-    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '<br>для вашего бизнеса</div></div>' +
+    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '<br>для вашего бизнеса</div></div>' +
+    '<div class="s">История с цифрами, метод, шаги с таблицами и чек-листами. Отмечайте, что внедрили: трекер видит прогресс.</div>' +
     '<div class="icons">' + V12_ORG().map(function(g){ return '<span>' + v12oIcon(g[0], 16) + '</span>'; }).join('') + '</div>' +
-    '<button onclick="event.stopPropagation();v12openCL()">Открыть</button></div>';
+    '<button onclick="event.stopPropagation();v14openCat()">Открыть гайды</button></div>';
 }
 
-// ═══ R13: 99 чек-листов как главный бесплатный оффер лида, конверсия после чек-листа, прогресс на сервер ═══
+// ═══ R13 → R14: 99 гайдов как главный бесплатный оффер лида, конверсия после гайда, прогресс на сервер ═══
 // Примеры для героя: наборы по три из разных органов, наборы сменяются каждые 3.5 с
 function v13exampleSets(){
-  var items = ((v12clData() || {}).items) || [];
+  var items = v14items().filter(function(x){ return !x.existing; });
   if(!items.length) return [];
   var pref = ['Финансы', 'Продажи', 'Команда', 'Маркетинг', 'Стратегия', 'Процессы', 'Аналитика', 'Собственник'];
   var day = Math.floor(Date.now() / 86400000);
@@ -13335,33 +13797,32 @@ function v13exampleSets(){
 }
 function v13exRows(set){
   return (set || []).map(function(x){
-    var n = x.items.length;
-    return '<div class="r" onclick="event.stopPropagation();window._clOrgan=\'all\';v12clOpenFrom(\'' + v2esc(x.id) + '\')"><span class="o">' + v12oIcon(x.organ, 16) + '</span><span class="x">' + v2esc(x.title) + '<i>' + v2esc(x.organ) + ' · <span class="num">' + n + '</span> ' + v3plural(n, 'шаг', 'шага', 'шагов') + '</i></span>' + v3icon('chev', 16) + '</div>';
+    return '<div class="r" onclick="event.stopPropagation();v14openFrom(\'' + v2esc(x.id) + '\')"><span class="o">' + v12oIcon(x.organ, 16) + '</span><span class="x">' + gE(x.title) + '<i>' + v14exMeta(x) + '</i></span>' + v3icon('chev', 16) + '</div>';
   }).join('');
 }
 function v13dots(n, k){ var h = ''; for(var i = 0; i < n; i++) h += '<i' + (i === k ? ' class="on"' : '') + '></i>'; return h; }
 function v13leadHero(){
-  var L = v12clData();
-  if(!L || !L.at) loadChecklists(false);
+  var L = v14data();
+  if(!L || !L.at) loadGuides(false);
   var items = (L && L.items) || [];
   var total = items.length || 99;
-  var points = items.reduce(function(s, x){ return s + x.items.length; }, 0);
-  var started = items.filter(function(x){ return v12progDone(x); }).length;
+  var steps = items.reduce(function(s, x){ return s + x.steps.length; }, 0);
+  var started = items.filter(function(x){ return v14stat(x).d || v14started(x); }).length;
   var sets = v13exampleSets();
   var k = sets.length ? (window._v13ex || 0) % sets.length : 0;
-  var h = '<div class="v13-hero" data-v13hero="1" onclick="v12openCL()">' +
+  var h = '<div class="v13-hero" data-v13hero="1" onclick="v14openCat()">' +
     '<div class="k"><span>BUSINESS SURGERY</span><span class="free">БЕСПЛАТНО</span></div>' +
-    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'чек-лист', 'чек-листа', 'чек-листов') + '<br>для вашего бизнеса.<br><b>Бесплатно</b></div></div>' +
-    '<div class="s">Пошаговые инструкции по семи органам бизнеса: делаете по пунктам и видите результат.</div>';
+    '<div class="hd"><div class="n num">' + total + '</div><div class="t">' + v3plural(total, 'гайд', 'гайда', 'гайдов') + '<br>для вашего бизнеса.<br><b>Бесплатно</b></div></div>' +
+    '<div class="s">Разборы реальных ситуаций с цифрами: метод, шаги с таблицами и чек-листами. Читаете и сразу внедряете.</div>';
   if(sets.length){
     h += '<div class="ex" id="v13ex" aria-live="polite">' + v13exRows(sets[k]) + '</div>' +
       (sets.length > 1 ? '<div class="dots" id="v13dots">' + v13dots(sets.length, k) + '</div>' : '');
   } else {
     h += '<div class="icons">' + V12_ORG().map(function(g){ return '<span>' + v12oIcon(g[0], 16) + '</span>'; }).join('') + '</div>';
   }
-  h += '<button class="go" onclick="event.stopPropagation();v12openCL()">Открыть чек-листы' + v3icon('chev', 18, 2.4) + '</button>' +
-    '<div class="ft">' + (started ? 'В работе у вас: <b class="num">' + started + '</b> ' + v3plural(started, 'чек-лист', 'чек-листа', 'чек-листов')
-      : '<span class="num">' + (points ? v12num(points) : '1 000+') + '</span> шагов · 7 органов и собственник · 3 уровня') + '</div></div>';
+  h += '<button class="go" onclick="event.stopPropagation();v14openCat()">Открыть гайды' + v3icon('chev', 18, 2.4) + '</button>' +
+    '<div class="ft">' + (started ? 'В работе у вас: <b class="num">' + started + '</b> ' + v3plural(started, 'гайд', 'гайда', 'гайдов')
+      : '<span class="num">' + (steps ? v12num(steps) : '500+') + '</span> шагов · 7 органов и собственник · 3 уровня') + '</div></div>';
   if(sets.length > 1) v13rotStart();
   return h;
 }
@@ -13382,59 +13843,67 @@ function v13rotStart(){
   }, 3500);
 }
 function v13diagDone(){ try{ return !!localStorage.getItem('bs_diagnostic_result'); }catch(e){ return false; } }
-// Мягкое приглашение в диагностику после 3 начатых чек-листов (лид)
+// Мягкое приглашение в диагностику после 3 начатых гайдов (лид)
 function v13softBanner(started){
   if(navRole() !== 'lead' || started < 3) return '';
   var done = v13diagDone();
-  return '<div class="v13-soft" onclick="showPage(\'diagnostic\')"><div class="m"><b>' + (done ? 'Сверьте чек-листы с вашей диагностикой' : 'В работе ' + started + ' ' + v3plural(started, 'чек-лист', 'чек-листа', 'чек-листов') + '. Пора увидеть картину целиком') + '</b>' +
+  return '<div class="v13-soft" onclick="showPage(\'diagnostic\')"><div class="m"><b>' + (done ? 'Сверьте гайды с вашей диагностикой' : 'Вы начали ' + started + ' ' + v3plural(started, 'гайд', 'гайда', 'гайдов') + '. Пора увидеть картину целиком') + '</b>' +
     '<span>' + (done ? 'Результат покажет, какой орган тянет остальные и что внедрять первым' : 'Диагностика: семь органов за 5 минут. Покажем, какой орган тянет остальные и с чего начать') + '</span>' +
     '<em>' + (done ? 'Мой результат' : 'Пройти диагностику') + '</em></div><div class="go">' + v3icon('chev', 18, 2.2) + '</div></div>';
 }
-// Следующий чек-лист: сначала тот же орган, затем остальные, пройденные пропускаем
+// Следующий гайд: сначала тот же орган, затем остальные, пройденные пропускаем
 function v13nextCL(x){
-  var items = ((v12clData() || {}).items) || [];
-  var open = items.filter(function(y){ return y.id !== x.id && v12progDone(y) < y.items.length; });
+  var items = v14items();
+  var open = items.filter(function(y){ var s = v14stat(y); return y.id !== x.id && !(s.n && s.d >= s.n); });
   var same = open.filter(function(y){ return y.organ === x.organ; });
   var pick = function(arr){ var a = arr.filter(function(y){ return y.id > x.id; }); return a[0] || arr[0] || null; };
   return pick(same) || pick(open);
 }
 function v13clNext(){
-  var x = v12clCur(); if(!x) return;
+  var x = v14find(v14curId()); if(!x){ v14openCat(); return; }
   var y = v13nextCL(x);
-  if(y) v12clOpen(y.id); else v12openCL(x.organ);
+  if(y) v14open(y.id); else v14openCat(x.organ);
 }
 function v13book(){
-  var x = v12clCur();
+  var x = v14find(v14curId()) || ((v14guide(v14curId()) || {}).g);
   try{ openDiagnosticModal(); }catch(e){ showPage('leadrazbor'); return; }
-  try{ var r = document.getElementById('diagRequest'); if(r && !r.value && x) r.value = 'Прошёл чек-лист «' + x.title + '». Хочу разобрать, как внедрить это в моём бизнесе'; }catch(e){}
+  try{ var r = document.getElementById('diagRequest'); if(r && !r.value && x) r.value = 'Прочитал гайд «' + x.title + '». Хочу разобрать, как внедрить это в моём бизнесе'; }catch(e){}
 }
 function v13leadDoneHTML(x){
   var y = v13nextCL(x);
-  return '<div class="v13-done" id="clConv"><div class="k"><span class="ic">' + (V3_CHECK || '') + '</span>Чек-лист пройден.</div>' +
+  return '<div class="v13-done" id="gdConv"><div class="k"><span class="ic">' + (V3_CHECK || '') + '</span>Гайд пройден.</div>' +
     '<div class="t">Следующий шаг: разобрать, как внедрить это в вашем бизнесе</div>' +
-    '<div class="s">60 минут с трекером: найдём, где этот чек-лист даст деньги первым, и соберём план на 10 дней.</div>' +
+    '<div class="s">60 минут с трекером: найдём, где этот гайд даст деньги первым, и соберём план на 10 дней.</div>' +
     '<button class="b1" onclick="v13book()">Записаться на разбор</button>' +
-    '<button class="b2" onclick="v13clNext()"><span class="l">Следующий чек-лист</span>' + (y ? '<span class="n">' + v2esc(y.title) + '</span>' : '<span class="n">Все чек-листы: ' + v2esc(x.organ) + '</span>') + '</button></div>';
+    '<button class="b2" onclick="v13clNext()"><span class="l">Следующий гайд</span>' + (y ? '<span class="n">' + gE(y.title) + '</span>' : '<span class="n">Все гайды: ' + v2esc(x.organ) + '</span>') + '</button></div>';
 }
-function v13doneHTML(x){ return navRole() === 'lead' ? v13leadDoneHTML(x) : v12doneHTML(); }
+function v13resDoneHTML(x){
+  var y = v13nextCL(x);
+  return '<div class="v13-done" id="gdConv"><div class="k"><span class="ic">' + (V3_CHECK || '') + '</span>Гайд пройден.</div>' +
+    '<div class="t">Все пункты отмечены. Закрепите результат на разборе</div>' +
+    '<div class="s">Трекер видит отметки и поможет довести внедрение до цифр в точке Б.</div>' +
+    '<button class="b1" onclick="showPage(\'myboard\')">Обсудить на разборе с трекером</button>' +
+    '<button class="b2" onclick="v13clNext()"><span class="l">Следующий гайд</span>' + (y ? '<span class="n">' + gE(y.title) + '</span>' : '<span class="n">Все гайды: ' + v2esc(x.organ) + '</span>') + '</button></div>';
+}
+function v13doneHTML(x){ return navRole() === 'resident' ? v13resDoneHTML(x) : v13leadDoneHTML(x); }
 
 // Прогресс на сервер: трекер видит, что внедрил резидент; бот приглашает лида после завершения.
 // Отправка без ожидания ответа, через 1.5 с после последней отметки, ошибки игнорируем.
 window._v13rep = {};
-function v13report(x){
-  if(!x || !bsInitData()) return;
+function v13report(b){
+  if(!b || !b.id || !bsInitData()) return;
   var R = window._v13rep;
-  Object.keys(R).forEach(function(id){ if(id !== x.id) v13flush(id); });
-  if(R[x.id]) clearTimeout(R[x.id].t);
-  R[x.id] = {x: x, t: setTimeout(function(){ v13flush(x.id); }, 1500)};
+  Object.keys(R).forEach(function(id){ if(id !== b.id) v13flush(id); });
+  if(R[b.id]) clearTimeout(R[b.id].t);
+  R[b.id] = {b: b, t: setTimeout(function(){ v13flush(b.id); }, 1500)};
 }
 function v13flush(id){
   var R = window._v13rep, e = R[id];
   if(!e) return;
   clearTimeout(e.t); delete R[id];
   var init = bsInitData(); if(!init) return;
-  var x = e.x;
-  var body = {id: x.id, title: x.title, organ: x.organ, done: v12progDone(x), total: x.items.length};
+  var b = e.b;
+  var body = {id: b.id, title: b.title, organ: b.organ, done: b.done, total: b.total};
   try{
     fetch(APP_SERVER + 'ckprogress?_tg=' + encodeURIComponent(init), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body), keepalive: true}).catch(function(){});
   }catch(err){}
