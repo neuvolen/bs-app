@@ -4565,6 +4565,36 @@
   .v15-home .s { font-size: 12.5px; color: #9A9A9A; margin-top: 5px; line-height: 1.4; }
   .v15-home .go { width: 40px; height: 40px; border-radius: 12px; background: #FFFFFF; color: #000; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  /* ═══ R20: веб-платформа BS (app.bxclub.kz) на главной и в первых шагах резидента ═══ */
+  .v20-plat { margin-top: 10px; padding: 16px 16px 14px 18px; border-color: #2E2E2E; background: linear-gradient(135deg, #161616 0%, #0B0B0B 100%); }
+  .v20-plat .hd { display: flex; align-items: center; gap: 12px; }
+  .v20-plat .ic { width: 40px; height: 40px; border-radius: 12px; background: #FFFFFF; color: #000; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .v20-plat .m { flex: 1; min-width: 0; }
+  .v20-plat .k { font-size: 10px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; }
+  .v20-plat .t { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2; margin-top: 4px; }
+  .v20-plat .s { font-size: 13px; color: #B5B5B5; margin-top: 10px; line-height: 1.45; }
+  .v20-note { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; height: 26px; padding: 0 10px; border-radius: 8px; border: 1px solid #333; font-size: 12px; font-weight: 700; color: #FFFFFF; }
+  .v20-note svg { flex-shrink: 0; }
+  .v20-url { font-size: 12px; color: #8C8C8C; margin-top: 10px; letter-spacing: 0.2px; }
+  .v20-bt { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .v20-bt button { flex: 1 1 160px; min-width: 0; height: 42px; border-radius: 11px; font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer; white-space: nowrap; padding: 0 8px; }
+  .v20-bt .b1 { background: #FFFFFF; color: #000; border: 1px solid #FFFFFF; }
+  .v20-bt .b2 { background: transparent; color: #FFFFFF; border: 1px solid #3A3A3A; }
+  .v20-onb { margin-top: 10px; padding: 4px 0 2px; }
+  .v20-onb .hd { display: flex; align-items: baseline; justify-content: space-between; padding: 12px 16px 6px; }
+  .v20-onb .hd .k { font-size: 10px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; }
+  .v20-onb .hd .x { font-size: 12px; font-weight: 700; color: #8C8C8C; background: none; border: none; font-family: inherit; cursor: pointer; padding: 4px 0 4px 8px; }
+  .v20-st { display: flex; gap: 12px; padding: 12px 16px; border-top: 1px solid #1A1A1A; }
+  .v20-st:first-of-type { border-top: none; }
+  .v20-st .n { width: 24px; height: 24px; border-radius: 7px; background: #FFFFFF; color: #000; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .v20-st.done .n { background: transparent; border: 1.5px solid #4A4A4A; color: #9A9A9A; }
+  .v20-st .c { flex: 1; min-width: 0; }
+  .v20-st .c b { display: block; font-size: 14.5px; font-weight: 800; line-height: 1.3; }
+  .v20-st.done .c b { color: #9A9A9A; text-decoration: line-through; text-decoration-color: #555; }
+  .v20-st .c span { display: block; font-size: 12.5px; color: #9A9A9A; line-height: 1.4; margin-top: 3px; }
+  .v20-st .go { font-size: 12.5px; font-weight: 800; color: #FFFFFF; background: none; border: none; font-family: inherit; padding: 6px 0 0; cursor: pointer; }
+  .v20-st .v20-bt { margin-top: 10px; }
+  .v20-st .v20-bt button { height: 38px; font-size: 13px; }
   /* ═══ R17: обложки чек-листов в стиле обложек диагнозов и инструментов платформы (cv16) ═══ */
   .cv16 { position: absolute; inset: 0; overflow: hidden; color: #fff; isolation: isolate; border-radius: inherit;
     --acc: #FFFFFF; --acc2: rgba(255,255,255,0.16); --accg: rgba(255,255,255,0.26); --cvk: #111112;
@@ -5087,6 +5117,57 @@ function v15renderRef(){
   }
   el.innerHTML = h;
 }
+// ═══ R20: веб-платформа BS. Карточка на главной (резидент, админ) и шаг в первых шагах резидента ═══
+var V20_PLAT = 'https://app.bxclub.kz';
+var V20_LAPTOP = '<path d="M5 5h14a1 1 0 0 1 1 1v9H4V6a1 1 0 0 1 1-1z"/><path d="M2 18h20"/>';
+function v20ico(size, w){ return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 2) + '" stroke-linecap="round" stroke-linejoin="round">' + V20_LAPTOP + '</svg>'; }
+function v20get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function v20set(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+function v20seen(){ v20set('bs_plat_seen', '1'); var el = document.getElementById('v20onbPlat'); if(el && !el.classList.contains('done')){ el.classList.add('done'); v20onbCount(); } }
+function v20openPlat(){
+  v20seen();
+  try{ if(window.Telegram && Telegram.WebApp && typeof Telegram.WebApp.openLink === 'function'){ Telegram.WebApp.openLink(V20_PLAT); return; } }catch(e){}
+  try{ window.open(V20_PLAT, '_blank'); }catch(e){}
+}
+function v20copyPlat(){ v20seen(); v15copy(V20_PLAT, 'Ссылка скопирована'); }
+function v20btns(){
+  return '<div class="v20-bt"><button class="b1" onclick="event.stopPropagation();v20openPlat()">Открыть платформу</button>' +
+    '<button class="b2" onclick="event.stopPropagation();v20copyPlat()">Скопировать ссылку</button></div>';
+}
+function v20note(){ return '<div class="v20-note">' + v20ico(14, 2.2) + 'Удобнее с ноутбука</div>'; }
+function v20platCard(role){
+  try{ if(navRole() === 'lead') return ''; }catch(e){}
+  var what = role === 'admin'
+    ? 'Разборы и доски резидентов, задачи, отчёты, заявки и финансы клуба. Вход через Telegram.'
+    : 'Ваши разборы, задачи, отчёты и прогресс в одном месте. Вход через Telegram.';
+  return '<div class="v2-card v20-plat" id="v20plat"><div class="hd"><div class="ic">' + v20ico(20) + '</div>' +
+    '<div class="m"><div class="k">ВЕБ-ВЕРСИЯ</div><div class="t">Платформа BS</div></div></div>' +
+    '<div class="s">' + what + '</div>' + v20note() +
+    '<div class="v20-url num">app.bxclub.kz</div>' + v20btns() + '</div>';
+}
+// Первые шаги резидента: показываются, пока не пройдены или не скрыты
+function v20onb(sent){
+  try{ if(navRole() !== 'resident') return ''; }catch(e){}
+  if(v20get('bs_onb_hide') === '1') return '';
+  var plat = v20get('bs_plat_seen') === '1', rules = v20get('bs_onb_rules') === '1';
+  if(sent && plat && rules) return '';
+  var st = function(n, done, id, title, sub, extra){
+    return '<div class="v20-st' + (done ? ' done' : '') + '"' + (id ? ' id="' + id + '"' : '') + '><div class="n">' + (done ? V3_CHECK : n) + '</div><div class="c"><b>' + title + '</b><span>' + sub + '</span>' + (extra || '') + '</div></div>';
+  };
+  return '<div class="v2-card v20-onb" id="v20onb"><div class="hd"><div class="k">ПЕРВЫЕ ШАГИ · <span id="v20onbN">' + ((sent ? 1 : 0) + (plat ? 1 : 0) + (rules ? 1 : 0)) + '</span> ИЗ 3</div>' +
+      '<button class="x" onclick="v20onbHide()">Скрыть</button></div>' +
+    st(1, sent, 'v20onbRep', 'Сдайте первый отчёт', 'В группе клуба, тема «ОТЧЁТЫ», каждый день до 23:59', sent ? '' : '<button class="go" onclick="v3sendReport()">Сдать отчёт ›</button>') +
+    st(2, plat, 'v20onbPlat', 'Откройте платформу BS', 'app.bxclub.kz: ваши разборы, задачи, отчёты и прогресс. Вход через Telegram.', v20note() + v20btns()) +
+    st(3, rules, 'v20onbRules', 'Прочитайте правила клуба', 'Отчёты, встречи, штрафы и оплата', rules ? '' : '<button class="go" onclick="v20set(\'bs_onb_rules\',\'1\');showPage(\'rules\')">Открыть правила ›</button>') +
+  '</div>';
+}
+function v20onbCount(){
+  var el = document.getElementById('v20onb'); if(!el) return;
+  var n = el.querySelectorAll('.v20-st.done').length, c = document.getElementById('v20onbN'); if(c) c.textContent = n;
+  var p = document.getElementById('v20onbPlat'); if(p){ var nn = p.querySelector('.n'); if(nn && p.classList.contains('done')) nn.innerHTML = V3_CHECK; }
+}
+function v20onbHide(){ v20set('bs_onb_hide', '1'); var el = document.getElementById('v20onb'); if(el) el.remove(); }
+
 function v15homeCard(){
   var d = window._ref && window._ref.data, inv = d && Array.isArray(d.invited) ? d.invited : [];
   var sub = inv.length ? 'Приглашено ' + inv.length + (Number(d.bonusTotal) > 0 ? ' · начислено ' + v15nb(d.bonusTotal) + ' ₸' : '') : 'Ссылка и готовый текст. Бонус, когда друг станет резидентом';
@@ -6363,6 +6444,8 @@ function renderResHome(){
            '<div class="s">Отчёт пишется в группе клуба, в теме «ОТЧЁТЫ». Без отчёта в 14:30 следующего дня приходит штраф 10 000 ₸.</div>' +
            '<button onclick="v3sendReport()">Сдать отчёт</button></div>';
   }
+  // Первые шаги новичка: отчёт, платформа, правила
+  h += v20onb(sent || v3reports30(me) > 0);
   // Библиотека BS: крупно, сразу после отчёта
   h += v11homeLib();
   h += '<div class="v2-stats">' +
@@ -6373,6 +6456,7 @@ function renderResHome(){
   if(debt > 0){
     h += '<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank" style="display:block;margin-top:8px;text-decoration:none"><button class="v3-primary" style="height:50px;border-radius:12px">Оплатить ' + v2money(debt) + ' ₸ через Kaspi</button></a>';
   }
+  h += v20platCard('resident');
   h += v15homeCard();
   if(!window._v15refTried && window._ref){ window._v15refTried = true; setTimeout(function(){ v15refLoad(); }, 600); }
   h += '<div class="v2-h">Следующая встреча' + (meets.length ? ' <span class="lnk" onclick="showPage(\'mymeetings\')">Все ' + meets.length + '</span>' : '') + '</div>';
@@ -7571,6 +7655,8 @@ function renderDashboard(){
       return '<div class="v2-row" style="padding:11px 16px" onclick="showMeetingDetail(window._v3TodayMeets[' + i + '])"><div class="num" style="width:46px;font-size:13px;font-weight:700">' + v2esc(ev.time||'') + '</div>' +
         '<div class="m"><b>' + v2esc(ev.res) + '</b></div><div class="v3-cap">' + kind + '</div></div>';
     }).join('') : '<div class="v2-empty">Сегодня встреч нет</div>') + '</div>';
+
+  h += v20platCard('admin');
 
   h += '<div class="v2-h">Клуб</div><div class="v2-card">' +
     v3row('club', 'Резиденты', residents.length + ' ' + v3plural(residents.length, 'активный', 'активных', 'активных'), "showPage('residents')") +
