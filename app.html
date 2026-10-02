@@ -822,6 +822,7 @@
 <!-- ADMIN PAGES -->
 <div class="page active" id="page-dashboard"><div id="dashboardContent"><div class="loading"><div class="spinner"></div><div class="loading-text" style="color:#999;font-size:12px;margin-top:8px">Загрузка данных...</div></div></div></div>
 <div class="page" id="page-leadrazbor"><div id="leadrazborContent"></div></div>
+<div class="page" id="page-referral"><div id="referralContent"></div></div>
 <div class="page" id="page-schedule"><div id="scheduleContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-reports"><div id="reportsContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-fines"><div id="finesContent"><div class="loading"><div class="spinner"></div></div></div></div>
@@ -4191,6 +4192,142 @@
   .v14-bar .pc { flex-shrink: 0; font-size: 12px; font-weight: 800; color: #CFCFCF; }
   .v14-bar .ln { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; margin: 0; border-radius: 0; background: transparent; }
   .v14-bar .ln i { border-radius: 0; }
+
+  /* ═══ R15: запись на экспресс-разбор и приглашения ═══ */
+  .v15-head { margin: 2px 4px 0; }
+  .v15-head .k { font-size: 11px; font-weight: 800; letter-spacing: 1.8px; color: #8C8C8C; }
+  .v15-head .t { font-size: 30px; font-weight: 800; letter-spacing: -0.9px; line-height: 1.05; margin-top: 6px; }
+  .v15-offer { margin-top: 16px; background: #FFFFFF; color: #000; border-radius: 22px; padding: 20px 18px 18px; }
+  .v15-offer .t { font-size: 22px; font-weight: 800; line-height: 1.18; letter-spacing: -0.5px; }
+  .v15-offer .s { font-size: 13.5px; color: #4A4A4A; line-height: 1.5; margin-top: 8px; }
+  .v15-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 16px; border-top: 1px solid #E4E4E4; }
+  .v15-facts > div { padding: 12px 8px 0 0; min-width: 0; }
+  .v15-facts > div + div { padding-left: 12px; border-left: 1px solid #E4E4E4; }
+  .v15-facts b { display: block; font-size: 19px; font-weight: 800; letter-spacing: -0.4px; white-space: nowrap; }
+  .v15-facts span { display: block; font-size: 11px; color: #6B6B6B; font-weight: 600; margin-top: 2px; line-height: 1.3; }
+  .v15-get { padding: 4px 0; }
+  .v15-get .r { display: flex; gap: 14px; padding: 13px 16px; border-bottom: 1px solid #1A1A1A; }
+  .v15-get .r:last-child { border-bottom: none; }
+  .v15-get .n { font-size: 12px; font-weight: 800; color: #6E6E6E; width: 18px; flex-shrink: 0; padding-top: 1px; }
+  .v15-get b { display: block; font-size: 14.5px; font-weight: 800; }
+  .v15-get span { display: block; font-size: 12.5px; color: #9A9A9A; line-height: 1.45; margin-top: 3px; }
+  .v15-days { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 2px; scroll-padding: 0 16px; scroll-snap-type: x proximity; }
+  .v15-days::-webkit-scrollbar { display: none; }
+  .v15-day { flex-shrink: 0; width: 64px; height: 74px; border-radius: 14px; border: 1px solid #262626; background: #0E0E0E; color: #FFFFFF; font-family: inherit;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; scroll-snap-align: start; padding: 0; }
+  .v15-day .w { font-size: 9.5px; font-weight: 800; letter-spacing: 0.6px; color: #8C8C8C; }
+  .v15-day .d { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.05; }
+  .v15-day .c { font-size: 10px; font-weight: 700; color: #8C8C8C; }
+  .v15-day.on { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v15-day.on .w, .v15-day.on .c { color: #555; }
+  .v15-dayhead { display: flex; justify-content: space-between; align-items: baseline; margin: 16px 4px 10px; }
+  .v15-dayhead b { font-size: 15px; font-weight: 800; }
+  .v15-dayhead span { font-size: 12px; color: #8C8C8C; font-weight: 700; }
+  .v15-times { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .v15-time { height: 58px; border-radius: 12px; border: 1px solid #262626; background: transparent; color: #FFFFFF; font-family: inherit; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 0; }
+  .v15-time b { font-size: 17px; font-weight: 800; letter-spacing: -0.2px; }
+  .v15-time span { font-size: 10px; font-weight: 800; letter-spacing: 0.8px; color: #8C8C8C; text-transform: uppercase; }
+  .v15-time.on { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v15-time.on span { color: #555; }
+  .v15-badge { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 8px; border: 1px solid #333; font-size: 11px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; white-space: nowrap; }
+  .v15-badge i { width: 6px; height: 6px; border-radius: 3px; background: currentColor; display: block; }
+  .v15-badge.w { background: #FFFFFF; color: #000; border-color: #FFFFFF; }
+  .v15-badge.dk { border-color: #000; color: #000; }
+  .v15-sel { margin-top: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; }
+  .v15-sel .m { flex: 1; min-width: 0; }
+  .v15-sel .m b { display: block; font-size: 14px; font-weight: 800; }
+  .v15-sel .m span { display: block; font-size: 12px; color: #9A9A9A; margin-top: 3px; line-height: 1.4; }
+  .v15-form { padding: 6px 16px 16px; }
+  .v15-f { padding-top: 12px; }
+  .v15-f label { display: block; font-size: 11px; font-weight: 800; letter-spacing: 1.2px; color: #8C8C8C; text-transform: uppercase; margin: 0 0 7px 2px; }
+  .v15-f input, .v15-f textarea { width: 100%; box-sizing: border-box; border-radius: 12px; border: 1px solid #2A2A2A; background: #000; color: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 600; padding: 13px 14px; outline: none; }
+  .v15-f input { height: 50px; }
+  .v15-f textarea { min-height: 96px; resize: none; line-height: 1.45; font-size: 15px; }
+  .v15-f input:focus, .v15-f textarea:focus { border-color: #FFFFFF; }
+  .v15-f.bad input { border-color: #FF6B6F; }
+  .v15-f .e { display: none; font-size: 12px; color: #FF6B6F; font-weight: 700; margin: 6px 2px 0; }
+  .v15-f.bad .e { display: block; }
+  .v15-f input::placeholder, .v15-f textarea::placeholder { color: #555; font-weight: 500; }
+  .v15-submit { margin-top: 14px; }
+  .v15-submit:disabled { background: #1A1A1A; color: #6E6E6E; cursor: default; }
+  .v15-note { font-size: 12px; color: #8C8C8C; line-height: 1.5; margin: 10px 4px 0; text-align: center; }
+  .v15-empty { padding: 22px 18px 18px; text-align: center; }
+  .v15-empty .ic { width: 52px; height: 52px; border-radius: 16px; border: 1px solid #2A2A2A; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: #FFFFFF; }
+  .v15-empty b { display: block; font-size: 18px; font-weight: 800; margin-top: 14px; letter-spacing: -0.3px; }
+  .v15-empty span { display: block; font-size: 13px; color: #9A9A9A; line-height: 1.5; margin-top: 6px; }
+  .v15-empty .bt { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .v15-sk { border-radius: 14px; background: linear-gradient(90deg, #0E0E0E 0, #171717 50%, #0E0E0E 100%); background-size: 200% 100%; animation: v15sh 1.2s linear infinite; }
+  @keyframes v15sh { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+  /* Подтверждение записи */
+  .v15-ok { margin-top: 16px; background: #FFFFFF; color: #000; border-radius: 22px; padding: 20px 18px 18px; animation: v13in .35s ease; }
+  .v15-ok .st { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .v15-ok .st .l { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; }
+  .v15-ok .st .ic { width: 26px; height: 26px; border-radius: 8px; background: #000; color: #FFFFFF; display: flex; align-items: center; justify-content: center; }
+  .v15-ok .dt { font-size: 32px; font-weight: 800; letter-spacing: -1px; line-height: 1.05; margin-top: 16px; }
+  .v15-ok .tm { font-size: 17px; font-weight: 800; color: #4A4A4A; margin-top: 6px; letter-spacing: -0.2px; }
+  .v15-ok .pl { margin-top: 14px; padding-top: 14px; border-top: 1px solid #E4E4E4; display: flex; align-items: flex-start; gap: 10px; }
+  .v15-ok .pl .m { flex: 1; min-width: 0; font-size: 13.5px; line-height: 1.45; color: #333; font-weight: 600; word-break: break-word; }
+  .v15-ok .pl a { color: #000; font-weight: 800; }
+  .v15-ok .pay { margin-top: 14px; padding: 12px 14px; border-radius: 14px; background: #F3F3F3; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .v15-ok .pay span { font-size: 12.5px; color: #555; font-weight: 700; }
+  .v15-ok .pay b { font-size: 17px; font-weight: 800; white-space: nowrap; }
+  .v15-ok .b1 { margin-top: 12px; width: 100%; height: 56px; border-radius: 14px; border: none; background: #000; color: #FFFFFF; font-family: inherit; font-size: 15.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .v15-ok .b2 { margin-top: 8px; width: 100%; height: 50px; border-radius: 14px; border: 1.5px solid #000; background: transparent; color: #000; font-family: inherit; font-size: 14.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .v15-ok .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .v15-ok .b3 { height: 46px; border-radius: 12px; border: 1px solid #D6D6D6; background: transparent; color: #000; font-family: inherit; font-size: 13.5px; font-weight: 800; cursor: pointer; }
+  .v15-ok .pay .v15-paid { color: #FFFFFF; font-size: 11px; }
+  .v15-paid { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 8px; background: #000; color: #FFFFFF; font-size: 11px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; }
+  .v15-prep .r { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #1A1A1A; font-size: 13px; line-height: 1.45; color: #CFCFCF; }
+  .v15-prep .r:last-child { border-bottom: none; }
+  .v15-prep .r i { font-style: normal; font-size: 12px; font-weight: 800; color: #6E6E6E; width: 18px; flex-shrink: 0; }
+  .v15-sheet .t { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2; }
+  .v15-sheet .s { font-size: 13px; color: #9A9A9A; line-height: 1.5; margin-top: 8px; }
+  .v15-sheet .bt { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+  .v15-danger { width: 100%; height: 50px; border-radius: 12px; border: 1px solid #4A1E20; background: transparent; color: #FF6B6F; font-family: inherit; font-size: 14px; font-weight: 800; cursor: pointer; }
+  /* Приглашения */
+  .v15-ref { margin-top: 16px; background: #FFFFFF; color: #000; border-radius: 22px; padding: 20px 18px 18px; }
+  .v15-ref .k { font-size: 10px; font-weight: 800; letter-spacing: 2.2px; color: #6B6B6B; }
+  .v15-ref .big { font-size: 44px; font-weight: 800; letter-spacing: -1.6px; line-height: 1; margin-top: 12px; white-space: nowrap; }
+  .v15-ref .big small { font-size: 26px; letter-spacing: -0.6px; margin-left: 4px; }
+  .v15-ref .t { font-size: 16px; font-weight: 800; line-height: 1.3; margin-top: 8px; }
+  .v15-steps { margin-top: 16px; border-top: 1px solid #E4E4E4; }
+  .v15-steps .r { display: flex; gap: 12px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid #EFEFEF; }
+  .v15-steps .r:last-child { border-bottom: none; padding-bottom: 2px; }
+  .v15-steps .n { width: 24px; height: 24px; border-radius: 7px; background: #000; color: #FFFFFF; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .v15-steps .m { font-size: 13.5px; line-height: 1.4; color: #333; font-weight: 600; padding-top: 2px; }
+  .v15-steps .m b { color: #000; font-weight: 800; }
+  .v15-ref .b1 { margin-top: 14px; width: 100%; height: 56px; border-radius: 14px; border: none; background: #000; color: #FFFFFF; font-family: inherit; font-size: 15.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .v15-ref .b2 { margin-top: 8px; width: 100%; height: 50px; border-radius: 14px; border: 1.5px solid #000; background: transparent; color: #000; font-family: inherit; font-size: 14.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .v15-link { margin-top: 10px; display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 16px; }
+  .v15-link .u { flex: 1; min-width: 0; font-size: 13px; font-weight: 700; color: #CFCFCF; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .v15-txt { padding: 16px; font-size: 13.5px; line-height: 1.55; color: #CFCFCF; white-space: pre-wrap; word-break: break-word; }
+  .v15-txt + .v15-txtb { border-top: 1px solid #1A1A1A; }
+  .v15-txtb { display: flex; justify-content: flex-end; padding: 10px 12px; }
+  .v15-tot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .v15-tot > div { padding: 14px 12px 14px 16px; min-width: 0; }
+  .v15-tot > div + div { border-left: 1px solid #1F1F1F; }
+  .v15-tot .l { font-size: 11px; color: #8C8C8C; font-weight: 700; }
+  .v15-tot .v { font-size: 18px; font-weight: 800; letter-spacing: -0.4px; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .v15-inv { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-bottom: 1px solid #1A1A1A; }
+  .v15-inv:last-child { border-bottom: none; }
+  .v15-inv .m { flex: 1; min-width: 0; }
+  .v15-inv .m b { display: block; font-size: 14.5px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .v15-inv .m span { display: block; font-size: 11.5px; color: #8C8C8C; margin-top: 3px; font-weight: 600; }
+  .v15-inv .r { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+  .v15-inv .bn { font-size: 11.5px; font-weight: 700; color: #9A9A9A; white-space: nowrap; }
+  .v15-inv .bn b { color: #FFFFFF; font-weight: 800; }
+  .v15-st { display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 7px; font-size: 11px; font-weight: 800; white-space: nowrap; border: 1px solid #333; color: #CFCFCF; }
+  .v15-st.razbor { border-color: #FFFFFF; color: #FFFFFF; }
+  .v15-st.resident { background: #FFFFFF; border-color: #FFFFFF; color: #000; }
+  .v15-st.lost { border-color: #222; color: #6E6E6E; }
+  .v15-home { margin-top: 10px; padding: 16px 16px 16px 18px; display: flex; align-items: center; gap: 14px; cursor: pointer; border-color: #2E2E2E;
+    background: linear-gradient(135deg, #161616 0%, #0B0B0B 100%); }
+  .v15-home .m { flex: 1; min-width: 0; }
+  .v15-home .k { font-size: 10px; font-weight: 800; letter-spacing: 2px; color: #8C8C8C; }
+  .v15-home .t { font-size: 19px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.2; margin-top: 6px; }
+  .v15-home .s { font-size: 12.5px; color: #9A9A9A; margin-top: 5px; line-height: 1.4; }
+  .v15-home .go { width: 40px; height: 40px; border-radius: 12px; background: #FFFFFF; color: #000; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 </style>
 
 <div class="modal-bg" id="attendModal">
@@ -4254,6 +4391,430 @@ const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwBbU7pJMyIptJoOtJ5h
 // готовые данные, чтобы экран открывался сразу. Если сервер недоступен, приложение
 // идёт в таблицу напрямую, как раньше
 const APP_SERVER = 'https://bs-platform-production.up.railway.app/api/v1/app/';
+// ══════════ R15: ЗАПИСЬ НА ЭКСПРЕСС-РАЗБОР ══════════
+// GET slots → окна; POST book → запись; POST book/cancel → отмена. Время окон всегда по Алматы (+05:00)
+var V15_WD = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
+var V15_WDL = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+var V15_MG = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+var V15_PRICE = 30000;
+window._bk = window._bk || {st: 'idle', data: null, at: 0, day: '', slotId: '', form: null, busy: false, q: ''};
+function v15nb(n){ return v2money(n).replace(/ /g, ' '); }
+function v15t(iso){
+  var ms = Date.parse(iso);
+  if(!isFinite(ms)) return null;
+  var d = new Date(ms + 5 * 3600000);
+  var y = d.getUTCFullYear(), m = d.getUTCMonth(), dd = d.getUTCDate();
+  return {ms: ms, y: y, m: m, d: dd, wd: d.getUTCDay(), hm: String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0'),
+    key: y + '-' + String(m + 1).padStart(2, '0') + '-' + String(dd).padStart(2, '0')};
+}
+function v15todayKey(off){ var t = v15t(new Date(Date.now() + (off || 0) * 86400000).toISOString()); return t.key; }
+function v15dateLong(t){ return t ? t.d + ' ' + V15_MG[t.m] : ''; }
+function v15end(s){ var t = v15t(s.start); if(!t) return ''; var e = v15t(new Date(t.ms + (Number(s.dur) || 60) * 60000).toISOString()); return e.hm; }
+function v15online(s){ return /онлайн|online/i.test(String((s && s.format) || '')); }
+function v15badge(s, cls){ return '<span class="v15-badge' + (cls ? ' ' + cls : '') + '"><i></i>' + (v15online(s) ? 'Онлайн' : 'Офлайн') + '</span>'; }
+function v15form(){
+  var b = window._bk;
+  if(!b.form){
+    var f = {}; try{ f = JSON.parse(localStorage.getItem('bs_bk_form') || '{}') || {}; }catch(e){}
+    b.form = {phone: f.phone || '', niche: f.niche || '', question: ''};
+  }
+  if(b.q && !b.form.question){ b.form.question = b.q; }
+  return b.form;
+}
+function v15saveForm(){ var f = window._bk.form || {}; try{ localStorage.setItem('bs_bk_form', JSON.stringify({phone: f.phone || '', niche: f.niche || ''})); }catch(e){} }
+// Вход в запись из любого места: гайд, диагностика, главная. Вопрос подставляется в форму
+function v15book(q){
+  var b = window._bk;
+  if(q){ b.q = q; if(b.form) b.form.question = q; }
+  var cur = v9activeId();
+  if(cur === 'leadrazbor'){ renderLeadRazbor(); v15load(); return; }
+  showPage('leadrazbor', {stack: navRole() !== 'lead' || (cur !== 'about' && cur !== '')});
+}
+function v15load(force){
+  var b = window._bk;
+  if(b.st === 'loading') return;
+  if(!force && b.data && Date.now() - b.at < 60000) return;
+  var init = bsInitData();
+  if(!init){ b.st = 'error'; b.err = 'noinit'; renderLeadRazbor(); return; }
+  b.st = b.data ? 'refresh' : 'loading';
+  if(!b.data) renderLeadRazbor();
+  return fetch(APP_SERVER + 'slots?' + new URLSearchParams({_tg: init}).toString())
+    .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function(j){
+      if(!j || typeof j !== 'object' || j.error) throw new Error((j && j.error) || 'bad');
+      b.data = j; b.at = Date.now(); b.st = 'ok';
+      var fr = v15free();
+      if(!fr.some(function(s){ return String(s.id) === b.slotId; })) b.slotId = '';
+      if(!fr.some(function(s){ return v15t(s.start).key === b.day; })) b.day = fr.length ? v15t(fr[0].start).key : '';
+    })
+    .catch(function(e){ b.st = b.data ? 'ok' : 'error'; b.err = String((e && e.message) || 'network'); })
+    .then(function(){ if(v9activeId() === 'leadrazbor') renderLeadRazbor(); });
+}
+function v15free(){
+  var d = window._bk.data || {}, now = Date.now(), lim = Date.parse(v15todayKey(21) + 'T23:59:59+05:00');
+  return (Array.isArray(d.slots) ? d.slots : []).filter(function(s){
+    var t = s && s.id && v15t(s.start); return t && t.ms > now && t.ms <= lim && !s.taken && !s.busy;
+  }).sort(function(a, b){ return Date.parse(a.start) - Date.parse(b.start); });
+}
+function v15price(){ var d = window._bk.data || {}; var p = Number(d.price); return p > 0 ? p : V15_PRICE; }
+function v15offerHTML(){
+  return '<div class="v15-offer"><div class="t">Разберём одну проблему вашего бизнеса до причины</div>' +
+    '<div class="s">Рустам и Береке вдвоём смотрят ваши цифры и находят, где на самом деле болит. Уходите с диагнозом и планом на 10 дней.</div>' +
+    '<div class="v15-facts"><div><b>60 мин</b><span>онлайн или офлайн</span></div><div><b>2 трекера</b><span>Рустам и Береке</span></div><div><b>' + v15nb(v15price()) + ' ₸</b><span>оплата через Kaspi</span></div></div></div>' +
+    '<div class="v2-h">Что получите</div><div class="v2-card v15-get">' +
+    [['Диагноз', 'Причину, а не симптом: какой орган бизнеса тянет вниз остальные'],
+     ['План на 10 дней', 'Конкретные задачи с цифрами, которые можно начать завтра'],
+     ['Взгляд двух трекеров', '700+ разборов: сразу видно, что сработает именно у вас']].map(function(x, i){
+      return '<div class="r"><div class="n num">0' + (i + 1) + '</div><div><b>' + x[0] + '</b><span>' + x[1] + '</span></div></div>';
+    }).join('') + '</div>';
+}
+function v15teamHTML(){
+  return '<div class="v2-h">Написать команде</div><div class="v2-card">' + V4_TEAM.map(function(t, i){
+    var r = (cache.residents || []).filter(function(x){ return t.re.test(String(x.name || '')) && (x.isAdmin || x.isTeam); })[0];
+    return '<div class="v2-row" onclick="v4writeTeam(' + i + ')">' + (r ? v3av(r, 40, true) : '<div class="v3-av" style="width:40px;height:40px;font-size:15px">' + t.name.charAt(0) + '</div>') +
+      '<div class="m"><b>' + t.name + '</b><span>' + t.role + '</span></div><button class="v3-btn" onclick="event.stopPropagation();v4writeTeam(' + i + ')">' + navIcon('msg', 14, 2) + 'Написать</button></div>';
+  }).join('') + '</div>';
+}
+function v15pickerHTML(){
+  var b = window._bk, fr = v15free();
+  var days = {}, order = [];
+  fr.forEach(function(s){ var k = v15t(s.start).key; if(!days[k]){ days[k] = []; order.push(k); } days[k].push(s); });
+  if(!b.day || !days[b.day]) b.day = order[0];
+  var h = '<div class="v2-h" id="bkPick">Выберите время <span class="lnk" style="color:#8C8C8C;font-weight:700;font-size:12px">по времени Алматы</span></div>';
+  h += '<div class="v15-days" id="bkDays">' + order.map(function(k){
+    var t = v15t(days[k][0].start), n = days[k].length;
+    return '<button class="v15-day' + (k === b.day ? ' on' : '') + '" data-day="' + k + '" onclick="v15day(\'' + k + '\')"><span class="w">' + (k === v15todayKey(0) ? 'СЕГОДНЯ' : (k === v15todayKey(1) ? 'ЗАВТРА' : V15_WD[t.wd])) + '</span><span class="d num">' + t.d + '</span><span class="c">' + V3_MON[t.m].toLowerCase() + '</span></button>';
+  }).join('') + '</div>';
+  var list = days[b.day] || [], t0 = list[0] && v15t(list[0].start);
+  h += '<div class="v15-dayhead"><b>' + (t0 ? V15_WDL[t0.wd].charAt(0).toUpperCase() + V15_WDL[t0.wd].slice(1) + ', ' + v15dateLong(t0) : '') + '</b><span>' + list.length + ' ' + v3plural(list.length, 'окно', 'окна', 'окон') + '</span></div>';
+  h += '<div class="v15-times" id="bkTimes">' + list.map(function(s){
+    return '<button class="v15-time' + (String(s.id) === b.slotId ? ' on' : '') + '" data-slot="' + v2esc(s.id) + '" onclick="v15slot(\'' + v2esc(String(s.id).replace(/'/g, '')) + '\')"><b class="num">' + v15t(s.start).hm + '</b><span>' + (v15online(s) ? 'онлайн' : 'офлайн') + '</span></button>';
+  }).join('') + '</div>';
+  h += '<div id="bkSel">' + v15selHTML() + '</div>';
+  return h;
+}
+function v15selHTML(){
+  var b = window._bk, s = v15free().filter(function(x){ return String(x.id) === b.slotId; })[0];
+  if(!s) return '<div class="v3-cap" style="margin:10px 4px 0;font-size:12px">Нажмите на время, чтобы выбрать окно</div>';
+  var t = v15t(s.start);
+  return '<div class="v2-card v15-sel">' + v15badge(s, 'w') + '<div class="m"><b>' + v15dateLong(t) + ', ' + t.hm + '–' + v15end(s) + '</b><span>' +
+    (v15online(s) ? 'Google Meet. Ссылка будет в подтверждении' : v2esc(s.place || 'Офлайн, адрес пришлём в Telegram')) + '</span></div></div>';
+}
+function v15formHTML(){
+  var f = v15form(), b = window._bk, s = v15free().filter(function(x){ return String(x.id) === b.slotId; })[0];
+  return '<div class="v2-h">Пара вопросов о вас</div><div class="v2-card v15-form">' +
+    '<div class="v15-f" id="bkFPhone"><label for="bkPhone">Телефон</label><input id="bkPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 7__ ___ __ __" value="' + v2esc(f.phone) + '" oninput="v15phone(this)"><div class="e">Нужен номер из 10 цифр после +7</div></div>' +
+    '<div class="v15-f"><label for="bkNiche">Ниша</label><input id="bkNiche" type="text" maxlength="120" placeholder="Например, стоматология, 2 клиники" value="' + v2esc(f.niche) + '" oninput="window._bk.form.niche=this.value;v15saveForm()"></div>' +
+    '<div class="v15-f"><label for="bkQ">Главный вопрос</label><textarea id="bkQ" maxlength="600" placeholder="Что хотите решить за 60 минут" oninput="window._bk.form.question=this.value">' + v2esc(f.question) + '</textarea></div>' +
+    '<button class="v3-primary v15-submit" id="bkSubmit" onclick="v15submit()"' + (s ? '' : ' disabled') + '>' + v15submitLbl() + '</button>' +
+  '</div><div class="v15-note">Оплата ' + v15nb(v15price()) + ' ₸ через Kaspi после записи. Перенести или отменить можно здесь же</div>';
+}
+function v15submitLbl(){
+  var b = window._bk, s = v15free().filter(function(x){ return String(x.id) === b.slotId; })[0];
+  if(b.busy) return 'Записываем...';
+  if(!s) return 'Выберите время';
+  var t = v15t(s.start);
+  return 'Записаться на ' + v15dateLong(t) + ', ' + t.hm;
+}
+function v15day(k){
+  var b = window._bk; b.day = k;
+  var fr = v15free(); if(!fr.some(function(s){ return String(s.id) === b.slotId && v15t(s.start).key === k; })) b.slotId = '';
+  var el = document.getElementById('bkPick'); if(!el){ renderLeadRazbor(); return; }
+  var sx = (document.getElementById('bkDays') || {}).scrollLeft || 0;
+  var wrap = document.getElementById('bkPickWrap'); wrap.innerHTML = v15pickerHTML();
+  var d = document.getElementById('bkDays'); if(d) d.scrollLeft = sx;
+  v15syncBtn();
+  try{ tg.HapticFeedback.selectionChanged(); }catch(e){}
+}
+function v15slot(id){
+  var b = window._bk; b.slotId = String(id);
+  document.querySelectorAll('#bkTimes .v15-time').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-slot') === id); });
+  var sel = document.getElementById('bkSel'); if(sel) sel.innerHTML = v15selHTML();
+  v15syncBtn();
+  try{ tg.HapticFeedback.selectionChanged(); }catch(e){}
+}
+function v15syncBtn(){
+  var btn = document.getElementById('bkSubmit'); if(!btn) return;
+  var b = window._bk, ok = v15free().some(function(x){ return String(x.id) === b.slotId; });
+  btn.disabled = !ok || b.busy; btn.textContent = v15submitLbl();
+}
+// Маска телефона Казахстана: +7 7XX XXX XX XX
+function v15phoneFmt(v){
+  v = String(v || '');
+  var d = v.replace(/\D/g, '');
+  if(/^\s*\+7/.test(v)) d = d.slice(1);
+  else if(d.length >= 11 && (d.charAt(0) === '7' || d.charAt(0) === '8')) d = d.slice(1);
+  else if(d.charAt(0) === '8') d = d.slice(1);
+  d = d.slice(0, 10);
+  var o = '+7';
+  if(d.length) o += ' ' + d.slice(0, 3);
+  if(d.length > 3) o += ' ' + d.slice(3, 6);
+  if(d.length > 6) o += ' ' + d.slice(6, 8);
+  if(d.length > 8) o += ' ' + d.slice(8, 10);
+  return o;
+}
+function v15phoneDigits(v){ return v15phoneFmt(v).replace(/\D/g, ''); }
+function v15phone(inp){
+  var raw = inp.value;
+  var v = raw.replace(/\D/g, '') ? v15phoneFmt(raw) : '';
+  if(v !== raw) inp.value = v;
+  window._bk.form.phone = v; v15saveForm();
+  var w = document.getElementById('bkFPhone'); if(w && v15phoneDigits(v).length === 11) w.classList.remove('bad');
+}
+function v15post(path, body){
+  var init = bsInitData();
+  if(!init) return Promise.reject(new Error('Откройте приложение из Telegram'));
+  return fetch(APP_SERVER + path + '?' + new URLSearchParams({_tg: init}).toString(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body)})
+    .then(function(r){ return r.json().catch(function(){ return {error: 'http ' + r.status}; }); });
+}
+function v15submit(){
+  var b = window._bk, f = v15form();
+  if(b.busy) return;
+  var s = v15free().filter(function(x){ return String(x.id) === b.slotId; })[0];
+  if(!s){ showToast('Выберите время'); return; }
+  var ph = v15phoneDigits(f.phone);
+  if(ph.length !== 11){
+    var w = document.getElementById('bkFPhone'); if(w) w.classList.add('bad');
+    try{ document.getElementById('bkPhone').focus(); }catch(e){}
+    showToast('Проверьте телефон'); return;
+  }
+  b.busy = true; v15syncBtn();
+  v15post('book', {slotId: s.id, phone: v15phoneFmt(f.phone), niche: String(f.niche || '').trim(), question: String(f.question || '').trim()})
+    .then(function(j){
+      b.busy = false;
+      if(j && j.ok){
+        var bk = j.booking || {};
+        b.data = b.data || {};
+        if(bk.price) b.data.price = bk.price;
+        if(bk.kaspiLink) b.data.kaspiLink = bk.kaspiLink;
+        b.data.mine = {slot: bk.slot || s, paid: false, phone: v15phoneFmt(f.phone), niche: f.niche, question: f.question};
+        b.data.slots = (b.data.slots || []).filter(function(x){ return x.id !== s.id; });
+        b.slotId = ''; b.q = ''; f.question = '';
+        try{ tg.HapticFeedback.notificationOccurred('success'); }catch(e){}
+        renderLeadRazbor(); v9scrollTop();
+        showToast('Вы записаны');
+        return;
+      }
+      var e = (j && j.error) || '';
+      if(e === 'taken' || e === 'past'){
+        showToast(e === 'taken' ? 'Это время только что заняли. Выберите другое' : 'Это время уже прошло. Выберите другое');
+        try{ tg.HapticFeedback.notificationOccurred('error'); }catch(x){}
+        b.slotId = ''; v15syncBtn(); v15load(true);
+        return;
+      }
+      if(e === 'already'){ showToast('У вас уже есть запись'); v15load(true); return; }
+      throw new Error(e || 'ошибка');
+    })
+    .catch(function(e){ b.busy = false; v15syncBtn(); showToast('Не получилось записаться: ' + String((e && e.message) || 'нет связи')); });
+}
+function v15gcal(s){
+  var t = v15t(s.start); if(!t) return '';
+  var z = function(ms){ return new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); };
+  var q = new URLSearchParams({action: 'TEMPLATE', text: 'Экспресс-разбор BS', dates: z(t.ms) + '/' + z(t.ms + (Number(s.dur) || 60) * 60000),
+    details: 'Рустам и Береке, 60 минут. Возьмите цифры за последние 3 месяца.' + (s.link ? '\n' + s.link : ''), location: v15online(s) ? (s.link || 'Онлайн') : (s.place || '')});
+  return 'https://calendar.google.com/calendar/render?' + q.toString();
+}
+function v15mineHTML(){
+  var b = window._bk, d = b.data || {}, m = d.mine || {}, s = m.slot || {}, t = v15t(s.start);
+  var h = '<div class="v15-ok" id="bkMine"><div class="st"><div class="l"><span class="ic">' + V3_CHECK + '</span>Вы записаны</div>' + v15badge(s, 'dk') + '</div>';
+  if(t){
+    h += '<div class="dt">' + v15dateLong(t) + '</div><div class="tm num">' + V15_WDL[t.wd] + ', ' + t.hm + '–' + v15end(s) + ' по Алматы</div>';
+  } else h += '<div class="dt" style="font-size:24px">Время уточним</div>';
+  if(v15online(s)){
+    h += '<div class="pl"><div class="ic" style="color:#000">' + navIcon('cal', 18) + '</div><div class="m">Онлайн, Google Meet. ' + (s.link ? '<a href="#" onclick="event.preventDefault();v9open(\'' + v2esc(String(s.link).replace(/'/g, '')) + '\')">Открыть ссылку на встречу</a>' : 'Ссылку пришлём в Telegram за час до начала') + '</div></div>';
+  } else {
+    h += '<div class="pl"><div class="ic" style="color:#000">' + navIcon('home', 18) + '</div><div class="m">' + v2esc(s.place || 'Офлайн. Адрес пришлём в Telegram') + '</div></div>';
+  }
+  if(m.paid){
+    h += '<div class="pay"><span>Оплата</span><span class="v15-paid">' + V3_CHECK + 'Оплачено</span></div>';
+  } else {
+    h += '<div class="pay"><span>К оплате</span><b class="num">' + v15nb(v15price()) + ' ₸</b></div>';
+    h += '<button class="b1" id="bkPay" onclick="v15pay()">Оплатить через Kaspi</button>';
+  }
+  h += '<button class="b2" id="bkCal" onclick="v15cal()">' + navIcon('cal', 17, 2) + 'Добавить в календарь</button>';
+  h += '<div class="row2"><button class="b3" id="bkMove" onclick="v15ask(\'move\')">Перенести</button><button class="b3" id="bkCancel" onclick="v15ask(\'cancel\')">Отменить</button></div></div>';
+  h += '<div class="v2-h">Что подготовить</div><div class="v2-card v15-prep">' +
+    [['Цифры за 3 месяца', 'выручка, расходы, сколько осталось на руках'], ['Один главный вопрос', m.question ? '«' + v2esc(String(m.question).slice(0, 140)) + '»' : 'что хотите решить за 60 минут'], ['Час без отвлечений', 'телефон на беззвучный, рядом блокнот']].map(function(x, i){
+      return '<div class="r"><i class="num">0' + (i + 1) + '</i><div><b style="color:#fff">' + x[0] + '.</b> ' + x[1] + '</div></div>';
+    }).join('') + '</div>';
+  return h;
+}
+function v15pay(){
+  var d = (window._bk.data || {});
+  var link = d.kaspiLink || 'https://pay.kaspi.kz/pay/ri6h2lj5';
+  try{ if(tg && tg.openLink){ tg.openLink(link); return; } }catch(e){}
+  window.open(link, '_blank');
+}
+function v15cal(){
+  var m = (window._bk.data || {}).mine || {}; var u = v15gcal(m.slot || {});
+  if(!u){ showToast('Время записи ещё не назначено'); return; }
+  try{ if(tg && tg.openLink){ tg.openLink(u); return; } }catch(e){}
+  window.open(u, '_blank');
+}
+// Перенос и отмена: своё окно подтверждения вместо confirm()
+function v15ask(kind){
+  var old = document.getElementById('v15sheet'); if(old) old.remove();
+  var m = document.createElement('div'); m.className = 'add-menu-overlay show'; m.id = 'v15sheet';
+  m.onclick = function(e){ if(e.target === m) m.remove(); };
+  var mv = kind === 'move';
+  m.innerHTML = '<div class="add-menu v15-sheet"><div class="t">' + (mv ? 'Перенести разбор?' : 'Отменить разбор?') + '</div>' +
+    '<div class="s">' + (mv ? 'Текущее окно освободится, и вы сразу выберете новое время. Ваши ответы сохранятся.' : 'Окно освободится для других. Если уже оплатили, вернём деньги или перенесём оплату на новую дату: напишите нам.') + '</div>' +
+    '<div class="bt">' + (mv ? '<button class="v3-primary" data-ok="1">Выбрать новое время</button>' : '<button class="v15-danger" data-ok="1">Отменить запись</button>') +
+    '<button class="v3-outline" data-x="1">' + (mv ? 'Оставить как есть' : 'Не отменять') + '</button></div></div>';
+  document.body.appendChild(m);
+  m.querySelector('[data-x]').onclick = function(){ m.remove(); };
+  var ok = m.querySelector('[data-ok]');
+  ok.onclick = function(){
+    var b = window._bk, mine = (b.data || {}).mine || {}, s = mine.slot || {};
+    ok.disabled = true; ok.textContent = 'Секунду...';
+    v15post('book/cancel', {slotId: s.id})
+      .then(function(j){
+        if(!(j && j.ok)) throw new Error((j && j.error) || 'ошибка');
+        m.remove();
+        if(mine.question && !(b.form && b.form.question)){ v15form().question = mine.question; }
+        b.data.mine = null; b.slotId = '';
+        renderLeadRazbor(); v15load(true);
+        showToast(mv ? 'Выберите новое время' : 'Запись отменена');
+        if(mv) setTimeout(function(){ var p = document.getElementById('bkPick'); if(p) window.scrollTo(0, p.getBoundingClientRect().top + scrollY - 70); }, 400);
+      })
+      .catch(function(e){ ok.disabled = false; ok.textContent = mv ? 'Выбрать новое время' : 'Отменить запись'; showToast('Не получилось: ' + String((e && e.message) || 'нет связи')); });
+  };
+}
+function v15request(){
+  var f = v15form();
+  openDiagnosticModal({title: 'Заявка на экспресс-разбор', request: f.question || window._bk.q || '', phone: f.phone, niche: f.niche});
+}
+function renderLeadRazbor(){
+  var el = document.getElementById('leadrazborContent');
+  if(!el || typeof V4_TEAM === 'undefined' || !window._bk) return;
+  var b = window._bk, d = b.data || {};
+  var h = '<div class="v15-head"><div class="k">60 МИНУТ · РУСТАМ И БЕРЕКЕ ВДВОЁМ</div><div class="t">Экспресс-разбор</div></div>';
+  if(d.mine && d.mine.slot){
+    h += v15mineHTML() + v15teamHTML();
+    el.innerHTML = h; return;
+  }
+  h += v15offerHTML();
+  if(b.st === 'loading' || b.st === 'idle'){
+    h += '<div class="v2-h">Выберите время</div><div style="display:flex;gap:8px;overflow:hidden">' + [1, 2, 3, 4, 5].map(function(){ return '<div class="v15-sk" style="width:60px;height:74px;flex-shrink:0"></div>'; }).join('') + '</div>' +
+      '<div class="v15-times" style="margin-top:44px">' + [1, 2, 3].map(function(){ return '<div class="v15-sk" style="height:58px"></div>'; }).join('') + '</div>';
+  } else if(b.st === 'error' && !b.data){
+    h += '<div class="v2-h">Выберите время</div><div class="v2-card v15-empty" id="bkErr"><div class="ic">' + navIcon('cal', 24) + '</div><b>Не получилось загрузить окна</b>' +
+      '<span>Проверьте интернет и попробуйте ещё раз. Или оставьте заявку: подберём время в Telegram.</span>' +
+      '<div class="bt"><button class="v3-primary" onclick="v15load(true)">Повторить</button><button class="v3-outline" onclick="v15request()">Оставить заявку</button></div></div>';
+  } else if(!v15free().length){
+    h += '<div class="v2-h">Выберите время</div><div class="v2-card v15-empty" id="bkNone"><div class="ic">' + navIcon('cal', 24) + '</div><b>Свободных окон пока нет</b>' +
+      '<span>Новые окна открываем каждую неделю. Напишите нам или оставьте заявку, подберём время лично.</span>' +
+      '<div class="bt"><button class="v3-primary" onclick="v4writeTeam(0)">Написать нам</button><button class="v3-outline" onclick="v15request()">Оставить заявку</button></div></div>';
+  } else {
+    h += '<div id="bkPickWrap">' + v15pickerHTML() + '</div>' + v15formHTML();
+  }
+  h += v15teamHTML();
+  el.innerHTML = h;
+  // Выбранный день виден в ленте
+  try{ var on = el.querySelector('.v15-day.on'), dy = document.getElementById('bkDays'); if(on && dy && on.offsetLeft > dy.clientWidth - 70) dy.scrollLeft = on.offsetLeft - 16; }catch(e){}
+}
+
+// ══════════ R15: ПРИГЛАСИТЬ ПРЕДПРИНИМАТЕЛЯ ══════════
+// GET referral → {link, text, invited[], bonusTotal, bonusPaid}. Без сервера: ссылка с меткой строится на месте
+window._ref = window._ref || {st: 'idle', data: null, at: 0};
+var V15_STAGE = {'new': 'Новый', razbor: 'На разборе', resident: 'Резидент', lost: 'Отказ'};
+var V15_BONUS = 100000;
+function v15refFallback(){
+  var id = user && user.id ? String(user.id) : '';
+  var link = 'https://t.me/bsurgery_bot?start=ref_' + id;
+  return {link: link, text: 'Привет! Я в Business Surgery: каждые 10 дней разбираем бизнес с трекерами и считаем цифры. Это не курс. Начни с экспресс-разбора своего бизнеса, ссылка ниже', invited: [], bonusTotal: 0, bonusPaid: 0, local: true};
+}
+function v15ref(){ var r = window._ref; return r.data || v15refFallback(); }
+function v15refLoad(force){
+  var r = window._ref;
+  if(r.st === 'loading') return;
+  if(!force && r.data && Date.now() - r.at < 60000) return;
+  var init = bsInitData();
+  if(!init){ r.st = 'error'; v15renderRef(); return; }
+  r.st = 'loading';
+  return fetch(APP_SERVER + 'referral?' + new URLSearchParams({_tg: init}).toString())
+    .then(function(x){ if(!x.ok) throw new Error('http ' + x.status); return x.json(); })
+    .then(function(j){ if(!j || !j.link) throw new Error('bad'); r.data = j; r.at = Date.now(); r.st = 'ok'; })
+    .catch(function(){ r.st = 'error'; })
+    .then(function(){ if(v9activeId() === 'referral') v15renderRef(); if(v9activeId() === 'home'){ var c = document.getElementById('v15homeRef'); if(c) c.outerHTML = v15homeCard(); } });
+}
+function v15share(){
+  var d = v15ref();
+  var u = 'https://t.me/share/url?url=' + encodeURIComponent(d.link) + '&text=' + encodeURIComponent(d.text || '');
+  try{ if(tg && tg.openTelegramLink){ tg.openTelegramLink(u); return; } }catch(e){}
+  window.open(u, '_blank');
+}
+function v15copy(text, ok){
+  var done = function(){ showToast(ok || 'Скопировано'); try{ tg.HapticFeedback.notificationOccurred('success'); }catch(e){} };
+  var fb = function(){
+    try{
+      var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+      document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, text.length);
+      var r = document.execCommand('copy'); ta.remove();
+      if(r) done(); else showToast('Не получилось скопировать. Нажмите «Поделиться»');
+    }catch(e){ showToast('Не получилось скопировать. Нажмите «Поделиться»'); }
+  };
+  try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, fb); return; } }catch(e){}
+  fb();
+}
+function v15copyLink(){ v15copy(v15ref().link, 'Ссылка скопирована'); }
+function v15copyText(){ var d = v15ref(); v15copy((d.text ? d.text + '\n' : '') + d.link, 'Текст со ссылкой скопирован'); }
+function v15when(s){
+  var t = v15t(s); if(!t){ var m = /^(\d{1,2})\.(\d{1,2})/.exec(String(s || '')); return m ? Number(m[1]) + ' ' + V15_MG[Number(m[2]) - 1] : ''; }
+  return t.d + ' ' + V15_MG[t.m];
+}
+function v15renderRef(){
+  var el = document.getElementById('referralContent'); if(!el) return;
+  var r = window._ref, d = v15ref();
+  var inv = Array.isArray(d.invited) ? d.invited : [];
+  var h = '<div class="v15-head"><div class="k">РЕКОМЕНДАЦИЯ</div><div class="t">Пригласить предпринимателя</div></div>';
+  h += '<div class="v15-ref"><div class="k">БОНУС ЗА РЕЗИДЕНТА</div><div class="big num">' + v15nb(V15_BONUS) + '<small>₸</small></div>' +
+    '<div class="t">за каждого приглашённого, который стал резидентом клуба</div>' +
+    '<div class="v15-steps">' +
+      '<div class="r"><div class="n">1</div><div class="m"><b>Отправьте ссылку</b> знакомому предпринимателю</div></div>' +
+      '<div class="r"><div class="n">2</div><div class="m">Он проходит <b>экспресс-разбор</b> с Рустамом и Береке</div></div>' +
+      '<div class="r"><div class="n">3</div><div class="m">Становится резидентом: <b>' + v15nb(V15_BONUS) + ' ₸ вам</b></div></div>' +
+    '</div>' +
+    '<button class="b1" id="refShare" onclick="v15share()">' + V14_SEND_ICON + 'Поделиться в Telegram</button>' +
+    '<button class="b2" id="refCopy" onclick="v15copyLink()">Скопировать ссылку</button></div>';
+  h += '<div class="v2-card v15-link"><div class="u" id="refLink">' + v2esc(String(d.link).replace(/^https?:\/\//, '')) + '</div><button class="v3-btn" onclick="v15copyLink()">Копировать</button></div>';
+  h += '<div class="v2-h">Готовый текст</div><div class="v2-card"><div class="v15-txt" id="refText">' + v2esc(d.text || '') + '\n<span style="color:#fff;font-weight:700">' + v2esc(d.link) + '</span></div>' +
+    '<div class="v15-txtb"><button class="v3-btn" onclick="v15copyText()">Скопировать текст</button></div></div>';
+  if(r.st === 'loading' && !r.data){
+    h += '<div class="v2-h">Ваши приглашения</div><div class="v15-sk" style="height:76px"></div><div class="v15-sk" style="height:120px;margin-top:10px"></div>';
+  } else if(r.st === 'error' && !r.data){
+    h += '<div class="v2-h">Ваши приглашения</div><div class="v2-card v15-empty" id="refErr"><b style="margin-top:0">Список не загрузился</b><span>Ссылка и текст работают. Приглашённые появятся здесь, когда связь восстановится.</span>' +
+      '<div class="bt"><button class="v3-outline" onclick="v15refLoad(true)">Повторить</button></div></div>';
+  } else {
+    var res = inv.filter(function(x){ return x.stage === 'resident'; }).length;
+    h += '<div class="v2-h">Ваши приглашения</div><div class="v2-card v15-tot" id="refTot">' +
+      '<div><div class="l">Приглашено</div><div class="v num">' + inv.length + '</div></div>' +
+      '<div><div class="l">Начислено</div><div class="v num">' + v15nb(Number(d.bonusTotal) || 0) + ' ₸</div></div>' +
+      '<div><div class="l">Выплачено</div><div class="v num">' + v15nb(Number(d.bonusPaid) || 0) + ' ₸</div></div></div>';
+    if(!inv.length){
+      h += '<div class="v2-card v15-empty" style="margin-top:10px"><b style="margin-top:0;font-size:16px">Пока никого</b><span>Как только знакомый откроет бота по вашей ссылке, он появится здесь со статусом.</span></div>';
+    } else {
+      h += '<div class="v2-card" id="refList" style="margin-top:10px">' + inv.map(function(x){
+        var st = V15_STAGE[x.stage] ? x.stage : 'new';
+        var bn = '';
+        if(Number(x.bonus) > 0) bn = '<div class="bn"><b class="num">' + v15nb(x.bonus) + ' ₸</b> · ' + (x.paid ? 'Выплачено' : 'Начислено') + '</div>';
+        return '<div class="v15-inv"><div class="v3-av' + (st === 'resident' ? ' inv' : '') + '" style="width:40px;height:40px;font-size:13px">' + v2esc(v3initials(x.name || '?')) + '</div>' +
+          '<div class="m"><b>' + v2esc(x.name || 'Без имени') + '</b><span>' + (x.at ? 'Приглашение ' + v15when(x.at) : 'По вашей ссылке') + '</span></div>' +
+          '<div class="r"><span class="v15-st ' + st + '">' + V15_STAGE[st] + '</span>' + bn + '</div></div>';
+      }).join('') + '</div>';
+    }
+    if(res) h += '<div class="v15-note">Бонус начисляется, когда приглашённый оплатил первый месяц в клубе. Выплата в течение 10 дней</div>';
+  }
+  el.innerHTML = h;
+}
+function v15homeCard(){
+  var d = window._ref && window._ref.data, inv = d && Array.isArray(d.invited) ? d.invited : [];
+  var sub = inv.length ? 'Приглашено ' + inv.length + (Number(d.bonusTotal) > 0 ? ' · начислено ' + v15nb(d.bonusTotal) + ' ₸' : '') : 'Ссылка и готовый текст. Бонус, когда друг станет резидентом';
+  return '<div class="v2-card v15-home" id="v15homeRef" onclick="showPage(\'referral\')"><div class="m"><div class="k">ПРИГЛАСИТЬ ПРЕДПРИНИМАТЕЛЯ</div>' +
+    '<div class="t"><span class="num">' + v15nb(V15_BONUS) + ' ₸</span> за приглашённого резидента</div><div class="s">' + v2esc(sub) + '</div></div>' +
+    '<div class="go">' + navIcon('chev', 18, 2.4) + '</div></div>';
+}
+
 function bsInitData(){
   try{ return (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData) || ''; }catch(e){ return ''; }
 }
@@ -4353,10 +4914,10 @@ const NAV = {
     {id:'meet', label:'Встречи',   icon:'cal',  pages:[{id:'schedule', label:'Расписание'}]},
     {id:'plus', plus:true},
     {id:'res',  label:'Резиденты', icon:'club', pages:[{id:'residents', label:'Резиденты'},{id:'reports', label:'Отчёты'},{id:'visits', label:'Посещения'},{id:'fines', label:'Штрафы'},{id:'restasks', label:'Задачи'}]},
-    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'99 гайдов', hidden:true},{id:'guide', label:'Гайд', hidden:true}]}
+    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'99 гайдов', hidden:true},{id:'guide', label:'Гайд', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'leadrazbor', label:'Экспресс-разбор', hidden:true}]}
   ],
   resident: [
-    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'},{id:'guides', label:'99 гайдов', hidden:true},{id:'guide', label:'Гайд', hidden:true}]},
+    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'},{id:'guides', label:'99 гайдов', hidden:true},{id:'guide', label:'Гайд', hidden:true},{id:'referral', label:'Приглашение', hidden:true}]},
     {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Мой разбор'},{id:'wheel', label:'Колесо'},{id:'diagnostic', label:'Диагностика'}]},
     {id:'tasks', label:'Задачи',  icon:'tasks', pages:[{id:'mytasks', label:'Задачи'},{id:'mymeetings', label:'Встречи'}]},
     {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила', hidden:true}]},
@@ -4366,7 +4927,6 @@ const NAV = {
     {id:'home', label:'Главная',     icon:'home',  pages:[{id:'about', label:'Главная'}]},
     {id:'cl',   label:'Гайды',       icon:'book',  pages:[{id:'guides', label:'99 гайдов'},{id:'guide', label:'Гайд', hidden:true}]},
     {id:'diag', label:'Диагностика', icon:'board', pages:[{id:'diagnostic', label:'Диагностика'}]},
-    {id:'mat',  label:'Материалы',   icon:'doc',   pages:[{id:'leadmagnets', label:'Материалы'}]},
     {id:'razbor', label:'Разбор',    icon:'cal',   pages:[{id:'leadrazbor', label:'Разбор'}]}
   ]
 };
@@ -4641,8 +5201,17 @@ function init(){
       'profile':      {admin:'myprofile',   resident:'myprofile',   lead:'leadrazbor'},
       'razbor':       {admin:'diagnostic',  resident:'myboard',     lead:'leadrazbor'},
       // Материалы / чек-листы
-      'leadmagnets':  {admin:'leadmagnets', resident:'leadmagnets', lead:'leadmagnets'},
-      'materials':    {admin:'leadmagnets', resident:'leadmagnets', lead:'leadmagnets'},
+      // У лида «Материалы» слились с гайдами: старые ссылки ведут в каталог
+      'leadmagnets':  {admin:'leadmagnets', resident:'leadmagnets', lead:'guides'},
+      'materials':    {admin:'leadmagnets', resident:'leadmagnets', lead:'guides'},
+      // Запись на экспресс-разбор
+      'book':         {admin:'leadrazbor',  resident:'myboard',     lead:'leadrazbor'},
+      'booking':      {admin:'leadrazbor',  resident:'myboard',     lead:'leadrazbor'},
+      'leadrazbor':   {admin:'leadrazbor',  resident:'myboard',     lead:'leadrazbor'},
+      // Пригласить предпринимателя
+      'referral':     {admin:'referral',    resident:'referral',    lead:'about'},
+      'invite':       {admin:'referral',    resident:'referral',    lead:'about'},
+      'ref':          {admin:'referral',    resident:'referral',    lead:'about'},
       // Диагностика
       'diagnostic':   {admin:'diagnostic',  resident:'about',       lead:'diagnostic'},
       // Задачи (только админ)
@@ -4876,7 +5445,8 @@ function _showPageCore(id){
   if(id === 'mymeetings'){ try{ renderMyMeetings(); }catch(e){ console.error('mymeetings:', e); } }
   if(id === 'myprofile'){ try{ renderMyProfile(); }catch(e){ console.error('myprofile:', e); } }
   if(id === 'leadmagnets'){ try{ renderLeadmagnets(); }catch(e){ console.error('lm:', e); } }
-  if(id === 'leadrazbor'){ try{ renderLeadRazbor(); }catch(e){ console.error('razbor:', e); } }
+  if(id === 'leadrazbor'){ try{ renderLeadRazbor(); v15load(); }catch(e){ console.error('razbor:', e); } }
+  if(id === 'referral'){ try{ v15renderRef(); v15refLoad(); }catch(e){ console.error('referral:', e); } }
   if(id === 'library'){ try{ renderLibrary(); }catch(e){ console.error('library:', e); } }
   if(id === 'guides'){ try{ renderGuides(); }catch(e){ console.error('guides:', e); } }
   if(id === 'guide'){ try{ renderGuide(); }catch(e){ console.error('guide:', e); } }
@@ -4904,7 +5474,7 @@ function v9title(id){
     mymeetings:'Встречи', mystatus:'Профиль', about:'О проекте', rules:'Правила', wheel:'Колесо', diagnostic:'Диагностика', leadmagnets:'Материалы',
     library:'Библиотека', reports:'Отчёты', fines:'Штрафы', visits:'Посещения', restasks:'Задачи резидентов', crm:'CRM', subscribers:'Подписчики',
     custdev:'CustDev', content:'Полезное', wheeladmin:'Колесо клуба', todos:'Задачи команды', leadrazbor:'Разбор',
-    guides:'99 гайдов', guide:'Гайд'};
+    guides:'99 гайдов', guide:'Гайд', referral:'Приглашение'};
   return T[id] || 'Назад';
 }
 function v9activeId(){ var a = document.querySelector('.page.active'); return a ? a.id.replace('page-', '') : ''; }
@@ -4916,10 +5486,12 @@ function v9scrollTop(){
 }
 function showPage(id, opts){
   opts = opts || {};
+  // Лид: отдельной страницы «Материалы» больше нет, PDF из бота живут в гайдах
+  if(id === 'leadmagnets' && navRole() === 'lead') id = 'guides';
   var st = window._navStack;
   var cur = v9activeId();
   var roots = v9rootPages(navRole());
-  if(opts.root || roots[id]) st.length = 0;
+  if(opts.root || (roots[id] && !opts.stack)) st.length = 0;
   else if(!opts.back && cur && cur !== id){ st.push(cur); if(st.length > 20) st.shift(); }
   var k = st.lastIndexOf(id); if(k >= 0) st.length = k;
   var dv = document.getElementById('detailView'); if(dv && dv.classList.contains('show')) dv.classList.remove('show');
@@ -5521,6 +6093,8 @@ function renderResHome(){
   if(debt > 0){
     h += '<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank" style="display:block;margin-top:8px;text-decoration:none"><button class="v3-primary" style="height:50px;border-radius:12px">Оплатить ' + v2money(debt) + ' ₸ через Kaspi</button></a>';
   }
+  h += v15homeCard();
+  if(!window._v15refTried && window._ref){ window._v15refTried = true; setTimeout(function(){ v15refLoad(); }, 600); }
   h += '<div class="v2-h">Следующая встреча' + (meets.length ? ' <span class="lnk" onclick="showPage(\'mymeetings\')">Все ' + meets.length + '</span>' : '') + '</div>';
   if(next){
     var dp = String(next.date).split('.');
@@ -9713,7 +10287,7 @@ function renderMyStatus(){
   if(me.partner) h += '<div class="v2-card v3-text" style="margin-top:10px;color:#9A9A9A">Партнёр: <b style="color:#fff">' + v2esc(me.partner) + '</b> · одна встреча на двоих</div>';
   h += '<div class="v2-h">Ещё</div><div class="v2-card">' +
     v3row('me', 'Мои данные', 'Ниша, о себе, контакты', "showPage('myprofile')") +
-    v3row('club', 'Пригласить друга', 'Бонус 100 000 ₸ за резидента', 'copyReferralLink()') +
+    v3row('club', 'Пригласить предпринимателя', '100\u00a0000 ₸ за приглашённого резидента', "showPage('referral')") +
     v3row('doc', 'Рассказать о BS в Stories', 'Готовая картинка с вашим фото', 'shareStory()') +
   '</div>';
   el.innerHTML = h;
@@ -11714,11 +12288,6 @@ function renderAbout(){
     h += '<div class="v3-hero" style="margin-top:12px"><div class="k">ЭКСПРЕСС-РАЗБОР</div><div class="t">Разберём одну проблему до причины</div>' +
       '<div class="s">60 минут с Рустамом и Береке. Уходите с диагнозом и планом на 10 дней.</div>' +
       '<button id="ctaDiagnostic">Записаться на разбор</button></div>';
-    var items = ((cache.leadmagnets || {}).items || []);
-    if(items.length){
-      h += '<div class="v2-h">Материалы <span class="lnk" onclick="showPage(\'leadmagnets\')">Все ' + items.length + '</span></div><div class="v3-tiles">' +
-        items.slice(0, 2).map(function(x, i){ return '<div class="v2-card v3-tile" style="min-height:0;border-radius:14px" onclick="showPage(\'leadmagnets\')"><span class="num" style="font-size:11px;color:#8C8C8C">' + String(i + 1).padStart(2, '0') + '</span><div class="t">' + v2esc(x.title || x.name || 'Материал') + '</div></div>'; }).join('') + '</div>';
-    }
     h += '<div class="v13-brand"><div class="hero-logo-real" style="width:auto">' + (logo ? '<img class="v3-logo" src="' + logo + '" alt="business surgery">' : '') + '<div class="v3-gold">БИЗНЕС-ТРЕКИНГ</div></div>' +
       '<div class="v3-h1" style="font-size:30px;line-height:1.05;letter-spacing:-1px;margin-top:14px">Бизнес как организм</div>' +
       '<p class="v3-p" style="font-size:14px;max-width:310px;margin-top:10px">Находим причину, а не симптом. Каждые 10 дней: диагноз, стратегия, задачи.</p></div>';
@@ -11738,7 +12307,7 @@ function renderAbout(){
       '<div class="t">Правила клуба →</div><div class="s">Отчёты, встречи, штрафы и оплата. Как устроена работа в клубе</div></div>';
     h += '<div class="v2-h">Клуб</div><div class="v2-card">' +
       (role === 'resident' ? v3row('board', 'Как пользоваться', 'Разбор, задачи, отчёт за 2 минуты', "showPage('myboard')") : v3row('board', 'Материалы', 'Шаблоны и гайды клуба', "showPage('leadmagnets')")) +
-      v3row('club', 'Пригласить друга', 'Ссылка в бота с вашей меткой', 'copyReferralLink()') +
+      (role === 'resident' || role === 'admin' ? v3row('club', 'Пригласить предпринимателя', '100\u00a0000 ₸ за приглашённого резидента', "showPage('referral')") : '') +
     '</div>';
     h += v3socials();
     h += '<div class="v2-h">Концепция</div><div class="v2-card">' +
@@ -11752,7 +12321,7 @@ function renderAbout(){
   if(ctaBtn){
     ctaBtn.addEventListener('click', function(){
       try{ this.blur(); }catch(blurE){}
-      openDiagnosticModal();
+      v15book();
     });
   }
 }
@@ -11767,30 +12336,6 @@ function v4writeTeam(i){
   var r = (cache.residents || []).filter(function(x){ return t.re.test(String(x.name || '')) && (x.isAdmin || x.isTeam || String(x.chatId || '') === t.id); })[0];
   v11write(Object.assign({}, r || {}, {name: t.name, chatId: (r && r.chatId) || t.id}));
 }
-function renderLeadRazbor(){
-  var el = document.getElementById('leadrazborContent');
-  if(!el || !V4_TEAM) return;   // первый ранний вызов: скрипт ниже ещё не дочитан
-  var h = '<div class="v3-headbig"><div class="v3-title xl">Экспресс-разбор</div></div>';
-  h += '<div class="v3-hero" style="margin-top:14px"><div class="k">60 МИНУТ · РУСТАМ И БЕРЕКЕ</div>' +
-    '<div class="t">Разберём одну проблему вашего бизнеса до причины</div>' +
-    '<div class="s">Смотрим цифры и находим, где болит. Уходите с диагнозом и планом на 10 дней.</div>' +
-    '<button onclick="openDiagnosticModal()">Записаться на разбор</button></div>';
-  h += '<div class="v2-h">Что получите</div><div class="v2-card">' +
-    '<div class="v2-row" style="cursor:default"><div class="ic">' + navIcon('board', 20) + '</div><div class="m"><b>Диагноз</b><span>Причина, а не симптом: какой орган бизнеса тянет остальные</span></div></div>' +
-    '<div class="v2-row" style="cursor:default"><div class="ic">' + navIcon('tasks', 20) + '</div><div class="m"><b>План на 10 дней</b><span>Конкретные задачи и метрики, с которыми уходите</span></div></div>' +
-  '</div>';
-  var steps = [['Заявка', 'Имя и телефон, 1 минута. Напишем в Telegram и согласуем время'], ['Встреча 60 минут', 'Разбираем цифры, находим узкое место'], ['План на 10 дней', 'Задачи по шагам. Дальше решаете сами или с клубом']];
-  h += '<div class="v2-h">Как проходит</div><div class="v2-card">' + steps.map(function(x, i){
-    return '<div class="v2-row" style="cursor:default;align-items:flex-start"><div class="v3-av inv num" style="width:28px;height:28px;font-size:13px">' + (i + 1) + '</div><div class="m"><b>' + x[0] + '</b><span>' + x[1] + '</span></div></div>';
-  }).join('') + '</div>';
-  h += '<div class="v2-h">Написать команде</div><div class="v2-card">' + V4_TEAM.map(function(t, i){
-    var r = (cache.residents || []).filter(function(x){ return t.re.test(String(x.name || '')) && (x.isAdmin || x.isTeam); })[0];
-    return '<div class="v2-row" onclick="v4writeTeam(' + i + ')">' + (r ? v3av(r, 40, true) : '<div class="v3-av" style="width:40px;height:40px;font-size:15px">' + t.name.charAt(0) + '</div>') +
-      '<div class="m"><b>' + t.name + '</b><span>' + t.role + '</span></div><button class="v3-btn" onclick="event.stopPropagation();v4writeTeam(' + i + ')">' + navIcon('msg', 14, 2) + 'Написать</button></div>';
-  }).join('') + '</div>';
-  el.innerHTML = h;
-}
-
 // ═══ АДМИН: «ЕЩЁ», всё, что не в сводке ═══
 function renderAdminMore(){
   var el = document.getElementById('moreContent');
@@ -11853,6 +12398,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
       pg('cal', 'Посещения', (met ? met + ' встреч проведено · ' : '') + 'кто пришёл', "showPage('visits')"),
       pg('doc', 'Отчёты', 'Отчёты резидентов по дням', "showPage('reports')"),
       pg('alert', 'Штрафы', unpaid ? unpaid + ' не оплачено' : 'Все оплачены', "showPage('fines')"),
+      pg('club', 'Пригласить предпринимателя', '100\u00a0000 ₸ за приглашённого резидента', "showPage('referral')"),
       ext('club', 'Пятёрки', 'Группы резидентов', 'sFive'),
       ext('cal', 'Мероприятия', 'События клуба', 'events')
     ]],
@@ -11866,6 +12412,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
       pg('club', 'CRM лидов', (leads ? leads + ' · ' : '') + 'кто прошёл диагностику и не записался', "showPage('crm')"),
       pg('msg', 'Подписчики бота', 'Рассылки и дожимы', "showPage('subscribers')"),
       pg('board', 'Диагностика', 'Тест здоровья бизнеса', "showPage('diagnostic')"),
+      pg('cal', 'Экспресс-разбор', 'Запись лида: окна, оплата Kaspi', "showPage('leadrazbor')"),
       pg('doc', 'Материалы', 'Чек-листы и гайды для лидов', "showPage('leadmagnets')"),
       ext('sum', 'Конверсии', 'Воронка CRM', 'crmFunnel'),
       ext('sum', 'План продаж', 'План и факт', 'salesPlan'),
@@ -11934,14 +12481,15 @@ function v11myWheel(type){
   if(!has){ openWheelForm(); if(type !== 'dna') switchWheelForm(type); }
 }
 
-function openDiagnosticModal(){
+function openDiagnosticModal(opts){
+  opts = opts || {};
   var modal = document.createElement('div');
   modal.className = 'add-menu-overlay show';
   modal.onclick = function(e){ if(e.target===modal) modal.remove(); };
   
   modal.innerHTML = 
     '<div class="add-menu" style="max-height:90vh;overflow-y:auto">' +
-      '<div class="add-menu-title">Записаться на диагностику</div>' +
+      '<div class="add-menu-title">' + v2esc(opts.title || 'Записаться на диагностику') + '</div>' +
       '<div class="field-group">' +
         '<label class="field-label">Имя</label>' +
         '<input type="text" id="diagName" class="field-input" placeholder="Как к тебе обращаться">' +
@@ -11985,9 +12533,15 @@ function openDiagnosticModal(){
     });
   });
   
+  try{
+    if(opts.request) modal.querySelector('#diagRequest').value = opts.request;
+    if(opts.phone) modal.querySelector('#diagPhone').value = opts.phone;
+    if(opts.niche) modal.querySelector('#diagNiche').value = opts.niche;
+    if(!modal.querySelector('#diagName').value && user && user.first_name) modal.querySelector('#diagName').value = user.first_name;
+  }catch(e){}
   setTimeout(function(){
     var inp = modal.querySelector('#diagName');
-    if(inp) inp.focus();
+    if(inp && !inp.value) inp.focus();
   }, 100);
 }
 
@@ -12916,7 +13470,7 @@ function renderDiagnosticResult(){
   if(ctaBtn){
     ctaBtn.addEventListener('click', function(){
       try{ this.blur(); }catch(e){}
-      openDiagnosticModal();
+      v15book('Прошёл диагностику: ' + totalPct + ' из 100. Слабее всего ' + String(worst.organ || '').toLowerCase() + ' (' + String(worst.label || '').toLowerCase() + ', ' + worst.pct + '). Хочу понять, с чего начать');
     });
   }
   var restartBtn = el.querySelector('#diagRestartBtn');
@@ -13866,8 +14420,7 @@ function v13clNext(){
 }
 function v13book(){
   var x = v14find(v14curId()) || ((v14guide(v14curId()) || {}).g);
-  try{ openDiagnosticModal(); }catch(e){ showPage('leadrazbor'); return; }
-  try{ var r = document.getElementById('diagRequest'); if(r && !r.value && x) r.value = 'Прочитал гайд «' + x.title + '». Хочу разобрать, как внедрить это в моём бизнесе'; }catch(e){}
+  v15book(x ? 'Прочитал гайд «' + x.title + '». Хочу разобрать, как внедрить это в моём бизнесе' : '');
 }
 function v13leadDoneHTML(x){
   var y = v13nextCL(x);
@@ -13911,6 +14464,7 @@ function v13flush(id){
 document.addEventListener('visibilitychange', function(){
   if(document.visibilityState === 'hidden') Object.keys(window._v13rep || {}).forEach(v13flush);
 });
+
 </script>
 </body>
 </html>
