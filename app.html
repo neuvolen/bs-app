@@ -3760,6 +3760,11 @@
   .v9-bar .b i.r { background: #FF6B6F; }
   .v9-bar .v { font-size: 13px; font-weight: 800; text-align: right; font-variant-numeric: tabular-nums; }
   .v9-bar .v.red { color: #FF6B6F; }
+  .v9-bar .b i.v19f { box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); }
+  .v19-leg { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; font-size: 11.5px; font-weight: 700; color: #8C8C8C; }
+  .v19-leg i { display: block; width: 84px; height: 6px; border-radius: 3px; flex-shrink: 0; background: linear-gradient(90deg, #FF6B6F, #FFFFFF 50%, #3DD68C); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.18); }
+  .v19-leg b { font-weight: 900; }
+  .v4-anat .v19-leg { justify-content: center; margin: 4px 0 2px; }
   .v9-mhead { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 16px 4px; }
   .v9-mhead b { font-size: 15px; font-weight: 800; }
   .v9-mhead span { font-size: 12px; color: #9A9A9A; font-weight: 700; }
@@ -6641,6 +6646,20 @@ function v9tests(){
   var b = d.board || {};
   return {tests: d.tests || b.tests || null, health: d.health || b.health || null};
 }
+// R19: здоровье бизнеса, расходящаяся шкала по оценке 0..10: 0 красный, 5 белый (нейтрально), 10 зелёный
+var V19_RED = [255, 107, 111], V19_MID = [255, 255, 255], V19_GREEN = [61, 214, 140];
+function v19col(v){
+  var n = Number(v); if(!isFinite(n)) return '#8C8C8C';
+  n = Math.max(0, Math.min(10, n));
+  var a = n < 5 ? V19_RED : V19_MID, b = n < 5 ? V19_MID : V19_GREEN, t = n < 5 ? n / 5 : (n - 5) / 5;
+  return 'rgb(' + a.map(function(x, i){ return Math.round(x + (b[i] - x) * t); }).join(',') + ')';
+}
+function v19rgba(v, al){ return v19col(v).replace('rgb(', 'rgba(').replace(')', ',' + al + ')'); }
+// Подложка/рамка тем заметнее, чем дальше оценка от 5
+function v19edge(v){ var d = Math.abs(Math.max(0, Math.min(10, Number(v) || 0)) - 5) / 5; return v19rgba(v, (.18 + .32 * d).toFixed(2)); }
+function v19legend(){
+  return '<div class="v19-leg"><i></i><span><b style="color:' + v19col(0) + '">0</b> красный · <b style="color:#FFFFFF">5</b> белый · <b style="color:' + v19col(10) + '">10</b> зелёный</span></div>';
+}
 function v9num(v){ var n = Number(String(v == null ? '' : v).replace(',', '.')); return isFinite(n) ? n : null; }
 function v9fmt1(n){ return (Math.round(n * 10) / 10).toString().replace('.', ','); }
 function v9barsHTML(obj, opts){
@@ -6655,9 +6674,9 @@ function v9barsHTML(obj, opts){
   var vals = keys.map(function(k){ return v9num(obj[k]); });
   var max = opts.max || (Math.max.apply(null, vals) > 10 ? 100 : 10);
   return keys.map(function(k, i){
-    var v = vals[i], pct = Math.max(0, Math.min(100, v / max * 100)), weak = pct < 50;
-    return '<div class="v9-bar"><div class="l">' + v2esc(v9organLabel(k)) + '</div><div class="b"><i class="' + (weak ? 'r' : '') + '" style="width:' + pct + '%"></i></div>' +
-      '<div class="v' + (weak ? ' red' : '') + '">' + (max === 10 ? v9fmt1(v) : Math.round(v)) + '</div></div>';
+    var v = vals[i], pct = Math.max(0, Math.min(100, v / max * 100)), c = v19col(pct / 10);
+    return '<div class="v9-bar"><div class="l">' + v2esc(v9organLabel(k)) + '</div><div class="b"><i class="v19f" style="width:' + pct + '%;background:' + c + '"></i></div>' +
+      '<div class="v" style="color:' + c + '">' + (max === 10 ? v9fmt1(v) : Math.round(v)) + '</div></div>';
   }).join('');
 }
 function v9measuresHTML(){
@@ -6681,7 +6700,7 @@ function v9measuresHTML(){
     }catch(e){}
   }
   h += '<div class="v2-card" style="margin-top:10px;cursor:pointer" onclick="v10openHealth()"><div class="v9-mhead v10-link"><b>Здоровье бизнеса</b><span>' + (avg || 'по органам') + navIcon('chev', 14) + '</span></div>' +
-    (hb ? '<div class="v9-bars">' + hb + '</div>' : (loading ? '<div class="v9-none">Загружаем...</div>' : none)) + '</div>';
+    (hb ? '<div class="v9-bars">' + hb + v19legend() + '</div>' : (loading ? '<div class="v9-none">Загружаем...</div>' : none)) + '</div>';
   // Диагностика по 7 органам
   var dg = tests.diag && typeof tests.diag === 'object' ? v9barsHTML(tests.diag.axes || tests.diag) : '';
   h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>' + (tests.diag && (('Продукт' in tests.diag) || ('Делегирование' in tests.diag)) ? 'Диагностика по зонам' : 'Диагностика по 7 органам') + '</b><span>с платформы</span></div>' +
@@ -6938,12 +6957,12 @@ function v10openHealth(){
       '<button class="v3-primary" style="margin-top:12px" onclick="closeDetail();showPage(\'diagnostic\')">Пройти диагностику</button>';
   } else {
     var pct = Math.round(H.avg * 10), vd = v9verdict(pct);
-    h += '<div class="v2-card v9-score" style="margin-top:14px"><div class="big num' + (pct < 40 ? ' red' : '') + '">' + pct + '<small>/100</small></div>' +
+    h += '<div class="v2-card v9-score" style="margin-top:14px"><div class="big num" style="color:' + v19col(pct / 10) + '">' + pct + '<small>/100</small></div>' +
       '<div style="min-width:0"><div class="vt">' + v2esc(vd[0]) + '</div><div class="vs">' + v2esc(vd[1]) + '</div></div></div>';
-    h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>Органы</b><span>' + v2esc(H.src) + '</span></div><div class="v9-bars">' + v9barsHTML(H.o, {max: 10}) + '</div></div>';
+    h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>Органы</b><span>' + v2esc(H.src) + '</span></div><div class="v9-bars">' + v9barsHTML(H.o, {max: 10}) + v19legend() + '</div></div>';
     var wv = H.o[H.worst];
-    h += '<div class="v2-card v9-card" style="margin-top:10px' + (wv < 5 ? ';border-color:rgba(255,107,111,0.35)' : '') + '"><div class="tag' + (wv < 5 ? ' red' : '') + '">Слабое место</div>' +
-      '<div class="ttl"><div class="v9-oico' + (wv < 5 ? ' r' : '') + '">' + v9organIcon(v9organId(H.worst) || 'brain', 22) + '</div><div>' + v2esc(v9organLabel(H.worst)) + '</div><div class="sc num' + (wv < 5 ? ' red' : '') + '">' + v9fmt1(wv) + '</div></div>' +
+    h += '<div class="v2-card v9-card" style="margin-top:10px;border-color:' + v19edge(wv) + '"><div class="tag" style="color:' + v19col(wv) + '">Слабое место</div>' +
+      '<div class="ttl"><div class="v9-oico" style="color:' + v19col(wv) + ';border-color:' + v19edge(wv) + '">' + v9organIcon(v9organId(H.worst) || 'brain', 22) + '</div><div>' + v2esc(v9organLabel(H.worst)) + '</div><div class="sc num" style="color:' + v19col(wv) + '">' + v9fmt1(wv) + '</div></div>' +
       '<div class="txt">Начните с этого органа: он сильнее всего тормозит остальные. Разберите его с трекером на ближайшей встрече.</div></div>';
     var T = v9tests(), dg = T.tests && T.tests.diag;
     if(dg && typeof dg === 'object' && H.src === 'с платформы'){
@@ -13505,8 +13524,7 @@ function renderBodyAnatomy(results, weakIds){
   weakIds = weakIds || {};
   // Органы бизнеса: кольцо прогресса вокруг иконки, слабые красным
   var organHtml = results.map(function(r, idx){
-    var bad = !!weakIds[r.id] || r.pct < 40;
-    var color = bad ? '#FF6B6F' : '#FFFFFF';
+    var color = v19col(r.pct / 10);
     var circumference = 2 * Math.PI * 36;
     var dashOffset = circumference * (1 - r.pct/100);
     return '<div class="anatomy-card" data-organ="' + r.id + '">' +
@@ -13517,12 +13535,12 @@ function renderBodyAnatomy(results, weakIds){
           '</svg>' +
           '<div class="anatomy-icon" style="color:' + color + '">' + v9organIcon(r.id, 26, 1.8) + '</div>' +
         '</div>' +
-        '<div class="anatomy-pct num' + (bad ? ' red' : '') + '">' + r.pct + '</div>' +
+        '<div class="anatomy-pct num" style="color:' + color + '">' + r.pct + '</div>' +
         '<div class="anatomy-name">' + v2esc(r.organ) + '</div>' +
         '<div class="anatomy-label">' + v2esc(r.label) + '</div>' +
       '</div>';
   }).join('');
-  return '<div class="anatomy-grid">' + organHtml + '</div>';
+  return '<div class="anatomy-grid">' + organHtml + '</div>' + v19legend();
 }
 
 
@@ -13699,14 +13717,15 @@ function renderDiagnosticResult(){
   h += '<div style="margin:8px 2px 0"><div class="v3-lbl" style="color:#8C8C8C">РЕЗУЛЬТАТ ДИАГНОСТИКИ</div>' +
     '<h1 class="v3-h1" style="margin-top:6px;font-size:28px">Здоровье бизнеса</h1></div>';
   // Общий балл и вердикт
-  h += '<div class="v2-card v9-score" style="margin-top:14px"><div class="big num' + (totalPct < 40 ? ' red' : '') + '">' + totalPct + '<small>/100</small></div>' +
+  h += '<div class="v2-card v9-score" style="margin-top:14px"><div class="big num" style="color:' + v19col(totalPct / 10) + '">' + totalPct + '<small>/100</small></div>' +
     '<div style="min-width:0"><div class="vt">' + v2esc(vd[0]) + '</div><div class="vs">' + v2esc(vd[1]) + '</div></div></div>';
   // Инфографика: кольца по органам
   h += '<div class="v2-card v4-anat" style="margin-top:10px">' + renderBodyAnatomy(results, weakIds) + '</div>';
   // Главная проблема
-  h += '<div class="v2-card v9-card" style="margin-top:10px;border-color:rgba(255,107,111,0.35)">' +
-    '<div class="tag red">Главная проблема</div>' +
-    '<div class="ttl"><div class="v9-oico r">' + v9organIcon(worst.id, 22) + '</div><div>' + v2esc(worst.organ) + ' · ' + v2esc(worst.label) + '</div><div class="sc num red">' + worst.pct + '</div></div>' +
+  var wc = v19col(worst.pct / 10), we = v19edge(worst.pct / 10);
+  h += '<div class="v2-card v9-card" style="margin-top:10px;border-color:' + we + '">' +
+    '<div class="tag" style="color:' + wc + '">Главная проблема</div>' +
+    '<div class="ttl"><div class="v9-oico" style="color:' + wc + ';border-color:' + we + '">' + v9organIcon(worst.id, 22) + '</div><div>' + v2esc(worst.organ) + ' · ' + v2esc(worst.label) + '</div><div class="sc num" style="color:' + wc + '">' + worst.pct + '</div></div>' +
     '<div class="txt">' + v2esc(W.state[v9level(worst.pct)]) + '</div>' +
     '<div class="sub">Типичные симптомы</div>' + W.symptoms.map(function(x){ return '<div class="v9-li r">' + v2esc(x) + '</div>'; }).join('') +
     '<div class="v9-cost"><b>Чего это стоит.</b> ' + v2esc(W.cost) + '</div></div>';
@@ -13714,7 +13733,7 @@ function renderDiagnosticResult(){
   if(best.id !== worst.id){
     h += '<div class="v2-card v9-card" style="margin-top:10px">' +
       '<div class="tag">Сильная сторона</div>' +
-      '<div class="ttl"><div class="v9-oico">' + v9organIcon(best.id, 22) + '</div><div>' + v2esc(best.organ) + ' · ' + v2esc(best.label) + '</div><div class="sc num">' + best.pct + '</div></div>' +
+      '<div class="ttl"><div class="v9-oico" style="color:' + v19col(best.pct / 10) + ';border-color:' + v19edge(best.pct / 10) + '">' + v9organIcon(best.id, 22) + '</div><div>' + v2esc(best.organ) + ' · ' + v2esc(best.label) + '</div><div class="sc num" style="color:' + v19col(best.pct / 10) + '">' + best.pct + '</div></div>' +
       '<div class="txt">' + v2esc(B.state[v9level(best.pct)]) + '</div>' +
       '<div class="sub">Как использовать</div><div class="v9-li">' + v2esc(B.use) + '</div></div>';
   }
@@ -13723,8 +13742,8 @@ function renderDiagnosticResult(){
   h += weakList.slice(0, 3).map(function(r){
     var D = V9_DIAG[r.id];
     return '<div class="v2-card v9-card" style="margin-top:8px">' +
-      '<div class="ttl" style="margin-top:0;font-size:16px"><div class="v9-oico' + (r.pct < V9_WEAK ? ' r' : '') + '" style="width:34px;height:34px;border-radius:10px">' + v9organIcon(r.id, 18) + '</div><div>' + v2esc(r.label) + '</div>' +
-      '<div class="sc num' + (r.pct < V9_WEAK ? ' red' : '') + '">' + r.pct + '</div></div>' +
+      '<div class="ttl" style="margin-top:0;font-size:16px"><div class="v9-oico" style="width:34px;height:34px;border-radius:10px;color:' + v19col(r.pct / 10) + ';border-color:' + v19edge(r.pct / 10) + '">' + v9organIcon(r.id, 18) + '</div><div>' + v2esc(r.label) + '</div>' +
+      '<div class="sc num" style="color:' + v19col(r.pct / 10) + '">' + r.pct + '</div></div>' +
       D.week.map(function(x){ return '<div class="v9-li">' + v2esc(x) + '</div>'; }).join('') + '</div>';
   }).join('');
   if(moreWeak) h += '<div class="v3-cap" style="margin:10px 4px 0;line-height:1.45">Ещё ' + moreWeak + ' ' + v3plural(moreWeak, 'орган', 'органа', 'органов') + ' ниже ' + V9_WEAK + '. Начните с трёх самых слабых: остальные подтянутся вслед.</div>';
