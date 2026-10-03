@@ -4675,7 +4675,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202610021400";
+var APP_VERSION = "202610031900";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0].replace(/[^/]*$/, '');
@@ -5836,6 +5836,7 @@ function _showPageCore(id){
   if(id === 'myboard'){ try{ renderMyBoard(); }catch(e){ console.error('myboard:', e); } }
   if(id === 'residents'){ try{ renderResidents(); }catch(e){ console.error('residents:', e); } }
   if(id === 'more'){ try{ renderAdminMore(); }catch(e){ console.error('more:', e); } }
+  if(id === 'todos'){ try{ renderTodos(); }catch(e){ console.error('todos:', e); } }
   if(id === 'about'){ try{ renderAbout(); }catch(e){ console.error('about:', e); } }
   if(id === 'dashboard'){ try{ renderDashboard(); }catch(e){ console.error('dashboard:', e); } }
   if(id === 'mystatus'){ try{ renderMyStatus(); }catch(e){ console.error('mystatus:', e); } }
@@ -7657,7 +7658,7 @@ function renderDashboard(){
     var totalDebt = Number(cache.totalDebt)||0;
     h += '<div class="v2-card v3-month" style="margin-top:14px">' +
       '<div class="v3-row-sb"><div style="font-size:15px;font-weight:800" id="v3MonName">' + v2esc(m.name) + ' ' + (typeof mp.year === 'number' ? mp.year : new Date().getFullYear()) + '</div>' +
-        '<div style="display:flex;gap:6px"><button class="v3-btn" onclick="window.open(\'https://docs.google.com/spreadsheets/d/1D-D4P5G9cmX1tdyluWe88sNTVGGqJqQWA4NvrvTbrYE/edit\', \'_blank\')">Таблица</button></div></div>' +
+        (v30navHas('gsheet') ? '<div style="display:flex;gap:6px"><button class="v3-btn" id="v30sheetBtn" onclick="window.open(\'https://docs.google.com/spreadsheets/d/1D-D4P5G9cmX1tdyluWe88sNTVGGqJqQWA4NvrvTbrYE/edit\', \'_blank\')">Таблица</button></div>' : '') + '</div>' +
       '<div class="v3-grid2" style="margin-top:14px">' +
         '<div><div class="v3-k">Оборот</div><div class="v3-v num" id="v3Rev">' + fmt(m.revenue) + '</div></div>' +
         '<div><div class="v3-k">Чистая прибыль</div><div class="v3-v num' + (m.profit < 0 ? ' red' : '') + '" id="v3Profit">' + fmt(m.profit) + '</div></div>' +
@@ -11529,15 +11530,29 @@ function _fineAction(action, f, extra, okText){
     loadAllData({fresh:true, force:true});
   });
 }
+// R30: своё окно подтверждения вместо confirm(), как у переноса разбора (v15ask)
+function v30ask(title, sub, okLabel, danger, onOk){
+  var old = document.getElementById('v30ask'); if(old) old.remove();
+  var m = document.createElement('div'); m.className = 'add-menu-overlay show'; m.id = 'v30ask';
+  m.onclick = function(e){ if(e.target === m) m.remove(); };
+  m.innerHTML = '<div class="add-menu v15-sheet"><div class="t">' + v2esc(title) + '</div>' + (sub ? '<div class="s">' + v2esc(sub) + '</div>' : '') +
+    '<div class="bt"><button class="' + (danger ? 'v15-danger' : 'v3-primary') + '" data-ok="1">' + v2esc(okLabel) + '</button>' +
+    '<button class="v3-outline" data-x="1">Отмена</button></div></div>';
+  document.body.appendChild(m);
+  m.querySelector('[data-x]').onclick = function(){ m.remove(); };
+  m.querySelector('[data-ok]').onclick = function(){ m.remove(); onOk(); };
+}
 function markFinePaid(){
   var f = window._fineSel; if(!f) return;
-  if(!confirm('Отметить штраф '+f.name+' '+f.date+' как оплаченный?')) return;
-  _fineAction('updateFine', f, {status:'Оплатил'}, 'Отмечено оплаченным');
+  v30ask('Отметить оплаченным?', f.name + ', ' + (f.kind || f.type || 'штраф') + ', ' + fmt(f.amount) + ' ₸ от ' + f.date, 'Оплачен', false, function(){
+    _fineAction('updateFine', f, {status:'Оплатил'}, 'Отмечено оплаченным');
+  });
 }
 function deleteFine(){
   var f = window._fineSel; if(!f) return;
-  if(!confirm('Удалить штраф '+f.name+' '+f.date+'?\n\nЭто удалит запись полностью из таблицы.')) return;
-  _fineAction('deleteFine', f, null, 'Штраф удалён');
+  v30ask('Удалить штраф?', f.name + ', ' + (f.kind || f.type || 'штраф') + ', ' + fmt(f.amount) + ' ₸ от ' + f.date + '. Запись удалится из таблицы полностью.', 'Удалить штраф', true, function(){
+    _fineAction('deleteFine', f, null, 'Штраф удалён');
+  });
 }
 
 var offSelDate='', offSelTime='';
@@ -12405,176 +12420,163 @@ async function submitAddResTask(){
   finally{ setTimeout(function(){ _addResTaskInFlight = false; }, 1500); }
 }
 
+// R30: «Цели и задачи» = доска платформы (bs_kanban на сервере). Карточка, добавленная или закрытая
+// здесь, сразу на платформе, и наоборот. Таблица и Google Doc больше не участвуют
+var V30KB = {K: null, ver: 0, st: 'idle', showDone: false};
+var V30KB_COLS = [{id:'idea', n:'Идеи'}, {id:'work', n:'В работе'}, {id:'check', n:'На проверке'}, {id:'done', n:'Готово'}];
+function v30kbUrl(){ return APP_SERVER + 'team/doc?key=bs_kanban&_tg=' + encodeURIComponent(bsInitData()); }
+function v30kbParse(v){
+  var K = null; try{ K = typeof v === 'string' ? JSON.parse(v || 'null') : v; }catch(e){}
+  if(!K || typeof K !== 'object' || Array.isArray(K)) K = {};
+  if(!Array.isArray(K.cards)) K.cards = [];
+  K.cards = K.cards.filter(function(c){ return c && typeof c === 'object'; });
+  if(!Array.isArray(K.cols) || !K.cols.length) K.cols = JSON.parse(JSON.stringify(V30KB_COLS));
+  if(!Array.isArray(K.archive)) K.archive = [];
+  return K;
+}
+function v30kbCol(K, id){ return (K.cols || []).filter(function(c){ return c.id === id; })[0] || null; }
+function v30kbDone(c){ return c.col === 'done' || !!c.done; }
+function v30kbLog(c, t){ if(!Array.isArray(c.log)) c.log = []; c.log.unshift({at: new Date().toISOString(), by: (user && user.first_name) || 'Команда', k: 'a', t: t}); if(c.log.length > 200) c.log.length = 200; }
+function v30kbId(){ return 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+function v30kbCache(){ try{ localStorage.setItem('bs_kb_cache', JSON.stringify({value: V30KB.K, version: V30KB.ver})); }catch(e){} }
+function v30kbLoad(){
+  V30KB.st = V30KB.K ? 'ok' : 'loading';
+  return fetch(v30kbUrl()).then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); }).then(function(j){
+    V30KB.K = v30kbParse(j.value); V30KB.ver = j.version || 0; V30KB.st = 'ok'; v30kbCache(); v30kbRender();
+  }).catch(function(){ if(!V30KB.K) V30KB.st = 'err'; v30kbRender(); });
+}
+// op меняет доску; при «кто-то записал раньше» op повторяется на свежей версии
+function v30kbSave(op, okText){
+  if(!V30KB.K) return;
+  var prev = JSON.stringify(V30KB.K), prevVer = V30KB.ver;
+  if(op(V30KB.K) === false) return;
+  v30kbRender();
+  var put = function(tries){
+    return fetch(v30kbUrl(), {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({value: JSON.stringify(V30KB.K), version: V30KB.ver})})
+      .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ j._st = r.status; return j; }); })
+      .then(function(j){
+        if(j._st === 200 && j.ok){ V30KB.ver = j.version; v30kbCache(); if(okText) showToast(okText); return; }
+        if(j._st === 409 && tries > 0 && j.value != null){
+          V30KB.K = v30kbParse(j.value); V30KB.ver = j.version || 0;
+          if(op(V30KB.K) === false){ v30kbRender(); return; }
+          v30kbRender(); return put(tries - 1);
+        }
+        throw new Error(j.error || ('ошибка ' + j._st));
+      });
+  };
+  put(1).catch(function(e){
+    V30KB.K = v30kbParse(prev); V30KB.ver = prevVer; v30kbRender();
+    showToast('Не сохранилось: ' + String((e && e.message) || 'нет связи'));
+    v30kbLoad();
+  });
+}
+function v30kbFind(K, id){ return K.cards.filter(function(c){ return String(c.id) === String(id); })[0] || null; }
+function v30kbToggle(id){
+  v30kbSave(function(K){
+    var c = v30kbFind(K, id); if(!c) return false;
+    if(v30kbCol(K, 'done')){
+      if(c.col === 'done'){ c.col = c.prev && c.prev !== 'done' && v30kbCol(K, c.prev) ? c.prev : (v30kbCol(K, 'work') ? 'work' : K.cols[0].id); c.done = false; v30kbLog(c, 'Возвращена в работу'); }
+      else { c.prev = c.col; c.col = 'done'; c.done = true; v30kbLog(c, 'Отмечена выполненной'); }
+    } else { c.done = !c.done; v30kbLog(c, c.done ? 'Отмечена выполненной' : 'Возвращена в работу'); }
+  });
+}
+function v30kbAdd(){
+  var inp = document.getElementById('v30kbNew'); if(!inp) return;
+  var t = inp.value.trim(); if(!t){ inp.focus(); return; }
+  var c = {id: v30kbId(), col: '', t: t, who: '', pri: 'mid', done: false, created: new Date().toISOString()};
+  v30kbSave(function(K){
+    if(v30kbFind(K, c.id)) return false;
+    var col = v30kbCol(K, 'idea') ? 'idea' : K.cols[0].id;
+    var cc = Object.assign({}, c, {col: col}); v30kbLog(cc, 'Карточка создана в «' + ((v30kbCol(K, col) || {}).n || '') + '» из приложения');
+    var i = -1; K.cards.forEach(function(x, j){ if(i < 0 && x.col === col) i = j; });
+    if(i < 0) K.cards.push(cc); else K.cards.splice(i, 0, cc);
+  }, 'Задача добавлена');
+  inp.value = '';
+}
+function v30kbArchive(id){
+  var c0 = V30KB.K && v30kbFind(V30KB.K, id); if(!c0) return;
+  v30ask('Убрать в архив?', String(c0.t || 'Без названия') + '. Карточка останется в архиве доски на платформе.', 'В архив', true, function(){
+    v30kbSave(function(K){
+      var i = K.cards.findIndex(function(x){ return String(x.id) === String(id); }); if(i < 0) return false;
+      var c = K.cards.splice(i, 1)[0]; c.arAt = new Date().toISOString(); c.arFrom = c.col; v30kbLog(c, 'Убрана в архив');
+      K.archive.unshift(c);
+    }, 'Карточка в архиве');
+  });
+}
+function v30kbEdit(id, span){
+  if(span.querySelector('input')) return;
+  var old = span.textContent.trim(), input = document.createElement('input');
+  input.type = 'text'; input.value = old; input.className = 'todo-edit-input';
+  input.style.cssText = 'width:100%;padding:8px 10px;font-size:15px;font-weight:600;color:#fff;background:rgba(255,255,255,0.08);border:1px solid #FFFFFF;border-radius:8px;outline:none;font-family:inherit;';
+  span.textContent = ''; span.appendChild(input); input.focus(); input.select();
+  var done = false;
+  var save = function(){
+    if(done) return; done = true;
+    var t = input.value.trim();
+    span.textContent = t || old;
+    if(!t || t === old) return;
+    v30kbSave(function(K){ var c = v30kbFind(K, id); if(!c) return false; c.t = t; v30kbLog(c, 'Переименована'); }, 'Сохранено');
+  };
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', function(ke){
+    if(ke.key === 'Enter'){ ke.preventDefault(); input.blur(); }
+    else if(ke.key === 'Escape'){ done = true; span.textContent = old; }
+  });
+}
+function v30kbCard(K, c){
+  var d = v30kbDone(c), col = v30kbCol(K, c.col), due = '';
+  if(c.due){ var p = String(c.due).split('-'); if(p.length === 3) due = p[2] + '.' + p[1] + '.' + p[0]; }
+  var sub = [col && !d ? col.n : '', c.who || '', due ? 'до ' + due : ''].filter(Boolean).join(' · ');
+  var chk = Array.isArray(c.chk) && c.chk.length ? c.chk.filter(function(x){ return x && x.ok; }).length + ' из ' + c.chk.length : '';
+  if(chk) sub += (sub ? ' · ' : '') + 'чек-лист ' + chk;
+  return '<div class="todo-item' + (d ? ' done' : '') + '" data-id="' + v2esc(c.id) + '">' +
+    '<div class="todo-check" data-status="' + (d ? 'done' : 'open') + '" onclick="v30kbToggle(\'' + v2esc(c.id) + '\')">' +
+      (d ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : '') + '</div>' +
+    '<div class="todo-content"><div class="todo-text" style="cursor:pointer" onclick="v30kbEdit(\'' + v2esc(c.id) + '\', this)">' + v2esc(c.t || 'Без названия') + '</div>' +
+      (sub ? '<div class="todo-deadline">' + v2esc(sub) + '</div>' : '') + '</div>' +
+    '<button class="todo-del" aria-label="В архив" onclick="v30kbArchive(\'' + v2esc(c.id) + '\')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>';
+}
+function v30kbRender(){
+  var el = document.getElementById('page-todos'); if(!el) return;
+  var body = el.querySelector('.todos-body'); if(!body) return;
+  var K = V30KB.K;
+  if(!K){
+    body.innerHTML = V30KB.st === 'err' ? '<div class="empty"><div class="em-text">Не удалось загрузить доску. Проверьте связь</div></div>'
+      : '<div class="loading"><div class="spinner"></div></div>';
+    return;
+  }
+  var open = K.cards.filter(function(c){ return !v30kbDone(c); }), done = K.cards.filter(v30kbDone);
+  var h = '<div style="display:flex;gap:8px;margin-bottom:12px"><input id="v30kbNew" class="form-input" style="flex:1;margin:0" placeholder="Новая задача" onkeydown="if(event.key===\'Enter\'){event.preventDefault();v30kbAdd()}">' +
+    '<button class="v3-btn" style="flex-shrink:0" onclick="v30kbAdd()">Добавить</button></div>';
+  var order = {}; K.cols.forEach(function(c, i){ order[c.id] = i; });
+  open.sort(function(a, b){ return (order[a.col] || 0) - (order[b.col] || 0); });
+  h += open.length ? open.map(function(c){ return v30kbCard(K, c); }).join('')
+    : '<div class="empty"><div class="em-title">Открытых задач нет</div><div class="em-text">Добавьте первую строкой выше</div></div>';
+  if(done.length){
+    h += '<div class="v2-h" style="cursor:pointer" onclick="V30KB.showDone=!V30KB.showDone;v30kbRender()">Готово · ' + done.length + (V30KB.showDone ? ' ▴' : ' ▾') + '</div>';
+    if(V30KB.showDone) h += done.slice(0, 50).map(function(c){ return v30kbCard(K, c); }).join('');
+  }
+  h += '<div style="font-size:12px;color:var(--text-muted);margin:14px 2px 0">Та же доска, что «Цели и задачи» на платформе. Колонки, метки и цели меняются там</div>';
+  var keep = document.getElementById('v30kbNew'), val = keep ? keep.value : '', had = keep && document.activeElement === keep;
+  body.innerHTML = h;
+  var ni = document.getElementById('v30kbNew'); if(ni && val){ ni.value = val; } if(ni && had) ni.focus();
+}
 function renderTodos(){
   var el = document.getElementById('page-todos');
   if(!el) return;
   if(!isRealAdmin || viewAs !== 'admin'){ el.innerHTML = ''; return; }
-  
-  // Шапка рисуется один раз
   if(!el.querySelector('.todos-header')){
-    el.innerHTML = '';
-    var headerEl = document.createElement('div');
-    headerEl.className = 'todos-header section-head';
-    headerEl.innerHTML = 
-      '<div class="section-title">Задачи команды</div>' +
-      '<div style="display:flex;gap:8px;align-items:center">' +
-        '<button class="icon-btn" id="todoSyncBtn" title="Импортировать из Google Doc">' +
-          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>' +
-        '</button>' +
-        '<button class="icon-btn" id="todoAddBtn" title="Добавить задачу">' +
-          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' +
-        '</button>' +
-      '</div>';
-    el.appendChild(headerEl);
-    
-    var bodyEl = document.createElement('div');
-    bodyEl.className = 'todos-body';
-    el.appendChild(bodyEl);
-    
-    el.querySelector('#todoAddBtn').addEventListener('click', function(e){
-      try{this.blur();}catch(blurE){}
-      openAddTodoModal();
-    });
-    el.querySelector('#todoSyncBtn').addEventListener('click', function(e){
-      try{this.blur();}catch(blurE){}
-      showToast('Открой таблицу → BS → Импорт задач из Google Doc');
-    });
+    el.innerHTML = '<div class="todos-header section-head"><div class="section-title">Цели и задачи</div>' +
+      '<div style="display:flex;gap:8px;align-items:center"><button class="v3-btn" onclick="v11plat(\'kanban\')">На платформе ↗</button></div></div>' +
+      '<div class="todos-body"></div>';
   }
-  
-  var bodyEl = el.querySelector('.todos-body');
-  bodyEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-  
-  // Сначала показываем из кеша моментально
-  function _renderTodosUI(tasks){
-    if(!tasks || !tasks.length){
-      bodyEl.innerHTML = '<div class="empty"><div class="em-icon"></div><div class="em-title">Нет задач</div><div class="em-text">Нажми + чтобы добавить</div></div>';
-      return;
-    }
-    tasks.sort(function(a,b){
-      if(a.status === b.status) return 0;
-      return a.status === 'done' ? 1 : -1;
-    });
-    bodyEl.innerHTML = tasks.map(function(t){ return todoCard(t); }).join('');
-    
-    // Чекбокс
-    bodyEl.querySelectorAll('.todo-check').forEach(function(box){
-      box.addEventListener('click', function(e){
-        e.stopPropagation();
-        var id = box.getAttribute('data-id');
-        var newStatus = box.getAttribute('data-status') === 'done' ? 'open' : 'done';
-        // Оптимистично обновляем UI
-        var card = box.closest('.todo-item');
-        if(card) card.classList.toggle('done', newStatus === 'done');
-        box.setAttribute('data-status', newStatus);
-        callAction('toggleTodo', {id:id, status:newStatus}).then(function(rr){
-          if(rr && rr.ok){
-            // Обновим кеш
-            try{
-              var c = JSON.parse(localStorage.getItem('bs_todos_cache')||'[]');
-              for(var i=0;i<c.length;i++) if(String(c[i].id)===String(id)) c[i].status = newStatus;
-              localStorage.setItem('bs_todos_cache', JSON.stringify(c));
-            }catch(e){}
-          }
-        });
-      });
-    });
-    
-    // Удаление
-    bodyEl.querySelectorAll('.todo-del').forEach(function(btn){
-      btn.addEventListener('click', function(e){
-        e.stopPropagation();
-        var id = btn.getAttribute('data-id');
-        if(!confirm('Удалить задачу?')) return;
-        // Оптимистично убираем
-        var card = btn.closest('.todo-item');
-        if(card) card.style.display = 'none';
-        callAction('deleteTodo', {id:id}).then(function(rr){
-          if(rr && rr.ok){
-            try{
-              var c = JSON.parse(localStorage.getItem('bs_todos_cache')||'[]');
-              c = c.filter(function(t){ return String(t.id) !== String(id); });
-              localStorage.setItem('bs_todos_cache', JSON.stringify(c));
-            }catch(e){}
-            renderTodos();
-          }
-        });
-      });
-    });
-    
-    // Inline редактирование (клик по тексту)
-    bodyEl.querySelectorAll('.todo-text').forEach(function(span){
-      span.addEventListener('click', function(e){
-        e.stopPropagation();
-        if(span.querySelector('input')) return;
-        var id = span.getAttribute('data-id');
-        var oldText = span.textContent.trim();
-        var input = document.createElement('input');
-        input.type = 'text';
-        input.value = oldText;
-        input.className = 'todo-edit-input';
-        input.style.cssText = 'width:100%;padding:8px 10px;font-size:15px;font-weight:600;color:#fff;background:rgba(255,255,255,0.08);border:1px solid #FFFFFF;border-radius:8px;outline:none;font-family:inherit;';
-        span.textContent = '';
-        span.appendChild(input);
-        input.focus();
-        input.select();
-        
-        function save(){
-          var newText = input.value.trim();
-          if(!newText || newText === oldText){
-            span.textContent = oldText;
-            return;
-          }
-          span.textContent = newText;
-          callAction('updateTodo', {id:id, text:newText}).then(function(rr){
-            if(rr && rr.ok){
-              try{
-                var c = JSON.parse(localStorage.getItem('bs_todos_cache')||'[]');
-                for(var i=0;i<c.length;i++) if(String(c[i].id)===String(id)) c[i].text = newText;
-                localStorage.setItem('bs_todos_cache', JSON.stringify(c));
-              }catch(e){}
-              showToast('Сохранено');
-            } else {
-              span.textContent = oldText;
-              showToast('Ошибка сохранения');
-            }
-          });
-        }
-        
-        input.addEventListener('blur', save);
-        input.addEventListener('keydown', function(ke){
-          if(ke.key === 'Enter'){ ke.preventDefault(); input.blur(); }
-          else if(ke.key === 'Escape'){ span.textContent = oldText; }
-        });
-      });
-    });
+  if(!V30KB.K){
+    try{ var c = JSON.parse(localStorage.getItem('bs_kb_cache') || 'null'); if(c && c.value){ V30KB.K = v30kbParse(c.value); V30KB.ver = c.version || 0; } }catch(e){}
   }
-  
-  // 1) Показываем из кеша сразу
-  try{
-    var cached = JSON.parse(localStorage.getItem('bs_todos_cache')||'[]');
-    if(cached.length){
-      _renderTodosUI(cached);
-    } else {
-      bodyEl.innerHTML = '<div class="empty"><div class="em-text">Загрузка...</div></div>';
-    }
-  }catch(e){
-    bodyEl.innerHTML = '<div class="empty"><div class="em-text">Загрузка...</div></div>';
-  }
-  
-  // 2) Запрашиваем свежие задачи с сервера и обновляем UI + кеш
-  callAction('getTodos', {}).then(function(r){
-    if(!r || !r.ok){
-      // Если кеш пустой и сервер не отвечает. покажем ошибку
-      try{
-        var c2 = JSON.parse(localStorage.getItem('bs_todos_cache')||'[]');
-        if(!c2.length) bodyEl.innerHTML = '<div class="empty"><div class="em-text">Не удалось загрузить</div></div>';
-      }catch(e){}
-      return;
-    }
-    var tasks = r.tasks || [];
-    try{ localStorage.setItem('bs_todos_cache', JSON.stringify(tasks)); }catch(e){}
-    _renderTodosUI(tasks);
-  });
+  v30kbRender();
+  // Открытая страница всегда берёт свежую доску; в фоне (обновление данных) не чаще раза в минуту
+  var pg = document.getElementById('page-todos'), act = pg && pg.classList.contains('active');
+  if(act || !V30KB.at || Date.now() - V30KB.at > 60000){ V30KB.at = Date.now(); v30kbLoad(); }
 }
 
 function todoCard(t){
@@ -12885,8 +12887,11 @@ function renderAdminMore(){
   var res = act.length, unpaid = (cache.fines || []).filter(function(f){ return f.status === 'Не оплатил'; }).length;
   var libN = (window._lib && window._lib.items) ? window._lib.items.length : 0;
   var S = V11_MENU(leads, res, unpaid, met, closed, libN);
+  v30navLoad();
   S.forEach(function(sec){
-    h += '<div class="v2-h">' + sec[0] + '</div><div class="v2-card">' + sec[1].map(function(r){
+    var items = sec[1].filter(function(r){ return !r.ext || v30navHas(r.ext, true); });
+    if(!items.length) return;
+    h += '<div class="v2-h">' + sec[0] + '</div><div class="v2-card">' + items.map(function(r){
       return r.ext ? v3row(r.icon, r.title, r.sub, "v11plat('" + r.ext + "')", '<div class="ic v11-ext" aria-label="Откроется в браузере">↗</div>')
                    : v3row(r.icon, r.title, r.sub, r.go);
     }).join('') + '</div>';
@@ -12906,6 +12911,36 @@ function renderAdminMore(){
     v3row('', 'На главный экран', 'Иконка приложения на телефоне', 'addToHomeScreen()') +
   '</div>';
   el.innerHTML = h;
+}
+
+// R30: разделы платформы приходят с сервера (/app/nav, список из самой платформы). Ссылка на раздел,
+// которого на платформе больше нет (Google Doc, Google Таблица), пропадает из меню без новой версии приложения
+var V30_NAV_KEY = 'bs_plat_nav';
+function v30nav(){
+  if(window._v30nav) return window._v30nav;
+  try{ var n = JSON.parse(localStorage.getItem(V30_NAV_KEY) || 'null'); if(n && n.ids) window._v30nav = n; }catch(e){}
+  return window._v30nav || null;
+}
+// dflt: что показывать, пока список платформы ещё не приходил
+function v30navHas(id, dflt){ var n = v30nav(); return n ? !!(n.ids[id] || n.alias[id]) : !!dflt; }
+function v30navLoad(force){
+  var n = v30nav();
+  if(window._v30navBusy || (!force && n && Date.now() - (n.at || 0) < 60000)) return Promise.resolve(n);
+  window._v30navBusy = 1;
+  return fetch(APP_SERVER + 'nav').then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+    if(!j || !Array.isArray(j.blocks)) return v30nav();
+    var ids = {}, alias = {};
+    j.blocks.forEach(function(b){ (b.tabs || []).forEach(function(t){ ids[t.id] = 1; }); });
+    (j.aliases || []).forEach(function(a){ alias[a] = 1; });
+    var old = v30nav(), changed = !old || JSON.stringify(old.ids) !== JSON.stringify(ids) || JSON.stringify(old.alias) !== JSON.stringify(alias);
+    window._v30nav = {ids: ids, alias: alias, at: Date.now()};
+    try{ localStorage.setItem(V30_NAV_KEY, JSON.stringify(window._v30nav)); }catch(e){}
+    if(changed){
+      try{ var mc = document.getElementById('moreContent'); if(mc && mc.offsetParent !== null) renderAdminMore(); }catch(e){}
+      try{ var bt = document.getElementById('v30sheetBtn'); if(bt) bt.style.display = v30navHas('gsheet') ? '' : 'none'; }catch(e){}
+    }
+    return window._v30nav;
+  }).catch(function(){ return v30nav(); }).finally(function(){ window._v30navBusy = 0; });
 }
 
 // Меню админа = структура платформы. go: страница приложения; ext: id раздела платформы
@@ -12937,8 +12972,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
     ['Учёт', [
       ext('sum', 'PL и ДДС', 'Прибыль и движение денег', 'pl'),
       ext('sum', 'В цифрах', 'Ключевые показатели', 'aNumbers'),
-      ext('sum', 'Анализ', 'Сводный анализ', 'summary'),
-      ext('doc', 'Google Таблица', 'Исходная таблица клуба', 'gsheet')
+      ext('sum', 'Анализ', 'Сводный анализ', 'summary')
     ]],
     ['Продажи', [
       pg('club', 'CRM лидов', (leads ? leads + ' · ' : '') + 'кто прошёл диагностику и не записался', "showPage('crm')"),
@@ -12951,7 +12985,6 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
       ext('doc', 'Скрипты', 'Скрипты продаж', 'scripts'),
       pg('board', 'CustDev', 'Интервью и выводы', "showPage('custdev')"),
       ext('sum', 'NPS', 'Оценки резидентов', 'nps'),
-      ext('search', 'Парсер лидов', 'Сбор контактов', 'parser'),
       ext('msg', 'Промпты ИИ', 'Промпты для CRM', 'crmPrompts'),
       pg('cal', 'SMM планер', 'Контент-план и публикации', "showPage('content')"),
       ext('pen', 'Заметки маркетинга', 'Идеи и черновики', 'mNotes')
@@ -12961,7 +12994,6 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
       pg('book', 'Интерактивные чек-листы', '99 чек-листов: каталог и прохождение для лидов', "showPage('guides')"),
       pg('tasks', 'Цели и задачи', 'Задачи команды: Рустам и Береке', "showPage('todos')"),
       ext('msg', 'Рекомендации ИИ', 'Подсказки по клубу', 'aiRec'),
-      ext('doc', 'Google Doc', 'Документ проекта', 'gdoc'),
       pg('home', 'О проекте', 'Лендинг и правила клуба', "showPage('about')"),
       pg('me', 'Мой профиль', 'Ниша, о себе, контакты', "showPage('myprofile')")
     ]]
