@@ -4675,7 +4675,7 @@
 // Telegram кеширует Mini App очень агрессивно: при входе с кнопки в чатах
 // открывалась старая сборка. Приложение скачивает свой же файл в обход кеша,
 // сравнивает версию и перезагружается. Отдельный version.json не нужен
-var APP_VERSION = "202610031900";
+var APP_VERSION = "202610032300";
 function bsCheckVersion(silentOk){
   try{
     var base = location.href.split('?')[0].split('#')[0].replace(/[^/]*$/, '');
@@ -4716,10 +4716,8 @@ document.addEventListener('visibilitychange', function(){
 });
 </script>
 <script>
-const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwBbU7pJMyIptJoOtJ5hctU2rYbh3AioA-ScM14Y3dwuIF0UFNYrp7HiWqhOiQX74NpPA/exec';
-// Сервер платформы: проверяет по подписи Telegram, кто открыл приложение, и держит
-// готовые данные, чтобы экран открывался сразу. Если сервер недоступен, приложение
-// идёт в таблицу напрямую, как раньше
+// Сервер платформы: единственный источник данных (R32c, таблица отключена). Он проверяет
+// по подписи Telegram, кто открыл приложение, и держит готовые данные, чтобы экран открывался сразу
 const APP_SERVER = 'https://bs-platform-production.up.railway.app/api/v1/app/';
 // ══════════ R15: ЗАПИСЬ НА ЭКСПРЕСС-РАЗБОР ══════════
 // GET slots → окна; POST book → запись; POST book/cancel → отмена. Время окон всегда по Алматы (+05:00)
@@ -5208,32 +5206,33 @@ function v22fetch(url, opts, ms){
   return fetch(url, Object.assign({}, opts || {}, {signal: ac.signal})).finally(function(){ clearTimeout(t); });
 }
 async function appGet(params){
+  // R32c: только сервер платформы. Таблица отключена, запасного пути через неё больше нет
   var init = bsInitData();
-  var qs = new URLSearchParams(params || {});
   var act = String((params || {}).action || '');
   var isRead = act === 'getBotCache' || act === 'checkUserRole';
-  if(init){
-    try{
-      var sq = new URLSearchParams(params || {}); sq.set('_tg', init);
-      var r = await v22fetch(APP_SERVER + 'call?' + sq.toString(), null, isRead ? V22_READ_MS : 0);
-      if(r.ok) return await r.json();
-      if(r.status === 401 || r.status === 400) console.warn('app server refused', r.status);
-    }catch(e){ console.warn('app server unreachable', e); }
+  if(!init){
+    if(isRead) throw new Error('noinit');
+    return {error: 'Откройте приложение из бота'};
   }
-  var r2 = await fetch(WEBAPP_URL + '?' + qs.toString());
-  return await r2.json();
+  var sq = new URLSearchParams(params || {}); sq.set('_tg', init);
+  var r = await v22fetch(APP_SERVER + 'call?' + sq.toString(), null, isRead ? V22_READ_MS : 0);
+  if(r.ok) return await r.json();
+  if(r.status === 401 || r.status === 400) console.warn('app server refused', r.status);
+  // Чтение без ответа: приложение остаётся на своей копии данных
+  if(isRead) throw new Error('server ' + r.status);
+  var j = null; try{ j = await r.json(); }catch(e){}
+  return {error: (j && (j.detail || j.error)) || 'Сервер недоступен, попробуйте ещё раз'};
 }
 async function appPost(obj){
   var init = bsInitData();
-  if(init){
-    try{
-      var r = await fetch(APP_SERVER + 'post', {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body: JSON.stringify(Object.assign({}, obj, {_tg: init}))});
-      if(r.ok) return await r.json();
-    }catch(e){ console.warn('app server unreachable', e); }
-  }
-  var r2 = await fetch(WEBAPP_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(obj)});
-  return await r2.json();
+  if(!init) return {error: 'Откройте приложение из бота'};
+  try{
+    var r = await fetch(APP_SERVER + 'post', {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(Object.assign({}, obj, {_tg: init}))});
+    var j = null; try{ j = await r.json(); }catch(e){}
+    if(r.ok && j) return j;
+    return {error: (j && (j.detail || j.error)) || 'Сервер недоступен, попробуйте ещё раз'};
+  }catch(e){ console.warn('app server unreachable', e); return {error: 'Нет связи с сервером'}; }
 }
 const ADMIN_IDS = ['453800951','1285596249'];
 
@@ -6490,7 +6489,7 @@ function renderResHome(){
   } else {
     h += '<div class="v2-hero" style="margin-top:18px"><div class="k"><span>ОТЧЁТ ЗА СЕГОДНЯ</span><span>ДО 23:59</span></div>' +
            '<div class="t">Что сделали по задачам цикла?</div>' +
-           '<div class="s">Отчёт пишется в группе клуба, в теме «ОТЧЁТЫ». Без отчёта в 14:30 следующего дня приходит штраф 10 000 ₸.</div>' +
+           '<div class="s">Отчёт пишется в группе клуба, в теме «ОТЧЁТЫ». Без отчёта в 10:00 следующего дня приходит штраф 10 000 ₸.</div>' +
            '<button onclick="v3sendReport()">Сдать отчёт</button></div>';
   }
   // Первые шаги новичка: отчёт, платформа, правила
@@ -7658,7 +7657,7 @@ function renderDashboard(){
     var totalDebt = Number(cache.totalDebt)||0;
     h += '<div class="v2-card v3-month" style="margin-top:14px">' +
       '<div class="v3-row-sb"><div style="font-size:15px;font-weight:800" id="v3MonName">' + v2esc(m.name) + ' ' + (typeof mp.year === 'number' ? mp.year : new Date().getFullYear()) + '</div>' +
-        (v30navHas('gsheet') ? '<div style="display:flex;gap:6px"><button class="v3-btn" id="v30sheetBtn" onclick="window.open(\'https://docs.google.com/spreadsheets/d/1D-D4P5G9cmX1tdyluWe88sNTVGGqJqQWA4NvrvTbrYE/edit\', \'_blank\')">Таблица</button></div>' : '') + '</div>' +
+        '</div>' +
       '<div class="v3-grid2" style="margin-top:14px">' +
         '<div><div class="v3-k">Оборот</div><div class="v3-v num" id="v3Rev">' + fmt(m.revenue) + '</div></div>' +
         '<div><div class="v3-k">Чистая прибыль</div><div class="v3-v num' + (m.profit < 0 ? ' red' : '') + '" id="v3Profit">' + fmt(m.profit) + '</div></div>' +
@@ -7687,7 +7686,7 @@ function renderDashboard(){
     var shown = missing.slice(0, 6);
     window._v3Miss = shown;
     h += '<div class="v2-card v3-alert" style="margin-top:10px;padding:14px 16px">' +
-      '<div class="v3-row-sb" style="align-items:baseline"><div class="v3-lbl red lnkable" onclick="showPage(\'reports\')">НЕ СДАЛИ ОТЧЁТ · ' + missing.length + ' ›</div><div class="v3-cap">до 23:59 · штраф в 14:30</div></div>' +
+      '<div class="v3-row-sb" style="align-items:baseline"><div class="v3-lbl red lnkable" onclick="showPage(\'reports\')">НЕ СДАЛИ ОТЧЁТ · ' + missing.length + ' ›</div><div class="v3-cap">до 23:59 · штраф в 10:00</div></div>' +
       shown.map(function(r, i){
         var note = meetAt[r.name] ? 'встреча ' + meetAt[r.name] : '';
         return '<div class="v3-miss">' + v3av(r, 32) + '<div class="m" onclick="openResidentProfile(window._v3Miss[' + i + '])">' + v2esc(r.name) + (note ? ' <span>' + v2esc(note) + '</span>' : '') + '</div></div>';
@@ -9672,7 +9671,7 @@ function deleteMeetingConfirm(res, date, time){
     if(result && result.ok){
       showToast('Встреча удалена');
     } else {
-      showToast('Не удалось. проверьте таблицу');
+      showToast('Не удалось сохранить, попробуйте ещё раз');
     }
     setTimeout(loadAllData, 5000);
   });
@@ -11384,7 +11383,7 @@ async function submitFine(){
   // Запрос в фоне
   callAction('addFine', {name, type: selFineType, amount}).then(function(result){
     if(!result||!result.ok){
-      showToast('Ошибка. проверьте таблицу');
+      showToast('Ошибка, попробуйте ещё раз');
     }
     loadAllData();
   });
@@ -11550,7 +11549,7 @@ function markFinePaid(){
 }
 function deleteFine(){
   var f = window._fineSel; if(!f) return;
-  v30ask('Удалить штраф?', f.name + ', ' + (f.kind || f.type || 'штраф') + ', ' + fmt(f.amount) + ' ₸ от ' + f.date + '. Запись удалится из таблицы полностью.', 'Удалить штраф', true, function(){
+  v30ask('Удалить штраф?', f.name + ', ' + (f.kind || f.type || 'штраф') + ', ' + fmt(f.amount) + ' ₸ от ' + f.date + '. Запись удалится полностью.', 'Удалить штраф', true, function(){
     _fineAction('deleteFine', f, null, 'Штраф удалён');
   });
 }
@@ -12134,7 +12133,7 @@ function renderCrm(){
 
   if(!all.length){
     el.innerHTML = '<div class="empty"><div class="em-icon"></div><div class="em-title">Лидов пока нет</div>' +
-      '<div class="em-text">Подключите форму на сайте или импортируйте подписчиков из меню таблицы</div></div>';
+      '<div class="em-text">Подписчики и лиды теперь в CRM на платформе BS</div></div>';
     return;
   }
   if(!list.length){ el.innerHTML = '<div class="empty"><div class="em-text">В этом статусе пусто</div></div>'; return; }
@@ -12937,7 +12936,6 @@ function v30navLoad(force){
     try{ localStorage.setItem(V30_NAV_KEY, JSON.stringify(window._v30nav)); }catch(e){}
     if(changed){
       try{ var mc = document.getElementById('moreContent'); if(mc && mc.offsetParent !== null) renderAdminMore(); }catch(e){}
-      try{ var bt = document.getElementById('v30sheetBtn'); if(bt) bt.style.display = v30navHas('gsheet') ? '' : 'none'; }catch(e){}
     }
     return window._v30nav;
   }).catch(function(){ return v30nav(); }).finally(function(){ window._v30navBusy = 0; });
