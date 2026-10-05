@@ -23,28 +23,36 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # R44: src/ собирается в dist/ (node build.mjs). dist/ лежит в репозитории: на сайт идёт ровно то,
+      # что проверено локально, а файлы прошлых сборок остаются для тех, у кого открыта старая версия
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build and check dist
+        run: |
+          npm ci --no-audit --no-fund
+          node build.mjs
+          if [ -n "$(git status --porcelain dist)" ]; then
+            git status --porcelain dist
+            echo "dist/ не совпадает с src/: запустите node build.mjs и закоммитьте dist/"
+            exit 1
+          fi
+
       - name: Generate version
         id: version
         run: |
-          VERSION=$(date -u +'%Y%m%d%H%M')
+          VERSION=$(node -e "console.log(require('./dist/version.json').v)")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
 
       - name: Prepare files
         run: |
-          if [ -f "bs_miniapp.html" ]; then
-            cp bs_miniapp.html index.html
-          fi
-          cat > version.json << JSONEOF
-          {
-            "version": "${{ steps.version.outputs.version }}",
-            "deployed_at": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
-            "commit": "${{ github.sha }}"
-          }
-          JSONEOF
-          touch .nojekyll
-          echo "Files prepared:"
-          ls -la
+          # картинки, которые скрипт кладёт в img/ (карусели Threads), остаются по старому адресу
+          if [ -d img ]; then cp -r img dist/img; fi
+          touch dist/.nojekyll
+          ls -la dist
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -52,7 +60,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: 'dist'
 
   deploy:
     needs: build
@@ -68,7 +76,7 @@ jobs:
       - name: Notify Telegram on success
         if: success()
         run: |
-          MSG="✅ Mini App обновлён%0A%0AВерсия: ${{ needs.build.outputs.version }}%0AURL: https://neuvolen.github.io/bs-app/?v=${{ needs.build.outputs.version }}"
+          MSG="✅ Mini App обновлён%0A%0AВерсия: ${{ needs.build.outputs.version }}%0AURL: https://neuvolen.github.io/bs-app/"
           curl -sS "https://api.telegram.org/bot${{ secrets.BOT_TOKEN }}/sendMessage" \
             -d "chat_id=${{ secrets.ADMIN_CHAT_ID }}" \
             -d "text=$MSG" \

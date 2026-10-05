@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Business Surgery</title>
+<style>
+  html,body{margin:0;padding:0;background:#0a0a0a;height:100%;overflow:hidden}
+  .ldr{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;font-family:-apple-system,'Segoe UI',sans-serif}
+  .ldr-mark{width:44px;height:44px;border:2.5px solid rgba(212,184,134,.16);border-top-color:#D4B886;border-radius:50%;animation:sp .8s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .ldr-t{color:#D4B886;font-size:10.5px;letter-spacing:3.5px;font-weight:800}
+  .ldr-e{color:#e57373;font-size:13px;text-align:center;padding:0 34px;line-height:1.55}
+  .ldr-b{margin-top:4px;background:rgba(212,184,134,.14);border:1px solid rgba(212,184,134,.4);color:#D4B886;padding:11px 24px;border-radius:22px;font-size:13px;font-weight:800;font-family:inherit}
+  .ldr.q{visibility:hidden}
+</style>
+</head>
+<body>
+<div class="ldr q" id="ldr">
+  <div class="ldr-mark"></div>
+  <div class="ldr-t">BUSINESS SURGERY</div>
+</div>
+<script>
+// ЗАГРУЗЧИК (R44). Telegram может держать этот файл в кеше сколько угодно: логика здесь не меняется.
+// 1. Приложение (s/<хеш>.html) лежит в Cache Storage (нет его: в localStorage) и показывается сразу, без сети.
+// 2. На каждом запуске сверяется version.json (сотня байт, мимо любых кешей). Новая версия скачивается
+//    один раз, старая больше не показывается: после выкладки все открывают свежую.
+// 3. Сломанный кеш чинится сам: обрезанный файл не запускается, два неудачных старта подряд стирают кеш.
+(function(){
+  var B = location.href.split('#')[0].split('?')[0].replace(/[^\/]*$/, '');
+  var CN = 'bs-app', END = '<!--/bs-shell-->', WAIT = 700;
+  var API = '/*API*/', BUILT = /*BUILT*/null;   // подставляет build.mjs: адрес сервера и версия на момент выкладки
+  function ls(k, v){ try{ if(v === undefined) return localStorage.getItem(k); if(v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); }catch(e){} return null; }
+  function cache(){ try{ if(window.caches && caches.open) return caches.open(CN); }catch(e){} return Promise.reject(new Error('no cache')); }
+  function get(p){
+    return cache().then(function(c){ return c.match(B + p); }).then(function(r){ return r ? r.text() : null; })
+      .catch(function(){ return null; }).then(function(t){ return t != null ? t : ls('bs_f:' + p); });
+  }
+  function put(p, t){
+    return cache().then(function(c){ return c.put(B + p, new Response(t, {headers: {'Content-Type': 'text/html; charset=utf-8'}})); })
+      .catch(function(){ ls('bs_f:' + p, t); });
+  }
+  function good(t){ return !!t && t.length > 5000 && t.lastIndexOf(END) > t.length - 100; }
+  function spin(){ var l = document.getElementById('ldr'); if(l) l.className = 'ldr'; }
+  function fail(){
+    spin();
+    var l = document.getElementById('ldr');
+    if(l) l.innerHTML = '<div class="ldr-e">Не удалось загрузить приложение.<br>Проверьте соединение.</div><button class="ldr-b" onclick="location.reload()">Повторить</button>';
+  }
+  function boot(ver, t, checked){
+    var b = (ls('bs_boot') || '').split('|');
+    ls('bs_boot', ver.v + '|' + (b[0] === ver.v ? (Number(b[1]) || 0) + 1 : 1));
+    ls('bs_ver', JSON.stringify({v: ver.v, shell: ver.shell}));
+    if(checked) window.__bsChecked = ver.v;
+    document.open(); document.write(t); document.close();
+  }
+  // Сеть: version.json мимо кешей Telegram и браузера
+  function manifest(){
+    return fetch(B + 'version.json?t=' + Date.now(), {cache: 'no-store'})
+      .then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ return j && j.v && j.shell ? j : null; })
+      .catch(function(){ return null; });
+  }
+  function install(ver, n){
+    spin();
+    n = n || 0;
+    return fetch(B + ver.shell, n ? {cache: 'reload'} : {}).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(function(t){
+        if(!good(t)) throw new Error('bad');
+        return put(ver.shell, t).then(function(){ boot(ver, t, true); });
+      })
+      .catch(function(){ if(n < 3) setTimeout(function(){ install(ver, n + 1); }, 800 * (n + 1)); else fail(); });
+  }
+  function fresh(n){
+    manifest().then(function(ver){
+      if(ver) install(ver);
+      else if((n || 0) < 3) setTimeout(function(){ fresh((n || 0) + 1); }, 800);
+      else fail();
+    });
+  }
+  // Пакет данных просим сразу, параллельно с приложением: приложение возьмёт этот ответ (тот же адрес, что у appGet).
+  // initData Telegram кладёт в адрес (#tgWebAppData=...): скрипт Telegram загрузчику не нужен, его подключает приложение
+  try{
+    var W = window.Telegram && Telegram.WebApp, init = '', u = null;
+    try{ init = new URLSearchParams(location.hash.slice(1)).get('tgWebAppData') || ''; }catch(e){}
+    if(!init && W) init = W.initData || '';
+    try{ u = JSON.parse(new URLSearchParams(init).get('user') || 'null'); }catch(e){}
+    if(init && window.fetch && window.URLSearchParams){
+      var q = new URLSearchParams({action: 'getBotCache'});
+      if(u && u.id) q.set('chatId', u.id);
+      var et = ls('bs_cache_et'); if(et) q.set('_et', et);
+      q.set('_tg', init);
+      var url = API + 'call?' + q.toString();
+      window.__bsPre = {at: Date.now(), url: url, p: fetch(url).catch(function(){ return null; })};
+    }
+  }catch(e){}
+  var cur = null; try{ cur = JSON.parse(ls('bs_ver') || 'null'); }catch(e){}
+  // два старта подряд не дошли до конца: кеш считается испорченным
+  var bt = (ls('bs_boot') || '').split('|'), purge = Promise.resolve();
+  if(cur && bt[0] === cur.v && Number(bt[1]) >= 2){
+    ls('bs_boot', null); ls('bs_ver', null);
+    try{ for(var i = localStorage.length - 1; i >= 0; i--){ var k = localStorage.key(i); if(k && k.indexOf('bs_f:') === 0) localStorage.removeItem(k); } }catch(e){}
+    try{ if(window.caches) purge = caches.delete(CN).catch(function(){}); }catch(e){}
+    cur = null;
+  }
+  if(!cur || !cur.shell){
+    spin();
+    purge.then(first);
+    return;
+  }
+  // первый запуск (или кеш стёрт): приложение текущей выкладки качается сразу, параллельно с version.json
+  function first(){
+    if(!BUILT){ fresh(); return; }
+    var early = fetch(B + BUILT.shell).then(function(r){ return r.ok ? r.text() : null; }).catch(function(){ return null; });
+    manifest().then(function(ver){
+      var want = ver || BUILT;
+      if(want.shell !== BUILT.shell){ install(want); return; }
+      early.then(function(t){
+        if(good(t)) put(want.shell, t).then(function(){ boot(want, t, !!ver); });
+        else install(want);
+      });
+    });
+  }
+  var mf = manifest(), cached = get(cur.shell);
+  var done = false;
+  // ждём version.json не дольше WAIT мс: на медленной сети запускается сохранённая версия, свежесть сверит само приложение
+  var timer = setTimeout(function(){ go(null, false); }, WAIT);
+  mf.then(function(ver){ go(ver, true); });
+  function go(ver, answered){
+    if(done) return;
+    if(answered && ver && ver.v !== cur.v){ done = true; clearTimeout(timer); get(ver.shell).then(function(t){ if(good(t)) boot(ver, t, true); else install(ver); }); return; }
+    done = true; clearTimeout(timer);
+    cached.then(function(t){
+      if(good(t)) boot(cur, t, answered && !!ver);
+      else (answered && ver ? install(ver) : mf.then(function(v2){ if(v2) install(v2); else fresh(); }));
+    });
+  }
+})();
+</script>
+</body>
+</html>
