@@ -103,6 +103,9 @@
   ],
   "leadmagnets": [
    "guides"
+  ],
+  "ideas": [
+   "guides"
   ]
  },
  "roles": {
@@ -494,6 +497,23 @@
   "v9pairInsight": "lead",
   "v9verdict": "shared",
   "v9workItems": "extra",
-  "wrapText": "extra"
+  "wrapText": "extra",
+  "r46aMarks": "guides",
+  "r46aMark": "guides",
+  "loadIdeas": "guides",
+  "r46aShort": "guides",
+  "r46aBud": "guides",
+  "r46aCover": "guides",
+  "r46aTile": "guides",
+  "r46aFiltered": "guides",
+  "r46aListHTML": "guides",
+  "r46aList": "guides",
+  "r46aSet": "guides",
+  "renderIdeas": "guides",
+  "r46aOv": "guides",
+  "r46aOpen": "guides",
+  "r46aClose": "guides",
+  "r46aAct": "guides",
+  "r46aLibTile": "guides"
  }
 }

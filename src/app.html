@@ -911,6 +911,7 @@
 <div class="page" id="page-home"><div id="homeContent"></div></div>
 <div class="page" id="page-library"><div id="libraryContent"></div></div>
 <div class="page" id="page-guides"><div id="guidesContent"></div></div>
+<div class="page" id="page-ideas"><div id="ideasContent"></div></div>
 <div class="page" id="page-guide"><div id="guideContent"></div></div>
 <div class="page" id="page-myboard"><div id="myboardContent"></div></div>
 <div class="page" id="page-leadmagnets"></div>
@@ -4651,6 +4652,42 @@
   .v22-rest { margin-top: 8px; }
   .v22-rest .k { font-size: 10px; font-weight: 800; letter-spacing: 1.4px; color: #8C8C8C; padding: 12px 16px 2px; }
   .v22-none .lnk { color: #fff; font-weight: 700; text-decoration: underline; cursor: pointer; }
+  /* R46: диагнозы и инструменты плитками с обложками; бизнес-идеи */
+  .r46-lg { margin-top: 12px; }
+  .cv16.r46d { --acc: var(--oac, #FF6B6F); --acc2: rgba(255,107,111,0.24); --accg: var(--oacg, rgba(255,107,111,0.5)); background: radial-gradient(circle at 70% 34%, var(--oacg, rgba(255,107,111,0.34)), transparent 55%), linear-gradient(150deg, #24100F 0%, #0B0708 55%, #000 100%); }
+  .r46t[data-o="Стратегия"] { --oac: #FF8FA3; --oacg: rgba(255,143,163,0.4); } .r46t[data-o="Маркетинг"] { --oac: #FF6B6F; --oacg: rgba(255,107,111,0.4); }
+  .r46t[data-o="Продажи"] { --oac: #FF9F68; --oacg: rgba(255,159,104,0.38); } .r46t[data-o="Команда"] { --oac: #F2A7A0; --oacg: rgba(242,167,160,0.36); }
+  .r46t[data-o="Финансы"] { --oac: #E5484D; --oacg: rgba(229,72,77,0.45); } .r46t[data-o="Процессы"] { --oac: #FF7EB6; --oacg: rgba(255,126,182,0.38); }
+  .r46t[data-o="Аналитика"] { --oac: #FFB199; --oacg: rgba(255,177,153,0.38); }
+  .v17-cvt .tp .no.dx { background: var(--oac, #FF6B6F); color: #fff; }
+  .r46-ic { position: absolute; right: 8%; top: 16%; z-index: 1; font-size: 54px; line-height: 1; filter: drop-shadow(0 6px 18px hsla(var(--h),80%,55%,0.6)); }
+  .cv16.r46i { background: radial-gradient(circle at 72% 30%, hsla(var(--h),78%,58%,0.45), transparent 58%), linear-gradient(150deg, hsl(var(--h),24%,13%) 0%, #080808 58%, #000 100%); }
+  .cv16.r46i::before { content: ''; position: absolute; inset: 0; background: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1.3px) 0 0 / 12px 12px; opacity: 0.6; }
+  .r46-bud { font-size: 11px; font-weight: 800; color: #fff; opacity: 0.85; }
+  .r46-more { grid-column: 1 / -1; margin-top: 4px; }
+  .r46a-ov { position: fixed; inset: 0; z-index: 900; background: #000; overflow-y: auto; -webkit-overflow-scrolling: touch; display: none; }
+  .r46a-ov.on { display: block; }
+  .r46a-cv { position: relative; height: 210px; overflow: hidden; }
+  .r46a-cv .cv16 { border-radius: 0; }
+  .r46a-cv .r46-ic { font-size: 84px; top: 22%; }
+  .r46a-cv .bt { position: absolute; left: 16px; right: 30%; bottom: 16px; z-index: 4; }
+  .r46a-cv .cv-title { font-size: 22px; }
+  .r46a-x { position: absolute; right: 14px; top: 14px; z-index: 5; width: 36px; height: 36px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.35); background: rgba(0,0,0,0.5); color: #fff; font-size: 18px; font-family: inherit; }
+  .r46a-b { padding: 16px 16px 40px; display: flex; flex-direction: column; gap: 16px; }
+  .r46a-b .sh { font-size: 16px; font-weight: 700; line-height: 1.45; color: #fff; }
+  .r46a-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .r46a-acts button { height: 44px; border-radius: 14px; border: 1px solid #262626; background: #0B0B0B; color: #fff; font: 800 13px Manrope, sans-serif; }
+  .r46a-acts button.on { background: #fff; color: #000; border-color: #fff; }
+  .r46a-kp { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .r46a-kp div { border: 1px solid #1F1F1F; border-radius: 14px; padding: 10px 12px; }
+  .r46a-kp span { display: block; font-size: 9.5px; font-weight: 800; letter-spacing: 1px; color: #8C8C8C; text-transform: uppercase; }
+  .r46a-kp b { display: block; margin-top: 4px; font-size: 14px; font-weight: 800; color: #fff; }
+  .r46a-l { font-size: 10px; font-weight: 800; letter-spacing: 1.6px; color: #8C8C8C; text-transform: uppercase; margin-bottom: 8px; }
+  .r46a-p { font-size: 14px; line-height: 1.55; color: #E8E8E8; }
+  .r46a-ul { margin: 0; padding-left: 18px; color: #E8E8E8; font-size: 14px; line-height: 1.55; }
+  .r46a-ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .r46a-ol li { display: flex; gap: 10px; border: 1px solid #1F1F1F; border-radius: 12px; padding: 9px 11px; font-size: 14px; line-height: 1.45; color: #fff; }
+  .r46a-ol li i { font-style: normal; flex-shrink: 0; width: 22px; height: 22px; border-radius: 11px; background: #fff; color: #000; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
 </style>
 
 <div class="modal-bg" id="attendModal">
@@ -5277,10 +5314,10 @@ const NAV = {
     {id:'meet', label:'Встречи',   icon:'cal',  pages:[{id:'schedule', label:'Расписание'}]},
     {id:'plus', plus:true},
     {id:'res',  label:'Резиденты', icon:'club', pages:[{id:'residents', label:'Резиденты'},{id:'reports', label:'Отчёты'},{id:'visits', label:'Посещения'},{id:'fines', label:'Штрафы'},{id:'restasks', label:'Задачи'}]},
-    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'leadrazbor', label:'Экспресс-разбор', hidden:true}]}
+    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'leadrazbor', label:'Экспресс-разбор', hidden:true},{id:'ideas', label:'Бизнес-идеи'}]}
   ],
   resident: [
-    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true}]},
+    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'},{id:'ideas', label:'Бизнес-идеи'},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true}]},
     {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Мой разбор'},{id:'wheel', label:'Колесо'},{id:'diagnostic', label:'Диагностика'}]},
     {id:'tasks', label:'Задачи',  icon:'tasks', pages:[{id:'mytasks', label:'Задачи'},{id:'mymeetings', label:'Встречи'}]},
     {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила', hidden:true}]},
@@ -5288,7 +5325,7 @@ const NAV = {
   ],
   lead: [
     {id:'home', label:'Главная',     icon:'home',  pages:[{id:'about', label:'Главная'}]},
-    {id:'cl',   label:'Чек-листы',   icon:'book',  pages:[{id:'guides', label:'Интерактивные чек-листы'},{id:'guide', label:'Чек-лист', hidden:true}]},
+    {id:'cl',   label:'Чек-листы',   icon:'book',  pages:[{id:'guides', label:'Интерактивные чек-листы'},{id:'ideas', label:'Бизнес-идеи'},{id:'guide', label:'Чек-лист', hidden:true}]},
     {id:'diag', label:'Диагностика', icon:'board', pages:[{id:'diagnostic', label:'Диагностика'}]},
     {id:'razbor', label:'Разбор',    icon:'cal',   pages:[{id:'leadrazbor', label:'Разбор'}]}
   ]
@@ -5592,7 +5629,10 @@ function init(){
       'guides':       {admin:'guides',      resident:'guides',      lead:'guides'},
       'checklists':   {admin:'guides',      resident:'guides',      lead:'guides'},
       'checklist':    {admin:'guides',      resident:'guides',      lead:'guides'},
-      '99':           {admin:'guides',      resident:'guides',      lead:'guides'}
+      '99':           {admin:'guides',      resident:'guides',      lead:'guides'},
+      // R46: бизнес-идеи
+      'ideas':        {admin:'ideas',       resident:'ideas',       lead:'ideas'},
+      'idea':         {admin:'ideas',       resident:'ideas',       lead:'ideas'}
     };
     
     function _resolveInitialPage(rawPage, role){
@@ -5822,6 +5862,7 @@ function _showPageCore(id){
   if(id === 'referral'){ try{ v15renderRef(); v15refLoad(); }catch(e){ console.error('referral:', e); } }
   if(id === 'library'){ try{ renderLibrary(); }catch(e){ console.error('library:', e); } }
   if(id === 'guides'){ try{ renderGuides(); }catch(e){ console.error('guides:', e); } }
+  if(id === 'ideas'){ try{ renderIdeas(); }catch(e){ console.error('ideas:', e); } }
   if(id === 'guide'){ try{ renderGuide(); }catch(e){ console.error('guide:', e); } }
   try{ if(typeof v14barSync === 'function') v14barSync(); }catch(e){}
 }
@@ -5847,7 +5888,7 @@ function v9title(id){
     mymeetings:'Встречи', mystatus:'Профиль', about:'О проекте', rules:'Правила', wheel:'Колесо', diagnostic:'Диагностика', leadmagnets:'Материалы',
     library:'Библиотека', reports:'Отчёты', fines:'Штрафы', visits:'Посещения', restasks:'Задачи резидентов', crm:'CRM', subscribers:'Подписчики',
     custdev:'CustDev', content:'Полезное', wheeladmin:'Колесо клуба', todos:'Задачи команды', leadrazbor:'Разбор',
-    guides:'Чек-листы', guide:'Чек-лист', referral:'Приглашение'};
+    guides:'Чек-листы', guide:'Чек-лист', referral:'Приглашение', ideas:'Бизнес-идеи'};
   return T[id] || 'Назад';
 }
 function v9activeId(){ var a = document.querySelector('.page.active'); return a ? a.id.replace('page-', '') : ''; }
@@ -6142,7 +6183,7 @@ function r44page(id, fn){
   else window._r44dirty[id] = fn;
 }
 // Экраны, которые _showPageCore и так перерисовывает при каждом открытии
-var R44_SELF = {home:1, myboard:1, residents:1, more:1, todos:1, about:1, dashboard:1, mystatus:1, mytasks:1, mymeetings:1, myprofile:1, leadmagnets:1, leadrazbor:1, referral:1, library:1, guides:1, guide:1};
+var R44_SELF = {home:1, myboard:1, residents:1, more:1, todos:1, about:1, dashboard:1, mystatus:1, mytasks:1, mymeetings:1, myprofile:1, leadmagnets:1, leadrazbor:1, referral:1, library:1, guides:1, guide:1, ideas:1};
 function r44show(id){
   var fn = window._r44dirty[id]; if(!fn) return;
   delete window._r44dirty[id];
@@ -6671,12 +6712,16 @@ function v9libListHTML(){
   var list = v9libFiltered();
   window._libShown = list;
   if(!list.length) return '<div class="v2-empty">' + (window._libQ ? 'Ничего не нашли' : 'В этом разделе пока пусто') + '</div>';
-  return list.map(function(x, i){
+  // R46: диагнозы и инструменты плитками с обложками, книги и ресурсы строками
+  var tiles = '', rows = '';
+  list.forEach(function(x, i){
     var k = v9libKind(x);
+    if(k === 'diag' || k === 'tool'){ tiles += r46aLibTile(x, i); return; }
     var meta = [V9_LIB_ONE[k], x.organ ? v9organLabel(x.organ) : '', x.cat || ''].filter(Boolean).join(' · ');
-    return '<div class="v9-lib-row" onclick="openLibItem(window._libShown[' + i + '])"><div class="ic">' + v9libIcon(k, 18) + '</div>' +
+    rows += '<div class="v9-lib-row" onclick="openLibItem(window._libShown[' + i + '])"><div class="ic">' + v9libIcon(k, 18) + '</div>' +
       '<div class="m"><i>' + v2esc(meta) + '</i><b>' + v2esc(x.title) + '</b>' + (x.short ? '<span>' + v2esc(x.short) + '</span>' : '') + '</div></div>';
-  }).join('');
+  });
+  return (tiles ? '<div class="v16-grid r46-lg">' + tiles + '</div>' : '') + (rows ? '<div class="v2-card" style="margin-top:12px">' + rows + '</div>' : '');
 }
 function v9setLibKind(k){ window._libKind = k; renderLibrary(); }
 function v9libSearch(v){ window._libQ = v; var el = document.getElementById('libList'); if(el) el.innerHTML = v9libListHTML(); }
@@ -6706,7 +6751,7 @@ function renderLibrary(){
     return '<button class="' + (f === c[0] ? 'on' : '') + '" onclick="v9setLibKind(\'' + c[0] + '\')">' + c[1] + (c[0] !== 'all' ? ' · ' + counts[c[0]] : '') + '</button>';
   }).join('') + '</div>';
   if(L.error && L.stale) h += '<div class="v3-cap" style="margin:10px 4px 0">Показана сохранённая версия: сервер сейчас не ответил</div>';
-  h += '<div class="v2-card" id="libList" style="margin-top:12px">' + v9libListHTML() + '</div>';
+  h += '<div id="libList">' + v9libListHTML() + '</div>';
   el.innerHTML = h;
 }
 function v9libFileUrl(id){
@@ -14952,6 +14997,129 @@ function renderGuides(){
   el.innerHTML = h;
   // Выбранный орган виден в ленте
   var on = el.querySelector('#gdOrg button.on'); if(on && o !== 'all'){ var r = document.getElementById('gdOrg'); try{ r.scrollLeft = on.offsetLeft - 16; }catch(e){} }
+}
+
+// ═══ R46: бизнес-идеи (1000+): GET app/ideas → {version, total, cats, items}. Каталог только в памяти, повторно 304 по ETag (_et) ═══
+// Отметки на устройстве: bs_ideas_fav, bs_ideas_mark = {id: {fav, disc, work}}. «Обсудить на разборе» и «Взять в работу» лида: POST app/idea (карточка CRM)
+window._ideas = null;
+var R46A = {cat: '', q: '', bud: 0, lim: 40, fav: false};
+var R46A_BUD = [[0, 'Любой бюджет'], [300000, 'до 300 тыс'], [1000000, 'до 1 млн'], [3000000, 'до 3 млн'], [10000000, 'до 10 млн']];
+function r46aMarks(){ try{ var m = JSON.parse(localStorage.getItem('bs_ideas_mark') || '{}'); return m && typeof m === 'object' ? m : {}; }catch(e){ return {}; } }
+function r46aMark(id, k, v){ var m = r46aMarks(); m[id] = m[id] || {}; if(v) m[id][k] = Date.now(); else delete m[id][k]; try{ localStorage.setItem('bs_ideas_mark', JSON.stringify(m)); }catch(e){} }
+function loadIdeas(){
+  if(window._ideas && !window._ideas.error) return Promise.resolve(window._ideas);
+  if(window._ideasLoading) return window._ideasLoading;
+  var init = bsInitData();
+  if(!init){ window._ideas = {error: 'noinit'}; return Promise.resolve(window._ideas); }
+  window._ideasLoading = fetch(APP_SERVER + 'ideas?' + new URLSearchParams({_tg: init}).toString())
+    .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function(j){
+      if(!j || !Array.isArray(j.items)) throw new Error('bad');
+      j.byId = {}; j.items.forEach(function(x){ j.byId[x.id] = x; x._s = [x.title, x.short, x.sub, (x.tags || []).join(' ')].join(' ').toLowerCase().replace(/ё/g, 'е'); });
+      window._ideas = j; window._ideasLoading = null; return j;
+    })
+    .catch(function(e){ window._ideasLoading = null; window._ideas = {error: String(e && e.message || 'network')}; return window._ideas; });
+  return window._ideasLoading;
+}
+function r46aShort(n){ n = Number(n) || 0; if(n >= 1e6) return String(Math.round(n / 1e5) / 10).replace('.', ',') + ' млн'; if(n >= 1e3) return Math.round(n / 1e3) + ' тыс'; return String(n); }
+function r46aBud(b, full){ if(!b || !b.length) return ''; if(full) return b[1] > b[0] ? v12num(b[0]) + ' - ' + v12num(b[1]) + ' ₸' : v12num(b[0]) + ' ₸'; return 'от ' + r46aShort(b[0]) + ' ₸'; }
+function r46aCover(x){
+  var h = Math.round(Number(x.cover && x.cover.hue) || 0), t = v12clean(x.title);
+  return '<div class="cv16 r46i" style="--h:' + h + '"><div class="r46-ic">' + v2esc((x.cover && x.cover.icon) || '💡') + '</div><div class="cv-shade"></div></div>' +
+    '<div class="bt"><div class="cv-org">' + v2esc(x.sub || '') + '</div><div class="cv-title t' + (t.length > 44 ? ' xl' : (t.length > 30 ? ' long' : '')) + '"' + v17titleFit(t, t.length > 44 ? 17 : (t.length > 30 ? 15 : 13)) + '>' + v2esc(t) + '</div>' +
+    '<div class="r46-bud">' + v2esc(r46aBud(x.budget)) + (x.payback ? ' · ' + v2esc(x.payback) : '') + '</div></div>';
+}
+function r46aTile(x){
+  var m = r46aMarks()[x.id] || {};
+  return '<div class="v14-card v16-tile v17-cvt" role="button" tabindex="0" data-id="' + v2esc(x.id) + '" onclick="r46aOpen(this.dataset.id)">' + r46aCover(x) +
+    '<div class="tp"><span class="no">ИДЕЯ</span><span class="rt">' + (m.fav ? '<span style="padding:0 6px">★</span>' : '') + '</span></div></div>';
+}
+function r46aFiltered(){
+  var D = window._ideas; if(!D || !D.items) return [];
+  var q = String(R46A.q || '').trim().toLowerCase().replace(/ё/g, 'е').split(/\s+/).filter(Boolean), M = R46A.fav ? r46aMarks() : null;
+  return D.items.filter(function(x){
+    if(R46A.cat && x.cat !== R46A.cat) return false;
+    if(R46A.bud && !(x.budget && x.budget[0] <= R46A.bud)) return false;
+    if(M && !(M[x.id] && M[x.id].fav)) return false;
+    for(var i = 0; i < q.length; i++) if(x._s.indexOf(q[i]) < 0) return false;
+    return true;
+  }).sort(function(a, b){ return (a.difficulty || 9) - (b.difficulty || 9) || (a.budget[0] - b.budget[0]); });
+}
+function r46aListHTML(){
+  var l = r46aFiltered(), s = l.slice(0, R46A.lim);
+  if(!l.length) return '<div class="v2-card v12-empty v16-span" style="grid-column:1/-1">Ничего не нашли. Попробуйте другую категорию или слово</div>';
+  return s.map(r46aTile).join('') + (l.length > s.length ? '<button class="v3-outline r46-more" onclick="R46A.lim+=40;r46aList()">Показать ещё ' + Math.min(40, l.length - s.length) + '</button>' : '');
+}
+function r46aList(){ var el = document.getElementById('ideasList'); if(el) el.innerHTML = r46aListHTML(); var c = document.getElementById('ideasCnt'); if(c) c.textContent = r46aFiltered().length + ' ' + v3plural(r46aFiltered().length, 'идея', 'идеи', 'идей'); }
+function r46aSet(k, v){ R46A[k] = v; R46A.lim = 40; renderIdeas(); }
+function renderIdeas(){
+  var el = document.getElementById('ideasContent'); if(!el) return;
+  var D = window._ideas;
+  var h = '<div class="v16-ch"><div class="k">БИЗНЕС-ИДЕИ · ДЛЯ СТАРТА</div><h1><span class="num">' + (D && D.total ? v12num(D.total) : '1000+') + '</span> идей</h1>' +
+    '<p>Нет своего бизнеса? Бюджет, окупаемость и первые шаги на неделю для каждой идеи</p></div>';
+  if(!D || D.error){
+    if(D && D.error) h += '<div class="v2-card v12-empty" style="margin-top:12px">Не получилось загрузить идеи.<br><button class="v3-outline" style="margin-top:12px" onclick="window._ideas=null;renderIdeas()">Повторить</button></div>';
+    else { h += '<div class="loading"><div class="spinner"></div></div>'; loadIdeas().then(function(){ if(v9activeId() === 'ideas') renderIdeas(); }); }
+    el.innerHTML = h; return;
+  }
+  h += '<div class="v16-oc"><button class="' + (!R46A.cat ? 'on' : '') + '" onclick="r46aSet(\'cat\',\'\')"><span class="l">Все</span></button>' + D.cats.map(function(c){
+    return '<button class="' + (R46A.cat === c.id ? 'on' : '') + '" onclick="r46aSet(\'cat\',\'' + c.id + '\')"><span>' + v2esc(c.icon) + '</span><span class="l">' + v2esc(c.s || c.n) + '</span><span class="c num">' + c.count + '</span></button>';
+  }).join('') + '</div>';
+  h += '<div class="v3-search" style="margin-top:14px">' + navIcon('search', 18) + '<input type="text" placeholder="Кофейня, доставка, из дома" aria-label="Поиск идей" value="' + v2esc(R46A.q) + '" oninput="R46A.q=this.value;R46A.lim=40;r46aList()"></div>';
+  h += '<div class="v9-chips">' + R46A_BUD.map(function(b){ return '<button class="' + (R46A.bud === b[0] ? 'on' : '') + '" onclick="r46aSet(\'bud\',' + b[0] + ')">' + b[1] + '</button>'; }).join('') +
+    '<button class="' + (R46A.fav ? 'on' : '') + '" onclick="r46aSet(\'fav\',' + !R46A.fav + ')">★ Избранное</button></div>';
+  h += '<div class="v3-cap" id="ideasCnt" style="margin:12px 4px 0"></div><div id="ideasList" class="v16-grid"></div>';
+  el.innerHTML = h;
+  r46aList();
+}
+function r46aOv(){ var o = document.getElementById('r46aOv'); if(!o){ o = document.createElement('div'); o.id = 'r46aOv'; o.className = 'r46a-ov'; document.body.appendChild(o); } return o; }
+function r46aOpen(id){
+  var x = window._ideas && window._ideas.byId && window._ideas.byId[id]; if(!x) return;
+  window._ideaCur = id;
+  var m = r46aMarks()[id] || {}, lead = navRole() === 'lead';
+  var li = function(a){ return (a || []).map(function(t){ return '<li>' + v2esc(t) + '</li>'; }).join(''); };
+  var o = r46aOv();
+  o.innerHTML = '<div class="r46a-cv">' + r46aCover(x) + '<button class="r46a-x" onclick="r46aClose()" aria-label="Закрыть">✕</button></div>' +
+    '<div class="r46a-b"><div class="sh">' + v2esc(x.short) + '</div>' +
+    '<div class="r46a-acts"><button class="' + (m.fav ? 'on' : '') + '" onclick="r46aAct(\'fav\')">' + (m.fav ? '★ В избранном' : '☆ В избранное') + '</button>' +
+      '<button class="' + (m.disc ? 'on' : '') + '" onclick="r46aAct(\'disc\')">' + (m.disc ? 'Обсудим на разборе' : 'Обсудить на разборе') + '</button>' +
+      '<button class="' + (m.work ? 'on' : '') + '" onclick="r46aAct(\'work\')">' + (m.work ? 'Взято в работу' : 'Взять в работу') + '</button>' +
+      '<button onclick="r46aAct(\'share\')">Поделиться</button></div>' +
+    '<div class="r46a-kp"><div><span>Бюджет</span><b>' + v2esc(r46aBud(x.budget, true)) + '</b></div><div><span>Окупаемость</span><b>' + v2esc(x.payback || '-') + '</b></div>' +
+      '<div><span>Маржа</span><b>' + v2esc(x.margin || '-') + '</b></div><div><span>Сложность</span><b>' + (Number(x.difficulty) || '-') + ' из 5</b></div>' +
+      '<div><span>Формат</span><b>' + v2esc((x.format || []).join(', ')) + '</b></div><div><span>Команда</span><b>' + v2esc(x.team || '-') + '</b></div></div>' +
+    '<div><div class="r46a-l">Суть</div><div class="r46a-p">' + v2esc(x.desc) + '</div></div>' +
+    '<div><div class="r46a-l">Что нужно для старта</div><ul class="r46a-ul">' + li(x.need) + '</ul></div>' +
+    '<div><div class="r46a-l">Первые шаги на неделю</div><ol class="r46a-ol">' + (x.first_steps || []).map(function(t, i){ return '<li><i>' + (i + 1) + '</i><span>' + v2esc(t) + '</span></li>'; }).join('') + '</ol></div>' +
+    '<div><div class="r46a-l">Главные риски</div><ul class="r46a-ul">' + li(x.risks) + '</ul></div>' +
+    (lead ? '<button class="v3-outline" onclick="r46aClose();showPage(\'leadrazbor\')">Записаться на экспресс-разбор</button>' : '') +
+    '<div class="v3-cap">Цифры ориентировочные: перед стартом проверьте спрос и цены в своём городе</div></div>';
+  o.classList.add('on'); o.scrollTop = 0;
+}
+function r46aClose(){ var o = document.getElementById('r46aOv'); if(o){ o.classList.remove('on'); o.innerHTML = ''; } window._ideaCur = null; if(v9activeId() === 'ideas') r46aList(); }
+function r46aAct(a){
+  var id = window._ideaCur, x = window._ideas && window._ideas.byId[id]; if(!x) return;
+  var m = r46aMarks()[id] || {};
+  if(a === 'share'){
+    var t = x.title + '\n' + x.short + '\nБюджет: ' + r46aBud(x.budget, true) + (x.payback ? ', окупаемость ' + x.payback : '') + '\n\nПервые шаги:\n' + (x.first_steps || []).map(function(s, i){ return (i + 1) + '. ' + s; }).join('\n') + '\n\nBusiness Surgery · бизнес-идеи';
+    v15copy(t, 'Текст идеи скопирован'); return;
+  }
+  if(a === 'fav'){ r46aMark(id, 'fav', !m.fav); showToast(m.fav ? 'Убрано из избранного' : 'Идея в избранном'); r46aOpen(id); return; }
+  if(m[a]){ showToast(a === 'work' ? 'Идея уже в работе' : 'Уже отмечено: обсудим на разборе'); return; }
+  var init = bsInitData();
+  var done = function(){ r46aMark(id, a, 1); showToast(a === 'work' ? (navRole() === 'lead' ? 'Идея в работе. Команда увидит её перед разбором' : 'Отмечено. Задачу на доске поставит трекер на разборе') : (navRole() === 'lead' ? 'Готово: обсудим идею на разборе' : 'Отмечено: обсудим на разборе')); r46aOpen(id); };
+  if(!init){ done(); return; }
+  fetch(APP_SERVER + 'idea?' + new URLSearchParams({_tg: init}).toString(), {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify({id: id, kind: a === 'work' ? 'work' : 'discuss'})})
+    .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); done(); })
+    .catch(function(){ showToast('Нет связи с сервером. Попробуйте ещё раз'); });
+}
+// Библиотека: диагнозы и инструменты плитками с обложками (как чек-листы), остальное строками
+function r46aLibTile(x, i){
+  var k = v9libKind(x), org = String(x.organ || '').replace(/^[^А-Яа-яA-Za-z]+/, '').trim(), t = v12clean(x.title), lab = V17_ORG_LBL[org];
+  return '<div class="v14-card v16-tile v17-cvt r46t" data-o="' + v2esc(org) + '" role="button" tabindex="0" onclick="openLibItem(window._libShown[' + i + '])">' +
+    '<div class="cv16' + (k === 'diag' ? ' r46d' : '') + '"><div class="cv-glow"></div>' + coverArt(t, org) + '<div class="cv-shade"></div></div>' +
+    '<div class="bt"><div class="cv-org">' + v2esc((lab ? lab + ' · ' : '') + org) + '</div><div class="cv-title t' + (t.length > 44 ? ' xl' : (t.length > 30 ? ' long' : '')) + '"' + v17titleFit(t, t.length > 44 ? 17 : (t.length > 30 ? 15 : 13)) + '>' + v2esc(t) + '</div></div>' +
+    '<div class="tp"><span class="no' + (k === 'diag' ? ' dx' : '') + '">' + (k === 'diag' ? 'ДИАГНОЗ' : 'ИНСТРУМЕНТ') + '</span><span class="rt"></span></div></div>';
 }
 
 // ── Ридер ──
