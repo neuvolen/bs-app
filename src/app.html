@@ -11342,7 +11342,58 @@ function renderMyProfile(){
       </div>
       <button class="v3-primary" onclick="saveProfile('${me.chatId}')">Сохранить профиль</button>
     </div>
+    <div id="v51Box"></div>
   `;
+  if(navRole() === 'resident') v51load();
+}
+
+// ══════════ R51: итоги периода, продление в 1 клик, согласие на кейсы ══════════
+// GET sales/me → {consent, reports, renew}; POST sales/consent {mode}; POST sales/renew {months}; POST sales/report/send {id}
+window._v51 = window._v51 || {d: null};
+function v51api(method, path, body){
+  var init = bsInitData(); if(!init) return Promise.reject(new Error('noinit'));
+  var url = APP_SERVER + path + (method === 'GET' ? '?' + new URLSearchParams({_tg: init}).toString() : '');
+  var opt = method === 'GET' ? {} : {method: method, headers: {'Content-Type': 'application/json'}, body: JSON.stringify(Object.assign({_tg: init}, body || {}))};
+  return fetch(url, opt).then(function(r){ return r.json().then(function(j){ if(!r.ok || (j && j.error)) throw new Error((j && (j.message || j.error)) || ('http ' + r.status)); return j; }); });
+}
+function v51load(){
+  v51paint();
+  v51api('GET', 'sales/me').then(function(j){ window._v51.d = j; v51paint(); }).catch(function(){ var b = document.getElementById('v51Box'); if(b && !window._v51.d) b.innerHTML = ''; });
+}
+function v51paint(){
+  var b = document.getElementById('v51Box'); if(!b) return;
+  var d = window._v51.d; if(!d){ b.innerHTML = ''; return; }
+  var r = d.renew || {}, p = r.pending, m = v15nb;
+  var mode = [['anon', 'Анонимно'], ['name', 'С именем'], ['no', 'Нельзя']].map(function(x){
+    return '<button class="v3-btn" style="' + (d.consent === x[0] ? 'background:#fff;color:#000' : '') + '" onclick="v51consent(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join('');
+  var h = '<div class="v2-h">Продление резидентства</div><div class="v2-card" style="padding:14px">' +
+    '<div class="v3-sub">' + (r.packEnd ? 'Пакет до ' + v2esc(r.packEnd) + (r.daysLeft >= 0 ? ' (осталось ' + r.daysLeft + ' дн.)' : '') + '. ' : '') + 'Пакет продлится сам после оплаты.</div>' +
+    (p ? '<div style="margin-top:10px;font-weight:800;color:#F5A524">Ожидает оплату продления: ' + (p.months == 12 ? 'год' : '3 месяца') + ', ' + m(p.amount) + ' ₸</div>' +
+      (r.kaspi ? '<button class="v3-primary" style="margin-top:10px" onclick="v51pay()">Оплатить ' + m(p.amount) + ' ₸ (Kaspi)</button>' : '<div class="v3-sub" style="margin-top:6px">Команда пришлёт ссылку на оплату.</div>') : '') +
+    (r.q3Price > 0 ? '<button class="v3-btn" style="margin-top:10px;width:100%;display:flex;justify-content:center" onclick="v51renew(3)">Продлить на 3 месяца · ' + m(r.q3Price) + ' ₸</button>' : '') +
+    '<button class="v3-btn" style="margin-top:8px;width:100%;display:flex;justify-content:center" onclick="v51renew(12)">Продлить на год · ' + m(r.yearPrice) + ' ₸</button></div>';
+  var reps = d.reports || [];
+  h += '<div class="v2-h">Итоги периодов</div><div class="v2-card" style="padding:14px">' + (reps.length ? reps.map(function(x){
+    return '<div class="v2-row" style="padding:6px 0"><div class="m"><b>' + (x.months == 12 ? 'Итог года' : 'Итог 3 месяцев') + '</b><span>' + v2esc(x.from) + ' - ' + v2esc(x.to) + '</span></div><button class="v3-btn" onclick="v51send(\'' + v2esc(x.id) + '\')">PDF в чат</button></div>'; }).join('')
+    : '<div class="v3-sub">Итог появится в конце каждых 3 месяцев и в годовщину.</div>') + '</div>';
+  h += '<div class="v2-h">Мои результаты в кейсах клуба</div><div class="v2-card" style="padding:14px"><div class="v3-sub">Можно ли показывать ваши цифры «было → стало» в кейсах клуба? Анонимно: только ниша, город и цифры.</div>' +
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px" id="v51Mode">' + mode + '</div></div>';
+  b.innerHTML = h;
+}
+function v51consent(mode){
+  v51api('POST', 'sales/consent', {mode: mode}).then(function(j){ window._v51.d = j; v51paint(); showToast('Сохранено'); }).catch(function(e){ showToast('Не сохранилось'); });
+}
+function v51renew(months){
+  v51api('POST', 'sales/renew', {months: months}).then(function(j){ window._v51.d = j; v51paint();
+    showToast(j.request && j.request.kaspi ? 'Запрос отправлен. Оплатите через Kaspi' : 'Запрос отправлен: команда пришлёт ссылку на оплату'); }).catch(function(e){ showToast(String(e.message || 'Не получилось')); });
+}
+function v51pay(){
+  var k = window._v51.d && window._v51.d.renew && window._v51.d.renew.kaspi; if(!k) return;
+  try{ if(window.Telegram && Telegram.WebApp && Telegram.WebApp.openLink){ Telegram.WebApp.openLink(k); return; } }catch(e){}
+  window.open(k, '_blank');
+}
+function v51send(id){
+  v51api('POST', 'sales/report/send', {id: id}).then(function(){ showToast('PDF отправлен в чат с ботом'); }).catch(function(){ showToast('Не получилось отправить'); });
 }
 
 async function saveProfile(chatId){
