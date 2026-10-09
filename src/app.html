@@ -5414,6 +5414,7 @@ const FINE_TYPES = [
   {label:'Опоздание', emoji:'', name:'Опоздание', amount:10000},
   {label:'Слово', emoji:'', name:'Цена слова', amount:100000},
   {label:'Пропуск', emoji:'', name:'Пропуск', amount:10000},
+  {label:'Неявка', emoji:'', name:'Неявка без предупреждения', amount:50000}, // R69: правило клуба
   {label:'Нарушение', emoji:'', name:'Нарушение', amount:10000},
   {label:'Прочее', emoji:'', name:'Прочее', amount:0}
 ];
@@ -9790,6 +9791,7 @@ function showMeetingDetail(ev){
     ${!canEdit?`<button class="btn btn-success" onclick="confirmMeeting('${ev.res}','${ev.date}','${ev.time}')" ${alreadyConfirmed?'disabled style="opacity:0.6"':''}>${alreadyConfirmed?'✓ Подтверждено':'Подтвердить участие'}</button>`:''}
     <button class="btn btn-secondary" onclick="addToCalendar('${ev.date}','${ev.time}','${ev.res}','${ev.link||''}')">В Google Calendar</button>
     ${canEdit?`<button class="btn btn-success" onclick="onMeetingDoneClick('${ev.res}','${ev.date}','${ev.time}',${isOnline?'true':'false'})">Встреча прошла</button>`:''}
+    ${canEdit&&ev.res&&ev.res!=='Офлайн день'?`<button class="btn btn-danger" onclick="meetingMissed('${ev.res}','${ev.date}','${ev.time}')">Не пришёл без предупреждения</button>`:''}
     ${canEdit?`<button class="btn btn-secondary" onclick="openEditMeeting('${ev.res}','${ev.date}','${ev.time}')">Перенести</button>`:''}
     ${canEdit?`<button class="btn btn-danger" onclick="deleteMeetingConfirm('${ev.res}','${ev.date}','${ev.time}')">Удалить</button>`:''}
   `;
@@ -9867,6 +9869,23 @@ async function meetingDone(res, date, time){
     } else {
       showToast('Ошибка обработки');
     }
+    setTimeout(loadAllData, 3000);
+  });
+}
+
+// R69: правило клуба: не пришёл и не предупредил: штраф 50 000 ₸ (один раз), резиденту одно сообщение бота
+async function meetingMissed(res, date, time){
+  if(!(await bsConfirm('Не пришёл без предупреждения?', res + ', ' + date + ' ' + (time || '') + '\nШтраф 50 000 ₸ по правилам клуба, резидент получит сообщение', 'Штраф 50 000', true))) return;
+  if(!window._deletedMeetingKeys) window._deletedMeetingKeys = [];
+  window._deletedMeetingKeys.push(res+'|'+date+'|'+time);
+  if(cache.schedule){
+    cache.schedule = cache.schedule.filter(function(e){ return !(e.res===res && e.date===date && e.time===time); });
+    bsSaveCache();
+  }
+  closeDetail();
+  renderAllPages();
+  callAction('missMeeting', {res: res, date: date, time: time}).then(function(r){
+    showToast(r && r.ok ? 'Отмечено: штраф 50 000 ₸ записан' : ('Не получилось: ' + ((r && r.error) || 'нет ответа')));
     setTimeout(loadAllData, 3000);
   });
 }
@@ -11676,9 +11695,18 @@ function renderMyMeetings(){
 }
 
 // ─── MODALS ────────────────────────────────────────────────────────────────
+// R69: резиденты в выборе: сначала «Онлайн», потом «Офлайн», внутри по алфавиту
+function resOptionsHTML(residents){
+  var by = function(a, b){ return String(a.name).localeCompare(String(b.name), 'ru'); };
+  var onl = residents.filter(function(r){ return String(r.format||'') === 'Онлайн'; }).sort(by);
+  var offl = residents.filter(function(r){ return String(r.format||'') !== 'Онлайн'; }).sort(by);
+  var opt = function(r){ return '<option value="' + v2esc(r.name) + '">' + v2esc(r.name) + '</option>'; };
+  return (onl.length ? '<optgroup label="Онлайн · ' + onl.length + '">' + onl.map(opt).join('') + '</optgroup>' : '') +
+    (offl.length ? '<optgroup label="Офлайн · ' + offl.length + '">' + offl.map(opt).join('') + '</optgroup>' : '');
+}
 function initFineModal(){
   const residents = (cache.residents||[]).filter(r=>!r.isFired&&!r.isAdmin&&!r.isTeam&&r.name!=='Тест'&&r.name!=='Тест2');
-  document.getElementById('fineResident').innerHTML = residents.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
+  document.getElementById('fineResident').innerHTML = resOptionsHTML(residents);
   document.getElementById('fineTypeGrid').innerHTML = FINE_TYPES.map((t,i)=>`
     <button class="pick-btn ${i===0?'selected':''}" data-name="${t.name}" data-amount="${t.amount}" onclick="selectFineType(this)">
       <span class="e">${t.emoji}</span>${t.label}
@@ -11713,12 +11741,7 @@ async function submitFine(){
 
 function initSchedModal(){
   const residents = (cache.residents||[]).filter(r=>!r.isFired&&!r.isAdmin&&!r.isTeam&&r.name!=='Тест'&&r.name!=='Тест2');
-  var onl = residents.filter(function(r){ return String(r.format||'') === 'Онлайн'; });
-  var offl = residents.filter(function(r){ return String(r.format||'') !== 'Онлайн'; });
-  var opt = function(r){ return `<option value="${r.name}">${r.name}</option>`; };
-  document.getElementById('schedResident').innerHTML =
-    (onl.length ? '<optgroup label="Онлайн · '+onl.length+'">' + onl.map(opt).join('') + '</optgroup>' : '') +
-    (offl.length ? '<optgroup label="Офлайн · '+offl.length+'">' + offl.map(opt).join('') + '</optgroup>' : '');
+  document.getElementById('schedResident').innerHTML = resOptionsHTML(residents);
   renderDateGrid(10);
   // ПРАВИЛЬНЫЙ ПОРЯДОК: 1) дата 2) заполнить время 3) отсечь прошедшее
   selDate = new Date().toLocaleDateString('ru-RU');
@@ -12028,7 +12051,7 @@ function initPayModal(){
   document.getElementById('payAmount').value = '';
   // Заполняем список резидентов
   var residents = (cache.residents||[]).filter(r=>!r.isFired&&r.name!=='Тест'&&r.name!=='Тест2');
-  document.getElementById('payResident').innerHTML = residents.map(r=>`<option value="${r.name}">${r.name}</option>`).join('');
+  document.getElementById('payResident').innerHTML = resOptionsHTML(residents);
   updatePayResidentVisibility();
   lockPayHeight(true);
 }
@@ -12198,20 +12221,47 @@ function addToHomeScreen(){
 }
 
 
+// R69: суммы с пробелами между тысячами прямо при вводе («1 500 000»), курсор остаётся у той же цифры;
+// любое поле суммы (.money-input, «₸», «тенге», «сумма» в подписи) отдаёт коду цифры без пробелов
+var R69_VAL = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+function r69Fmt(raw){
+  var s = String(raw).replace(/[\s\u00a0\u202f]/g, ''), m = s.match(/^(\d*)([.,]\d*)?$/);
+  if(!m) return null;
+  return m[1].replace(/^0+(?=\d)/, '').replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + (m[2] || '');
+}
+function r69IsMoney(inp){
+  if(!inp || inp.tagName !== 'INPUT' || inp._r69m === 0) return false;
+  if(inp._r69m || inp.classList.contains('money-input') || inp.dataset.money === '1') return true;
+  var ty = (inp.getAttribute('type') || 'text').toLowerCase();
+  if(ty !== 'text') return false;
+  var t = (inp.getAttribute('placeholder') || '') + ' ' + (inp.getAttribute('aria-label') || '');
+  var lb = inp.id && document.querySelector('label[for="' + inp.id + '"]'); if(lb) t += ' ' + lb.textContent;
+  var pr = inp.previousElementSibling; if(pr && pr.tagName === 'LABEL') t += ' ' + pr.textContent;
+  return /₸|тенге|сумм|тариф|цена|выручк|прибыл/i.test(t) && !/телефон|дней|встреч|%/i.test(t);
+}
+function r69Install(inp){
+  if(inp._r69m === 1 || !R69_VAL) return;
+  inp._r69m = 1;
+  Object.defineProperty(inp, 'value', {configurable: true,
+    get: function(){ return R69_VAL.get.call(this).replace(/[\s\u00a0\u202f]/g, ''); },
+    set: function(v){ var f = r69Fmt(v == null ? '' : v); R69_VAL.set.call(this, f == null ? String(v == null ? '' : v) : f); if(this.classList.contains('money-input')) this.dataset.raw = String(v == null ? '' : v).replace(/[^0-9]/g, ''); }});
+  var f = r69Fmt(R69_VAL.get.call(inp)); if(f != null) R69_VAL.set.call(inp, f);
+  if(inp.classList.contains('money-input')) inp.dataset.raw = R69_VAL.get.call(inp).replace(/[^0-9]/g, '');
+}
+function r69Live(inp){
+  var v = R69_VAL.get.call(inp), pos = inp.selectionStart == null ? v.length : inp.selectionStart;
+  var clean = v.replace(/[^\d\s\u00a0,.]/g, ''), dig = v.slice(0, pos).replace(/[^\d,.]/g, '').length;
+  var f = r69Fmt(clean); if(f == null) f = clean;
+  if(inp.classList.contains('money-input')) inp.dataset.raw = f.replace(/[^0-9]/g, '');
+  if(f === v) return;
+  R69_VAL.set.call(inp, f);
+  var p = 0, seen = 0; while(p < f.length && seen < dig){ if(/[\d,.]/.test(f[p])) seen++; p++; }
+  try{ inp.setSelectionRange(p, p); }catch(e){}
+}
+document.addEventListener('focusin', function(ev){ var t = ev.target; if(r69IsMoney(t)) r69Install(t); else if(t && t.tagName === 'INPUT' && t._r69m == null) t._r69m = 0; }, true);
+document.addEventListener('input', function(ev){ var t = ev.target; if(t && t._r69m === 1) r69Live(t); }, true);
 function setupMoneyInputs(){
-  document.querySelectorAll('.money-input').forEach(function(inp){
-    if(inp._moneySetup) return;
-    inp._moneySetup = true;
-    var fmt = function(){
-      var raw = this.value.replace(/[^0-9]/g,'');
-      this.dataset.raw = raw;
-      if(raw){
-        this.value = parseInt(raw).toLocaleString('ru-RU').replace(/,/g,' ');
-      }
-    };
-    inp.addEventListener('input', fmt);
-    inp.addEventListener('blur', fmt);
-  });
+  document.querySelectorAll('.money-input').forEach(r69Install);
 }
 function getMoneyValue(id){
   var el = document.getElementById(id);
@@ -12765,7 +12815,7 @@ function openAddResTaskModal(){
   });
   if(!residents.length){ showToast('Нет резидентов'); return; }
   var sel = document.getElementById('resTaskResident');
-  if(sel) sel.innerHTML = residents.map(function(r){ return '<option value="'+r.name+'">'+r.name+'</option>'; }).join('');
+  if(sel) sel.innerHTML = resOptionsHTML(residents);
   var ta = document.getElementById('resTaskText');
   if(ta) ta.value = '';
   openModal('addResTaskModal');
@@ -13055,6 +13105,7 @@ function renderRules(){
         'Встреча с обоими основателями: диагностика, стратегия, задачи',
         'Приходите с цифрами и подготовленными вопросами',
         'Отмена позже чем за 24 часа. встреча сгорает',
+        'Не пришли на встречу, не предупредив. штраф 50 000 ₸',
         'Опоздание больше 15 минут. штраф 10 000 ₸'
       ]
     },
