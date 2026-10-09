@@ -88,9 +88,11 @@
       var q = new URLSearchParams({action: 'getBotCache'});
       if(u && u.id) q.set('chatId', u.id);
       var et = ls('bs_cache_et'); if(et) q.set('_et', et);
+      // R70: initData заголовком X-Tg-Init, не в адресе; url с _tg только для сверки с appGet
+      var bare = API + 'call?' + q.toString();
       q.set('_tg', init);
       var url = API + 'call?' + q.toString();
-      window.__bsPre = {at: Date.now(), url: url, p: fetch(url).catch(function(){ return null; })};
+      window.__bsPre = {at: Date.now(), url: url, p: fetch(bare, {headers: {'X-Tg-Init': init}}).catch(function(){ return null; })};
     }
   }catch(e){}
   var cur = null; try{ cur = JSON.parse(ls('bs_ver') || 'null'); }catch(e){}

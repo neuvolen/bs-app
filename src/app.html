@@ -4715,6 +4715,31 @@
 // Сервер платформы: единственный источник данных (R32c, таблица отключена). Он проверяет
 // по подписи Telegram, кто открыл приложение, и держит готовые данные, чтобы экран открывался сразу
 const APP_SERVER = 'https://bs-platform-production.up.railway.app/api/v1/app/';
+// R70: данные входа Telegram (initData) уходят на сервер заголовком X-Tg-Init, а не в адресе:
+// адреса попадают в журналы запросов. Все запросы к серверу приложения идут через fetch,
+// поэтому _tg переносится из адреса в заголовок здесь, в одном месте
+(function(){
+  if(!window.fetch || window.__bsTgHdr) return;
+  window.__bsTgHdr = true;
+  var orig = window.fetch.bind(window);
+  window.fetch = function(input, init){
+    try{
+      // keepalive (отправка при закрытии) остаётся без заголовка: такой запрос не ждёт предварительной проверки CORS
+      if(typeof input === 'string' && input.indexOf(APP_SERVER) === 0 && input.indexOf('_tg=') > 0 && !(init && init.keepalive) && typeof URL !== 'undefined' && typeof Headers !== 'undefined'){
+        var u = new URL(input), tg = u.searchParams.get('_tg');
+        if(tg){
+          u.searchParams.delete('_tg');
+          init = Object.assign({}, init || {});
+          var h = new Headers(init.headers || {});
+          h.set('X-Tg-Init', tg);
+          init.headers = h;
+          input = u.toString();
+        }
+      }
+    }catch(e){}
+    return orig(input, init);
+  };
+})();
 // ══════════ R15: ЗАПИСЬ НА ЭКСПРЕСС-РАЗБОР ══════════
 // GET slots → окна; POST book → запись; POST book/cancel → отмена. Время окон всегда по Алматы (+05:00)
 var V15_WD = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
@@ -5231,6 +5256,9 @@ async function appGet(params){
   // метку не поняли: тот же запрос без неё
   if(et){ bsSaveCacheEt(''); return appGet(params); }
   if(r.status === 401 || r.status === 400) console.warn('app server refused', r.status);
+  // R70: подпись Telegram устарела (приложение открыто больше недели): фоновое обновление
+  // останавливается, а не стучится в сервер раз в минуту; один раз просим открыть заново
+  if(r.status === 401 && isRead) bsAuthDead();
   // Чтение без ответа: приложение остаётся на своей копии данных
   if(isRead) throw new Error('server ' + r.status);
   var j = null; try{ j = await r.json(); }catch(e){}
@@ -6054,21 +6082,26 @@ function v9backToAdmin(e){
 let _lastDataLoad = 0;
 let _autoRefreshTimer = null;
 
+function bsAuthDead(){
+  if(window._bsAuthDead) return;
+  window._bsAuthDead = true;
+  try{ showToast('Сессия Telegram устарела: закройте приложение и откройте его снова из бота'); }catch(e){}
+}
 function setupAutoRefresh(){
   // 1) Возврат в приложение (свернул/развернул, переключил вкладку) → обновляем если данные старше 10 сек
   document.addEventListener('visibilitychange', function(){
-    if(document.visibilityState === 'visible' && Date.now() - _lastDataLoad > 10000){
+    if(document.visibilityState === 'visible' && Date.now() - _lastDataLoad > 10000 && !window._bsAuthDead){
       loadAllData();
     }
   });
   window.addEventListener('focus', function(){
-    if(Date.now() - _lastDataLoad > 10000) loadAllData();
+    if(Date.now() - _lastDataLoad > 10000 && !window._bsAuthDead) loadAllData();
   });
   
   // 2) Периодическое обновление каждые 30 секунд пока приложение открыто
   if(_autoRefreshTimer) clearInterval(_autoRefreshTimer);
   _autoRefreshTimer = setInterval(function(){
-    if(document.visibilityState === 'visible') loadAllData();
+    if(document.visibilityState === 'visible' && !window._bsAuthDead) loadAllData();
   }, 60000);
   
   // 3) Свайп вниз на верху страницы = принудительное обновление
