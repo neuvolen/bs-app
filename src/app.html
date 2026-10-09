@@ -9563,6 +9563,23 @@ function v3feed(r){
   }).join('') + '</div>';
 }
 
+// R70: «Добавь возможность переключаться в один клик у резидентов-партнёров»: партнёр из карточки
+// резидента (одна компания), кнопка открывает его карточку (команде) или профиль (резиденту)
+var v70sw = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-2px"><path d="M7 4L3 8l4 4"/><path d="M3 8h14"/><path d="M17 20l4-4-4-4"/><path d="M21 16H7"/></svg>';
+function v70partnerOf(r){
+  var list = (cache && cache.residents) || [];
+  var p = String((r && r.partner) || '').trim();
+  if(!p && r) { var back = list.filter(function(x){ return x && String(x.partner || '').trim() === r.name; })[0]; if(back) p = back.name; }
+  if(!p || (r && p === r.name)) return '';
+  return p;
+}
+function v70partner(name){
+  var list = (cache && cache.residents) || [];
+  var p = list.filter(function(x){ return x && x.name === name; })[0];
+  if(!p){ showToast('Партнёр «' + name + '» не найден'); return; }
+  if(isRealAdmin && viewAs === 'admin'){ openResidentProfile(p); return; }
+  if(typeof showResidentDetail === 'function') showResidentDetail(name);
+}
 function openResidentProfile(r0){
   var r = Object.assign({}, v3prof(r0) || {}, r0);
   var adm = isRealAdmin && viewAs === 'admin';
@@ -9575,7 +9592,8 @@ function openResidentProfile(r0){
   } else {
     sub = r.niche || (team ? 'Команда Business Surgery' : 'Резидент Business Surgery');
   }
-  var h = '<div class="v3-card-head">' + v3av(r, 60, true) + '<div style="min-width:0"><div class="v3-name">' + v2esc(r.name) + '</div><div class="v3-sub" style="margin-top:3px">' + v2esc(sub) + '</div></div></div>';
+  var h = '<div class="v3-card-head">' + v3av(r, 60, true) + '<div style="min-width:0"><div class="v3-name">' + v2esc(r.name) + '</div><div class="v3-sub" style="margin-top:3px">' + v2esc(sub) + '</div>' +
+    (v70partnerOf(r) ? '<button class="v3-btn" style="margin-top:8px;display:inline-flex;align-items:center;gap:6px" onclick="v70partner(' + v2esc(JSON.stringify(v70partnerOf(r))) + ')" aria-label="Переключиться на партнёра">' + v70sw + v2esc(v70partnerOf(r)) + '</button>' : '') + '</div></div>';
   if(adm && !team){
     h += '<div class="v3-acts">' +
       '<button class="on" onclick="v3payFor()">' + navIcon('plus', 20) + 'Оплата</button>' +
@@ -11143,7 +11161,7 @@ function renderMyStatus(){
       '<div class="v3-cap" style="font-size:12px;margin-top:2px">' + (onl ? 'Онлайн · Google Meet' : 'Офлайн · ' + v2esc(next.link || 'место уточняется')) + '</div></div>' +
       (onl ? '<a href="' + v2esc(next.link) + '" target="_blank" class="v3-btn w" style="text-decoration:none">Meet</a>' : '') + '</div>';
   }
-  if(me.partner) h += '<div class="v2-card v3-text" style="margin-top:10px;color:#9A9A9A">Партнёр: <b style="color:#fff">' + v2esc(me.partner) + '</b> · одна встреча на двоих</div>';
+  if(me.partner) h += '<div class="v2-card v3-text v70-prt" style="margin-top:10px;color:#9A9A9A;cursor:pointer" role="button" tabindex="0" onclick="v70partner(' + v2esc(JSON.stringify(me.partner)) + ')">' + v70sw + ' Партнёр: <b style="color:#fff">' + v2esc(me.partner) + '</b> · одна встреча на двоих <span style="float:right;color:#fff">›</span></div>';
   h += '<div class="v2-h">Ещё</div><div class="v2-card">' +
     v3row('me', 'Мои данные', 'Ниша, о себе, контакты', "showPage('myprofile')") +
     v3row('club', 'Пригласить предпринимателя', '100\u00a0000 ₸ за приглашённого резидента', "showPage('referral')") +
@@ -11656,8 +11674,6 @@ function v51paint(){
   var b = document.getElementById('v51Box'); if(!b) return;
   var d = window._v51.d; if(!d){ b.innerHTML = ''; return; }
   var r = d.renew || {}, p = r.pending, m = v15nb;
-  var mode = [['anon', 'Анонимно'], ['name', 'С именем'], ['no', 'Нельзя']].map(function(x){
-    return '<button class="v3-btn" style="' + (d.consent === x[0] ? 'background:#fff;color:#000' : '') + '" onclick="v51consent(\'' + x[0] + '\')">' + x[1] + '</button>'; }).join('');
   var h = '<div class="v2-h">Продление резидентства</div><div class="v2-card" style="padding:14px">' +
     '<div class="v3-sub">' + (r.packEnd ? 'Пакет до ' + v2esc(r.packEnd) + (r.daysLeft >= 0 ? ' (осталось ' + r.daysLeft + ' дн.)' : '') + '. ' : '') + 'Пакет продлится сам после оплаты.</div>' +
     (p ? '<div style="margin-top:10px;font-weight:800;color:#F5A524">Ожидает оплату продления: ' + (p.months == 12 ? 'год' : '3 месяца') + ', ' + m(p.amount) + ' ₸</div>' +
@@ -11668,8 +11684,7 @@ function v51paint(){
   h += '<div class="v2-h">Итоги периодов</div><div class="v2-card" style="padding:14px">' + (reps.length ? reps.map(function(x){
     return '<div class="v2-row" style="padding:6px 0"><div class="m"><b>' + (x.months == 12 ? 'Итог года' : 'Итог 3 месяцев') + '</b><span>' + v2esc(x.from) + ' - ' + v2esc(x.to) + '</span></div><button class="v3-btn" onclick="v51send(\'' + v2esc(x.id) + '\')">PDF в чат</button></div>'; }).join('')
     : '<div class="v3-sub">Итог появится в конце каждых 3 месяцев и в годовщину.</div>') + '</div>';
-  h += '<div class="v2-h">Мои результаты в кейсах клуба</div><div class="v2-card" style="padding:14px"><div class="v3-sub">Можно ли показывать ваши цифры «было → стало» в кейсах клуба? Анонимно: только ниша, город и цифры.</div>' +
-    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px" id="v51Mode">' + mode + '</div></div>';
+  // R70: согласие на кейсы у резидента с момента вступления: выбора «анонимно / с именем / нельзя» больше нет
   b.innerHTML = h;
 }
 function v51consent(mode){
