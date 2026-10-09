@@ -4492,6 +4492,9 @@
   .v15-empty .bt { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
   .v15-sk { border-radius: 14px; background: linear-gradient(90deg, #0E0E0E 0, #171717 50%, #0E0E0E 100%); background-size: 200% 100%; animation: v15sh 1.2s linear infinite; }
   @keyframes v15sh { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+  /* R67: кнопка, к которой привела ссылка из уведомления */
+  .v67-hl { border-color: #4CAF50 !important; background: rgba(76,175,80,.16) !important; color: #8BE08F !important; box-shadow: 0 0 0 2px rgba(76,175,80,.55); animation: v67p 1.2s ease-in-out 4; }
+  @keyframes v67p { 50% { box-shadow: 0 0 0 7px rgba(76,175,80,.12); } }
   /* Подтверждение записи */
   .v15-ok { margin-top: 16px; background: #FFFFFF; color: #000; border-radius: 22px; padding: 20px 18px 18px; animation: v13in .35s ease; }
   .v15-ok .st { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
@@ -5637,6 +5640,20 @@ function init(){
     
     function _resolveInitialPage(rawPage, role){
       if(!rawPage) return null;
+      // R67: уведомление бота ведёт прямо во встречу: meet_ГГГГММДД_ЧЧММ (&r=Имя), кнопка «Встреча прошла» подсвечена
+      var mtm = /^meet_(\d{4})(\d{2})(\d{2})(?:_(\d{2})(\d{2}))?$/i.exec(String(rawPage));
+      if(mtm){
+        var rq = ''; try{ rq = new URLSearchParams(window.location.search).get('r') || ''; }catch(e){}
+        window._v67meet = {date: mtm[3] + '.' + mtm[2] + '.' + mtm[1], time: mtm[4] ? mtm[4] + ':' + mtm[5] : '', res: rq};
+        return role === 'admin' ? 'schedule' : (role === 'lead' ? 'about' : 'mymeetings');
+      }
+      // R67: «Записать оплату» из уведомления: сразу «Приход» с этим резидентом
+      if(String(rawPage).toLowerCase() === 'pay'){
+        if(role !== 'admin') return null;
+        var rp = ''; try{ rp = new URLSearchParams(window.location.search).get('r') || ''; }catch(e){}
+        window._v67pay = {res: rp};
+        return 'dashboard';
+      }
       // #guide_g012 и start_param guide_g012: каталог, затем ридер гайда
       var gdm = /^(?:guides?|g)[_-](g?\d{1,3})$/i.exec(String(rawPage));
       if(gdm && v14normId(gdm[1])){ window._gdDeep = v14normId(gdm[1]); return 'guides'; }
@@ -5661,6 +5678,7 @@ function init(){
     if (resolvedPage) {
       console.log('Deep-link', initialPage, '→', resolvedPage, '(role:', effectiveRole, ')');
       v11openDeep(resolvedPage);
+      if(window._v67meet || window._v67pay) v67deepAfter(0);
     } else {
       // Стартовая по умолчанию для каждой роли
       if (effectiveRole === 'admin') {
@@ -9586,6 +9604,49 @@ function showResidentDetail(name){
   document.getElementById('detailView').classList.add('show');
 }
 
+// R67: глубокая ссылка из уведомления: ждём данные (кеш или пакет), открываем встречу и подсвечиваем «Встреча прошла»
+function v67sameDay(a, b){
+  var x = String(a || '').split('.'), y = String(b || '').split('.');
+  return x.length >= 2 && y.length >= 2 && Number(x[0]) === Number(y[0]) && Number(x[1]) === Number(y[1]);
+}
+function v67hhmm(t){ var m = /(\d{1,2}):(\d{2})/.exec(String(t || '')); return m ? ('0' + m[1]).slice(-2) + ':' + m[2] : ''; }
+function v67findMeet(want){
+  var list = (cache.schedule || []).filter(function(e){ return v67sameDay(e.date, want.date); });
+  var nm = function(s){ return String(s || '').trim().toLowerCase().replace(/ё/g, 'е'); };
+  var hit = list.filter(function(e){ return (!want.res || nm(e.res) === nm(want.res)) && (!want.time || v67hhmm(e.time) === want.time); })[0];
+  if(!hit && want.res) hit = list.filter(function(e){ return nm(e.res) === nm(want.res); })[0];
+  if(!hit && !want.res && want.time) hit = list.filter(function(e){ return v67hhmm(e.time) === want.time; })[0];
+  return hit || null;
+}
+function v67deepAfter(n){
+  var have = cache && (cache.schedule || cache.residents);
+  if(!have && n < 40){ setTimeout(function(){ v67deepAfter(n + 1); }, 250); return; }
+  var pay = window._v67pay; window._v67pay = null;
+  if(pay && isRealAdmin && viewAs === 'admin'){
+    try{
+      openModal('payModal'); initPayModal();
+      var src = document.getElementById('paySource');
+      if(src){ for(var i = 0; i < src.options.length; i++){ if(/Трекинг/.test(src.options[i].value)){ src.selectedIndex = i; break; } } }
+      updatePayResidentVisibility();
+      var sel = document.getElementById('payResident');
+      if(sel && pay.res){ for(var j = 0; j < sel.options.length; j++){ if(sel.options[j].value === pay.res){ sel.selectedIndex = j; break; } } }
+      setTimeout(function(){ var a = document.getElementById('payAmount'); if(a) a.focus(); }, 300);
+    }catch(e){ console.log('deep pay', e); }
+  }
+  var want = window._v67meet; if(!want) return;
+  var ev = v67findMeet(want);
+  if(!ev && !(cache.schedule || []).length && n < 40){ setTimeout(function(){ v67deepAfter(n + 1); }, 250); return; }
+  window._v67meet = null;
+  // встречи уже нет в расписании (прошлый день): карточка по данным ссылки, кнопка та же
+  if(!ev) ev = {res: want.res || 'Офлайн день', date: want.date, time: want.time, link: ''};
+  try{ showMeetingDetail(ev); }catch(e){ console.log('deep meet', e); return; }
+  setTimeout(function(){
+    var box = document.getElementById('detailContent'); if(!box) return;
+    var b = [].slice.call(box.querySelectorAll('button')).filter(function(x){ return /Встреча прошла/.test(x.textContent); })[0];
+    if(b){ b.classList.add('v67-hl'); try{ b.scrollIntoView({block: 'center', behavior: 'smooth'}); }catch(e){} }
+  }, 120);
+}
+
 function showMeetingDetail(ev){
   const isOnline = ev.link && ev.link.includes('meet');
   const cd = countdownText(ev.date, ev.time);
@@ -11837,11 +11898,15 @@ function _optimisticPL(type, amount, isCash){
   try{
     var mp = window._monthlyPL; if(!mp || !mp.months) return;
     var m = mp.months[new Date().getMonth()]; if(!m) return;
+    var delta;
     if(type === 'income'){
       var fee = isCash ? 0 : Math.round(amount*0.04);
-      m.revenue += amount; m.expenses += fee; m.profit += amount - fee;
-    } else { m.expenses += amount; m.profit -= amount; }
+      m.revenue += amount; m.expenses += fee; m.profit += amount - fee; delta = amount - fee;
+    } else { m.expenses += amount; m.profit -= amount; delta = -amount; }
     m.hasData = true;
+    // R67: «На кассе» тоже сдвигается сразу (сервер пересчитает из ДДС при следующей загрузке)
+    if(m.kassa != null) m.kassa += delta;
+    if(mp.kassa != null) mp.kassa += delta;
   }catch(e){}
 }
 function submitPayment(){
