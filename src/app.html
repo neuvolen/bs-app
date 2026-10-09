@@ -5178,8 +5178,8 @@ function v20note(){ return '<div class="v20-note">' + v20ico(14, 2.2) + 'Удо�
 function v20platCard(role){
   try{ if(navRole() === 'lead') return ''; }catch(e){}
   var what = role === 'admin'
-    ? 'Разборы и доски резидентов, задачи, отчёты, заявки и финансы клуба. Вход через Telegram.'
-    : 'Ваши разборы, задачи, отчёты и прогресс в одном месте. Вход через Telegram.';
+    ? 'Разборы и доски резидентов, задачи, отчёты, заявки и финансы клуба. Вход через Telegram; резиденту без Telegram: личная ссылка из его карточки.'
+    : 'Ваши разборы, задачи, отчёты и прогресс в одном месте. Вход через Telegram. Помощнику можно дать свой вход: Профиль → «Доступ для ассистента».';
   return '<div class="v2-card v20-plat" id="v20plat"><div class="hd"><div class="ic">' + v20ico(20) + '</div>' +
     '<div class="m"><div class="k">ВЕБ-ВЕРСИЯ</div><div class="t">Платформа BS</div></div></div>' +
     '<div class="s">' + what + '</div>' + v20note() +
