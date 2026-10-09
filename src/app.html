@@ -3890,6 +3890,14 @@
   .v10-c { position: relative; height: 26px; border-radius: 5px; background: #121212; border: 1px solid #1C1C1C; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .v10-c.f { border-color: transparent; }
   .v10-c.bs { background: #000; border: 1px solid #FFFFFF; color: #FFFFFF; font-size: 9px; font-weight: 800; letter-spacing: 0.5px; display: flex; align-items: center; justify-content: center; }
+  .v10-c.g { background: repeating-linear-gradient(135deg, rgba(66,133,244,.32) 0 5px, rgba(66,133,244,.14) 5px 10px); border-color: rgba(66,133,244,.35); }
+  .v10-gc { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(66,133,244,.35); background: rgba(66,133,244,.07); font-size: 12px; color: #BDBDBD; line-height: 1.4; }
+  .v10-gc b { color: #FFFFFF; }
+  .v10-gc .t { flex: 1 1 100%; }
+  .v10-gc button { flex: 1; min-width: 0; height: 34px; border-radius: 10px; border: 1px solid #2A2A2A; background: #141414; color: #FFFFFF; font: 700 12px inherit; font-family: inherit; }
+  .v10-gc button.p { background: #FFFFFF; color: #000; border-color: #FFFFFF; }
+  .v10-gc button[disabled] { opacity: .45; }
+  .v10-gc .e { flex: 1 1 100%; color: #FF6B6F; }
   .v10-c s { position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; border-radius: 3px; background: #000; box-shadow: 0 0 0 1.5px #FFFFFF; text-decoration: none; }
   .v10-day { padding: 8px 10px; margin-top: 10px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   .v10-dr { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; align-items: center; padding: 2px 0; }
@@ -7255,6 +7263,7 @@ function v10calLoad(force){
       var v = v10parse(j.value);
       S.ops.forEach(function(op){ v10apply(v, op); });
       S.value = v; S.version = Number(j.version) || 0; S.error = null;
+      if(j.gcal) S.g = {gcal: j.gcal, gev: j.gev || []};
       v10calStore();
       (S.pv || []).forEach(function(op){ v10apply(S.value, op); });
       if(S.ops.length && !v10preview()) v10calSave();
@@ -7453,7 +7462,7 @@ function v10dayStat(S, meets, dk){
   return o;
 }
 function v10gridHTML(S, days, meets, due, today){
-  var n = days.length;
+  var n = days.length, gm = v10gMap(S);
   var h = '<div class="v2-card v10-grid' + (n > 7 ? ' ten' : '') + '" style="grid-template-columns:' + (n > 7 ? '26px' : '30px') + ' repeat(' + n + ',minmax(0,1fr))"><div class="v10-hd"></div>' + days.map(function(d){
     var dk = v10dk(d), c = (due[dk] || []).length, open = (due[dk] || []).filter(function(it){ return !it.done; }).length;
     return '<div class="v10-hd' + (dk === today ? ' today' : '') + '" onclick="v10calOpenDay(\'' + dk + '\')"><span>' + V10_WD[(d.getDay() + 6) % 7] + '</span><b>' + d.getDate() + '</b>' +
@@ -7465,7 +7474,7 @@ function v10gridHTML(S, days, meets, due, today){
       var k = v10dk(d) + '|' + hr, t = S.value.slots[k], ev = meets[k], note = S.value.notes[k];
       if(ev){ h += '<div class="v10-c bs"' + v10cellAttrs(k) + '>BS</div>'; return; }
       var T = t && V10_T[t];
-      h += '<div class="v10-c' + (T ? ' f' : '') + '"' + (T ? ' style="background:' + T[2] + ';color:' + T[3] + '"' : '') + v10cellAttrs(k) + '>' + (note ? '<s></s>' : '') + '</div>';
+      h += '<div class="v10-c' + (T ? ' f' : (gm[k] ? ' g' : '')) + '"' + (T ? ' style="background:' + T[2] + ';color:' + T[3] + '"' : '') + v10cellAttrs(k) + '>' + (note ? '<s></s>' : '') + '</div>';
     });
   }
   return h + '</div>';
@@ -7507,6 +7516,8 @@ function v10calInner(me){
     : (view === 'month' ? V10_MN[a.getMonth()] + ' ' + a.getFullYear()
     : a.getDate() + (a.getMonth() !== z.getMonth() ? ' ' + V10_MS[a.getMonth()] : '') + ' – ' + z.getDate() + ' ' + V10_MS[z.getMonth()]);
   var h = '<div class="v10-st' + (S.error && S.ops.length ? ' red' : '') + '" id="v10calSt">' + v2esc(v10calStatusText()) + '</div>';
+  h += v10gBar(S);
+  var gm = v10gMap(S);
   h += '<div class="v3-seg v10-vseg">' + [['day', 'День'], ['week', 'Неделя'], ['ten', '10 дней'], ['month', 'Месяц']].map(function(x){
     return '<button class="' + (view === x[0] ? 'on' : '') + '" onclick="v10calView(\'' + x[0] + '\')">' + x[1] + '</button>';
   }).join('') + '</div>';
@@ -7530,8 +7541,9 @@ function v10calInner(me){
       var T2 = t2 && V10_T[t2];
       h += '<div class="v10-dr"><div class="v10-hr">' + String(hd).padStart(2, '0') + ':00</div>';
       if(ev2) h += '<div class="v10-c bs"' + v10cellAttrs(k2) + '><b>BS</b><span>' + (v3isOnline(ev2) ? 'Онлайн-трекинг' : 'Офлайн-встреча') + ' · ' + v2esc(ev2.time || '') + '</span></div>';
-      else h += '<div class="v10-c' + (T2 ? ' f' : '') + '"' + (T2 ? ' style="background:' + T2[2] + ';color:' + T2[3] + '"' : '') + v10cellAttrs(k2) + '>' +
-        (T2 ? '<b>' + T2[1] + '</b>' : '') + (note2 ? '<span>' + v2esc(note2) + '</span>' : '') + '</div>';
+      else h += '<div class="v10-c' + (T2 ? ' f' : (gm[k2] ? ' g' : '')) + '"' + (T2 ? ' style="background:' + T2[2] + ';color:' + T2[3] + '"' : '') + v10cellAttrs(k2) + '>' +
+        (T2 ? '<b>' + T2[1] + '</b>' : '') + (note2 ? '<span>' + v2esc(note2) + '</span>' : '') +
+        (!T2 && gm[k2] ? '<span>Google · ' + v2esc(gm[k2].map(function(e){ return (e.a ? e.a + '–' + e.b + ' ' : '') + e.t; }).join('; ')) + '</span>' : '') + '</div>';
       h += '</div>';
     }
     h += '</div>';
@@ -7546,10 +7558,71 @@ function v10calInner(me){
     h += '<div class="v10-legend">' + V10_TYPES.map(function(t){ return '<span><i class="sq" style="background:' + t[2] + '"></i>' + t[1] + '</span>'; }).join('') + '<span><i class="bs">BS</i>встреча</span></div>';
     h += '<div class="v3-cap" style="margin:8px 4px 0;line-height:1.45">Полоски показывают часы по типам. Нажмите на день, чтобы расписать его по часам.</div>';
   } else {
-    h += '<div class="v10-legend"><span><i class="bs">BS</i>встреча клуба</span><span><i class="dot"></i>срок задачи</span><span><i class="nt"></i>заметка</span></div>';
+    h += '<div class="v10-legend"><span><i class="bs">BS</i>встреча клуба</span><span><i class="dot"></i>срок задачи</span><span><i class="nt"></i>заметка</span>' + (gm.__n ? '<span><i class="sq" style="background:rgba(66,133,244,.55)"></i>Google</span>' : '') + '</div>';
     h += '<div class="v3-cap" style="margin:8px 4px 0;line-height:1.45">Выберите тип и нажмите на час, повторное нажатие снимает. Долгое нажатие добавляет заметку. Всё сразу видно на платформе в «Мой календарь».</div>';
   }
   return h;
+}
+// ═══ Google Календарь резидента: кнопка, статус, события Google на сетке ═══
+function v10gMap(S){
+  var o = {__n: 0};
+  ((S && S.g && S.g.gev) || []).forEach(function(e){
+    if(e.ad) return;
+    for(var h = e.h0; h < e.h1; h++){ (o[e.d + '|' + h] = o[e.d + '|' + h] || []).push(e); o.__n++; }
+  });
+  return o;
+}
+function v10gBar(S){
+  var G = S && S.g && S.g.gcal; if(!G) return '';
+  var st = G.status || {};
+  if(v10preview() || !G.owner) return st.connected ? '<div class="v10-gc"><div class="t">Google Календарь резидента подключён: его занятость видна синим.</div></div>' : '';
+  if(!st.available) return '<div class="v10-gc"><div class="t">' + v2esc(st.hint || 'Подключение станет доступно после настройки Google в /calendar') + '</div><button disabled>Подключить Google Календарь</button></div>';
+  if(!st.connected) return '<div class="v10-gc"><div class="t">Отметки уйдут в ваш Google Календарь без напоминаний, а ваши события Google появятся здесь.</div><button class="p" onclick="v10gConnect()">Подключить Google Календарь</button></div>';
+  return '<div class="v10-gc"><div class="t">Google Календарь: <b>' + v2esc(st.email || 'подключён') + '</b><br>Отметки в «' + v2esc(st.writeName || '') + '»</div>' +
+    (st.need ? '<button class="p" onclick="v10gConnect()">Переподключить</button>' : '<button onclick="v10gSync()">Обновить</button>') +
+    '<button onclick="v10gSettings()">Календари</button><button onclick="v10gOff()">Отключить</button>' +
+    (st.error ? '<div class="e">' + v2esc(st.error) + '</div>' : '') + '</div>';
+}
+function v10gPost(path, body){
+  return fetch(APP_SERVER + path + '?' + v10q(), {method: 'POST', headers: {'Content-Type': 'application/json'}, body: body ? JSON.stringify(body) : '{}'})
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ j.__st = r.status; return j; }); });
+}
+function v10gConnect(){
+  v10gPost('gcal/connect').then(function(j){
+    if(j.url){ try{ if(tg && tg.openLink){ tg.openLink(j.url); return; } }catch(e){} window.open(j.url, '_blank'); return; }
+    showToast(j.detail || 'Не получилось открыть Google');
+  }, function(){ showToast('Нет связи с платформой'); });
+}
+function v10gSync(){
+  showToast('Обновляем из Google...');
+  v10gPost('gcal/sync').then(function(j){ showToast(j.ok ? 'Синхронизировано с Google' : (j.detail || 'Не получилось')); v10calLoad(true); }, function(){ showToast('Нет связи с платформой'); });
+}
+function v10gOff(){
+  if(!confirm('Отключить Google Календарь? Доступ будет отозван, события в Google останутся.')) return;
+  v10gPost('gcal/disconnect').then(function(){ showToast('Google Календарь отключён'); v10calLoad(true); }, function(){ showToast('Нет связи с платформой'); });
+}
+function v10gSettings(){
+  if(document.querySelector('.add-menu-overlay')) return;
+  var m = document.createElement('div');
+  m.className = 'add-menu-overlay show';
+  m.onclick = function(e){ if(e.target === m) m.remove(); };
+  m.innerHTML = '<div class="add-menu"><div class="add-menu-title" style="text-align:left">Google Календарь</div><div class="v3-cap" id="v10gcS">Загружаем календари...</div></div>';
+  document.body.appendChild(m);
+  fetch(APP_SERVER + 'gcal?calendars=1&' + v10q()).then(function(r){ return r.json(); }).then(function(j){
+    var st = (j && j.status) || {}, cals = (j && j.calendars) || [];
+    var opt = function(sel, list){ return list.map(function(c){ return '<option value="' + v2esc(c.id) + '"' + (c.id === sel || (sel === 'primary' && c.primary) ? ' selected' : '') + '>' + v2esc(c.name) + '</option>'; }).join(''); };
+    var wl = [{id: 'bs', name: 'BS · Календарь работы (отдельный)'}].concat(cals.filter(function(c){ return c.writable && !c.ours; }));
+    m.querySelector('.add-menu').innerHTML = '<div class="add-menu-title" style="text-align:left">Google Календарь</div>' +
+      '<div class="v3-cap" style="margin:6px 0">Показывать события из</div><select id="v10gR" class="field-input" style="width:100%">' + opt(st.read, cals) + '</select>' +
+      '<div class="v3-cap" style="margin:12px 0 6px">Записывать отметки в</div><select id="v10gW" class="field-input" style="width:100%">' + opt(st.own ? 'bs' : st.write, wl) + '</select>' +
+      '<div class="v3-cap" style="margin:10px 0;line-height:1.45">Без напоминаний и писем. Правки в Google возвращаются сюда, при правке с двух сторон остаётся последняя.</div>' +
+      '<button class="v3-primary" data-s="1">Сохранить</button>';
+    m.querySelector('[data-s]').onclick = function(){
+      v10gPost('gcal/settings', {read: m.querySelector('#v10gR').value, write: m.querySelector('#v10gW').value}).then(function(x){
+        if(x.ok){ m.remove(); showToast('Сохранено'); v10calLoad(true); } else showToast(x.detail || 'Не сохранилось');
+      }, function(){ showToast('Нет связи с платформой'); });
+    };
+  }, function(){ var e = m.querySelector('#v10gcS'); if(e) e.textContent = 'Нет связи с платформой'; });
 }
 function v10calHTML(me){
   v10calState();
