@@ -5233,8 +5233,56 @@ function bsCacheEt(){ try{ return localStorage.getItem('bs_cache_et') || ''; }ca
 function bsSaveCacheEt(et){ try{ if(et) localStorage.setItem('bs_cache_et', et); else localStorage.removeItem('bs_cache_et'); }catch(e){} }
 function bsCachedBundle(){ try{ var c = JSON.parse(localStorage.getItem('bs_cache') || 'null'); return c && c.residents ? c : null; }catch(e){ return null; } }
 function bsSaveCache(et){
-  try{ localStorage.setItem('bs_cache', JSON.stringify(cache)); }catch(e){ et = ''; }
+  var ok = false; try{ ok = bsLsPut('bs_cache', JSON.stringify(cache), 2000000); }catch(e){}
+  if(!ok){ et = ''; try{ localStorage.removeItem('bs_cache'); }catch(e){} }
   bsSaveCacheEt(et || '');
+}
+// ══ Память телефона: localStorage около 5 МБ на приложение ══
+// Важное (очереди неотправленного: колесо, тесты, календарь; результаты диагностики) не должно падать
+// из-за кешей. Кеши (чек-листы, база знаний, библиотека, файлы приложения без Cache Storage, копия данных)
+// уступают место в этом порядке и не хранятся крупнее разумного. Всего держим не больше BS_LS_BUDGET
+var BS_LS_CACHE = [/^bs_guide_(?!lru$)/, /^bs_kb_cache$/, /^bs_lib$/, /^bs_guides$/, /^bs_f:/, /^bs_cache$/];
+var BS_LS_BUDGET = 1500000;   // символов, около 3 МБ
+function bsLsSize(){
+  var t = 0, a = [];
+  try{ for(var i = 0; i < localStorage.length; i++){ var k = localStorage.key(i), v = localStorage.getItem(k) || ''; t += k.length + v.length; a.push({k: k, n: k.length + v.length}); } }catch(e){}
+  return {t: t, a: a};
+}
+function bsLsFree(need, except){
+  var a = bsLsSize().a, freed = 0;
+  for(var g = 0; g < BS_LS_CACHE.length && freed < need; g++){
+    a.filter(function(x){ return x.k !== except && BS_LS_CACHE[g].test(x.k); }).sort(function(x, y){ return y.n - x.n; }).forEach(function(x){
+      if(freed >= need) return;
+      try{ localStorage.removeItem(x.k); freed += x.n; }catch(e){}
+    });
+  }
+  try{ if(freed && !localStorage.getItem('bs_cache')) localStorage.removeItem('bs_cache_et'); }catch(e){}
+  return freed;
+}
+// Запись с местом: не влезло, освобождаем кеши и пробуем ещё раз. cap: кеш крупнее не храним
+function bsLsPut(k, v, cap){
+  v = String(v);
+  if(cap && v.length > cap){ try{ localStorage.removeItem(k); }catch(e){} return false; }
+  try{ localStorage.setItem(k, v); return true; }catch(e){}
+  bsLsFree(v.length + 65536, k);
+  try{ localStorage.setItem(k, v); return true; }catch(e){ return false; }
+}
+// При запуске: файлы прошлых версий приложения, чек-листы вне списка последних и всё сверх бюджета
+function bsLsClean(){
+  try{
+    var B = (typeof BS_BUILD !== 'undefined' && BS_BUILD) || {};
+    var drop = [], lru = {};
+    try{ (JSON.parse(localStorage.getItem('bs_guide_lru') || '[]') || []).forEach(function(id){ lru['bs_guide_' + id] = 1; }); }catch(e){}
+    var keepF = {}; (B.mods || []).forEach(function(p){ keepF['bs_f:' + p] = 1; }); if(B.shell) keepF['bs_f:' + B.shell] = 1;
+    for(var i = 0; i < localStorage.length; i++){
+      var k = localStorage.key(i);
+      if(B.v && /^bs_f:/.test(k) && !keepF[k]) drop.push(k);
+      else if(/^bs_guide_(?!lru$)/.test(k) && !lru[k]) drop.push(k);
+    }
+    drop.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+    var t = bsLsSize().t;
+    if(t > BS_LS_BUDGET) bsLsFree(t - BS_LS_BUDGET * 0.8);
+  }catch(e){}
 }
 async function appPost(obj){
   var init = bsInitData();
@@ -6641,7 +6689,7 @@ function loadLibrary(force){
       var items = Array.isArray(j) ? j : ((j && j.items) || []);
       items = items.filter(function(x){ return x && String(x.title || '').trim(); });
       window._lib = {items: items, at: Date.now()};
-      try{ localStorage.setItem('bs_lib', JSON.stringify(items)); }catch(e){}
+      try{ bsLsPut('bs_lib', JSON.stringify(items), 1200000); }catch(e){}
       return window._lib;
     })
     .catch(function(e){
@@ -7015,7 +7063,7 @@ function v10axesObj(axes, values, map){
 
 // Очередь неотправленных тестов: повторяем при следующем открытии
 function v10queue(){ try{ var a = JSON.parse(localStorage.getItem('bs_tests_queue') || '[]'); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
-function v10queueSave(a){ try{ if(a.length) localStorage.setItem('bs_tests_queue', JSON.stringify(a.slice(-20))); else localStorage.removeItem('bs_tests_queue'); }catch(e){} }
+function v10queueSave(a){ try{ if(a.length) bsLsPut('bs_tests_queue', JSON.stringify(a.slice(-20))); else localStorage.removeItem('bs_tests_queue'); }catch(e){} }
 // 'ok' | 'drop' (сервер отказал навсегда) | 'retry'
 function v10sendTests(body){
   return fetch(APP_SERVER + 'mytests?' + v10q(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(body)})
@@ -7194,7 +7242,7 @@ function v10calState(){
 }
 function v10calStore(){
   var S = window._v10cal; if(!S) return;
-  try{ localStorage.setItem(S.key, JSON.stringify({value: S.value, version: S.version, ops: S.ops})); }catch(e){}
+  try{ bsLsPut(S.key, JSON.stringify({value: S.value, version: S.version, ops: S.ops})); }catch(e){}
 }
 function v10calLoad(force){
   var S = v10calState();
@@ -7524,6 +7572,7 @@ function v10calRefresh(){
     clearInterval(iv);
     if(!me) return;
     try{ v10flushTests(); }catch(e){}
+    try{ if(!v10preview()) wheelFlush(); }catch(e){}
     try{ if(navRole() === 'resident' && !v10preview()){ var S = v10calState(); if(S.ops.length) v10calLoad(true); } }catch(e){}
   }, 3000);
 })();
@@ -10793,6 +10842,47 @@ async function addNewBusiness(){
   showToast('Оцени зоны и нажми Сохранить');
 }
 
+// Колесо без связи (нет сети, приложение открыто сутки и вход устарел, сервер не ответил): замер не теряется.
+// Он лежит в очереди в телефоне (bs_wheel_queue) и уходит на сервер сам при следующем открытии.
+// «Сохранено» пишем только после ответа сервера
+var WHEEL_FATAL = ['Нет имени', 'Неверный тип', 'Нужно 8 значений', 'Нужно 7 значений'];
+function wheelFatal(r){ var e = String((r && r.error) || ''); return WHEEL_FATAL.some(function(x){ return e.indexOf(x) >= 0; }); }
+function wheelQueue(){ try{ var a = JSON.parse(localStorage.getItem('bs_wheel_queue') || '[]'); return Array.isArray(a) ? a : []; }catch(e){ return []; } }
+function wheelQueueSave(a){ if(a.length) bsLsPut('bs_wheel_queue', JSON.stringify(a.slice(-30))); else { try{ localStorage.removeItem('bs_wheel_queue'); }catch(e){} } }
+function wheelQueuePush(item){ var q = wheelQueue(); q.push(item); wheelQueueSave(q); }
+function wheelFlush(){
+  if(window._wheelFlushing || !bsInitData()) return Promise.resolve(0);
+  var q = wheelQueue(); if(!q.length) return Promise.resolve(0);
+  window._wheelFlushing = true;
+  var keep = [], sent = [];
+  return q.reduce(function(p, it){
+    return p.then(function(){
+      return callAction('saveWheel', {name: it.name, type: it.type, values: it.values, bizName: it.bizName || ''}).then(function(r){
+        if(r && r.ok) sent.push(it); else if(!wheelFatal(r)) keep.push(it);
+      }, function(){ keep.push(it); });
+    });
+  }, Promise.resolve()).then(function(){
+    // пока отправляли, мог добавиться новый замер
+    var now = wheelQueue().filter(function(x){ return !q.some(function(y){ return y.at === x.at; }); });
+    wheelQueueSave(keep.concat(now));
+    window._wheelFlushing = false;
+    if(!sent.length) return 0;
+    showToast(sent.length > 1 ? 'Замеры колеса отправлены на сервер' : 'Замер колеса отправлен на сервер');
+    var last = sent[sent.length - 1];
+    return callAction('getWheel', {name: last.name}).then(function(d){
+      if(d && !d.error){
+        _wheelData = d;
+        // тот же замер на платформу: тренер видит его на доске
+        sent.forEach(function(it){ window._wheelFormBiz = it.bizName || 'Основной'; window._v10lastForm = String(it.values).split(',').map(Number); try{ v10syncWheel(it.type); }catch(e){} });
+        try{ if(document.getElementById('wheelContent')) renderWheel(); }catch(e){}
+      }
+      return sent.length;
+    }, function(){ return sent.length; });
+  }, function(){ window._wheelFlushing = false; return 0; });
+}
+
+window.addEventListener('online', function(){ try{ wheelFlush(); }catch(e){} });
+
 let _wheelSaveInFlight = false;
 async function submitWheelForm(){
   if(_wheelSaveInFlight) return;
@@ -10816,8 +10906,23 @@ async function submitWheelForm(){
   window._v10lastForm = Array.from(inputs).map(inp => Number(inp.value));
 
   _wheelSaveInFlight = true;
+  const item = {name: me.name, type: type, values: values, bizName: (type==='dna' ? (window._wheelFormBiz || 'Основной') : ''), at: Date.now()};
   try{
-    const r = await callAction('saveWheel', {name: me.name, type: type, values: values, bizName: (type==='dna' ? (window._wheelFormBiz || 'Основной') : '')});
+    const r = await callAction('saveWheel', {name: item.name, type: item.type, values: item.values, bizName: item.bizName});
+    if(r && !r.ok && !wheelFatal(r)){
+      // Сервер не ответил: замер в очереди телефона, уйдёт сам. Форма идёт дальше, ответы не теряются
+      wheelQueuePush(item);
+      if(type === 'dna'){
+        _wheelFormType = 'life';
+        renderWheelForm();
+        showToast('Нет связи: ДНК в телефоне, отправим сами. Теперь личное');
+      } else {
+        closeModal('wheelModal');
+        showToast('Нет связи с сервером: замер в телефоне, отправим автоматически');
+        renderWheel();
+      }
+      return;
+    }
     if(r && r.ok){
       // Обновим кэш (чтобы Бизнес в life считался от свежего ДНК)
       _wheelData = await callAction('getWheel', {name: me.name});
@@ -10836,7 +10941,8 @@ async function submitWheelForm(){
       showToast('' + (r && r.error || 'Ошибка'));
     }
   }catch(e){
-    showToast('' + e.message);
+    wheelQueuePush(item);
+    showToast('Нет связи с сервером: замер в телефоне, отправим автоматически');
   }finally{
     setTimeout(() => { _wheelSaveInFlight = false; }, 1500);
   }
@@ -12102,6 +12208,7 @@ document.querySelectorAll('.modal-bg').forEach(m=>{
   m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('show'); });
 });
 
+try{ bsLsClean(); }catch(e){}
 init();
 
 function openAddMenu(){
@@ -12630,7 +12737,7 @@ function v30kbCol(K, id){ return (K.cols || []).filter(function(c){ return c.id 
 function v30kbDone(c){ return c.col === 'done' || !!c.done; }
 function v30kbLog(c, t){ if(!Array.isArray(c.log)) c.log = []; c.log.unshift({at: new Date().toISOString(), by: (user && user.first_name) || 'Команда', k: 'a', t: t}); if(c.log.length > 200) c.log.length = 200; }
 function v30kbId(){ return 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
-function v30kbCache(){ try{ localStorage.setItem('bs_kb_cache', JSON.stringify({value: V30KB.K, version: V30KB.ver})); }catch(e){} }
+function v30kbCache(){ try{ bsLsPut('bs_kb_cache', JSON.stringify({value: V30KB.K, version: V30KB.ver}), 1000000); }catch(e){} }
 function v30kbLoad(){
   V30KB.st = V30KB.K ? 'ok' : 'loading';
   return fetch(v30kbUrl()).then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); }).then(function(j){
@@ -14488,7 +14595,7 @@ function loadGuides(force){
       var d = v14norm(j), c = v14idxCached();
       if(!d.items.length && c) d = {items: c.items, version: c.version};
       else if(d.items.length && (!c || String(c.version || '') !== d.version || !d.version || c.items.length !== d.items.length)){
-        try{ localStorage.setItem('bs_guides', JSON.stringify({version: d.version, items: d.items, saved: Date.now()})); }catch(e){}
+        try{ bsLsPut('bs_guides', JSON.stringify({version: d.version, items: d.items, saved: Date.now()}), 800000); }catch(e){}
       }
       window._gd = {items: d.items, version: d.version, at: Date.now()};
       return window._gd;
