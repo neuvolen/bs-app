@@ -106,6 +106,9 @@
   ],
   "ideas": [
    "guides"
+  ],
+  "events": [
+   "extra"
   ]
  },
  "roles": {
@@ -514,6 +517,15 @@
   "r46aOpen": "guides",
   "r46aClose": "guides",
   "r46aAct": "guides",
-  "r46aLibTile": "guides"
+  "r46aLibTile": "guides",
+  "v78going": "extra",
+  "v78load": "extra",
+  "v78fit": "extra",
+  "v78day": "extra",
+  "v78gcal": "extra",
+  "v78ics": "extra",
+  "v78row": "extra",
+  "renderEventsPage": "extra",
+  "v78go": "extra"
  }
 }

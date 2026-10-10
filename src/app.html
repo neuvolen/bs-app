@@ -819,6 +819,7 @@
 <div class="page active" id="page-dashboard"><div id="dashboardContent"><div class="loading"><div class="spinner"></div><div class="loading-text" style="color:#999;font-size:12px;margin-top:8px">Загрузка данных...</div></div></div></div>
 <div class="page" id="page-leadrazbor"><div id="leadrazborContent"></div></div>
 <div class="page" id="page-referral"><div id="referralContent"></div></div>
+<div class="page" id="page-events"><div id="eventsContent"></div></div>
 <div class="page" id="page-schedule"><div id="scheduleContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-reports"><div id="reportsContent"><div class="loading"><div class="spinner"></div></div></div></div>
 <div class="page" id="page-fines"><div id="finesContent"><div class="loading"><div class="spinner"></div></div></div></div>
@@ -3531,6 +3532,11 @@
   .v3-btn { height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid #333; background: transparent; color: #FFFFFF;
     font-family: inherit; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
   .v3-btn.w { background: #FFFFFF; color: #000; border-color: #FFFFFF; font-weight: 800; }
+  .v78-ev { padding: 14px 16px; border-top: 1px solid #1F1F1F; }
+  .v78-ev:first-child { border-top: 0; }
+  .v78-t { font-size: 15px; font-weight: 800; line-height: 1.3; margin-top: 4px; }
+  .v78-ds { font-size: 13px; color: #BDBDBD; line-height: 1.45; margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .v78-a { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
   .v3-icbtn { background: none; border: none; color: #9A9A9A; padding: 6px; display: flex; cursor: pointer; flex-shrink: 0; }
   .v3-txtbtn { font-size: 12px; font-weight: 700; color: #9A9A9A; cursor: pointer; }
   .v2-card.v3-alert, .v3-alert { border-color: #4A1E20; }
@@ -5398,7 +5404,7 @@ function navIcon(k, size, w){
 const NAV = {
   admin: [
     {id:'sum',  label:'Сводка',    icon:'sum',  pages:[{id:'dashboard', label:'Сводка'}]},
-    {id:'meet', label:'Встречи',   icon:'cal',  pages:[{id:'schedule', label:'Расписание'}]},
+    {id:'meet', label:'Встречи',   icon:'cal',  pages:[{id:'schedule', label:'Расписание'},{id:'events', label:'Мероприятия'}]},
     {id:'plus', plus:true},
     {id:'res',  label:'Резиденты', icon:'club', pages:[{id:'residents', label:'Резиденты'},{id:'reports', label:'Отчёты'},{id:'visits', label:'Посещения'},{id:'fines', label:'Штрафы'},{id:'restasks', label:'Задачи'}]},
     {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'leadrazbor', label:'Экспресс-разбор', hidden:true},{id:'ideas', label:'Бизнес-идеи'}]}
@@ -5407,7 +5413,7 @@ const NAV = {
     {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'},{id:'ideas', label:'Бизнес-идеи'},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true}]},
     {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Мой разбор'},{id:'wheel', label:'Колесо'},{id:'diagnostic', label:'Диагностика'}]},
     {id:'tasks', label:'Задачи',  icon:'tasks', pages:[{id:'mytasks', label:'Задачи'},{id:'mymeetings', label:'Встречи'}]},
-    {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила', hidden:true}]},
+    {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'events', label:'Мероприятия'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила', hidden:true}]},
     {id:'me',    label:'Профиль', icon:'me',    pages:[{id:'mystatus', label:'Статус'},{id:'myprofile', label:'Данные'}]}
   ],
   lead: [
@@ -5720,7 +5726,9 @@ function init(){
       '99':           {admin:'guides',      resident:'guides',      lead:'guides'},
       // R46: бизнес-идеи
       'ideas':        {admin:'ideas',       resident:'ideas',       lead:'ideas'},
-      'idea':         {admin:'ideas',       resident:'ideas',       lead:'ideas'}
+      'idea':         {admin:'ideas',       resident:'ideas',       lead:'ideas'},
+      // R78: мероприятия
+      'events':       {admin:'events',      resident:'events',      lead:'about'}
     };
     
     function _resolveInitialPage(rawPage, role){
@@ -5966,6 +5974,7 @@ function _showPageCore(id){
   if(id === 'library'){ try{ renderLibrary(); }catch(e){ console.error('library:', e); } }
   if(id === 'guides'){ try{ renderGuides(); }catch(e){ console.error('guides:', e); } }
   if(id === 'ideas'){ try{ renderIdeas(); }catch(e){ console.error('ideas:', e); } }
+  if(id === 'events'){ try{ renderEventsPage(); }catch(e){ console.error('events:', e); } }
   if(id === 'guide'){ try{ renderGuide(); }catch(e){ console.error('guide:', e); } }
   try{ if(typeof v14barSync === 'function') v14barSync(); }catch(e){}
 }
@@ -13444,7 +13453,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
       pg('alert', 'Штрафы', unpaid ? unpaid + ' не оплачено' : 'Все оплачены', "showPage('fines')"),
       pg('club', 'Пригласить предпринимателя', '100\u00a0000 ₸ за приглашённого резидента', "showPage('referral')"),
       ext('club', 'Пятёрки', 'Группы резидентов', 'sFive'),
-      ext('cal', 'Мероприятия', 'События клуба', 'events')
+      pg('cal', 'Мероприятия', 'Алматы, онлайн, гранты и события клуба', "showPage('events')")
     ]],
     ['Учёт', [
       ext('sum', 'PL и ДДС', 'Прибыль и движение денег', 'pl'),
@@ -15454,6 +15463,95 @@ function r46aListHTML(){
 }
 function r46aList(){ var el = document.getElementById('ideasList'); if(el) el.innerHTML = r46aListHTML(); var c = document.getElementById('ideasCnt'); if(c) c.textContent = r46aFiltered().length + ' ' + v3plural(r46aFiltered().length, 'идея', 'идеи', 'идей'); }
 function r46aSet(k, v){ R46A[k] = v; R46A.lim = 40; renderIdeas(); }
+// ══════════ R78: МЕРОПРИЯТИЯ (лента сайтов и Telegram-каналов + мероприятия клуба) ══════════
+// GET events → {items:[{key,title,date,time,place,url,post,kind,deadline,online,ours,…}]}; «Иду» отмечается здесь, в календарь: Google или .ics
+window._v78 = window._v78 || {d: null, at: 0, f: 'all', busy: null};
+var V78_F = [['all', 'Все'], ['city', 'Алматы'], ['online', 'Онлайн'], ['opp', 'Возможности'], ['ours', 'Клуб'], ['go', 'Иду']];
+function v78going(){ try{ return JSON.parse(localStorage.getItem('bs_r78_going') || '{}') || {}; }catch(e){ return {}; } }
+function v78load(force){
+  var S = window._v78;
+  if(!force && S.d && !S.d.error && Date.now() - S.at < 120000) return Promise.resolve(S.d);
+  if(S.busy) return S.busy;
+  var init = bsInitData();
+  if(!init){ S.d = {error: 'noinit', items: []}; return Promise.resolve(S.d); }
+  S.busy = fetch(APP_SERVER + 'events?' + new URLSearchParams({_tg: init}).toString())
+    .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function(j){ if(!j || !Array.isArray(j.items)) throw new Error('bad'); j.items.sort(function(a, b){ return (a.kind === 'возможность') - (b.kind === 'возможность'); }); S.d = j; S.at = Date.now(); S.busy = null; return j; })
+    .catch(function(){ S.busy = null; if(!S.d || S.d.error) S.d = {error: 'net', items: []}; return S.d; });
+  return S.busy;
+}
+function v78fit(x, f){
+  var opp = x.kind === 'возможность';
+  return f === 'all' || (f === 'city' && !opp && !x.online && !x.ours) || (f === 'online' && !opp && x.online) || (f === 'opp' && opp) || (f === 'ours' && x.ours) || (f === 'go' && !!v78going()[x.key]);
+}
+function v78day(ds){
+  var p = String(ds || '').split('-'); if(p.length !== 3) return 'Дата уточняется';
+  var d = new Date(+p[0], +p[1] - 1, +p[2]), t = new Date(); t.setHours(0, 0, 0, 0);
+  var n = Math.round((d - t) / 86400000);
+  return (n === 0 ? 'Сегодня, ' : n === 1 ? 'Завтра, ' : '') + d.getDate() + ' ' + V15_MG[d.getMonth()] + (n > 1 ? ', ' + V15_WDL[d.getDay()] : '');
+}
+function v78gcal(x){
+  var opp = x.kind === 'возможность', ds = String((opp && x.deadline) || x.date || '').replace(/-/g, '');
+  if(ds.length !== 8) return '';
+  var m = /^(\d{1,2}):(\d{2})$/.exec(x.time || ''), dates;
+  if(m && !opp){
+    var st = Date.UTC(+ds.slice(0, 4), +ds.slice(4, 6) - 1, +ds.slice(6, 8), +m[1] - 5, +m[2]);
+    var f = function(t){ return new Date(t).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); };
+    dates = f(st) + '/' + f(st + 7200000);
+  } else dates = ds + '/' + new Date(Date.UTC(+ds.slice(0, 4), +ds.slice(4, 6) - 1, +ds.slice(6, 8) + 1)).toISOString().slice(0, 10).replace(/-/g, '');
+  return 'https://calendar.google.com/calendar/render?' + new URLSearchParams({action: 'TEMPLATE', text: (opp ? 'Подать заявку: ' : '') + x.title, dates: dates,
+    details: [x.desc || '', x.url || x.post || ''].filter(Boolean).join('\n'), location: x.place || ''}).toString();
+}
+function v78ics(key){ return APP_SERVER.replace(/\/app\/$/, '/public/') + 'event/' + key + '.ics'; }
+function v78row(x){
+  var opp = x.kind === 'возможность', go = !!v78going()[x.key], dl = (x.deadline || x.date || '');
+  var meta = [x.time && !opp ? x.time : '', x.place || (x.online ? 'Онлайн' : ''), x.org, x.price ? (/^\d[\d\s]*$/.test(String(x.price)) ? v2money(String(x.price).replace(/\s/g, '')) + ' ₸' : x.price) : '', x.ours ? '' : x.source].filter(Boolean).join(' · ');
+  var g = go ? v78gcal(x) : '';
+  return '<div class="v78-ev">' +
+    '<div class="v3-cap" style="text-transform:uppercase;letter-spacing:.8px;font-weight:800">' + v2esc(x.ours ? 'Клуб Business Surgery' : (opp ? 'Возможность · до ' + dl.slice(8, 10) + '.' + dl.slice(5, 7) : (x.online ? 'Онлайн' : 'Алматы'))) + '</div>' +
+    '<div class="v78-t">' + v2esc(x.title) + '</div>' + (meta ? '<div class="v3-cap" style="margin-top:3px">' + v2esc(meta) + '</div>' : '') +
+    (x.desc ? '<div class="v78-ds">' + v2esc(x.desc) + '</div>' : '') +
+    '<div class="v78-a"><button class="v3-btn' + (go ? ' w' : '') + '" onclick="v78go(\'' + v2esc(x.key) + '\')">' + (go ? '✓ Иду' : (opp ? 'Подам заявку' : 'Иду')) + '</button>' +
+      (g ? '<button class="v3-btn" onclick="v9open(' + v2esc(JSON.stringify(g)) + ')">Google Календарь</button><button class="v3-btn" onclick="v9open(' + v2esc(JSON.stringify(v78ics(x.key))) + ')">Apple · .ics</button>' : '') +
+      (x.url ? '<button class="v3-btn" onclick="v9open(' + v2esc(JSON.stringify(x.url)) + ')">Источник</button>' : '') +
+      (x.post && x.post !== x.url ? '<button class="v3-btn" onclick="v9open(' + v2esc(JSON.stringify(x.post)) + ')">Пост</button>' : '') +
+    '</div></div>';
+}
+function renderEventsPage(){
+  var el = document.getElementById('eventsContent'); if(!el) return;
+  var S = window._v78, h = v3headBig('', 'Мероприятия');
+  if(!S.d){ el.innerHTML = h + '<div class="loading"><div class="spinner"></div></div>'; v78load().then(function(){ if(v9activeId() === 'events') renderEventsPage(); }); return; }
+  if(S.d.error){ el.innerHTML = h + '<div class="v2-card v2-empty" style="margin-top:14px">Лента не загрузилась.<br><button class="v3-outline" style="margin-top:12px" onclick="window._v78.d=null;renderEventsPage()">Повторить</button></div>'; return; }
+  var items = S.d.items || [];
+  h += '<div class="v9-chips">' + V78_F.map(function(f){
+    var n = items.filter(function(x){ return v78fit(x, f[0]); }).length;
+    if(!n && f[0] !== 'all' && f[0] !== S.f) return '';
+    return '<button class="' + (S.f === f[0] ? 'on' : '') + '" onclick="window._v78.f=\'' + f[0] + '\';renderEventsPage()">' + f[1] + ' <span class="num">' + n + '</span></button>';
+  }).join('') + '</div>';
+  var list = items.filter(function(x){ return v78fit(x, S.f); });
+  if(!list.length){
+    h += '<div class="v2-card v2-empty" style="margin-top:14px">' + (S.f === 'go' ? 'Отметьте «Иду» у мероприятия: оно появится здесь, а в календарь добавится в 1 клик' : 'Ближайших мероприятий нет. Лента обновляется каждый день') + '</div>';
+  } else {
+    var last = null, out = '';
+    list.forEach(function(x){
+      var opp = x.kind === 'возможность', k = opp ? '__opp' : x.date;
+      if(k !== last){ if(last !== null) out += '</div>'; out += '<div class="v2-h">' + (opp ? 'Возможности: гранты, программы' : v2esc(v78day(x.date))) + '</div><div class="v2-card">'; last = k; }
+      out += v78row(x);
+    });
+    h += out + '</div>';
+  }
+  el.innerHTML = h;
+  if(Date.now() - S.at > 120000 && !(S.re && Date.now() - S.re < 60000)){ S.re = Date.now(); v78load(true).then(function(){ if(v9activeId() === 'events') renderEventsPage(); }); }
+}
+function v78go(key){
+  var g = v78going();
+  if(g[key]) delete g[key]; else g[key] = Date.now();
+  try{ localStorage.setItem('bs_r78_going', JSON.stringify(g)); }catch(e){}
+  if(g[key]) showToast('Отмечено. Добавьте в календарь');
+  try{ if(tg && tg.HapticFeedback) tg.HapticFeedback.selectionChanged(); }catch(e){}
+  renderEventsPage();
+}
+
 function renderIdeas(){
   var el = document.getElementById('ideasContent'); if(!el) return;
   var D = window._ideas;
