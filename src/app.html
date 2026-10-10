@@ -6429,7 +6429,9 @@ function v3dateTs(d, time){
   return x.getTime();
 }
 function v3isEvent(ev){ return String((ev && ev.res) || '').indexOf('🎬') === 0; }
-function v3isOnline(ev){ var l = String((ev && ev.link) || ''); return l.indexOf('meet') >= 0 || l.indexOf('zoom') >= 0; }
+function v3isOnline(ev){ var l = String((ev && ev.link) || ''); return !!(ev && ev.call) || l.indexOf('meet') >= 0 || l.indexOf('zoom') >= 0; }
+// R75 call: онлайн-встреча идёт на платформе (ev.call), Google Meet только запасной
+function v3callUrl(ev){ return String((ev && (ev.call || ev.link)) || ''); }
 // Чат в Telegram: по нику, если он есть, иначе по chatId
 function v3chatUrl(r){
   var u = v11tgUser(r);
@@ -6657,8 +6659,8 @@ function renderResHome(){
     window._v22Next = v22m.ev;
     h += v22nextCard(v22m, {
       title: v3isEvent(v22m.ev) ? v2esc(String(v22m.ev.res).replace(/^🎬\s*/, '')) : (online ? 'Онлайн-трекинг' : 'Офлайн-встреча'),
-      extra: online ? 'Google Meet' : v2esc(v22m.ev.link || 'место уточняется'),
-      right: online && v22m.ev.link ? '<a href="' + v2esc(v22m.ev.link) + '" target="_blank" class="v3-btn w" style="text-decoration:none" onclick="event.stopPropagation()">Meet</a>' : (g ? '<div class="cnt num">' + dn + ' из ' + g + '</div>' : ''),
+      extra: online ? (v22m.ev.call ? 'Созвон на платформе' : 'Google Meet') : v2esc(v22m.ev.link || 'место уточняется'),
+      right: online && v3callUrl(v22m.ev) ? '<a href="' + v2esc(v3callUrl(v22m.ev)) + '" target="_blank" class="v3-btn w" style="text-decoration:none" onclick="event.stopPropagation();event.preventDefault();v9open(this.href)">' + (v22m.ev.call ? 'Войти' : 'Meet') + '</a>' : (g ? '<div class="cnt num">' + dn + ' из ' + g + '</div>' : ''),
       onclick: "showPage('mymeetings')"
     });
   } else {
@@ -9822,7 +9824,7 @@ function v67deepAfter(n){
 }
 
 function showMeetingDetail(ev){
-  const isOnline = ev.link && ev.link.includes('meet');
+  const isOnline = !!ev.call || (ev.link && ev.link.includes('meet'));
   const cd = countdownText(ev.date, ev.time);
   document.getElementById('detailTitle').textContent = 'Встреча';
   var canEdit = isRealAdmin && viewAs === 'admin';
@@ -9836,9 +9838,10 @@ function showMeetingDetail(ev){
       <div style="font-size:18px;color:var(--g400);margin-bottom:16px">${ev.time||''}</div>
       <div class="meeting-row">${isOnline?'Формат: Онлайн':'Формат: Офлайн'}</div>
       <div class="meeting-row">Резидент: ${ev.res}</div>
-      ${ev.link?`<div class="meeting-row" style="word-break:break-all">${isOnline?'':''} ${ev.link}</div>`:''}
+      ${(ev.call||ev.link)?`<div class="meeting-row" style="word-break:break-all">${ev.call||ev.link}</div>`:''}
     </div>
-    ${isOnline&&ev.link?`<a class="btn btn-primary" href="${ev.link}" target="_blank">Подключиться к Meet</a>`:''}
+    ${ev.call?`<a class="btn btn-primary" href="${ev.call}" target="_blank" onclick="event.preventDefault();v9open(this.href)">Войти в созвон</a>`:''}
+    ${isOnline&&ev.link&&ev.link.includes('meet')?`<a class="btn btn-secondary" href="${ev.link}" target="_blank">${ev.call?'Google Meet (запасной)':'Подключиться к Meet'}</a>`:''}
     ${!canEdit?`<button class="btn btn-success" onclick="confirmMeeting('${ev.res}','${ev.date}','${ev.time}')" ${alreadyConfirmed?'disabled style="opacity:0.6"':''}>${alreadyConfirmed?'✓ Подтверждено':'Подтвердить участие'}</button>`:''}
     <button class="btn btn-secondary" onclick="addToCalendar('${ev.date}','${ev.time}','${ev.res}','${ev.link||''}')">В Google Calendar</button>
     ${canEdit?`<button class="btn btn-success" onclick="onMeetingDoneClick('${ev.res}','${ev.date}','${ev.time}',${isOnline?'true':'false'})">Встреча прошла</button>`:''}
@@ -11158,8 +11161,8 @@ function renderMyStatus(){
   if(next){
     var onl = v3isOnline(next);
     h += '<div class="v2-h">Ближайшая встреча</div><div class="v2-card v3-row-sb" style="padding:14px 16px"><div style="min-width:0"><div class="num" style="font-size:16px;font-weight:800">' + v2esc(next.date) + ' ' + v2esc(next.time || '') + '</div>' +
-      '<div class="v3-cap" style="font-size:12px;margin-top:2px">' + (onl ? 'Онлайн · Google Meet' : 'Офлайн · ' + v2esc(next.link || 'место уточняется')) + '</div></div>' +
-      (onl ? '<a href="' + v2esc(next.link) + '" target="_blank" class="v3-btn w" style="text-decoration:none">Meet</a>' : '') + '</div>';
+      '<div class="v3-cap" style="font-size:12px;margin-top:2px">' + (onl ? (next.call ? 'Онлайн · созвон на платформе' : 'Онлайн · Google Meet') : 'Офлайн · ' + v2esc(next.link || 'место уточняется')) + '</div></div>' +
+      (onl ? '<a href="' + v2esc(v3callUrl(next)) + '" target="_blank" class="v3-btn w" style="text-decoration:none" onclick="event.preventDefault();v9open(this.href)">' + (next.call ? 'Войти' : 'Meet') + '</a>' : '') + '</div>';
   }
   if(me.partner) h += '<div class="v2-card v3-text v70-prt" style="margin-top:10px;color:#9A9A9A;cursor:pointer" role="button" tabindex="0" onclick="v70partner(' + v2esc(JSON.stringify(me.partner)) + ')">' + v70sw + ' Партнёр: <b style="color:#fff">' + v2esc(me.partner) + '</b> · одна встреча на двоих <span style="float:right;color:#fff">›</span></div>';
   h += '<div class="v2-h">Ещё</div><div class="v2-card">' +
