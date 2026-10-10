@@ -9402,8 +9402,12 @@ function v3filteredClub(club){
   }
   if(q) list = list.filter(function(r){ var p = v3prof(r) || {}; return (r.name + ' ' + (r.niche || p.niche || '') + ' ' + (r.bio || p.bio || '')).toLowerCase().indexOf(q) >= 0; });
   if(f === 'debt') list = list.slice().sort(function(a,b){ return (Number(b.debt)||0) - (Number(a.debt)||0); });
+  else list = v75az(list);
   return list;
 }
+// R75: резиденты по алфавиту и с номером 1, 2, 3 (сквозной по видимому списку)
+function v75az(list){ return list.slice().sort(function(a, b){ return String(a.name || '').localeCompare(String(b.name || ''), 'ru', {sensitivity: 'base'}); }); }
+function v75no(i){ return '<span class="num" style="flex:0 0 auto;min-width:20px;margin-right:8px;text-align:right;font-size:13px;font-weight:700;color:#8A8A8A">' + (i + 1) + '</span>'; }
 // ═══ R22: БЛИЖАЙШАЯ ВСТРЕЧА (вместо «Встреча сегодня» на главной) ═══
 var V22_WD = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
 var V22_MON_G = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
@@ -9480,7 +9484,7 @@ function v3resListHTML(club){
   var meets = {}; (cache.schedule||[]).forEach(function(ev){ if(v3isToday(ev.date) && !meets[ev.res]) meets[ev.res] = ev; });
   return list.map(function(r, i){
     var debt = Number(r.debt)||0;
-    return '<div class="v2-row" style="padding:12px 14px" onclick="openResByIdx(' + i + ')">' + v3av(r, 40) +
+    return '<div class="v2-row" style="padding:12px 14px" onclick="openResByIdx(' + i + ')">' + v75no(i) + v3av(r, 40) +
       '<div class="m"><b class="v3-n15">' + v2esc(r.name) + '</b><span>' + v2esc(v3resStatus(r, meets[r.name])) + '</span></div>' +
       '<div class="v3-amt"><div class="num' + (debt > 0 ? ' red' : '') + '">' + v2money(debt) + '</div><div class="v3-cap">' + v3debtCaption(r) + '</div></div></div>';
   }).join('');
@@ -9512,12 +9516,12 @@ function v3adminResidents(team, club){
 }
 function v3clubListHTML(club){
   var q = String(window._resQuery || '').toLowerCase().trim();
-  var list = q ? club.filter(function(r){ var p = v3prof(r) || {}; return (r.name + ' ' + (r.niche || p.niche || '')).toLowerCase().indexOf(q) >= 0; }) : club;
+  var list = v75az(q ? club.filter(function(r){ var p = v3prof(r) || {}; return (r.name + ' ' + (r.niche || p.niche || '')).toLowerCase().indexOf(q) >= 0; }) : club);
   window._currentResidentsList = list;
   if(!list.length) return '<div class="v2-empty">Не найдено</div>';
   return list.map(function(r, i){
     var p = v3prof(r) || {};
-    return '<div class="v2-row" style="padding:12px 14px" onclick="openResByIdx(' + i + ')">' + v3av(r, 40) +
+    return '<div class="v2-row" style="padding:12px 14px" onclick="openResByIdx(' + i + ')">' + v75no(i) + v3av(r, 40) +
       '<div class="m"><b class="v3-n15">' + v2esc(r.name) + '</b><span>' + v2esc(r.niche || p.niche || r.format || 'Резидент BS') + '</span></div>' +
       '<div class="ic" style="color:#6E6E6E">' + navIcon('chev', 16) + '</div></div>';
   }).join('');
