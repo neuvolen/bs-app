@@ -3529,6 +3529,11 @@
   .v3-k { font-size: 11px; color: #9A9A9A; font-weight: 700; }
   .v3-v { margin-top: 4px; font-size: 20px; font-weight: 800; letter-spacing: -0.4px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .v3-cap { font-size: 11px; color: #9A9A9A; font-weight: 600; }
+  /* R81: штрафы из журнала оплат, мероприятия внизу расписания */
+  .r81-tot { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; margin-bottom: 12px; }
+  .r81-sev { margin-top: 18px; padding-bottom: 8px; }
+  .r81-sev .v2-h .lnk + .lnk { margin-left: 12px; }
+  .r81-sevbtn { width: 100%; }
   .v3-btn { height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid #333; background: transparent; color: #FFFFFF;
     font-family: inherit; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
   .v3-btn.w { background: #FFFFFF; color: #000; border-color: #FFFFFF; font-weight: 800; }
@@ -5957,6 +5962,7 @@ function _showPageCore(id){
   const t = document.querySelector('#tabs [data-page="'+id+'"]');
   if(t){ try{ t.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }catch(e){} }
   r44show(id);
+  try{ r81onOpen(id); }catch(e){}
   if(id === 'home'){ try{ renderResHome(); }catch(e){ console.error('home:', e); } }
   if(id === 'myboard'){ try{ renderMyBoard(); }catch(e){ console.error('myboard:', e); } }
   if(id === 'residents'){ try{ renderResidents(); }catch(e){ console.error('residents:', e); } }
@@ -6099,12 +6105,12 @@ function bsAuthDead(){
 function setupAutoRefresh(){
   // 1) Возврат в приложение (свернул/развернул, переключил вкладку) → обновляем если данные старше 10 сек
   document.addEventListener('visibilitychange', function(){
-    if(document.visibilityState === 'visible' && Date.now() - _lastDataLoad > 10000 && !window._bsAuthDead){
+    if(document.visibilityState === 'visible' && Date.now() - _lastDataLoad > R81_FRESH_MS && !window._bsAuthDead){
       loadAllData();
     }
   });
   window.addEventListener('focus', function(){
-    if(Date.now() - _lastDataLoad > 10000 && !window._bsAuthDead) loadAllData();
+    if(Date.now() - _lastDataLoad > R81_FRESH_MS && !window._bsAuthDead) loadAllData();
   });
   
   // 2) Периодическое обновление каждые 30 секунд пока приложение открыто
@@ -6211,6 +6217,7 @@ async function loadAllData(opts){
         ((serverData.problems||{}).problems||[]).length,
         _bsHash(JSON.stringify(serverData.monthlyPL||{})),
         _bsHash(JSON.stringify(serverData.fines||[])),
+        _bsHash(JSON.stringify(serverData.ledger||{})),
         _bsHash(JSON.stringify(serverData.residents||[])),
         _bsHash(JSON.stringify(serverSchedule||[])),
         JSON.stringify(serverData.wheelSummary||{}).length
@@ -6222,6 +6229,7 @@ async function loadAllData(opts){
 
     cache = serverData;
     bsSaveCache(pureCopy ? etNow : '');
+    r81markSynced();
     if(dot) dot.style.opacity = '0';
     if(unchanged && window._renderedFromCache && !opts.force){
       _lastDataLoad = Date.now();
@@ -6566,7 +6574,7 @@ function v3needsRenew(r){
   return (Number(r.debtRenew) || 0) > 0 || ((Number(r.meetingsGranted) || 0) > 0 && (Number(r.meetingsLeft) || 0) <= 0);
 }
 function v3unpaidFines(name){
-  return (cache.fines || []).filter(function(f){ return f.name === name && f.status === 'Не оплатил'; });
+  return r81openFines().filter(function(f){ return f.name === name || f.res === name; });
 }
 function v3debtCaption(r){
   var debt = Number(r.debt) || 0;
@@ -7832,34 +7840,30 @@ function renderDashboard(){
   var box = document.getElementById('dashboardContent');
   if(!box) return;
   const residents = v3activeResidents();
-  const fines = cache.fines||[];
-  const unpaid = fines.filter(f=>f.status==='Не оплатил');
-  const unpaidSum = unpaid.reduce((s,f)=>s+(Number(f.amount)||0),0);
+  // R81: штрафы и долги из журнала оплат сервера, как «Учёт → Долги и штрафы» на платформе
+  const unpaid = r81openFines();
+  const unpaidSum = r81finesSum();
   const today = new Date().toLocaleDateString('ru-RU');
 
   // ИСТОЧНИК ФИНАНСОВ: свежие данные из пакета всегда важнее локального кеша
   if(cache.monthlyPL && cache.monthlyPL.months){
     window._monthlyPL = cache.monthlyPL;
-    try{ localStorage.setItem('bs_monthly_pl', JSON.stringify(cache.monthlyPL)); }catch(e){}
   } else if(!window._monthlyPL){
-    try{
-      var cachedPL = localStorage.getItem('bs_monthly_pl');
-      if(cachedPL) window._monthlyPL = JSON.parse(cachedPL);
-    }catch(e){}
+    // R81: старая копия P&L с телефона не показывается (цифры только с сервера, из ДДС)
+    try{ localStorage.removeItem('bs_monthly_pl'); }catch(e){}
     if(!window._plLoading && _lastDataLoad > 0){
       window._plLoading = true;
       callAction('getMonthlyPL', {}).then(function(r){
         window._plLoading = false;
         if(r && r.ok){
           window._monthlyPL = r;
-          try{ localStorage.setItem('bs_monthly_pl', JSON.stringify(r)); }catch(e){}
           renderDashboard();
         }
       });
     }
   }
 
-  var h = v3headMark('', 'Сводка');
+  var h = v3headMark(r81updHTML(), 'Сводка');
 
   const mp = window._monthlyPL;
   if(mp && mp.months){
@@ -7875,7 +7879,8 @@ function renderDashboard(){
         '<div class="n">' + v2esc(String(mm.short||'').substring(0,3).toUpperCase()) + '</div><div class="v num">' + val + '</div></div>';
     }).join('');
     var debtors = residents.filter(function(r){ return (Number(r.debt)||0) > 0; }).length;
-    var totalDebt = Number(cache.totalDebt)||0;
+    var totalDebt = cache.ledger ? (Number(cache.ledger.total)||0) : (Number(cache.totalDebt)||0);
+    if(cache.ledger) debtors = Number(cache.ledger.debtors)||0;
     h += '<div class="v2-card v3-month" style="margin-top:14px">' +
       '<div class="v3-row-sb"><div style="font-size:15px;font-weight:800" id="v3MonName">' + v2esc(m.name) + ' ' + (typeof mp.year === 'number' ? mp.year : new Date().getFullYear()) + '</div>' +
         '</div>' +
@@ -8032,13 +8037,13 @@ function renderSchedule(){
   var bodyEl = el.querySelector('.sched-body');
   if(!list.length && viewMode !== 'calendar'){
     bodyEl.innerHTML = '<div class="empty"><div class="em-icon"></div><div class="em-title">Встреч нет</div><div class="em-text">Нажмите кнопку выше</div></div>';
-    return;
-  }
-  if(viewMode === 'calendar'){
+  } else if(viewMode === 'calendar'){
     bodyEl.innerHTML = renderScheduleCalendar(list);
   } else {
     bodyEl.innerHTML = list.map(function(ev,i){ return meetingCard(ev,i); }).join('');
   }
+  // R81: мероприятия внизу расписания (можно скрыть, выбор хранится на сервере)
+  try{ r81schedEvents(el); }catch(e){ console.error('sched events:', e); }
 }
 
 function setScheduleView(mode){
@@ -8438,14 +8443,18 @@ function renderReports(){
 }
 
 function renderFines(){
-  const fines = (cache.fines||[]).filter(f=>f.status==='Не оплатил');
+  // R81: те же штрафы, что «Учёт → Долги и штрафы» на платформе: журнал оплат сервера решает,
+  // чей штраф, сколько по нему оплачено и сколько осталось. Новые сверху
+  const fines = r81openFines().slice().sort(function(a, b){ return v3dateTs(b.date) - v3dateTs(a.date) || (Number(b.id)||0) - (Number(a.id)||0); });
   const el = document.getElementById('finesContent');
+  var sum = r81finesSum();
   el.innerHTML = `
     <div class="section-head">
       <div class="section-title">Штрафы</div>
       <div class="section-action" onclick="openModal('fineModal');initFineModal()">+ Выставить</div>
     </div>
-  `;
+  ` + '<div class="v2-card r81-tot"><div><div class="v3-lbl">К ПОЛУЧЕНИЮ</div><div class="num' + (sum > 0 ? ' red' : '') + '" style="font-size:24px;font-weight:800;margin-top:2px">' + fmt(sum) + ' ₸</div></div>' +
+    '<div style="text-align:right"><div class="num" style="font-size:15px;font-weight:800">' + fines.length + ' шт</div><div class="v3-cap r81-upd">' + r81updText() + '</div></div></div>';
   if(!fines.length){
     el.innerHTML += `<div class="empty"><div class="em-icon"></div><div class="em-title">Штрафов нет</div><div class="em-text">Все оплачены</div></div>`;
     return;
@@ -8455,15 +8464,16 @@ function renderFines(){
   var finesHtml = '<div class="card">';
   fines.forEach(function(f,i){
     var clickAttr = canManageFines ? ('onclick="openFineActions('+i+')" style="cursor:pointer"') : '';
+    var left = r81left(f), part = (Number(f.paid)||0) > 0 && left < (Number(f.amount)||0);
     finesHtml += '<div class="list-item" '+clickAttr+'>'+
       '<div class="list-avatar" style="background:rgba(255,107,111,0.2);color:var(--red)">!</div>'+
       '<div class="list-content">'+
-        '<div class="list-name">'+f.name+'</div>'+
-        '<div class="list-sub">'+(f.kind||f.type||'')+'</div>'+
+        '<div class="list-name">'+v2esc(r81owner(f))+'</div>'+
+        '<div class="list-sub">'+v2esc(f.kind||f.type||'')+(part ? ' · оплачено ' + fmt(f.paid) + ' из ' + fmt(f.amount) : '')+'</div>'+
       '</div>'+
       '<div class="list-right">'+
-        '<div class="list-amount">'+fmt(f.amount)+' ₸</div>'+
-        '<div class="list-date">'+f.date+'</div>'+
+        '<div class="list-amount">'+fmt(left)+' ₸</div>'+
+        '<div class="list-date">'+v2esc(f.date||'')+'</div>'+
       '</div>'+
     '</div>';
   });
@@ -9504,7 +9514,7 @@ function v3adminResidents(team, club){
   var h = v3headBig(club.length + ' ' + v3plural(club.length, 'активный', 'активных', 'активных'), 'Резиденты',
     '<button class="v3-btn" onclick="openModal(\'addResidentModal\');initAddResident()">' + navIcon('plus', 14, 2.2) + 'Добавить</button>');
   // Отчёты, штрафы, посещения и задачи открываются отсюда (в «Меню» их больше нет)
-  var ufN = (cache.fines || []).filter(function(x){ return x.status === 'Не оплатил'; }).length;
+  var ufN = r81openFines().length;
   h += '<div class="v9-links">' +
     '<button onclick="showPage(\'reports\')">Отчёты' + (g.noreport.length ? ' <b>' + g.noreport.length + '</b>' : '') + '</button>' +
     '<button onclick="showPage(\'fines\')">Штрафы' + (ufN ? ' <b>' + ufN + '</b>' : '') + '</button>' +
@@ -9568,7 +9578,7 @@ function v3feed(r){
     items.push({t: v3dateTs(l.date, l.time), title: 'Отчёт сдан' + (l.time ? ' · ' + l.time : ''), sub: (v3isToday(l.date) ? 'Сегодня' : String(l.date || '')) + (txt ? ' · «' + txt + '…»' : ''), red: false});
   });
   (cache.fines || []).forEach(function(f){
-    if(f.name !== r.name) return;
+    if(f.name !== r.name && f.res !== r.name) return;
     items.push({t: v3dateTs(f.date), title: 'Штраф ' + fmt(f.amount) + ' · ' + String(f.kind || '').toLowerCase(), sub: String(f.date || '') + ' · ' + String(f.status || '').toLowerCase(), red: f.status === 'Не оплатил'});
   });
   items.sort(function(a, b){ return b.t - a.t; });
@@ -11132,7 +11142,7 @@ function renderMyStatus(){
       '<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank" class="v3-btn w" style="height:44px;padding:0 16px;border-radius:12px;font-size:14px;text-decoration:none">Оплатить</a></div>';
   }
   var g = Number(me.meetingsGranted) || 0, d = Number(me.meetingsDone) || 0;
-  var fc = (cache.fines || []).filter(function(f){ return f.name === me.name; }).length;
+  var fc = v3unpaidFines(me.name).length;
   h += '<div class="v2-stats" style="margin-top:8px">' +
     '<div class="v2-stat" onclick="showPage(\'mymeetings\')"><div class="l">Встречи</div><div class="v num" style="font-size:18px">' + d + '/' + g + '</div></div>' +
     '<div class="v2-stat"><div class="l">Отчёты</div><div class="v num" style="font-size:18px">' + Math.round(v3reports30(me) / 30 * 100) + '%</div></div>' +
@@ -11899,17 +11909,17 @@ function openFineActions(idx){
   var f = (window._currentFinesList||[])[idx];
   if(!f) return;
   window._fineSel = f;
-  document.getElementById('detailTitle').textContent = 'Штраф: '+f.name;
+  document.getElementById('detailTitle').textContent = 'Штраф: '+r81owner(f);
   document.getElementById('detailContent').innerHTML = `
     <div class="card">
       <div class="list-item">
         <div class="list-avatar" style="background:rgba(255,107,111,0.2);color:var(--red)">!</div>
         <div class="list-content">
-          <div class="list-name">${f.name}</div>
-          <div class="list-sub">${f.kind||f.type||''}</div>
+          <div class="list-name">${v2esc(r81owner(f))}</div>
+          <div class="list-sub">${v2esc(f.kind||f.type||'')}${(Number(f.paid)||0) > 0 ? ' · оплачено ' + fmt(f.paid) + ' из ' + fmt(f.amount) : ''}</div>
         </div>
         <div class="list-right">
-          <div class="list-amount">${fmt(f.amount)} ₸</div>
+          <div class="list-amount">${fmt(r81left(f))} ₸</div>
           <div class="list-date">${f.date}</div>
         </div>
       </div>
@@ -13371,7 +13381,7 @@ function renderAdminMore(){
     '<div style="min-width:0"><div style="font-size:9px;font-weight:800;letter-spacing:2.6px;color:#D4B886">БИЗНЕС-ТРЕКИНГ</div>' +
     '<div class="t" style="margin-top:4px">Здоровье бизнеса и энергия роста</div></div></div>';
   // Те же разделы и порядок, что в левом меню платформы. «↗» открывает раздел платформы в браузере
-  var res = act.length, unpaid = (cache.fines || []).filter(function(f){ return f.status === 'Не оплатил'; }).length;
+  var res = act.length, unpaid = r81openFines().length;
   var libN = (window._lib && window._lib.items) ? window._lib.items.length : 0;
   var S = V11_MENU(leads, res, unpaid, met, closed, libN);
   v30navLoad();
@@ -15463,6 +15473,94 @@ function r46aListHTML(){
 }
 function r46aList(){ var el = document.getElementById('ideasList'); if(el) el.innerHTML = r46aListHTML(); var c = document.getElementById('ideasCnt'); if(c) c.textContent = r46aFiltered().length + ' ' + v3plural(r46aFiltered().length, 'идея', 'идеи', 'идей'); }
 function r46aSet(k, v){ R46A[k] = v; R46A.lim = 40; renderIdeas(); }
+// ══════════ R81: ДОЛГИ И ШТРАФЫ ИЗ ЖУРНАЛА ОПЛАТ, СВЕЖИЕ ДАННЫЕ, НАСТРОЙКИ ЧЕЛОВЕКА ══════════
+// Штрафы и долги приходят с сервера из того же журнала оплат, что «Учёт → Долги и штрафы» на платформе
+// (cache.ledger: итоги; cache.fines: штрафы с оплаченной частью и остатком). Экраны с деньгами при открытии
+// спрашивают сервер, если данным больше R81_FRESH_MS; время последней сверки видно: «обновлено HH:MM»
+var R81_FRESH_MS = 5000;
+function r81openFines(){ return (cache.fines || []).filter(function(f){ return f.status === 'Не оплатил'; }); }
+function r81left(f){ var l = Number(f && f.left); return (f && f.left != null && isFinite(l)) ? l : (Number(f && f.amount) || 0); }
+function r81owner(f){ return (f && (f.res || f.name)) || ''; }
+function r81finesSum(){
+  if(cache.ledger && cache.ledger.fines != null) return Number(cache.ledger.fines) || 0;
+  return r81openFines().reduce(function(s, f){ return s + r81left(f); }, 0);
+}
+function r81updAt(){ return window._bsSyncedAt || Number(cache && cache.ts) || 0; }
+function r81updText(){
+  var t = r81updAt(); if(!t) return 'обновляется…';
+  var d = new Date(t);
+  return 'обновлено ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+}
+function r81updHTML(){ return '<span class="r81-upd">' + r81updText() + '</span>'; }
+function r81markSynced(){
+  window._bsSyncedAt = Date.now();
+  var t = r81updText();
+  document.querySelectorAll('.r81-upd').forEach(function(e){ e.textContent = t; });
+}
+var R81_MONEY = {dashboard: 1, fines: 1, residents: 1, mystatus: 1, home: 1, schedule: 1, mymeetings: 1};
+function r81onOpen(id){
+  if(!R81_MONEY[id] || window._bsAuthDead) return;
+  if(Date.now() - (window._bsSyncedAt || 0) > R81_FRESH_MS) loadAllData();
+}
+// Личные настройки: документ bs_prefs на сервере, общий с платформой (hide_events: мероприятия в «Расписании» скрыты)
+window._r81p = window._r81p || {d: null, busy: null};
+function r81prefs(){
+  var P = window._r81p;
+  if(P.d) return P.d;
+  try{ P.d = JSON.parse(localStorage.getItem('bs_prefs') || '{}') || {}; }catch(e){ P.d = {}; }
+  return P.d;
+}
+function r81prefsLoad(){
+  var P = window._r81p, init = bsInitData();
+  if(P.busy || !init) return P.busy || Promise.resolve(r81prefs());
+  P.busy = fetch(APP_SERVER + 'prefs?' + new URLSearchParams({_tg: init}).toString())
+    .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function(j){ P.busy = null; if(j && j.prefs && typeof j.prefs === 'object'){ P.d = j.prefs; try{ localStorage.setItem('bs_prefs', JSON.stringify(j.prefs)); }catch(e){} } return r81prefs(); })
+    .catch(function(){ P.busy = null; return r81prefs(); });
+  return P.busy;
+}
+function r81prefSet(k, v){
+  var d = r81prefs(); d[k] = v;
+  try{ localStorage.setItem('bs_prefs', JSON.stringify(d)); }catch(e){}
+  var init = bsInitData(), body = {}; body[k] = v;
+  if(!init) return Promise.resolve(false);
+  return fetch(APP_SERVER + 'prefs?' + new URLSearchParams({_tg: init}).toString(), {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)})
+    .then(function(r){ return r.ok; }).catch(function(){ return false; })
+    .then(function(ok){ if(!ok) showToast('Не сохранилось на сервере, попробуйте ещё раз'); return ok; });
+}
+// «Мероприятия» внизу «Расписания»: ближайшие, «Все» открывает ленту; «Скрыть» / «Показать мероприятия» запоминается
+function r81schedEvents(el){
+  if(!window._r81p.ok){ window._r81p.ok = 1; r81prefsLoad().then(function(){ if(v9activeId() === 'schedule') r81schedEvents(el); }); }
+  var box = el.querySelector('.r81-sev');
+  if(!box){ box = document.createElement('div'); box.className = 'r81-sev'; el.appendChild(box); }
+  var hidden = !!r81prefs().hide_events;
+  if(hidden){
+    box.innerHTML = '<button class="v3-outline r81-sevbtn" onclick="r81toggleEvents(false)">Показать мероприятия</button>';
+    return;
+  }
+  var S = window._v78, head = '<div class="v2-h">Мероприятия <span><span class="lnk" onclick="r81toggleEvents(true)">Скрыть</span><span class="lnk" onclick="showPage(\'events\')">Все</span></span></div>';
+  if(!S.d || (S.d.error && !S.r81try)){
+    if(S.d && S.d.error) S.r81try = 1;
+    box.innerHTML = head + '<div class="v2-card v2-empty">Загружаем мероприятия…</div>';
+    v78load(!!(S.d && S.d.error)).then(function(){ if(v9activeId() === 'schedule') r81schedEvents(el); });
+    return;
+  }
+  var items = (S.d.items || []).filter(function(x){ return x.kind !== 'возможность'; }).slice(0, 6);
+  if(S.d.error || !items.length){
+    box.innerHTML = head + '<div class="v2-card v2-empty">' + (S.d.error ? 'Лента не загрузилась' : 'Ближайших мероприятий нет') + '</div>';
+    return;
+  }
+  box.innerHTML = head + '<div class="v2-card">' + items.map(function(x){
+    return '<div class="v3-cap" style="padding:12px 16px 0;font-weight:800">' + v2esc(v78day(x.date)) + '</div>' + v78row(x);
+  }).join('') + '</div>';
+}
+function r81toggleEvents(hide){
+  r81prefSet('hide_events', !!hide);
+  var el = document.getElementById('scheduleContent');
+  if(el) r81schedEvents(el);
+  showToast(hide ? 'Мероприятия скрыты. Вернуть: «Показать мероприятия» внизу' : 'Мероприятия снова в расписании');
+}
+
 // ══════════ R78: МЕРОПРИЯТИЯ (лента сайтов и Telegram-каналов + мероприятия клуба) ══════════
 // GET events → {items:[{key,title,date,time,place,url,post,kind,deadline,online,ours,…}]}; «Иду» отмечается здесь, в календарь: Google или .ics
 window._v78 = window._v78 || {d: null, at: 0, f: 'all', busy: null};
