@@ -30,6 +30,10 @@ jobs:
         with:
           node-version: 20
 
+      # R88: the repository is public: no secret and no club member's data, ever
+      - name: Leak check
+        run: node tools/leakcheck.mjs
+
       - name: Build and check dist
         run: |
           npm ci --no-audit --no-fund
