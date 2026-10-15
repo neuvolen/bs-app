@@ -218,6 +218,7 @@ function bsVerCheck(now){
 // index.html?v=<версия>, у этого адреса нет копии в кеше браузера. Один переход на версию за сеанс: если сайт ещё
 // отдаёт старую копию (выкладка не доехала), приложение не прыгает по кругу, новая включится при следующем открытии
 function bsRestart(){
+  if(window.__bsFw) return; // R96: запуск уходит на платформу, новая версия включится в следующий раз
   if(!window.__bsInline){ location.reload(); return; }
   var k = 'bs_nav_v', done = null; try{ done = sessionStorage.getItem(k); }catch(e){}
   if(done === __bsNext) return;

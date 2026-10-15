@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>BS. Business Surgery</title>
-<link rel="manifest" href='data:application/manifest+json,{"name":"BS Business Surgery","short_name":"BS","start_url":"https://incandescent-kashata-f63422.netlify.app/","display":"standalone","background_color":"%230a0a0a","theme_color":"%230a0a0a","icons":[{"src":"https://incandescent-kashata-f63422.netlify.app/icon.png","sizes":"192x192","type":"image/png"}]}'>
-<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="BS">
 <script async src="https://telegram.org/js/telegram-web-app.js" onload="window.__bsTgLoaded&&__bsTgLoaded()"></script><!-- R95: async, первый экран его не ждёт (bsTgWebApp) -->
@@ -3440,6 +3438,10 @@
   .bnav:has(> :nth-child(6)) { padding-left: 4px; padding-right: 4px; }
   .bnav:has(> :nth-child(6)) .bnav-i { font-size: 10px; letter-spacing: -.25px; }
   .bnav-plat.go { color: #FFFFFF; }
+  .v96-sw { width: 44px; height: 26px; border-radius: 13px; background: #3A3A3A; position: relative; flex-shrink: 0; transition: background .2s; }
+  .v96-sw i { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #FFFFFF; transition: transform .2s; }
+  .v96-sw.on { background: #FFFFFF; }
+  .v96-sw.on i { background: #000000; transform: translateX(18px); }
   .bnav-plat.go svg { animation: v94p .9s ease-in-out infinite; }
   @keyframes v94p { 50% { opacity: .35; transform: translateY(-1px); } }
   /* Карточки плоские */
@@ -5193,7 +5195,7 @@ function v20seen(){ v20set('bs_plat_seen', '1'); var el = document.getElementByI
 // initData уходит формой (POST, не в адресе) на app.bxclub.kz/tg, сервер проверяет подпись Telegram и сразу отдаёт
 // платформу с сессией. Раньше: страница входа, скрипт telegram.org, запрос входа, перезагрузка и только потом платформа
 var v94busy = 0;
-window.addEventListener('pageshow', function(){ v94busy = 0; document.querySelectorAll('.bnav-plat.go').forEach(function(b){ b.classList.remove('go'); }); });
+window.addEventListener('pageshow', function(e){ if(e && e.persisted) v96fwBack(); v94busy = 0; document.querySelectorAll('.bnav-plat.go').forEach(function(b){ b.classList.remove('go'); }); });
 function v20openPlat(go){
   v20seen();
   if(Date.now() - v94busy < 4000) return; // двойное нажатие не отправляет форму второй раз
@@ -5212,6 +5214,7 @@ function v20openPlat(go){
       });
       document.body.appendChild(f);
       v94busy = Date.now();
+      v96fwMark(d);
       try{ tg.HapticFeedback.impactOccurred('light'); }catch(e){}
       f.submit();
       return;
@@ -5220,6 +5223,30 @@ function v20openPlat(go){
   var url = V20_PLAT + (go ? '/#' + go : '');
   try{ if(tg && tg.openLink){ tg.openLink(url); return; } }catch(e){}
   try{ window.open(url, '_blank'); }catch(e){}
+}
+// R96 (#42): одно приложение в Telegram. Человек ушёл на платформу и закрыл Telegram там: следующий запуск сразу
+// открывает платформу (prelude.js, форма уходит первой строкой, приложение не рисуется). Вернулся «Назад»:
+// следующий запуск снова здесь. «Профиль → Открывать там, где закончили» выключает переход
+function v96fwMark(d){
+  try{
+    var u = JSON.parse(new URLSearchParams(d).get('user') || 'null');
+    if(u && u.id) localStorage.setItem('bs_fw96', JSON.stringify({u: String(u.id), at: Date.now()}));
+    sessionStorage.setItem('bs_fw96s', '1');
+  }catch(e){}
+}
+function v96fwBack(){ try{ localStorage.removeItem('bs_fw96'); }catch(e){} }
+function v96fwToggle(){
+  var off = v20get('bs_fw96off') === '1';
+  v20set('bs_fw96off', off ? '0' : '1');
+  if(!off) v96fwBack();
+  showToast(off ? 'Запуск откроет то, где вы закончили' : 'Запуск всегда открывает приложение');
+  try{ if(v9activeId() === 'more') renderAdminMore(); else if(v9activeId() === 'mystatus') renderMyStatus(); }catch(e){}
+}
+function v96fwRow(){
+  try{ if(navRole() === 'lead') return ''; }catch(e){}
+  var on = v20get('bs_fw96off') !== '1';
+  return v3row('', 'Открывать там, где закончили', 'Закрыли Telegram на платформе: в следующий раз сразу откроется она', 'v96fwToggle()',
+    '<div class="v96-sw' + (on ? ' on' : '') + '" role="switch" aria-checked="' + on + '"><i></i></div>');
 }
 // Кнопка «Платформа» нижнего меню: сразу видно, что нажатие принято (сеть может быть медленной)
 function v94plat(btn){
@@ -5234,6 +5261,10 @@ function v20btns(){
 function v20note(){ return '<div class="v20-note">' + v20ico(14, 2.2) + 'Открывается здесь, в Telegram</div>'; }
 // R93: карточка у резидента, лида и команды: мобильная версия платформы в этом же окне, вход без пароля
 function v20platCard(role){
+  // R96 (#43): «Платформа» одна: пункт нижнего меню. Карточка на главной только новичку, до первого открытия
+  // платформы; у резидента в первые дни её заменяет шаг «Откройте платформу BS» в «Первых шагах»
+  if(v20get('bs_plat_seen') === '1') return '';
+  if(role === 'resident' && v20get('bs_onb_hide') !== '1') return '';
   var what = role === 'admin'
     ? 'Доски резидентов, задачи, заявки и финансы клуба в мобильной версии. Вход через ваш Telegram.'
     : (role === 'lead' ? 'Мобильная версия платформы: диагностика, бизнес-идеи и запись на разбор. Вход через ваш Telegram.'
@@ -5635,6 +5666,8 @@ function handleGlobalClick(e){
 document.addEventListener('click', handleGlobalClick);
 
 function init(){
+  // R96 (#42): запуск уже ушёл на платформу (prelude.js): приложение не рисуется и данные не просит
+  if(window.__bsFw){ try{ if(tg){ tg.ready(); tg.expand(); } }catch(e){} return; }
   try {
     if(tg){
       tg.ready();
@@ -11364,10 +11397,13 @@ function renderMyStatus(){
   }
   if(me.partner) h += '<div class="v2-card v3-text v70-prt" style="margin-top:10px;color:#9A9A9A;cursor:pointer" role="button" tabindex="0" onclick="v70partner(' + v2esc(JSON.stringify(me.partner)) + ')">' + v70sw + ' Партнёр: <b style="color:#fff">' + v2esc(me.partner) + '</b> · одна встреча на двоих <span style="float:right;color:#fff">›</span></div>';
   h += '<div class="v2-h">Ещё</div><div class="v2-card">' +
-    v3row('board', 'Платформа BS', 'Мобильная версия здесь, в Telegram', 'v20openPlat()') +
     v3row('me', 'Мои данные', 'Ниша, о себе, контакты', "showPage('myprofile')") +
     v3row('club', 'Пригласить предпринимателя', '100\u00a0000 ₸ за приглашённого резидента', "showPage('referral')") +
     v3row('doc', 'Рассказать о BS в Stories', 'Готовая картинка с вашим фото', 'shareStory()') +
+  '</div>';
+  h += '<div class="v2-h">Приложение</div><div class="v2-card">' +
+    v3row('', 'BS на экране «Домой»', 'Иконка на телефоне: одно окно, вход сохраняется', 'addToHomeScreen()') +
+    v96fwRow() +
   '</div>';
   el.innerHTML = h;
 }
@@ -12461,13 +12497,22 @@ async function submitAddResident(){
 
 
 function addToHomeScreen(){
-  var ua = navigator.userAgent.toLowerCase();
-  var isiOS = /iphone|ipad|ipod/.test(ua);
-  var msg = isiOS 
-    ? 'Как установить на iOS:\n\n1. Нажмите на ⋮ (три точки) сверху\n2. Выберите "Открыть в Safari"\n3. В Safari: кнопка Поделиться → "На экран Домой"'
-    : 'Как установить на Android:\n\n1. Нажмите на ⋮ (три точки) сверху\n2. Выберите "Открыть в браузере"\n3. В Chrome: меню → "Добавить на главный экран"';
-  var mp = msg.split('\n\n');
-  bsAlert(mp[0], mp.slice(1).join('\n\n'));
+  // R96: иконка «Добавить на экран "Домой"» из меню Telegram на iPhone открывает каждый раз вкладку Safari и только
+  // потом Telegram. На экран ставится платформа BS как приложение: одно окно, вход сохраняется. Ключ установки
+  // одноразовый: первая иконка входит сама, Telegram не нужен
+  var d = bsInitData();
+  var fail = function(){
+    bsAlert('BS на экране «Домой»', '1. Откройте app.bxclub.kz в Safari и войдите\n2. «Поделиться» → «На экран "Домой"» → «Добавить»\n3. Открывайте BS с этой иконки: одно окно, вход сохраняется');
+  };
+  if(!d){ fail(); return; }
+  showToast('Готовим ссылку…');
+  fetch(V20_PLAT + '/api/v1/platform/auth/handoff', {method: 'POST', body: 'tg=' + encodeURIComponent(d)})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      if(!j || !j.url){ fail(); return; }
+      try{ if(tg && tg.openLink){ tg.openLink(j.url); return; } }catch(e){}
+      window.open(j.url, '_blank');
+    }).catch(fail);
 }
 
 
@@ -13562,7 +13607,6 @@ function renderAdminMore(){
   var libN = (window._lib && window._lib.items) ? window._lib.items.length : 0;
   var S = V11_MENU(leads, res, unpaid, met, closed, libN);
   v30navLoad();
-  h += '<div class="v2-card" style="margin-top:14px">' + v3row('board', 'Платформа BS', 'Мобильная версия здесь, в Telegram', 'v20openPlat()') + '</div>';
   S.forEach(function(sec){
     var items = sec[1].filter(function(r){ return !r.ext || v30navHas(r.ext, true); });
     if(!items.length) return;
@@ -13583,7 +13627,8 @@ function renderAdminMore(){
       }).join('') + '</div></div>';
   }
   h += '<div class="v2-h">Приложение</div><div class="v2-card">' +
-    v3row('', 'На главный экран', 'Иконка приложения на телефоне', 'addToHomeScreen()') +
+    v3row('', 'BS на экране «Домой»', 'Иконка на телефоне: одно окно, вход сохраняется', 'addToHomeScreen()') +
+    v96fwRow() +
   '</div>';
   el.innerHTML = h;
 }
