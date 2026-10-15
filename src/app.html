@@ -5175,26 +5175,40 @@ function v20ico(size, w){ return '<svg width="' + size + '" height="' + size + '
 function v20get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function v20set(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
 function v20seen(){ v20set('bs_plat_seen', '1'); var el = document.getElementById('v20onbPlat'); if(el && !el.classList.contains('done')){ el.classList.add('done'); v20onbCount(); } }
-function v20openPlat(){
+// R93: «клиент хочет мобильную версию платформы, но у него уже приложение (бот) и будет путаница». Платформа открывается
+// здесь же, в окне приложения внутри Telegram (openLink уводил в браузер): адрес с данными входа Telegram (tgWebAppData),
+// платформа входит по ним сама, кнопка «Назад» Telegram возвращает в приложение. go: раздел платформы (#leads и т. п.)
+function v20tgUrl(go){
+  var w = null; try{ w = window.Telegram && Telegram.WebApp; }catch(e){}
+  var d = (w && w.initData) || bsInitData();
+  if(!d) return '';
+  var p = 'tgWebAppData=' + encodeURIComponent(d) + '&tgWebAppVersion=' + encodeURIComponent((w && w.version) || '6.0') + '&tgWebAppPlatform=' + encodeURIComponent((w && w.platform) || 'unknown');
+  try{ if(w && w.themeParams && Object.keys(w.themeParams).length) p += '&tgWebAppThemeParams=' + encodeURIComponent(JSON.stringify(w.themeParams)); }catch(e){}
+  if(go) p += '&bsgo=' + encodeURIComponent(go);
+  return V20_PLAT + '/#' + p;
+}
+function v20openPlat(go){
   v20seen();
-  try{ if(window.Telegram && Telegram.WebApp && typeof Telegram.WebApp.openLink === 'function'){ Telegram.WebApp.openLink(V20_PLAT); return; } }catch(e){}
-  try{ window.open(V20_PLAT, '_blank'); }catch(e){}
+  var u = v20tgUrl(go);
+  if(u){ try{ location.href = u; return; }catch(e){} }
+  try{ window.open(V20_PLAT + (go ? '/#' + go : ''), '_blank'); }catch(e){}
 }
 function v20copyPlat(){ v20seen(); v15copy(V20_PLAT, 'Ссылка скопирована'); }
 function v20btns(){
-  return '<div class="v20-bt"><button class="b1" onclick="event.stopPropagation();v20openPlat()">Открыть платформу</button>' +
+  return '<div class="v20-bt"><button class="b1" onclick="event.stopPropagation();v20openPlat()">Зайти на платформу</button>' +
     '<button class="b2" onclick="event.stopPropagation();v20copyPlat()">Скопировать ссылку</button></div>';
 }
-function v20note(){ return '<div class="v20-note">' + v20ico(14, 2.2) + 'Удобнее с ноутбука</div>'; }
+function v20note(){ return '<div class="v20-note">' + v20ico(14, 2.2) + 'Открывается здесь, в Telegram</div>'; }
+// R93: карточка у резидента, лида и команды: мобильная версия платформы в этом же окне, вход без пароля
 function v20platCard(role){
-  try{ if(navRole() === 'lead') return ''; }catch(e){}
   var what = role === 'admin'
-    ? 'Разборы и доски резидентов, задачи, отчёты, заявки и финансы клуба. Вход через Telegram; резиденту без Telegram: личная ссылка из его карточки.'
-    : 'Ваши разборы, задачи, отчёты и прогресс в одном месте. Вход через Telegram. Помощнику можно дать свой вход: Профиль → «Доступ для ассистента».';
+    ? 'Доски резидентов, задачи, заявки и финансы клуба в мобильной версии. Вход через ваш Telegram.'
+    : (role === 'lead' ? 'Мобильная версия платформы: диагностика, бизнес-идеи и запись на разбор. Вход через ваш Telegram.'
+      : 'Мобильная версия платформы: разбор, задачи, отчёты и замеры. Вход через ваш Telegram.');
   return '<div class="v2-card v20-plat" id="v20plat"><div class="hd"><div class="ic">' + v20ico(20) + '</div>' +
-    '<div class="m"><div class="k">ВЕБ-ВЕРСИЯ</div><div class="t">Платформа BS</div></div></div>' +
+    '<div class="m"><div class="k">В TELEGRAM</div><div class="t">Платформа BS</div></div></div>' +
     '<div class="s">' + what + '</div>' + v20note() +
-    '<div class="v20-url num">app.bxclub.kz</div>' + v20btns() + '</div>';
+    '<div class="v20-url num">С ноутбука: app.bxclub.kz</div>' + v20btns() + '</div>';
 }
 // Первые шаги резидента: показываются, пока не пройдены или не скрыты
 function v20onb(sent){
@@ -5208,7 +5222,7 @@ function v20onb(sent){
   return '<div class="v2-card v20-onb" id="v20onb"><div class="hd"><div class="k">ПЕРВЫЕ ШАГИ · <span id="v20onbN">' + ((sent ? 1 : 0) + (plat ? 1 : 0) + (rules ? 1 : 0)) + '</span> ИЗ 3</div>' +
       '<button class="x" onclick="v20onbHide()">Скрыть</button></div>' +
     st(1, sent, 'v20onbRep', 'Сдайте первый отчёт', 'В группе клуба, тема «ОТЧЁТЫ», каждый день до 23:59', sent ? '' : '<button class="go" onclick="v3sendReport()">Сдать отчёт ›</button>') +
-    st(2, plat, 'v20onbPlat', 'Откройте платформу BS', 'app.bxclub.kz: ваши разборы, задачи, отчёты и прогресс. Вход через Telegram.', v20note() + v20btns()) +
+    st(2, plat, 'v20onbPlat', 'Откройте платформу BS', 'Мобильная версия здесь, в Telegram, и app.bxclub.kz с ноутбука: разбор, задачи, отчёты и прогресс.', v20btns()) +
     st(3, rules, 'v20onbRules', 'Прочитайте правила клуба', 'Отчёты, встречи, штрафы и оплата', rules ? '' : '<button class="go" onclick="v20set(\'bs_onb_rules\',\'1\');showPage(\'rules\')">Открыть правила ›</button>') +
   '</div>';
 }
@@ -6651,6 +6665,7 @@ function renderResHome(){
            '<div class="s">Отчёт пишется в группе клуба, в теме «ОТЧЁТЫ». Без отчёта в 10:00 следующего дня приходит штраф 10 000 ₸.</div>' +
            '<button onclick="v3sendReport()">Сдать отчёт</button></div>';
   }
+  h += v20platCard('resident'); // R93: «Платформа BS» сразу после отчёта
   // Первые шаги новичка: отчёт, платформа, правила
   h += v20onb(sent || v3reports30(me) > 0);
   // Библиотека BS: крупно, сразу после отчёта
@@ -6663,7 +6678,6 @@ function renderResHome(){
   if(debt > 0){
     h += '<a href="https://pay.kaspi.kz/pay/ri6h2lj5" target="_blank" style="display:block;margin-top:8px;text-decoration:none"><button class="v3-primary" style="height:50px;border-radius:12px">Оплатить ' + v2money(debt) + ' ₸ через Kaspi</button></a>';
   }
-  h += v20platCard('resident');
   h += v15homeCard();
   if(!window._v15refTried && window._ref){ window._v15refTried = true; setTimeout(function(){ v15refLoad(); }, 600); }
   // R22: «Ближайшая встреча»: дата, день недели, время, отсчёт; сегодняшняя, если есть
@@ -11189,6 +11203,7 @@ function renderMyStatus(){
   }
   if(me.partner) h += '<div class="v2-card v3-text v70-prt" style="margin-top:10px;color:#9A9A9A;cursor:pointer" role="button" tabindex="0" onclick="v70partner(' + v2esc(JSON.stringify(me.partner)) + ')">' + v70sw + ' Партнёр: <b style="color:#fff">' + v2esc(me.partner) + '</b> · одна встреча на двоих <span style="float:right;color:#fff">›</span></div>';
   h += '<div class="v2-h">Ещё</div><div class="v2-card">' +
+    v3row('board', 'Платформа BS', 'Мобильная версия здесь, в Telegram', 'v20openPlat()') +
     v3row('me', 'Мои данные', 'Ниша, о себе, контакты', "showPage('myprofile')") +
     v3row('club', 'Пригласить предпринимателя', '100\u00a0000 ₸ за приглашённого резидента', "showPage('referral')") +
     v3row('doc', 'Рассказать о BS в Stories', 'Готовая картинка с вашим фото', 'shareStory()') +
@@ -13312,6 +13327,7 @@ function renderAbout(){
       : (ready && nextArea ? 'Готово органов: ' + ready + '. Дальше ' + nextArea.organ + ': ' + String(nextArea.label).toLowerCase() + '.' : 'Семь органов бизнеса, 5 минут. Покажем слабые места.');
     // Главный бесплатный оффер: 99 гайдов, сразу на первом экране
     h += v13leadHero();
+    h += v20platCard('lead'); // R93: «Платформа BS» и у лида
     h += '<div class="v2-card" style="margin-top:12px;padding:16px 18px;cursor:pointer" onclick="showPage(\'diagnostic\')">' +
       '<div class="v3-row-sb" style="align-items:baseline"><div style="font-size:16px;font-weight:800">Диагностика бизнеса</div><div class="num" style="font-size:13px;color:#9A9A9A">' + ready + '/' + areas + '</div></div>' +
       '<div class="v3-dseg" style="margin-top:12px;grid-template-columns:repeat(' + areas + ',minmax(0,1fr))">' + Array.apply(null, Array(areas)).map(function(a, i){ return '<i' + (i < ready ? ' class="on"' : '') + '></i>'; }).join('') + '</div>' +
@@ -13385,11 +13401,12 @@ function renderAdminMore(){
   var libN = (window._lib && window._lib.items) ? window._lib.items.length : 0;
   var S = V11_MENU(leads, res, unpaid, met, closed, libN);
   v30navLoad();
+  h += '<div class="v2-card" style="margin-top:14px">' + v3row('board', 'Платформа BS', 'Мобильная версия здесь, в Telegram', 'v20openPlat()') + '</div>';
   S.forEach(function(sec){
     var items = sec[1].filter(function(r){ return !r.ext || v30navHas(r.ext, true); });
     if(!items.length) return;
     h += '<div class="v2-h">' + sec[0] + '</div><div class="v2-card">' + items.map(function(r){
-      return r.ext ? v3row(r.icon, r.title, r.sub, "v11plat('" + r.ext + "')", '<div class="ic v11-ext" aria-label="Откроется в браузере">↗</div>')
+      return r.ext ? v3row(r.icon, r.title, r.sub, "v11plat('" + r.ext + "')", '<div class="ic v11-ext" aria-label="Откроется на платформе">↗</div>')
                    : v3row(r.icon, r.title, r.sub, r.go);
     }).join('') + '</div>';
   });
@@ -13496,6 +13513,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
   ];
 }
 function v11plat(id){
+  if(v20tgUrl(id)) return v20openPlat(id); // R93: раздел платформы в этом же окне Telegram
   var url = 'https://app.bxclub.kz/#' + id;
   try{ if(tg && tg.openLink){ tg.openLink(url); return; } }catch(e){}
   window.open(url, '_blank');
