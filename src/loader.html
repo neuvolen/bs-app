@@ -23,12 +23,12 @@
 <script>
 // ЗАГРУЗЧИК (R44). Telegram может держать этот файл в кеше сколько угодно: логика здесь не меняется.
 // 1. Приложение (s/<хеш>.html) лежит в Cache Storage (нет его: в localStorage) и показывается сразу, без сети.
-// 2. На каждом запуске сверяется version.json (сотня байт, мимо любых кешей). Новая версия скачивается
-//    один раз, старая больше не показывается: после выкладки все открывают свежую.
+// 2. На каждом запуске сверяется version.json (сотня байт, мимо любых кешей), R95: параллельно с запуском,
+//    не задерживая его. Новая версия скачивается один раз в фоне и включается сама (runtime.js bsVerCheck).
 // 3. Сломанный кеш чинится сам: обрезанный файл не запускается, два неудачных старта подряд стирают кеш.
 (function(){
   var B = location.href.split('#')[0].split('?')[0].replace(/[^\/]*$/, '');
-  var CN = 'bs-app', END = '<!--/bs-shell-->', WAIT = 700;
+  var CN = 'bs-app', END = '<!--/bs-shell-->';
   var API = '/*API*/', BUILT = /*BUILT*/null;   // подставляет build.mjs: адрес сервера и версия на момент выкладки
   function ls(k, v){ try{ if(v === undefined) return localStorage.getItem(k); if(v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); }catch(e){} return null; }
   function cache(){ try{ if(window.caches && caches.open) return caches.open(CN); }catch(e){} return Promise.reject(new Error('no cache')); }
@@ -122,20 +122,14 @@
       });
     });
   }
-  var mf = manifest(), cached = get(cur.shell);
-  var done = false;
-  // ждём version.json не дольше WAIT мс: на медленной сети запускается сохранённая версия, свежесть сверит само приложение
-  var timer = setTimeout(function(){ go(null, false); }, WAIT);
-  mf.then(function(ver){ go(ver, true); });
-  function go(ver, answered){
-    if(done) return;
-    if(answered && ver && ver.v !== cur.v){ done = true; clearTimeout(timer); get(ver.shell).then(function(t){ if(good(t)) boot(ver, t, true); else install(ver); }); return; }
-    done = true; clearTimeout(timer);
-    cached.then(function(t){
-      if(good(t)) boot(cur, t, answered && !!ver);
-      else (answered && ver ? install(ver) : mf.then(function(v2){ if(v2) install(v2); else fresh(); }));
-    });
-  }
+  // R95: сохранённая версия запускается сразу, version.json не ждём (было до WAIT мс на каждом открытии).
+  // Ответ version.json забирает приложение (window.__bsVerP): новая версия скачается в фоне и включится сама
+  var mf = manifest();
+  window.__bsVerP = mf;
+  get(cur.shell).then(function(t){
+    if(good(t)) boot(cur, t, false);
+    else mf.then(function(v2){ if(v2) install(v2); else fresh(); });
+  });
 })();
 </script>
 </body>

@@ -118,6 +118,13 @@ function bsClean(){
   bsCache().then(function(c){
     return c.keys().then(function(ks){ ks.forEach(function(r){ if(!keep[r.url]) c.delete(r); }); });
   }).catch(function(){});
+  // шрифты прошлых сборок в localStorage (R95)
+  try{
+    for(var i = localStorage.length - 1; i >= 0; i--){
+      var k = localStorage.key(i);
+      if(k && k.indexOf('bs_f:f/') === 0 && !keep[bsBase() + k.slice(5)]) localStorage.removeItem(k);
+    }
+  }catch(e){}
 }
 
 // ── Шрифт: Manrope (переменный, 200-800), кириллица и латиница, swap: текст виден сразу ──
@@ -128,7 +135,12 @@ function bsFonts(){
     s.textContent = F.map(function(f){ return "@font-face{font-family:'Manrope';font-style:normal;font-weight:200 800;font-display:swap;src:url(" + bsBase() + f.u + ") format('woff2');unicode-range:" + f.r + "}"; }).join('');
     document.head.appendChild(s);
   };
-  if(!window.FontFace || !document.fonts || !window.caches){ css(); return; }
+  if(!window.FontFace || !document.fonts){ css(); return; }
+  // R95: шрифт из localStorage подключается синхронно, до первой отрисовки: повторное открытие сразу в Manrope,
+  // без подмены шрифта и сдвига текста через долю секунды. Первое открытие: системный шрифт, Manrope после загрузки
+  F = F.filter(function(f){ return !bsFontLs(f); });
+  if(!F.length) return;
+  if(!window.caches){ css(); return; }
   F.forEach(function(f){
     var url = bsBase() + f.u;
     bsCache().then(function(c){
@@ -138,9 +150,30 @@ function bsFonts(){
       });
     }).then(function(buf){
       var ff = new FontFace('Manrope', buf, {style: 'normal', weight: '200 800', unicodeRange: f.r, display: 'swap'});
-      return ff.load().then(function(){ document.fonts.add(ff); });
+      return ff.load().then(function(){ document.fonts.add(ff); bsFontSave(f, buf); });
     }).catch(function(){ if(!bsFonts._css){ bsFonts._css = 1; css(); } });
   });
+}
+
+function bsFontLs(f){
+  var b = bsLs('bs_f:' + f.u); if(!b) return false;
+  try{
+    var bin = atob(b), u8 = new Uint8Array(bin.length);
+    for(var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+    var ff = new FontFace('Manrope', u8.buffer, {style: 'normal', weight: '200 800', unicodeRange: f.r, display: 'swap'});
+    document.fonts.add(ff);
+    if(ff.status === 'error') throw new Error('font');
+    return true;
+  }catch(e){ bsLs('bs_f:' + f.u, null); return false; }
+}
+function bsFontSave(f, buf){
+  setTimeout(function(){
+    try{
+      var u8 = new Uint8Array(buf), s = '';
+      for(var i = 0; i < u8.length; i += 8192) s += String.fromCharCode.apply(null, u8.subarray(i, i + 8192));
+      if(s.length < 120000) bsLs('bs_f:' + f.u, btoa(s));
+    }catch(e){}
+  }, 1000);
 }
 
 // ── Версия: после выкладки приложение обновляется само ──
@@ -155,10 +188,19 @@ function bsGone(){
 }
 function bsVerCheck(now){
   __bsVerAt = Date.now();
-  return fetch(bsBase() + 'version.json?t=' + Date.now(), {cache: 'no-store'})
-    .then(function(r){ return r.ok ? r.json() : null; })
+  // R95: загрузчик уже спросил version.json параллельно с запуском: его ответ, без второго запроса
+  var pre = window.__bsVerP; window.__bsVerP = null;
+  return (pre || fetch(bsBase() + 'version.json?t=' + Date.now(), {cache: 'no-store'})
+    .then(function(r){ return r.ok ? r.json() : null; }))
     .then(function(j){
       if(!j || !j.v || !j.shell || j.v === BS_BUILD.v) return;
+      // R95: открыто как index.html: свежая версия приходит по своему адресу (?v=), мимо кеша браузера
+      if(window.__bsInline){
+        bsLs('bs_ver', JSON.stringify({v: j.v, shell: j.shell}));
+        __bsNext = j.v;
+        if(now || (!__bsTouched && Date.now() - __bsBoot < 8000)) bsRestart();
+        return;
+      }
       return bsGet(j.shell).then(function(t){
         if(t && t.indexOf('<!--/bs-shell-->') > 0) return t;
         return fetch(bsBase() + j.shell).then(function(r){ return r.ok ? r.text() : null; });
@@ -167,25 +209,40 @@ function bsVerCheck(now){
         return bsPut(j.shell, t, 'text/html; charset=utf-8').then(function(){
           bsLs('bs_ver', JSON.stringify({v: j.v, shell: j.shell}));
           __bsNext = j.v;
-          if(now || (!__bsTouched && Date.now() - __bsBoot < 8000)) location.reload();
+          if(now || (!__bsTouched && Date.now() - __bsBoot < 8000)) bsRestart();
         });
       });
     }).catch(function(){});
 }
+// Перезапуск на новую версию. Через загрузчик: reload (он возьмёт её из Cache Storage). Как index.html: переход на
+// index.html?v=<версия>, у этого адреса нет копии в кеше браузера. Один переход на версию за сеанс: если сайт ещё
+// отдаёт старую копию (выкладка не доехала), приложение не прыгает по кругу, новая включится при следующем открытии
+function bsRestart(){
+  if(!window.__bsInline){ location.reload(); return; }
+  var k = 'bs_nav_v', done = null; try{ done = sessionStorage.getItem(k); }catch(e){}
+  if(done === __bsNext) return;
+  try{ sessionStorage.setItem(k, __bsNext); }catch(e){}
+  location.replace(bsBase() + '?v=' + encodeURIComponent(__bsNext) + location.hash);
+}
+// R95: первые секунды экраны появляются без анимации (html.bs-boot): первый кадр сразу готовый, обновление
+// данных из сети не мигает. С первого касания и через 4 секунды анимации переходов как раньше
+function bsBootEnd(){ document.documentElement.classList.remove('bs-boot'); }
 function bsBooted(){ bsLs('bs_boot', null); try{ __bsPerf.init = Math.round(performance.now()); }catch(e){} }
 
 (function(){
   bsFonts();
-  ['touchstart', 'pointerdown', 'keydown'].forEach(function(ev){ document.addEventListener(ev, function(){ __bsTouched = true; }, {capture: true, passive: true}); });
+  ['touchstart', 'pointerdown', 'keydown'].forEach(function(ev){ document.addEventListener(ev, function(){ __bsTouched = true; bsBootEnd(); }, {capture: true, passive: true}); });
+  setTimeout(bsBootEnd, 4000);
   // запуск без загрузчика (старый сохранённый index.html или прямой адрес) тоже запоминает версию
-  if(!bsLs('bs_ver')) bsLs('bs_ver', JSON.stringify({v: BS_BUILD.v, shell: BS_BUILD.shell}));
-  if(window.__bsChecked !== BS_BUILD.v) setTimeout(bsVerCheck, 1500);
+  if(!bsLs('bs_ver') || window.__bsInline) bsLs('bs_ver', JSON.stringify({v: BS_BUILD.v, shell: BS_BUILD.shell}));
+  if(window.__bsChecked !== BS_BUILD.v) setTimeout(bsVerCheck, window.__bsVerP ? 0 : 1500);
   document.addEventListener('visibilitychange', function(){
     if(document.visibilityState !== 'visible') return;
-    if(__bsNext){ location.reload(); return; }
+    if(__bsNext){ bsRestart(); return; }
     if(Date.now() - __bsVerAt > 60000) bsVerCheck();
   });
+  // R95: модули разделов в память раньше (было через 2,5 с): первое касание раздела не ждёт синхронной загрузки
   setTimeout(function(){
-    if(window.requestIdleCallback) requestIdleCallback(bsPrefetch, {timeout: 4000}); else bsPrefetch();
-  }, 2500);
+    if(window.requestIdleCallback) requestIdleCallback(bsPrefetch, {timeout: 2000}); else bsPrefetch();
+  }, 1200);
 })();

@@ -1,6 +1,7 @@
 // Сборка Mini App: node build.mjs  (npm ci один раз: esbuild, acorn)
 // src/app.html     исходник приложения (читаемый, правится только он)
-// src/loader.html  загрузчик: dist/index.html и dist/app.html (старые загрузчики в кеше Telegram просят app.html)
+// src/loader.html  загрузчик: dist/app.html (старые загрузчики в кеше Telegram просят app.html); dist/index.html с R95 само приложение
+// src/prelude.js   первые строки приложения: пакет данных просится сразу (R95)
 // src/runtime.js   среда сборки: модули по требованию, Cache Storage, шрифт, сверка версии
 // src/split.json   какие функции уходят в модули (tools/split.mjs по замеру покрытия); остальное в ядре
 // dist/            то, что выкладывает GitHub Pages: version.json, s/<хеш>.html (ядро), m/<модуль>.<хеш>.js, f/, i/
@@ -142,7 +143,13 @@ const headMin = squash(head).replace('<head>\n', '<head>');
 const runtime = read('runtime.js');
 const manifestFor = shellRel => ({ v: '', shell: shellRel, mods: modFiles.map(x => x.rel), pages: Object.fromEntries(Object.entries(split.pages).map(([p, ms]) => [p, ms.map(m => MODS.indexOf(m))])), roles: Object.fromEntries(Object.entries(split.roles).map(([r, ms]) => [r, ms.map(m => MODS.indexOf(m))])), fonts });
 // версия = хеш содержимого без самой версии
-const shellFor = man => headMin + '<style>' + cssMin + '</style>\n</head>\n<body>' + squash(bodyHtml) + '<script>' +
+const apiServer = (/const APP_SERVER = '([^']+)'/.exec(js) || [])[1];
+if (!apiServer) throw new Error('нет APP_SERVER в src/app.html');
+// R95: первые строки <head>: пакет данных просится до разбора стилей и разметки (src/prelude.js)
+const META = '<meta charset="UTF-8">';
+if (!headMin.includes(META)) throw new Error('нет ' + META + ' в <head>');
+const prelude = inline => '<script>' + minJs(read('prelude.js').replace('/*BS_INLINE*/0', inline ? '1' : '0').replace("'/*API*/'", JSON.stringify(apiServer))) + '</script>';
+const shellFor = (man, inline) => headMin.replace(META, META + prelude(inline)) + '<style>' + cssMin + '</style>\n</head>\n<body>' + squash(bodyHtml) + '<script>' +
   minJs(runtime.replace('/*BS_BUILD*/{}', JSON.stringify(man)) + '\n' + coreJs) + '</script>\n</body>\n</html>\n<!--/bs-shell-->';
 const probe = shellFor(manifestFor(''));
 const v = hash(probe);
@@ -152,11 +159,12 @@ const shell = shellFor(man);
 write(shellRel, shell);
 
 // ── загрузчик, версия ──
-const apiServer = (/const APP_SERVER = '([^']+)'/.exec(js) || [])[1];
-if (!apiServer) throw new Error('нет APP_SERVER в src/app.html');
 const loader = read('loader.html').replace(/<script>([\s\S]*?)<\/script>/, (m, code) => '<script>' +
   minJs(code.replace("'/*API*/'", JSON.stringify(apiServer)).replace('/*BUILT*/null', JSON.stringify({ v, shell: shellRel }))) + '</script>');
-write('index.html', loader);
+// R95: index.html: само приложение (то же ядро, что s/<хеш>.html), без загрузчика и второго запроса.
+// Загрузчик остаётся в app.html (старые загрузчики из кеша Telegram), ядро s/<хеш>.html для загрузчиков R44+
+const indexHtml = shellFor(man, true);
+write('index.html', indexHtml);
 // старые загрузчики (до R44, могут жить в кеше Telegram) берут app.html и считают ответ короче 5000 символов ошибкой
 const OLD_MIN = 6000;
 const note = '<!-- app.html: загрузчик для старых загрузчиков из кеша Telegram, они не принимают ответ короче 5000 символов. ';
@@ -178,4 +186,4 @@ const kb = n => (n / 1024).toFixed(1) + ' КБ';
 console.log('версия ' + v + ': функций в модулях ' + stats.lazy + ', данных в модулях ' + varMoves.map(x => x.n).join(' ') + ', убрано мёртвых функций ' + stats.dead + ', правил CSS ' + cssDrop.n + ' (' + kb(cssDrop.bytes) + ')');
 console.log('ядро ' + shellRel + ': ' + kb(Buffer.byteLength(shell)) + ', gzip ' + kb(gz(shell)) + ' (CSS gzip ' + kb(gz(cssMin)) + ')');
 modFiles.forEach((x, i) => console.log('модуль ' + MODS[i] + ': ' + x.n + ' функций, ' + kb(x.size) + ', gzip ' + kb(x.gz)));
-console.log('загрузчик ' + kb(Buffer.byteLength(loader)) + ', gzip ' + kb(gz(loader)));
+console.log('index.html ' + kb(Buffer.byteLength(indexHtml)) + ', gzip ' + kb(gz(indexHtml)) + '; загрузчик app.html ' + kb(Buffer.byteLength(loader)) + ', gzip ' + kb(gz(loader)));

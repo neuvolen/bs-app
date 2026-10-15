@@ -33,6 +33,9 @@ const names = keys => new Set((keys || []).map(k => k.split('@')[0]).filter(n =>
 const core = new Set();
 for (const r of Object.keys(cov)) for (const k of ['first', 'idle', 'warmFirst', 'warmIdle']) names(cov[r][k]).forEach(n => core.add(n));
 fns.forEach(f => { if (f.end - f.start < SMALL || count[f.id.name] > 1) core.add(f.id.name); });
+// R95: нужны на старте при живых данных (встреча сегодня, библиотека резидента) и на первом касании (navGo, handleGlobalClick),
+// покрытие их не застало: из модуля они тянулись синхронным запросом и задерживали первый экран и первое нажатие
+['v3isToday', 'parseScheduleKey', 'v22start', 'v9libIcon', 'v22nextCard', 'v9organLabel', 'v22countdown', 'v3filteredClub', 'v3resListHTML', 'v3resStatus', 'navGo', 'handleGlobalClick'].forEach(n => core.add(n));
 
 // где функция работала
 const obs = {}; const pageFns = {};

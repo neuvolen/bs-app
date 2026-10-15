@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="bs-boot">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -8,7 +8,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="BS">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script async src="https://telegram.org/js/telegram-web-app.js" onload="window.__bsTgLoaded&&__bsTgLoaded()"></script><!-- R95: async, первый экран его не ждёт (bsTgWebApp) -->
+<link rel="preconnect" href="https://bs-platform-production.up.railway.app" crossorigin><!-- R95: сервер приложения: соединение открывается, пока грузится остальное -->
 <link rel="preconnect" href="https://app.bxclub.kz"><!-- R94: соединение с платформой заранее, пока открыта главная -->
 <!-- R44: шрифт Manrope свой (woff2, кириллица и латиница), подключает сборка без блокировки отрисовки -->
 <style>
@@ -177,6 +178,7 @@
   /* PAGES */
   .page { display: none; padding: 16px 16px calc(var(--tg-safe-bottom, 0px) + 130px); animation: fade 0.2s; }
   .page.active { display: block; }
+  html.bs-boot .page, html.bs-boot .page * { animation: none !important; } /* R95: первый экран сразу, без проявления (runtime.js bsBootEnd) */
   @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
   /* CARDS */
@@ -5273,7 +5275,8 @@ function v15homeCard(){
 }
 
 function bsInitData(){
-  try{ return (window.Telegram && Telegram.WebApp && Telegram.WebApp.initData) || ''; }catch(e){ return ''; }
+  try{ var W = bsTgReal(); if(W && W.initData) return W.initData; }catch(e){}
+  try{ return (tg && tg.initData) || ''; }catch(e){ return ''; }   // R95: скрипт Telegram ещё грузится: из адреса
 }
 // R22: чтение данных не висит бесконечно: сервер отвечает за 1-2 секунды, иначе он недоступен
 var V22_READ_MS = 20000;
@@ -5296,11 +5299,26 @@ async function appGet(params){
   var bundle = act === 'getBotCache' && !(params || {}).fresh, et = bundle ? bsCacheEt() : '';
   if(et) sq.set('_et', et);
   sq.set('_tg', init);
-  var r = null, pre = window.__bsPre;
-  // R44: загрузчик уже запросил этот пакет, пока скачивалось приложение (тот же адрес)
-  if(bundle && pre && !pre.used && pre.url === APP_SERVER + 'call?' + sq.toString() && Date.now() - pre.at < 20000){
-    pre.used = true;
-    try{ r = await pre.p; }catch(e){ r = null; }
+  var r = null, pre = window.__bsPre, viaBoot = false;
+  if(bundle && pre && !pre.used && Date.now() - pre.at < 20000){
+    if(pre.boot && pre.key === String((params || {}).chatId || '') + '|' + et){
+      // R95: пакет уже просили первые строки приложения (prelude.js, POST /bootstrap без проверки CORS)
+      pre.used = true;
+      try{ r = await pre.p; }catch(e){ r = null; }
+      if(r && (r.status === 404 || r.status === 405)) r = null;   // сервер ещё без /bootstrap: обычный запрос ниже
+      viaBoot = !!r;
+    } else if(pre.url === APP_SERVER + 'call?' + sq.toString()){
+      // R44: загрузчик уже запросил этот пакет, пока скачивалось приложение (тот же адрес)
+      pre.used = true;
+      try{ r = await pre.p; }catch(e){ r = null; }
+    }
+  }
+  if(viaBoot && r.ok){
+    var bj = null; try{ bj = await r.json(); }catch(e){}
+    if(bj && bj._same){ var mine0 = bsCachedBundle(); if(mine0){ window._bsEt = et; return mine0; } bsSaveCacheEt(''); return appGet(params); }
+    if(!bj) return appGet(params);
+    window._bsEt = r.headers.get('ETag') || '';
+    return bj;
   }
   if(!r){
     try{ r = await v22fetch(APP_SERVER + 'call?' + sq.toString(), null, isRead ? V22_READ_MS : 0); }
@@ -5412,7 +5430,59 @@ window.openMeetByIdx = function(idx){
 
 
 
-const tg = window.Telegram?.WebApp;
+// R95: скрипт Telegram (telegram-web-app.js) грузится async и первый экран не держит: раньше он стоял в <head>
+// без async, и первая картинка ждала его (свой сервер telegram.org, отдельное соединение; 0,7 с на медленной сети).
+// Пока его нет, tg отвечает сам: данные входа, версия, платформа из адреса (#tgWebAppData, как читает и сам скрипт),
+// ready/expand/цвета уходят в Telegram напрямую тем же postEvent. Подписки и кнопка «Назад» ждут скрипт и
+// повторяются, когда он загрузится; остальное (ссылки, вибро) до него не нужно: код проверяет наличие метода
+function bsTgReal(){ try{ return (window.Telegram && window.Telegram.WebApp) || null; }catch(e){ return null; } }
+function bsTgWebApp(){
+  if(bsTgReal() || typeof Proxy === 'undefined') return bsTgReal() || undefined;
+  var P = {};
+  try{ var st = JSON.parse(sessionStorage.getItem('__telegram__initParams') || 'null'); if(st) for(var k0 in st) P[k0] = st[k0]; }catch(e){}
+  try{ new URLSearchParams(location.hash.slice(1)).forEach(function(v, k){ P[k] = v; }); }catch(e){}
+  var unsafe = {};
+  try{
+    new URLSearchParams(P.tgWebAppData || '').forEach(function(v, k){
+      unsafe[k] = v;
+      if(/^[\[{]/.test(v)){ try{ unsafe[k] = JSON.parse(v); }catch(e){} }
+    });
+  }catch(e){}
+  var theme = {}; try{ theme = JSON.parse(P.tgWebAppThemeParams || '{}') || {}; }catch(e){}
+  function post(type, data){
+    var s = JSON.stringify(data === undefined ? '' : data);
+    try{
+      if(window.TelegramWebviewProxy !== undefined) TelegramWebviewProxy.postEvent(type, s);
+      else if(window.external && 'notify' in window.external) window.external.notify(JSON.stringify({eventType: type, eventData: data === undefined ? '' : data}));
+      else if(window.parent != null && window != window.parent) window.parent.postMessage(JSON.stringify({eventType: type, eventData: data === undefined ? '' : data}), '*');
+    }catch(e){}
+  }
+  var q = [];
+  function later(path){ return function(){ q.push([path, [].slice.call(arguments)]); }; }
+  function flush(){
+    var W = bsTgReal(); if(!W) return;
+    var a = q; q = [];
+    a.forEach(function(c){ try{ var o = W, p = c[0].split('.'), f = p.pop(); p.forEach(function(x){ o = o[x]; }); o[f].apply(o, c[1]); }catch(e){} });
+  }
+  window.__bsTgLoaded = flush;
+  var hex = function(c){ return /^#[0-9a-f]{6}$/i.test(String(c || '')); };
+  var shim = {
+    initData: P.tgWebAppData || '', initDataUnsafe: unsafe, version: P.tgWebAppVersion || '6.0', platform: P.tgWebAppPlatform || 'unknown',
+    themeParams: theme, colorScheme: 'dark', isExpanded: true,
+    ready: function(){ post('web_app_ready'); }, expand: function(){ post('web_app_expand'); },
+    setHeaderColor: function(c){ if(hex(c)) post('web_app_set_header_color', {color: c}); else q.push(['setHeaderColor', [c]]); },
+    setBackgroundColor: function(c){ if(hex(c)) post('web_app_set_background_color', {color: c}); else q.push(['setBackgroundColor', [c]]); },
+    onEvent: later('onEvent'), offEvent: later('offEvent'),
+    BackButton: {isVisible: false, show: later('BackButton.show'), hide: later('BackButton.hide'), onClick: later('BackButton.onClick'), offClick: later('BackButton.offClick')},
+    HapticFeedback: {impactOccurred: function(){}, notificationOccurred: function(){}, selectionChanged: function(){}}
+  };
+  return new Proxy(shim, {get: function(o, k){
+    var W = bsTgReal();
+    if(W){ if(q.length) flush(); var v = W[k]; return typeof v === 'function' ? v.bind(W) : v; }
+    return o[k];
+  }});
+}
+const tg = bsTgWebApp();
 let user = null;
 let isRealAdmin = false;
 let viewAs = 'admin';
@@ -5828,7 +5898,10 @@ function init(){
       if(window._v67meet || window._v67pay) v67deepAfter(0);
     } else {
       // Стартовая по умолчанию для каждой роли
-      if (effectiveRole === 'admin') {
+      // R95: первое открытие без своей копии данных: стартовый экран ждёт пакет данных (он уже в пути, prelude.js),
+      // не дольше 1,5 секунды. Иначе резидент полсекунды видел экран лида, а «Сводка» рисовалась пустой и перестраивалась
+      if (v95roleWait()) {
+      } else if (effectiveRole === 'admin') {
         showPage('dashboard');
       } else if (effectiveRole === 'lead') {
         showPage('about');
@@ -5837,7 +5910,7 @@ function init(){
       }
     }
     
-    loadAllData();
+    loadAllData().then(v95roleGo, v95roleGo);
     setupAutoRefresh();
     try{ if(window.bsBooted) bsBooted(); }catch(e){}
     setTimeout(preloadBsLogo, 800);
@@ -6316,6 +6389,21 @@ async function loadAllData(opts){
   }
 }
 
+// R95: пока данных нет (первое открытие), остаётся заставка «Загрузка данных»; данные пришли или 1,5 секунды прошли:
+// стартовый экран своей роли (резидента loadAllData уже открыл при смене роли, тогда здесь ничего)
+function v95roleWait(){
+  var c = null; try{ c = localStorage.getItem('bs_cache'); }catch(e){}
+  if(c || !window.__bsPre || !window.__bsPre.p || window.__bsPre.used) return false;
+  window._v95wait = setTimeout(v95roleGo, 1500);
+  return true;
+}
+function v95roleGo(){
+  if(!window._v95wait) return;
+  clearTimeout(window._v95wait); window._v95wait = 0;
+  var a = v9activeId();
+  if(a && a !== 'dashboard') return;
+  showPage(navRole() === 'admin' ? 'dashboard' : (viewAs === 'resident' ? 'home' : 'about'));
+}
 function renderAllPages(){
   // R44: рисуется только открытый экран, остальные помечаются и рисуются при открытии (r44page).
   // Раньше каждое обновление данных перерисовывало все экраны сразу: на слабом телефоне это заметная пауза
@@ -6823,13 +6911,8 @@ function v9libTile(x, i){
 function v9homeLibrary(){
   var L = window._lib;
   var h = '<div class="v2-h">Библиотека <span class="lnk" onclick="showPage(\'library\')">Все' + (L && L.items && L.items.length ? ' ' + L.items.length : '') + '</span></div>';
-  if(!L){
-    if(!window._v9LibTried){
-      window._v9LibTried = true;
-      loadLibrary(false).then(function(){ if(v9activeId() === 'home') renderResHome(); });
-    }
-    return h + '<div class="v2-card v2-empty">Загружаем библиотеку...</div>';
-  }
+  if(!L){ v95libBoot(); L = window._lib; }
+  if(!L) return h + '<div class="v2-card v2-empty">Загружаем библиотеку...</div>';
   var items = L.items || [];
   if(!items.length){
     if(L.error) return h + '<div class="v2-card v2-empty">Библиотека сейчас недоступна.<br><span class="v3-txtbtn" style="color:#fff" onclick="window._lib=null;window._v9LibTried=false;renderResHome()">Повторить</span></div>';
@@ -6838,14 +6921,24 @@ function v9homeLibrary(){
   window._libHome = items.slice(0, 4);
   return h + '<div class="v9-lib-grid">' + window._libHome.map(v9libTile).join('') + '</div>';
 }
+// R95: библиотека весит сотни КБ, а главная показывает из неё счётчики и обложки. Главная рисуется сразу из
+// своей копии (bs_lib), свежая библиотека качается после первого экрана и перерисовывает главную, только если
+// изменилась. Без копии (первое открытие) запрос ждёт, пока придут данные клуба: первый экран важнее
+function v95libBoot(){
+  if(!window._lib){ var c = v9libCached(); if(c && c.length) window._lib = {items: c, at: 0, stale: true}; }
+  if(window._v9LibTried) return;
+  window._v9LibTried = true;
+  var fp = function(){ try{ var l = window._lib; return l && l.items ? l.items.length + ':' + _bsHash(JSON.stringify(l.items)) : ''; }catch(e){ return ''; } };
+  var was = fp();
+  setTimeout(function(){
+    loadLibrary(false).then(function(){ if(fp() !== was && v9activeId() === 'home') renderResHome(); });
+  }, window._lib ? 2500 : 1200);
+}
 // Карточка «Библиотека BS» на главной резидента: белая, счётчики и три обложки последних книг
 function v11libDate(x){ var t = Date.parse(x.updated || x.updatedAt || x.created || x.createdAt || x.date || ''); return isFinite(t) ? t : 0; }
 function v11homeLib(){
+  v95libBoot();
   var L = window._lib;
-  if(!L && !window._v9LibTried){
-    window._v9LibTried = true;
-    loadLibrary(false).then(function(){ if(v9activeId() === 'home') renderResHome(); });
-  }
   var items = (L && L.items) || [];
   var cnt = {}; items.forEach(function(x){ var k = v9libKind(x); cnt[k] = (cnt[k] || 0) + 1; });
   var parts = [];
