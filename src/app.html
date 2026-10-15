@@ -9,6 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="BS">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://app.bxclub.kz"><!-- R94: соединение с платформой заранее, пока открыта главная -->
 <!-- R44: шрифт Manrope свой (woff2, кириллица и латиница), подключает сборка без блокировки отрисовки -->
 <style>
 
@@ -3431,6 +3432,14 @@
   .bnav-i { font-size: 11px; gap: 4px; padding-top: 0; min-height: 44px; }
   .bnav-i svg { width: 24px; height: 24px; }
   .bnav-plus span { margin-top: -6px; }
+  /* R94: «Платформа» в нижнем меню; нажатие видно сразу, пока открывается платформа */
+  .bnav-i { min-width: 0; }
+  .bnav-i span { max-width: 100%; overflow: hidden; white-space: nowrap; }
+  .bnav:has(> :nth-child(6)) { padding-left: 4px; padding-right: 4px; }
+  .bnav:has(> :nth-child(6)) .bnav-i { font-size: 10px; letter-spacing: -.25px; }
+  .bnav-plat.go { color: #FFFFFF; }
+  .bnav-plat.go svg { animation: v94p .9s ease-in-out infinite; }
+  @keyframes v94p { 50% { opacity: .35; transform: translateY(-1px); } }
   /* Карточки плоские */
   .card, .metric, .res-card, .meeting, .profile-hero, .status-hero, .pl-card, .rules-foot, .youtube-card, .quote-min,
   .diag-anatomy-wrap, .diag-phone-block, .yt-card-thumb, .lm-min-card, .social-tile, .stat-min, .diag-total, .diag-extreme,
@@ -5176,22 +5185,44 @@ function v20get(k){ try{ return localStorage.getItem(k); }catch(e){ return null;
 function v20set(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
 function v20seen(){ v20set('bs_plat_seen', '1'); var el = document.getElementById('v20onbPlat'); if(el && !el.classList.contains('done')){ el.classList.add('done'); v20onbCount(); } }
 // R93: «клиент хочет мобильную версию платформы, но у него уже приложение (бот) и будет путаница». Платформа открывается
-// здесь же, в окне приложения внутри Telegram (openLink уводил в браузер): адрес с данными входа Telegram (tgWebAppData),
-// платформа входит по ним сама, кнопка «Назад» Telegram возвращает в приложение. go: раздел платформы (#leads и т. п.)
-function v20tgUrl(go){
-  var w = null; try{ w = window.Telegram && Telegram.WebApp; }catch(e){}
-  var d = (w && w.initData) || bsInitData();
-  if(!d) return '';
-  var p = 'tgWebAppData=' + encodeURIComponent(d) + '&tgWebAppVersion=' + encodeURIComponent((w && w.version) || '6.0') + '&tgWebAppPlatform=' + encodeURIComponent((w && w.platform) || 'unknown');
-  try{ if(w && w.themeParams && Object.keys(w.themeParams).length) p += '&tgWebAppThemeParams=' + encodeURIComponent(JSON.stringify(w.themeParams)); }catch(e){}
-  if(go) p += '&bsgo=' + encodeURIComponent(go);
-  return V20_PLAT + '/#' + p;
-}
+// здесь же, в окне приложения внутри Telegram (openLink уводил в браузер), кнопка «Назад» Telegram возвращает в приложение.
+// go: раздел платформы (#leads и т. п.)
+// R94: «Мобильная версия платформы: очень долго нужно, чтобы туда попасть». Вход и платформа одним ответом:
+// initData уходит формой (POST, не в адресе) на app.bxclub.kz/tg, сервер проверяет подпись Telegram и сразу отдаёт
+// платформу с сессией. Раньше: страница входа, скрипт telegram.org, запрос входа, перезагрузка и только потом платформа
+var v94busy = 0;
+window.addEventListener('pageshow', function(){ v94busy = 0; document.querySelectorAll('.bnav-plat.go').forEach(function(b){ b.classList.remove('go'); }); });
 function v20openPlat(go){
   v20seen();
-  var u = v20tgUrl(go);
-  if(u){ try{ location.href = u; return; }catch(e){} }
-  try{ window.open(V20_PLAT + (go ? '/#' + go : ''), '_blank'); }catch(e){}
+  if(Date.now() - v94busy < 4000) return; // двойное нажатие не отправляет форму второй раз
+  var w = null; try{ w = window.Telegram && Telegram.WebApp; }catch(e){}
+  var d = (w && w.initData) || bsInitData();
+  var framed = false; try{ framed = window.top !== window.self; }catch(e){ framed = true; }
+  // Telegram Web (окно внутри страницы): платформа в новой вкладке браузера, там свой вход
+  if(d && !framed){
+    try{
+      var f = document.createElement('form');
+      f.method = 'post'; f.action = V20_PLAT + '/tg'; f.style.display = 'none';
+      var th = ''; try{ if(w && w.themeParams && Object.keys(w.themeParams).length) th = JSON.stringify(w.themeParams); }catch(e){}
+      [['initData', d], ['v', w && w.version], ['pf', w && w.platform], ['th', th], ['go', go]].forEach(function(a){
+        if(!a[1]) return;
+        var i = document.createElement('input'); i.type = 'hidden'; i.name = a[0]; i.value = String(a[1]); f.appendChild(i);
+      });
+      document.body.appendChild(f);
+      v94busy = Date.now();
+      try{ tg.HapticFeedback.impactOccurred('light'); }catch(e){}
+      f.submit();
+      return;
+    }catch(e){}
+  }
+  var url = V20_PLAT + (go ? '/#' + go : '');
+  try{ if(tg && tg.openLink){ tg.openLink(url); return; } }catch(e){}
+  try{ window.open(url, '_blank'); }catch(e){}
+}
+// Кнопка «Платформа» нижнего меню: сразу видно, что нажатие принято (сеть может быть медленной)
+function v94plat(btn){
+  try{ if(btn){ btn.classList.add('go'); setTimeout(function(){ btn.classList.remove('go'); }, 4000); } }catch(e){}
+  v20openPlat();
 }
 function v20copyPlat(){ v20seen(); v15copy(V20_PLAT, 'Ссылка скопирована'); }
 function v20btns(){
@@ -5415,6 +5446,7 @@ const NAV_ICONS = {
   minus:'<path d="M5 12h14"/>',
   check:'<path d="M5 12l5 5 9-10"/>',
   book:'<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19"/><path d="M9 7.5h6M9 11h4"/>',
+  plat:'<rect x="3.5" y="5" width="17" height="11" rx="1.5"/><path d="M1.5 19h21"/>',
   cl:'<rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M8 8.5l1.5 1.5 2.5-2.8M8 14.5l1.5 1.5 2.5-2.8M14.5 9h2M14.5 15h2"/>'
 };
 function navIcon(k, size, w){
@@ -5426,6 +5458,7 @@ const NAV = {
     {id:'meet', label:'Встречи',   icon:'cal',  pages:[{id:'schedule', label:'Расписание'},{id:'events', label:'Мероприятия'}]},
     {id:'plus', plus:true},
     {id:'res',  label:'Резиденты', icon:'club', pages:[{id:'residents', label:'Резиденты'},{id:'reports', label:'Отчёты'},{id:'visits', label:'Посещения'},{id:'fines', label:'Штрафы'},{id:'restasks', label:'Задачи'}]},
+    {id:'plat', label:'Платформа', icon:'plat', ext:true},
     {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'leadrazbor', label:'Экспресс-разбор', hidden:true},{id:'ideas', label:'Бизнес-идеи'}]}
   ],
   resident: [
@@ -5433,13 +5466,15 @@ const NAV = {
     {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Мой разбор'},{id:'wheel', label:'Колесо'},{id:'diagnostic', label:'Диагностика'}]},
     {id:'tasks', label:'Задачи',  icon:'tasks', pages:[{id:'mytasks', label:'Задачи'},{id:'mymeetings', label:'Встречи'}]},
     {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'events', label:'Мероприятия'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила', hidden:true}]},
+    {id:'plat',  label:'Платформа', icon:'plat', ext:true},
     {id:'me',    label:'Профиль', icon:'me',    pages:[{id:'mystatus', label:'Статус'},{id:'myprofile', label:'Данные'}]}
   ],
   lead: [
     {id:'home', label:'Главная',     icon:'home',  pages:[{id:'about', label:'Главная'}]},
     {id:'cl',   label:'Чек-листы',   icon:'book',  pages:[{id:'guides', label:'Интерактивные чек-листы'},{id:'ideas', label:'Бизнес-идеи'},{id:'guide', label:'Чек-лист', hidden:true}]},
     {id:'diag', label:'Диагностика', icon:'board', pages:[{id:'diagnostic', label:'Диагностика'}]},
-    {id:'razbor', label:'Разбор',    icon:'cal',   pages:[{id:'leadrazbor', label:'Разбор'}]}
+    {id:'razbor', label:'Разбор',    icon:'cal',   pages:[{id:'leadrazbor', label:'Разбор'}]},
+    {id:'plat', label:'Платформа',   icon:'plat', ext:true}
   ]
 };
 function navFlat(role){
@@ -5871,6 +5906,8 @@ function renderTabs(){
   if(bn){
     bn.innerHTML = NAV[role].map(function(g){
       if(g.plus) return '<button class="bnav-plus" aria-label="Быстрый ввод" onclick="openQuickMenu()"><span>'+navIcon('plus',22,2.2)+'</span></button>';
+      // R94: «Платформа» в нижнем меню у всех ролей: одно нажатие с любого экрана
+      if(g.ext) return '<button class="bnav-i bnav-plat" data-ap94plat="1" aria-label="Открыть платформу BS" onclick="v94plat(this)">'+navIcon(g.icon)+'<span>'+g.label+'</span></button>';
       var on = window._navGroup && window._navGroup.id === g.id;
       return '<button class="bnav-i'+(on?' on':'')+'" data-group="'+g.id+'" onclick="navGo(\''+g.id+'\')">'+navIcon(g.icon)+'<span>'+g.label+'</span></button>';
     }).join('');
@@ -8269,40 +8306,59 @@ function showDayMeetings(dateStr){
     return;
   }
 
+  // R94: «в режиме Календаря, если я кликаю на конкретную запись, в ней нет функции перенести и других, которые есть в режиме списка».
+  // Нажатие на запись открывает тот же лист действий, что и в списке (showMeetingDetail): прошла, перенести, написать, отменить
   var h = '';
-  list.forEach(function(ev){
+  window._v94day = list;
+  var adm = isRealAdmin && viewAs === 'admin';
+  list.forEach(function(ev, i){
     var link = String(ev.link || ev.meet || '');
+    var isEvent = String(ev.res || '').indexOf('🎬') === 0;
     var isOnline = link.indexOf('meet.google') >= 0 || link.indexOf('zoom') >= 0;
     var isOffline = link && !isOnline && link.indexOf('http') < 0;
-    var color = isOnline ? '#64b5f6' : (isOffline ? '#e57373' : '#D9D9D9');
-    var fmtLabel = isOnline ? 'Онлайн' : (isOffline ? 'Офлайн' : 'Прочее');
+    var color = isEvent ? '#ab8fd4' : (isOnline ? '#64b5f6' : (isOffline ? '#e57373' : '#D9D9D9'));
+    var fmtLabel = isEvent ? 'Событие' : (isOnline ? 'Онлайн' : (isOffline ? 'Офлайн' : 'Прочее'));
 
-    h += '<div style="padding:14px;margin-bottom:10px;background:var(--card2);border-radius:12px;border-left:3px solid ' + color + '">';
+    h += '<div class="v94-dm" role="button" tabindex="0" onclick="v94dayOpen(' + i + ')" style="padding:14px;margin-bottom:10px;background:var(--card2);border-radius:12px;border-left:3px solid ' + color + ';cursor:pointer">';
     h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px">';
-    h += '<div style="min-width:0"><div style="font-size:15px;font-weight:800;color:#fff">' + (ev.res||'Без имени') + '</div>';
+    h += '<div style="min-width:0"><div style="font-size:15px;font-weight:800;color:#fff">' + v2esc(ev.res||'Без имени') + '</div>';
     h += '<div style="font-size:12px;color:' + color + ';font-weight:700;margin-top:2px">' + fmtLabel + '</div></div>';
-    h += '<div style="font-size:17px;font-weight:800;color:#FFFFFF;flex-shrink:0">' + (ev.time||'') + '</div>';
+    h += '<div style="font-size:17px;font-weight:800;color:#FFFFFF;flex-shrink:0">' + v2esc(ev.time||'') + '</div>';
     h += '</div>';
 
     if(isOnline){
-      h += '<div style="font-size:12px;color:#888;word-break:break-all;margin-bottom:10px">' + link + '</div>';
-      h += '<a href="' + link + '" target="_blank"><button class="btn btn-primary" style="width:100%;margin:0;padding:10px;font-size:13px">Открыть Google Meet</button></a>';
-    } else if(isOffline){
-      h += '<div style="font-size:13px;color:#ccc;margin-bottom:4px">' + link + '</div>';
+      h += '<div style="font-size:12px;color:#888;word-break:break-all;margin-bottom:10px">' + v2esc(link) + '</div>';
+      h += '<a href="' + v2esc(link) + '" target="_blank" onclick="event.stopPropagation()"><button class="btn btn-primary" style="width:100%;margin:0;padding:10px;font-size:13px">Открыть Google Meet</button></a>';
+    } else if(isOffline || (isEvent && link)){
+      h += '<div style="font-size:13px;color:#ccc;margin-bottom:4px">' + v2esc(link) + '</div>';
     } else {
       h += '<div style="font-size:12px;color:#888">Ссылка или адрес не указаны</div>';
     }
 
-    if(isRealAdmin && viewAs === 'admin'){
-      h += '<div style="display:flex;gap:8px;margin-top:10px">';
-      h += '<button onclick="markAttendanceFromDay(\'' + String(ev.res||'').replace(/'/g,"\\'") + '\',\'' + dateStr + '\')" style="flex:1;background:rgba(76,175,125,0.15);border:1px solid #4caf7d;color:#4caf7d;padding:9px;border-radius:9px;font-size:12px;font-weight:800;font-family:inherit">Отметить</button>';
-      h += '</div>';
-    }
+    var bs = 'flex:1;padding:10px 8px;border-radius:9px;font-size:12.5px;font-weight:800;font-family:inherit;cursor:pointer;';
+    h += '<div style="display:flex;gap:8px;margin-top:10px">';
+    if(adm) h += '<button type="button" onclick="event.stopPropagation();v94dayMove(' + i + ')" style="' + bs + 'background:#fff;border:1px solid #fff;color:#000">Перенести</button>';
+    h += '<button type="button" onclick="event.stopPropagation();v94dayOpen(' + i + ')" style="' + bs + 'background:transparent;border:1px solid #3a3a3a;color:#fff">' + (adm ? 'Все действия ›' : 'Подробнее ›') + '</button>';
+    h += '</div>';
     h += '</div>';
   });
 
   body.innerHTML = h;
   openModal('dayMeetsModal');
+}
+
+// R94: запись дня календаря: тот же лист, что в списке. Окно дня закрывается, «Назад» листа возвращает к расписанию
+function v94dayOpen(i){
+  var ev = (window._v94day || [])[i];
+  if(!ev) return;
+  closeModal('dayMeetsModal');
+  showMeetingDetail(ev);
+}
+function v94dayMove(i){
+  var ev = (window._v94day || [])[i];
+  if(!ev) return;
+  closeModal('dayMeetsModal');
+  openEditMeeting(ev.res, ev.date, ev.time);
 }
 
 function calCreateOn(dateStr){
@@ -9861,30 +9917,42 @@ function v67deepAfter(n){
 }
 
 function showMeetingDetail(ev){
+  // R94: один и тот же лист действий для списка, календаря, главной и глубокой ссылки.
+  // Аргументы кнопок берутся из window._v94ev: имя с апострофом больше не ломает onclick
+  if(!ev) return;
+  window._v94ev = ev;
   const isOnline = !!ev.call || (ev.link && ev.link.includes('meet'));
+  const isEvent = String(ev.res || '').indexOf('🎬') === 0;
+  const isDay = ev.res === 'Офлайн день';
   const cd = countdownText(ev.date, ev.time);
-  document.getElementById('detailTitle').textContent = 'Встреча';
+  document.getElementById('detailTitle').textContent = isEvent ? 'Событие' : 'Встреча';
   var canEdit = isRealAdmin && viewAs === 'admin';
   var confirmKey = 'confirmed_'+ev.res+'_'+ev.date+'_'+ev.time;
   var alreadyConfirmed = localStorage.getItem(confirmKey);
+  var who = !isEvent && !isDay && ev.res ? resByName(ev.res) : null;
+  var canWrite = canEdit && who && v11canWrite(who);
+  var E = 'window._v94ev';
+  var A = E + '.res,' + E + '.date,' + E + '.time';
+  var place = isEvent ? (ev.link || '') : (ev.call || ev.link || '');
   document.getElementById('detailContent').innerHTML = `
     <div class="meeting upcoming">
       ${cd.text?`<div class="meeting-countdown">${cd.text}</div>`:''}
-      <div class="meeting-title">Трекинг</div>
-      <div style="font-family: 'Manrope', sans-serif; font-weight: 800; letter-spacing: -0.5px;font-size:36px;letter-spacing:1px;margin:8px 0">${ev.date}</div>
-      <div style="font-size:18px;color:var(--g400);margin-bottom:16px">${ev.time||''}</div>
-      <div class="meeting-row">${isOnline?'Формат: Онлайн':'Формат: Офлайн'}</div>
-      <div class="meeting-row">Резидент: ${ev.res}</div>
-      ${(ev.call||ev.link)?`<div class="meeting-row" style="word-break:break-all">${ev.call||ev.link}</div>`:''}
+      <div class="meeting-title">${isEvent ? 'Мероприятие' : (isDay ? 'Офлайн день' : 'Трекинг')}</div>
+      <div style="font-family: 'Manrope', sans-serif; font-weight: 800; letter-spacing: -0.5px;font-size:36px;letter-spacing:1px;margin:8px 0">${v2esc(ev.date)}</div>
+      <div style="font-size:18px;color:var(--g400);margin-bottom:16px">${v2esc(ev.time||'')}</div>
+      ${isEvent ? '' : `<div class="meeting-row">${isOnline?'Формат: Онлайн':'Формат: Офлайн'}</div>`}
+      <div class="meeting-row">${isEvent ? '' : (isDay ? 'Для офлайн-резидентов' : 'Резидент: ')}${isDay ? '' : v2esc(String(ev.res||'').replace(/^🎬\s*/, ''))}</div>
+      ${place?`<div class="meeting-row" style="word-break:break-all">${v2esc(place)}</div>`:''}
     </div>
-    ${ev.call?`<a class="btn btn-primary" href="${ev.call}" target="_blank" onclick="event.preventDefault();v9open(this.href)">Войти в созвон</a>`:''}
-    ${isOnline&&ev.link&&ev.link.includes('meet')?`<a class="btn btn-secondary" href="${ev.link}" target="_blank">${ev.call?'Google Meet (запасной)':'Подключиться к Meet'}</a>`:''}
-    ${!canEdit?`<button class="btn btn-success" onclick="confirmMeeting('${ev.res}','${ev.date}','${ev.time}')" ${alreadyConfirmed?'disabled style="opacity:0.6"':''}>${alreadyConfirmed?'✓ Подтверждено':'Подтвердить участие'}</button>`:''}
-    <button class="btn btn-secondary" onclick="addToCalendar('${ev.date}','${ev.time}','${ev.res}','${ev.link||''}')">В Google Calendar</button>
-    ${canEdit?`<button class="btn btn-success" onclick="onMeetingDoneClick('${ev.res}','${ev.date}','${ev.time}',${isOnline?'true':'false'})">Встреча прошла</button>`:''}
-    ${canEdit&&ev.res&&ev.res!=='Офлайн день'?`<button class="btn btn-danger" onclick="meetingMissed('${ev.res}','${ev.date}','${ev.time}')">Не пришёл без предупреждения</button>`:''}
-    ${canEdit?`<button class="btn btn-secondary" onclick="openEditMeeting('${ev.res}','${ev.date}','${ev.time}')">Перенести</button>`:''}
-    ${canEdit?`<button class="btn btn-danger" onclick="deleteMeetingConfirm('${ev.res}','${ev.date}','${ev.time}')">Удалить</button>`:''}
+    ${ev.call?`<a class="btn btn-primary" href="${v2esc(ev.call)}" target="_blank" onclick="event.preventDefault();v9open(this.href)">Войти в созвон</a>`:''}
+    ${isOnline&&ev.link&&ev.link.includes('meet')?`<a class="btn btn-secondary" href="${v2esc(ev.link)}" target="_blank">${ev.call?'Google Meet (запасной)':'Подключиться к Meet'}</a>`:''}
+    ${!canEdit?`<button class="btn btn-success" onclick="confirmMeeting(${A})" ${alreadyConfirmed?'disabled style="opacity:0.6"':''}>${alreadyConfirmed?'✓ Подтверждено':'Подтвердить участие'}</button>`:''}
+    ${canEdit?`<button class="btn btn-success" onclick="onMeetingDoneClick(${A},${isOnline?'true':'false'})">${isEvent ? 'Мероприятие прошло' : 'Встреча прошла'}</button>`:''}
+    ${canEdit?`<button class="btn btn-secondary" onclick="openEditMeeting(${A})">Перенести</button>`:''}
+    ${canWrite?`<button class="btn btn-secondary" onclick="closeDetail();v11write(resByName(${E}.res))">Написать резиденту</button>`:''}
+    <button class="btn btn-secondary" onclick="addToCalendar(${E}.date,${E}.time,${E}.res,${E}.link||'')">В Google Calendar</button>
+    ${canEdit&&!isEvent&&!isDay&&ev.res?`<button class="btn btn-danger" onclick="meetingMissed(${A})">Не пришёл без предупреждения</button>`:''}
+    ${canEdit?`<button class="btn btn-danger" onclick="deleteMeetingConfirm(${A})">Отменить встречу</button>`:''}
   `;
   showDetail();
 }
@@ -9982,7 +10050,7 @@ async function meetingMissed(res, date, time){
 }
 
 async function deleteMeetingConfirm(res, date, time){
-  if(!(await bsConfirm('Удалить встречу?', res + ', ' + date + ' ' + time, 'Удалить', true))) return;
+  if(!(await bsConfirm('Отменить встречу?', res + ', ' + date + ' ' + (time || ''), 'Отменить встречу', true))) return;
   // Помечаем как удалённую. чтобы не вернулась при loadAllData
   if(!window._deletedMeetingKeys) window._deletedMeetingKeys = [];
   window._deletedMeetingKeys.push(res+'|'+date+'|'+time);
@@ -9994,11 +10062,11 @@ async function deleteMeetingConfirm(res, date, time){
     bsSaveCache();
   }
   closeDetail();
-  showToast('Удаляется...');
+  showToast('Отменяем...');
   renderAllPages();
   callAction('deleteSchedule', {res, date, time}).then(function(result){
     if(result && result.ok){
-      showToast('Встреча удалена');
+      showToast('Встреча отменена');
     } else {
       showToast('Не удалось сохранить, попробуйте ещё раз');
     }
@@ -13513,10 +13581,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
   ];
 }
 function v11plat(id){
-  if(v20tgUrl(id)) return v20openPlat(id); // R93: раздел платформы в этом же окне Telegram
-  var url = 'https://app.bxclub.kz/#' + id;
-  try{ if(tg && tg.openLink){ tg.openLink(url); return; } }catch(e){}
-  window.open(url, '_blank');
+  v20openPlat(id); // R93, R94: раздел платформы в этом же окне Telegram, вход одним ответом
 }
 function v11lib(kind){ window._libKind = kind; window._libQ = ''; showPage('library'); }
 
