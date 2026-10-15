@@ -14,8 +14,8 @@
     var ss = window.sessionStorage, ls = window.localStorage;
     if(ss.getItem('bs_fw96s')){ ls.removeItem('bs_fw96'); return; }
     if(ls.getItem('bs_fw96off') === '1' || window.top !== window.self || !window.URLSearchParams) return;
-    var f = JSON.parse(ls.getItem('bs_fw96') || 'null'), role = ls.getItem('bs_view_as');
-    if(!f || !f.u || Date.now() - (f.at || 0) > 30 * 864e5 || (role !== 'resident' && role !== 'admin')) return;
+    var f = JSON.parse(ls.getItem('bs_fw96') || 'null');
+    if(!f || !f.u || Date.now() - (f.at || 0) > 30 * 864e5 || (f.r !== 'resident' && f.r !== 'admin')) return;
     var hp = new URLSearchParams(location.hash.slice(1)), init = hp.get('tgWebAppData') || '';
     var ip = new URLSearchParams(init), u = JSON.parse(ip.get('user') || 'null');
     if(!u || String(u.id) !== String(f.u) || ip.get('start_param') || hp.get('tgWebAppStartParam')) return;

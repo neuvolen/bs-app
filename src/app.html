@@ -5230,7 +5230,8 @@ function v20openPlat(go){
 function v96fwMark(d){
   try{
     var u = JSON.parse(new URLSearchParams(d).get('user') || 'null');
-    if(u && u.id) localStorage.setItem('bs_fw96', JSON.stringify({u: String(u.id), at: Date.now()}));
+    var r = ''; try{ r = navRole(); }catch(e){}
+    if(u && u.id) localStorage.setItem('bs_fw96', JSON.stringify({u: String(u.id), r: r, at: Date.now()}));
     sessionStorage.setItem('bs_fw96s', '1');
   }catch(e){}
 }
