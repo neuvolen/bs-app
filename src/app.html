@@ -37,7 +37,11 @@
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { background: var(--bg); color: var(--white); font-family: 'Manrope', -apple-system, sans-serif; font-variant-numeric: tabular-nums; font-size: 14px; min-height: 100vh; min-height: 100dvh; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+  html, body { background: var(--bg); color: var(--white); font-family: 'Manrope', -apple-system, sans-serif; font-variant-numeric: tabular-nums; font-size: 14px; }
+  /* R99: документ не листается; листается один контейнер #bsScroll. Нижнее меню #bnav стоит вне него,
+     прямым ребёнком body, и на iPhone в Telegram не уезжает при листании, оттяжке и свайпе. */
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  #bsScroll { height: calc(100% - var(--bs-nav-lift, 0px)); overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 
   /* HEADER */
   .header {
@@ -750,7 +754,8 @@
   .header:has(.tabs-wrap.single) .header-row { margin-bottom: 0; }
   .tab { border-radius: 10px; font-weight: 700; font-size: 12.5px; padding: 9px 13px; }
   .tab:not(.active) { background: transparent; border-color: #262626; color: #9A9A9A; }
-  .bnav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 150; background: rgba(0,0,0,.96);
+  html.bs-typing .bnav { display: none; } /* R99: единственный случай, когда меню скрыто: в фокусе поле ввода (клавиатура) */
+  .bnav { position: fixed; left: 0; right: 0; bottom: var(--bs-nav-lift, 0px); z-index: 150; background: rgba(0,0,0,.96);
     border-top: 1px solid #1A1A1A; padding: 8px 6px calc(10px + var(--tg-safe-bottom, 0px) + env(safe-area-inset-bottom, 0px));
     display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); align-items: start;
     -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
@@ -799,6 +804,7 @@
 <body>
 
 <div id="syncDot" style="position:fixed;top:calc(var(--tg-safe-top,0px) + 8px);right:12px;width:7px;height:7px;border-radius:50%;background:#FFFFFF;opacity:0;transition:opacity 0.25s;z-index:9999;pointer-events:none"></div>
+<div id="bsScroll">
 <div class="header">
   <div class="header-row">
     <div class="logo">
@@ -817,7 +823,6 @@
   </div>
 </div>
 
-<nav class="bnav" id="bnav"></nav>
 <button id="v4BackAdmin" type="button" onclick="v9backToAdmin(event)">Вернуться в админ</button>
 <div id="v9Back" class="v9-back"><button type="button" onclick="v9goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg><span id="v9BackLbl">Назад</span></button></div>
 <!-- ADMIN PAGES -->
@@ -4751,6 +4756,8 @@
   </div>
 </div>
 <div class="toast" id="toast"></div>
+</div><!-- /bsScroll -->
+<nav class="bnav" id="bnav"></nav>
 
 <script>
 // Сервер платформы: единственный источник данных (R32c, таблица отключена). Он проверяет
@@ -5066,7 +5073,7 @@ function v15ask(kind){
         b.data.mine = null; b.slotId = '';
         renderLeadRazbor(); v15load(true);
         showToast(mv ? 'Выберите новое время' : 'Запись отменена');
-        if(mv) setTimeout(function(){ var p = document.getElementById('bkPick'); if(p) window.scrollTo(0, p.getBoundingClientRect().top + scrollY - 70); }, 400);
+        if(mv) setTimeout(function(){ var p = document.getElementById('bkPick'); if(p) bsScrollTo(p.getBoundingClientRect().top + bsScrollY() - 70); }, 400);
       })
       .catch(function(e){ ok.disabled = false; ok.textContent = mv ? 'Выбрать новое время' : 'Отменить запись'; showToast('Не получилось: ' + String((e && e.message) || 'нет связи')); });
   };
@@ -5519,6 +5526,8 @@ function bsTgWebApp(){
     initData: P.tgWebAppData || '', initDataUnsafe: unsafe, version: P.tgWebAppVersion || '6.0', platform: P.tgWebAppPlatform || 'unknown',
     themeParams: theme, colorScheme: 'dark', isExpanded: true,
     ready: function(){ post('web_app_ready'); }, expand: function(){ post('web_app_expand'); },
+    // R99: свайп вниз по содержимому не тянет окно Telegram (Bot API 7.7+), иначе на iPhone окно уезжает вниз вместе с меню
+    disableVerticalSwipes: function(){ if(parseFloat(P.tgWebAppVersion || '6.0') >= 7.7) post('web_app_setup_swipe_behavior', {allow_vertical_swipe: false}); },
     setHeaderColor: function(c){ if(hex(c)) post('web_app_set_header_color', {color: c}); else q.push(['setHeaderColor', [c]]); },
     setBackgroundColor: function(c){ if(hex(c)) post('web_app_set_background_color', {color: c}); else q.push(['setBackgroundColor', [c]]); },
     onEvent: later('onEvent'), offEvent: later('offEvent'),
@@ -5683,6 +5692,50 @@ function handleGlobalClick(e){
 
 document.addEventListener('click', handleGlobalClick);
 
+// ═══ R99: нижнее меню всегда на экране ═══
+// Документ не листается (html, body overflow:hidden), листается #bsScroll; #bnav: position:fixed, прямой ребёнок body,
+// без transform у предков. Скрыть меню может только bsTypingSync (поле ввода в фокусе, класс html.bs-typing);
+// tools/navcheck.mjs следит, чтобы других путей не появилось.
+function bsIsTextField(t){
+  if(!t || !t.tagName) return false;
+  if(t.isContentEditable) return true;
+  if(t.tagName === 'TEXTAREA') return true;
+  if(t.tagName !== 'INPUT') return false;
+  return !/^(button|submit|reset|checkbox|radio|range|file|color|image|hidden)$/i.test(t.type || 'text');
+}
+function bsTypingSync(next){
+  var a = next === undefined ? document.activeElement : next;
+  var on = bsIsTextField(a) && a.isConnected && a.getClientRects().length > 0;
+  document.documentElement.classList.toggle('bs-typing', !!on);
+  if(!on){
+    clearInterval(window._bsTypT); window._bsTypT = 0;
+    // iOS после клавиатуры иногда оставляет документ сдвинутым: документ у нас не листается, возвращаем на место
+    try{ if(window.scrollY || window.pageYOffset) window.scrollTo(0, 0); }catch(e){}
+  } else if(!window._bsTypT){
+    // поле могло исчезнуть без blur (закрыли лист): меню возвращается само
+    window._bsTypT = setInterval(function(){ bsTypingSync(); }, 600);
+  }
+}
+document.addEventListener('focusin', function(e){ bsTypingSync(e.target); }, true);
+document.addEventListener('focusout', function(e){ bsTypingSync(bsIsTextField(e.relatedTarget) ? e.relatedTarget : null); }, true);
+document.addEventListener('touchstart', function(){ if(document.documentElement.classList.contains('bs-typing')) bsTypingSync(); }, {passive: true, capture: true});
+document.addEventListener('visibilitychange', function(){ bsTypingSync(); bsNavLift(); });
+// Окно Telegram развёрнуто не полностью (isExpanded false): видимая высота меньше окна WebView, низ окна за краем экрана.
+// Меню и листаемая область поднимаются на эту разницу (viewportStableHeight, как советует Telegram для элементов внизу).
+function bsNavLift(){
+  var lift = 0;
+  try{
+    var st = tg && tg.viewportStableHeight, ih = window.innerHeight;
+    if(tg && tg.isExpanded === false && st > 0 && ih - st > 0 && ih - st < ih * 0.6) lift = Math.round(ih - st);
+  }catch(e){}
+  document.documentElement.style.setProperty('--bs-nav-lift', lift + 'px');
+}
+window.addEventListener('resize', function(){ bsNavLift(); });
+window.addEventListener('scroll', function(){
+  // документ не листается: если iOS всё же сдвинул его (не при наборе), возвращаем, чтобы меню не уезжало
+  if(!document.documentElement.classList.contains('bs-typing') && (window.scrollY || window.pageYOffset)){ try{ window.scrollTo(0, 0); }catch(e){} }
+}, {passive: true});
+
 function init(){
   // R96 (#42): запуск уже ушёл на платформу (prelude.js): приложение не рисуется и данные не просит
   if(window.__bsFw){ try{ if(tg){ tg.ready(); tg.expand(); } }catch(e){} return; }
@@ -5690,6 +5743,8 @@ function init(){
     if(tg){
       tg.ready();
       tg.expand();
+      try{ if(tg.disableVerticalSwipes) tg.disableVerticalSwipes(); }catch(e){}
+      bsNavLift();
     // Края обрезались: Telegram не поддерживает env(safe-area-inset) в WebView.
     // Берём отступы из самого Telegram и применяем как CSS-переменные
     try{
@@ -5706,6 +5761,7 @@ function init(){
         tg.onEvent('safeAreaChanged', applySafe);
         tg.onEvent('contentSafeAreaChanged', applySafe);
         tg.onEvent('viewportChanged', applySafe);
+        tg.onEvent('viewportChanged', bsNavLift);
       }
     }catch(e){}
 
@@ -6185,10 +6241,16 @@ function v9title(id){
   return T[id] || 'Назад';
 }
 function v9activeId(){ var a = document.querySelector('.page.active'); return a ? a.id.replace('page-', '') : ''; }
+// R99: листается только #bsScroll (документ стоит на месте, нижнее меню вне листаемого)
+function bsScroller(){ return document.getElementById('bsScroll') || document.scrollingElement || document.documentElement; }
+function bsScrollY(){ var s = document.getElementById('bsScroll'); return s ? s.scrollTop : (window.scrollY || 0); }
+function bsScrollTo(y, smooth){
+  var s = bsScroller();
+  try{ s.scrollTo({top: y, behavior: smooth ? 'smooth' : 'auto'}); }catch(e){ try{ s.scrollTop = y; }catch(x){} }
+}
 function v9scrollTop(){
-  try{ window.scrollTo(0, 0); }catch(e){}
-  try{ if(document.scrollingElement) document.scrollingElement.scrollTop = 0; }catch(e){}
-  try{ document.documentElement.scrollTop = 0; document.body.scrollTop = 0; }catch(e){}
+  bsScrollTo(0);
+  try{ if(window.scrollY) window.scrollTo(0, 0); }catch(e){}
   var a = document.querySelector('.page.active'); if(a) a.scrollTop = 0;
 }
 function showPage(id, opts){
@@ -6301,7 +6363,7 @@ function setupAutoRefresh(){
   }, {passive:true});
   document.addEventListener('touchend', function(e){
     const dy = e.changedTouches[0].clientY - touchStartY;
-    if(dy > 90 && window.scrollY < 5){
+    if(dy > 90 && bsScrollY() < 5){
       loadAllData({fresh: true});
     }
   }, {passive:true});
@@ -9665,7 +9727,7 @@ async function banSubscriberFromChannel(chatId, name){
 
 window._resFilter = window._resFilter || 'all';
 window._resQuery = '';
-function v3openResidents(f){ window._resFilter = f || 'all'; window._resQuery = ''; showPage('residents'); window.scrollTo(0, 0); }
+function v3openResidents(f){ window._resFilter = f || 'all'; window._resQuery = ''; showPage('residents'); bsScrollTo(0); }
 function v3setResFilter(f){ window._resFilter = f; renderResidents(); }
 function v3clubOf(){ return allResidents.filter(function(r){ return !r.isAdmin && !r.isTeam; }); }
 
@@ -15126,7 +15188,7 @@ function v14refresh(){
     if(t.firstChild) el.replaceWith(t.firstChild);
   });
 }
-function v14keep(fn){ var y = window.scrollY; try{ fn(); }catch(e){ console.error('guides:', e); } try{ window.scrollTo(0, y); }catch(e){} }
+function v14keep(fn){ var y = bsScrollY(); try{ fn(); }catch(e){ console.error('guides:', e); } bsScrollTo(y); }
 
 // ── Полные гайды: память, затем localStorage, затем сеть ──
 window._gfull = window._gfull || {};
@@ -16362,7 +16424,7 @@ function v14bar(x, d, n){
   if(!f){
     f = document.createElement('div'); f.id = 'gdBar'; f.className = 'v14-bar';
     document.body.appendChild(f);
-    window.addEventListener('scroll', v14onScroll, {passive: true});
+    bsScroller().addEventListener('scroll', v14onScroll, {passive: true});
     window.addEventListener('resize', v14onScroll, {passive: true});
   }
   if(!x){ f.innerHTML = ''; f.classList.remove('show'); return; }
@@ -16378,7 +16440,7 @@ function v14onScroll(){
   var art = document.getElementById('gdArt'), cov = document.getElementById('gdCover');
   var act = v9activeId() === 'guide' && art && f.innerHTML;
   if(!act){ f.classList.remove('show'); return; }
-  var r = art.getBoundingClientRect(), vh = window.innerHeight;
+  var r = art.getBoundingClientRect(), vh = bsScroller().clientHeight || window.innerHeight;
   var span = Math.max(1, r.height - vh * 0.6);
   var p = Math.max(0, Math.min(100, Math.round(-r.top / span * 100)));
   f.classList.toggle('show', !!(cov && cov.getBoundingClientRect().bottom < 0));
@@ -16395,7 +16457,7 @@ function v14onScroll(){
   var id = v14curId();
   if(id && !window._gdRestoring){
     clearTimeout(window._gdPosT);
-    window._gdPosT = setTimeout(function(){ if(v9activeId() === 'guide' && v14curId() === id && document.getElementById('gdArt')) v14posSave(id, window.scrollY, p); }, 400);
+    window._gdPosT = setTimeout(function(){ if(v9activeId() === 'guide' && v14curId() === id && document.getElementById('gdArt')) v14posSave(id, bsScrollY(), p); }, 400);
   }
 }
 // Возврат к месту, где остановились
@@ -16403,13 +16465,13 @@ function v14restore(id){
   var pos = v14pos(id);
   if(!pos || pos.y < 400) return;
   window._gdRestoring = true;
-  var go = function(){ if(v9activeId() === 'guide' && v14curId() === id && document.getElementById('gdArt')) window.scrollTo(0, pos.y); };
-  setTimeout(go, 30); setTimeout(function(){ go(); window._gdRestoring = false; v14onScroll(); if(window.scrollY > 300) showToast('Продолжаем с места, где вы остановились'); }, 120);
+  var go = function(){ if(v9activeId() === 'guide' && v14curId() === id && document.getElementById('gdArt')) bsScrollTo(pos.y); };
+  setTimeout(go, 30); setTimeout(function(){ go(); window._gdRestoring = false; v14onScroll(); if(bsScrollY() > 300) showToast('Продолжаем с места, где вы остановились'); }, 120);
 }
 function v14go(elId){
   var e = document.getElementById(elId); if(!e) return;
-  var y = e.getBoundingClientRect().top + window.scrollY - 72;
-  try{ window.scrollTo({top: y, behavior: 'smooth'}); }catch(err){ window.scrollTo(0, y); }
+  var y = e.getBoundingClientRect().top + bsScrollY() - 72;
+  bsScrollTo(y, true);
 }
 
 // ── Отметки ──

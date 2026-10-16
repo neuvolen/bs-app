@@ -34,6 +34,10 @@ jobs:
       - name: Leak check
         run: node tools/leakcheck.mjs
 
+      # R99: the bottom menu never disappears while scrolling (iPhone, Telegram): nav outside the scroller, no hide paths
+      - name: Bottom menu check
+        run: node tools/navcheck.mjs
+
       - name: Build and check dist
         run: |
           npm ci --no-audit --no-fund
