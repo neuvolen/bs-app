@@ -603,6 +603,7 @@
     gap: 6px;
     margin-bottom: 12px;
   }
+  .picker.cols-2 { grid-template-columns: repeat(2, 1fr); }
   .picker.cols-3 { grid-template-columns: repeat(3, 1fr); }
   .picker.cols-4 { grid-template-columns: repeat(4, 1fr); }
   .pick-btn {
@@ -757,6 +758,9 @@
     background: none; border: none; color: #6E6E6E; font-family: inherit; font-size: 10.5px; font-weight: 700; cursor: pointer; }
   .bnav-i svg { width: 23px; height: 23px; }
   .bnav-i.on { color: #FFFFFF; font-weight: 800; }
+  .v97ev-dt { display: flex; gap: 10px; }
+  .v97ev-dt > div { flex: 1 1 0; min-width: 0; }
+  .v97ev-dt .form-input { width: 100%; box-sizing: border-box; min-height: 48px; }
   .bnav-plus { display: flex; justify-content: center; background: none; border: none; cursor: pointer; padding: 0; }
   .bnav-plus span { width: 48px; height: 48px; margin-top: -2px; border-radius: 14px; background: #FFFFFF; color: #000;
     display: flex; align-items: center; justify-content: center; }
@@ -951,6 +955,19 @@
       <input class="form-input money-input" type="text" inputmode="numeric" id="fineAmount" value="10 000" data-raw="10000">
     </div>
     <div class="modal-actions"><button class="btn btn-primary" onclick="submitFine()">Выставить</button><button class="btn btn-secondary" onclick="closeModal('fineModal')">Отмена</button></div>
+  </div>
+</div>
+
+<div class="modal-bg" id="v97evModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Мероприятие клуба</div>
+    <div class="form-group"><label class="form-label" for="v97evT">Название</label><input class="form-input" id="v97evT" type="text" maxlength="200" autocomplete="off" enterkeyhint="next" placeholder="Например, бизнес-завтрак BS"></div>
+    <div class="form-group v97ev-dt"><div><label class="form-label" for="v97evD">Дата</label><input class="form-input" id="v97evD" type="date"></div><div><label class="form-label" for="v97evTm">Время</label><input class="form-input" id="v97evTm" type="time" value="19:00"></div></div>
+    <div class="form-group"><label class="form-label">Формат</label><div class="picker cols-2" id="v97evFmt"><button type="button" class="pick-btn selected" data-v="off" onclick="v97evFmt(this)">Офлайн</button><button type="button" class="pick-btn" data-v="on" onclick="v97evFmt(this)">Онлайн</button></div></div>
+    <div class="form-group" id="v97evPlW"><label class="form-label" for="v97evPl">Место</label><input class="form-input" id="v97evPl" type="text" maxlength="200" autocomplete="off" placeholder="Адрес или название места"></div>
+    <div class="form-group"><label class="form-label" for="v97evU">Ссылка</label><input class="form-input" id="v97evU" type="url" inputmode="url" autocomplete="off" placeholder="https://… регистрация или трансляция"></div>
+    <div class="modal-actions"><button class="btn btn-primary" id="v97evGo" onclick="v97evSave()">Создать</button><button class="btn btn-secondary" onclick="closeModal('v97evModal')">Отмена</button></div>
   </div>
 </div>
 
@@ -7996,6 +8013,7 @@ function openQuickMenu(){
     item('in', 'plus', 'Приход и расход', 'Оплата резидента или трата, тип выберите внутри', true) +
     item('fine', 'alert', 'Штраф', 'Резиденту, с суммой и причиной') +
     item('meet', 'cal', 'Встреча', 'Онлайн, офлайн-день или мероприятие') +
+    item('event', 'cal', 'Мероприятие', 'Наше: название, дата, место или онлайн') +
     item('res', 'club', 'Новый резидент', 'Добавить в клуб') +
     '</div>';
   menu.querySelectorAll('[data-q]').forEach(function(btn){
@@ -8010,11 +8028,58 @@ function openQuickMenu(){
         else if(a === 'fine'){ openModal('fineModal'); initFineModal(); }
         else if(a === 'meet'){ openAddMenu(); }
         else if(a === 'res'){ openModal('addResidentModal'); initAddResident(); }
+        else if(a === 'event'){ v97evOpen(); }
       }, 240);
     });
   });
   document.body.appendChild(menu);
   setTimeout(function(){ menu.classList.add('show'); }, 10);
+}
+
+// ═══ R97: «+ → Мероприятие»: мероприятие клуба, там же, где «Наши мероприятия» платформы ═══
+// POST /api/v1/app/events: сразу в «Мероприятиях» здесь (вкладка «Клуб»), на платформе и в календаре (.ics)
+var v97evBusy = 0;
+function v97evOpen(){
+  var d = new Date(), p = function(n){ return ('0' + n).slice(-2); };
+  document.getElementById('v97evT').value = '';
+  document.getElementById('v97evD').value = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  document.getElementById('v97evTm').value = '19:00';
+  document.getElementById('v97evPl').value = '';
+  document.getElementById('v97evU').value = '';
+  v97evFmt(document.querySelector('#v97evFmt [data-v="off"]'));
+  openModal('v97evModal');
+  setTimeout(function(){ try{ document.getElementById('v97evT').focus(); }catch(e){} }, 300);
+}
+function v97evFmt(b){
+  if(!b) return;
+  document.querySelectorAll('#v97evFmt .pick-btn').forEach(function(x){ x.classList.toggle('selected', x === b); });
+  var online = b.getAttribute('data-v') === 'on';
+  document.getElementById('v97evPlW').style.display = online ? 'none' : '';
+  document.getElementById('v97evU').placeholder = online ? 'https://… ссылка на трансляцию' : 'https://… регистрация или страница';
+}
+function v97evSave(){
+  if(v97evBusy) return;
+  var g = function(id){ return String(document.getElementById(id).value || '').trim(); };
+  var online = !!document.querySelector('#v97evFmt [data-v="on"].selected');
+  var body = {t: g('v97evT'), date: g('v97evD'), time: g('v97evTm'), place: online ? '' : g('v97evPl'), online: online, url: g('v97evU')};
+  if(!body.t){ showToast('Напишите название'); try{ document.getElementById('v97evT').focus(); }catch(e){} return; }
+  if(!body.date){ showToast('Выберите дату'); return; }
+  var btn = document.getElementById('v97evGo');
+  v97evBusy = 1; btn.disabled = true; btn.textContent = 'Создаю…';
+  var done = function(){ v97evBusy = 0; btn.disabled = false; btn.textContent = 'Создать'; };
+  fetch(APP_SERVER + 'events?' + new URLSearchParams({_tg: bsInitData()}).toString(), {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)})
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ j._st = r.status; return j; }); })
+    .then(function(j){
+      done();
+      if(j._st === 200 && j.ok){
+        closeModal('v97evModal');
+        showToast('Мероприятие создано: ' + body.t);
+        try{ if(tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); }catch(e){}
+        try{ window._v78.d = null; if(v9activeId() === 'events') renderEventsPage(); }catch(e){}
+        return;
+      }
+      showToast(j.detail || (j._st === 403 ? 'Мероприятия добавляет команда клуба' : 'Не сохранилось, попробуйте ещё раз'));
+    }, function(){ done(); showToast('Нет связи, попробуйте ещё раз'); });
 }
 
 // ═══ КЛУБ: карточка «О проекте» над списком резидентов ═══
