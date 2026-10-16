@@ -1,5 +1,19 @@
 [
  {
+  "v": "676723e6203f",
+  "files": [
+   "m/shared.079ec7b85df7.js",
+   "m/admin.21295c3a3cd0.js",
+   "m/res.b71819e73746.js",
+   "m/lead.d09c3dea7df4.js",
+   "m/guides.1a3a606b7917.js",
+   "m/extra.19bff42b143d.js",
+   "f/manrope-cyrillic.c268b459a932.woff2",
+   "f/manrope-latin.a30ddcd34970.woff2",
+   "s/676723e6203f.html"
+  ]
+ },
+ {
   "v": "ba4fa71167e7",
   "files": [
    "m/shared.079ec7b85df7.js",
@@ -53,20 +67,6 @@
    "f/manrope-cyrillic.c268b459a932.woff2",
    "f/manrope-latin.a30ddcd34970.woff2",
    "s/c2b3b0467b51.html"
-  ]
- },
- {
-  "v": "26041efa3d6d",
-  "files": [
-   "m/shared.8d2467c6261d.js",
-   "m/admin.446f1c0cd80e.js",
-   "m/res.9b0ddbbc6c10.js",
-   "m/lead.3ffae91ae576.js",
-   "m/guides.81bb4d9f782a.js",
-   "m/extra.3a1a5e83f5cf.js",
-   "f/manrope-cyrillic.c268b459a932.woff2",
-   "f/manrope-latin.a30ddcd34970.woff2",
-   "s/26041efa3d6d.html"
   ]
  }
 ]

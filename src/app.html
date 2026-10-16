@@ -5286,7 +5286,7 @@ function v20onb(sent){
   };
   return '<div class="v2-card v20-onb" id="v20onb"><div class="hd"><div class="k">ПЕРВЫЕ ШАГИ · <span id="v20onbN">' + ((sent ? 1 : 0) + (plat ? 1 : 0) + (rules ? 1 : 0)) + '</span> ИЗ 3</div>' +
       '<button class="x" onclick="v20onbHide()">Скрыть</button></div>' +
-    st(1, sent, 'v20onbRep', 'Сдайте первый отчёт', 'В группе клуба, тема «ОТЧЁТЫ», каждый день до 23:59', sent ? '' : '<button class="go" onclick="v3sendReport()">Сдать отчёт ›</button>') +
+    st(1, sent, 'v20onbRep', 'Сдайте первый отчёт', 'В группе клуба, тема «ОТЧЁТЫ», каждый день до 23:59 включительно', sent ? '' : '<button class="go" onclick="v3sendReport()">Сдать отчёт ›</button>') +
     st(2, plat, 'v20onbPlat', 'Откройте платформу BS', 'Мобильная версия здесь, в Telegram, и app.bxclub.kz с ноутбука: разбор, задачи, отчёты и прогресс.', v20btns()) +
     st(3, rules, 'v20onbRules', 'Прочитайте правила клуба', 'Отчёты, встречи, штрафы и оплата', rules ? '' : '<button class="go" onclick="v20set(\'bs_onb_rules\',\'1\');showPage(\'rules\')">Открыть правила ›</button>') +
   '</div>';
@@ -6731,11 +6731,21 @@ function v3isMine(l, r){
   var id = String(r.chatId || '');
   return (id && String(l.chatId || l.userId || '') === id) || String(l.name || '').trim() === r.name;
 }
+// R96: «кто сдал отчёт за сегодня» считает сервер (club.ReportDayStatus), те же цифры на платформе.
+// Правило одно: до 23:59 включительно, в группе клуба, в теме «ОТЧЁТЫ»; отчёт после 00:00 идёт за следующий день.
+function v96rd(){ var rd = cache.reportDay; return rd && rd.rows && rd.iso === v15todayKey(0) ? rd : null; }
+function v96row(r){ var rd = v96rd(), out = null; if(rd) rd.rows.some(function(x){ if(x.name === r.name){ out = x; return true; } return false; }); return out; }
+function v96money(n){ return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+function v96rule(){ var rd = cache.reportDay; return (rd && rd.rule) || {deadline: '23:59', fine: 10000, fineAt: '10:00', short: 'до\u00a023:59 включительно · штраф 10\u00a0000\u00a0₸ в\u00a010:00'}; }
 function v3reportSent(r, date){
-  date = date || new Date().toLocaleDateString('ru-RU');
+  var today = new Date().toLocaleDateString('ru-RU');
+  date = date || today;
+  if(date === today){ var x = v96row(r); if(x) return x.status === 'done'; }
   return (cache.logs || []).some(function(l){ return l.date === date && v3isMine(l, r); });
 }
 function v3missingReports(){
+  var rd = v96rd();
+  if(rd && !rd.own){ var m = {}; (rd.missing || []).forEach(function(n){ m[n] = 1; }); return v3activeResidents().filter(function(r){ return m[r.name]; }); }
   return v3activeResidents().filter(function(r){ return !r.isExcluded && !v3reportSent(r); });
 }
 function v3reports30(r){
@@ -6817,11 +6827,11 @@ function renderResHome(){
   if(sent){
     h += '<div class="v2-card" style="margin-top:18px;padding:16px 18px;display:flex;align-items:center;gap:12px">' +
            '<div style="width:34px;height:34px;border-radius:10px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + V3_CHECK + '</div>' +
-           '<div><div style="font-size:15px;font-weight:800">Отчёт за сегодня сдан</div><div style="font-size:12px;color:#9A9A9A;margin-top:2px">Завтра до 23:59 следующий</div></div></div>';
+           '<div><div style="font-size:15px;font-weight:800">Отчёт за сегодня сдан</div><div style="font-size:12px;color:#9A9A9A;margin-top:2px">Завтра следующий, до 23:59 включительно</div></div></div>';
   } else {
     h += '<div class="v2-hero" style="margin-top:18px"><div class="k"><span>ОТЧЁТ ЗА СЕГОДНЯ</span><span>ДО 23:59</span></div>' +
            '<div class="t">Что сделали по задачам цикла?</div>' +
-           '<div class="s">Отчёт пишется в группе клуба, в теме «ОТЧЁТЫ». Без отчёта в 10:00 следующего дня приходит штраф 10 000 ₸.</div>' +
+           '<div class="s">Отчёт сдаётся до 23:59 включительно в группе клуба, в теме «ОТЧЁТЫ». Нет отчёта за день: в 10:00 следующего дня штраф ' + v96money(v96rule().fine) + ' ₸.</div>' +
            '<button onclick="v3sendReport()">Сдать отчёт</button></div>';
   }
   h += v20platCard('resident'); // R93: «Платформа BS» сразу после отчёта
@@ -8082,6 +8092,7 @@ function renderDashboard(){
   // Кто не сдал отчёт за сегодня
   var need = residents.filter(function(r){ return !r.isExcluded; });
   var missing = v3missingReports();
+  var rd96 = v96rd(); if(rd96 && !rd96.own) need = {length: rd96.need}; // R96: столько же, сколько на платформе
   var todayMeets = (cache.schedule||[]).filter(function(ev){ return v3isToday(ev.date); })
     .sort(function(a,b){ return parseScheduleKey(a) - parseScheduleKey(b); });
   window._v3TodayMeets = todayMeets;
@@ -8090,7 +8101,7 @@ function renderDashboard(){
     var shown = missing.slice(0, 6);
     window._v3Miss = shown;
     h += '<div class="v2-card v3-alert" style="margin-top:10px;padding:14px 16px">' +
-      '<div class="v3-row-sb" style="align-items:baseline"><div class="v3-lbl red lnkable" onclick="showPage(\'reports\')">НЕ СДАЛИ ОТЧЁТ · ' + missing.length + ' ›</div><div class="v3-cap">до 23:59 · штраф в 10:00</div></div>' +
+      '<div class="v3-row-sb" style="align-items:baseline"><div class="v3-lbl red lnkable" onclick="showPage(\'reports\')">НЕ СДАЛИ ОТЧЁТ · ' + missing.length + ' ›</div><div class="v3-cap">' + v2esc(v96rule().short) + '</div></div>' +
       shown.map(function(r, i){
         var note = meetAt[r.name] ? 'встреча ' + meetAt[r.name] : '';
         return '<div class="v3-miss">' + v3av(r, 32) + '<div class="m" onclick="openResidentProfile(window._v3Miss[' + i + '])">' + v2esc(r.name) + (note ? ' <span>' + v2esc(note) + '</span>' : '') + '</div></div>';
@@ -8595,8 +8606,10 @@ function renderReports(){
   const residents = (cache.residents||[]).filter(r=>!r.isFired&&!r.isExcluded&&!r.isAdmin&&!r.isTeam&&r.name!=='Тест'&&r.name!=='Тест2');
   const today = new Date().toLocaleDateString('ru-RU');
   const submitted = new Set(logs.filter(l=>l.date===today).map(l=>String(l.chatId||l.userId||'')));
-  const done = residents.filter(r=>submitted.has(String(r.chatId)));
-  const missing = residents.filter(r=>!submitted.has(String(r.chatId)));
+  const rd96 = v96rd() && !v96rd().own ? v96rd() : null; // R96: одни цифры с платформой (сервер)
+  const st96 = {}; if(rd96) rd96.rows.forEach(x=>{ st96[x.name] = x.status; });
+  const done = rd96 ? residents.filter(r=>st96[r.name]==='done') : residents.filter(r=>submitted.has(String(r.chatId)));
+  const missing = rd96 ? residents.filter(r=>st96[r.name]==='missing') : residents.filter(r=>!submitted.has(String(r.chatId)));
 
   document.getElementById('reportsContent').innerHTML = `
     <div class="section-head">
@@ -8606,7 +8619,7 @@ function renderReports(){
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div class="card-title" style="margin:0">Сдали сегодня</div>
-        <span class="badge b-green">${done.length} / ${residents.length}</span>
+        <span class="badge b-green">${done.length} / ${rd96 ? rd96.need : residents.length}</span>
       </div>
       ${done.length?done.map(r=>`<div class="list-item">
         <div class="list-avatar" style="background:rgba(255,255,255,0.2);color:var(--green)">${r.name[0]}${avImg(r.chatId, r.avatar)}</div>
@@ -13388,9 +13401,10 @@ function renderRules(){
       num: '01',
       title: 'Отчёт каждый день',
       items: [
-        'Отчёт в группу до 22:00, минимум 150 символов',
+        'Отчёт до 23:59 включительно в группе клуба, в теме «ОТЧЁТЫ», от 100 символов',
         'Что сделал за день, какие цифры, где затык',
-        'Пропуск без предупреждения. штраф 10 000 ₸',
+        'Отчёт после 00:00 засчитывается за следующий день',
+        'Нет отчёта за день: в 10:00 следующего дня штраф 10 000 ₸',
         'Отчёт это не для нас. Это ваш способ видеть себя со стороны'
       ]
     },
