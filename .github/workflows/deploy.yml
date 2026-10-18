@@ -48,6 +48,13 @@ jobs:
             exit 1
           fi
 
+      # R107: every sheet and form (доход/расход, штраф, встреча, мероприятие, заметка...) stays above the keyboard:
+      # Chromium opens each one, focuses every field, the primary button must be visible and clickable
+      - name: Sheet check
+        run: |
+          npx playwright install --with-deps chromium
+          node tools/sheetcheck.mjs
+
       - name: Generate version
         id: version
         run: |

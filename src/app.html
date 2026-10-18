@@ -578,8 +578,6 @@
     border-top: 1px solid var(--border);
     border-radius: 20px 20px 0 0;
     width: 100%;
-    max-height: 92dvh;
-    max-height: 92vh; /* fallback */
     overflow-y: auto;
     padding: 20px 16px;
     padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
@@ -1414,10 +1412,8 @@
 .attend-item input{width:20px;height:20px}
 .attend-item span{font-size:15px;font-weight:500}
 
-  /* Sticky footer для кнопок в модалках - всегда видны над клавиатурой */
+  /* Sticky footer для кнопок в модалках - всегда видны над клавиатурой (высота шторки: R107 ниже) */
   .modal {
-    max-height: 92dvh !important;
-    max-height: 92vh !important; /* fallback */
     position: relative;
   }
   .modal-actions {
@@ -4745,6 +4741,18 @@
   .r46a-ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
   .r46a-ol li { display: flex; gap: 10px; border: 1px solid #1F1F1F; border-radius: 12px; padding: 9px 11px; font-size: 14px; line-height: 1.45; color: #fff; }
   .r46a-ol li i { font-style: normal; flex-shrink: 0; width: 22px; height: 22px; border-radius: 11px; background: #fff; color: #000; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  /* ═══ R107: шторки в видимой части экрана ═══
+     Документ не листается (R99), поэтому каждая шторка (.modal-bg > .modal, .add-menu-overlay > .add-menu) сама
+     помещается в видимую часть окна и листается внутри. Видимую часть (--bs-vv-top, --bs-vv-h) ставит bsSheetVV:
+     visualViewport (клавиатура), Telegram viewportHeight и viewportStableHeight (окно развёрнуто не полностью).
+     Главная кнопка формы прилипает к низу шторки над клавиатурой (.modal-actions, .bs-sheet-act). tools/sheetcheck.mjs */
+  .modal-bg, .add-menu-overlay, .detail-view, .r46a-ov, .bs-ov { top: var(--bs-vv-top, 0px) !important; bottom: auto !important; height: var(--bs-vv-h, 100%) !important; }
+  .modal, .add-menu { max-height: calc(100% - var(--tg-safe-top, 0px) - 12px) !important; overflow-y: auto !important; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .bs-ov > div { max-height: 100%; overflow-y: auto; overscroll-behavior: contain; }
+  .bs-sheet-act { position: sticky; bottom: 0; z-index: 60; background: #0E0E0E; margin-left: -18px; margin-right: -18px; padding: 10px 18px 2px; box-shadow: 0 -10px 14px rgba(14,14,14,0.85); }
+  .bs-sheet-act > * { margin-top: 0 !important; }
+  .bs-ov .bs-sheet-act { background: #1a1a1a; margin-left: -24px; margin-right: -24px; padding: 10px 24px 2px; box-shadow: 0 -10px 14px rgba(26,26,26,0.85); }
+  .v15-sheet .bt.bs-sheet-act { margin-top: 18px; }
 </style>
 
 <div class="modal-bg" id="attendModal">
@@ -5731,6 +5739,95 @@ function bsNavLift(){
   document.documentElement.style.setProperty('--bs-nav-lift', lift + 'px');
 }
 window.addEventListener('resize', function(){ bsNavLift(); });
+
+// ═══ R107: шторки над клавиатурой ═══
+// Документ не листается (R99), поэтому шторка обязана сама помещаться в видимую часть окна и листаться внутри.
+// Видимая часть: visualViewport (клавиатура iPhone уменьшает его, а не окно WebView), Telegram viewportHeight
+// (окно не развёрнуто или его тянут) и viewportStableHeight (как у меню, bsNavLift). Все шторки берут её из
+// --bs-vv-top и --bs-vv-h (CSS R107). Главная кнопка формы прилипает к низу шторки (bsSheetPrep), поле в фокусе
+// выезжает над ней (bsSheetReveal). tools/sheetcheck.mjs открывает все шторки в браузере и проверяет это.
+var BS_SHEET = '.modal, .add-menu, .bs-ov > div';
+function bsSheetVV(){
+  var de = document.documentElement, ih = window.innerHeight || de.clientHeight || 0, top = 0, bot = ih;
+  try{
+    var vv = window.visualViewport;
+    if(vv && vv.height > 0){ top = Math.max(0, Math.min(ih, vv.offsetTop || 0)); bot = Math.min(ih, top + vv.height); }
+  }catch(e){}
+  try{
+    if(tg){
+      var vh = Number(tg.viewportHeight) || 0, sh = Number(tg.viewportStableHeight) || 0;
+      if(tg.isExpanded === false && sh > 0 && ih - sh > 0 && ih - sh < ih * 0.6) bot = Math.min(bot, sh);
+      if(vh >= 160 && vh < ih - 1) bot = Math.min(bot, vh);
+    }
+  }catch(e){}
+  if(bot - top < 160) bot = Math.min(ih, top + 160);
+  var t = Math.round(top) + 'px', h = Math.max(0, Math.round(bot - top)) + 'px';
+  if(de.style.getPropertyValue('--bs-vv-top') !== t) de.style.setProperty('--bs-vv-top', t);
+  if(de.style.getPropertyValue('--bs-vv-h') !== h) de.style.setProperty('--bs-vv-h', h);
+}
+function bsSheetOf(t){ try{ return t && t.closest ? t.closest(BS_SHEET) : null; }catch(e){ return null; } }
+function bsSheetHasField(sh){
+  var f = sh.querySelectorAll('input, textarea, select');
+  for(var i = 0; i < f.length; i++){ if(f[i].type !== 'hidden' && f[i].type !== 'checkbox' && f[i].type !== 'radio') return true; }
+  return false;
+}
+// Нижняя строка кнопок формы: .modal-actions (статичные шторки) или последняя главная кнопка (шторки из кода).
+// Она прилипает к низу шторки: видна над клавиатурой, даже когда поля не помещаются
+function bsSheetPrep(sh){
+  if(!sh || !sh.querySelector) return null;
+  var act = sh.querySelector('.modal-actions, .bs-sheet-act');
+  if(act || !bsSheetHasField(sh)) return act;
+  var bs = sh.querySelectorAll('.btn-primary, .v3-primary, .v15-danger, [data-ok], [data-s]'), b = null;
+  for(var i = bs.length - 1; i >= 0; i--){ if(bs[i].tagName === 'BUTTON' && !bs[i].closest('.picker')){ b = bs[i]; break; } }
+  if(!b) return null;
+  var p = b.parentElement, wrap = null;
+  if(p && p !== sh && p.children.length <= 4 && [].every.call(p.children, function(c){ return c.tagName === 'BUTTON' || c.tagName === 'A'; })) wrap = p;
+  else { wrap = document.createElement('div'); p.insertBefore(wrap, b); wrap.appendChild(b); }
+  wrap.classList.add('bs-sheet-act');
+  return wrap;
+}
+// Поле в фокусе: шторка листается так, чтобы оно стояло над прилипшей кнопкой (scrollIntoView листал бы и окно)
+function bsSheetReveal(t){
+  var sh = bsSheetOf(t); if(!sh || !t.isConnected) return;
+  var s = sh.getBoundingClientRect(), r = t.getBoundingClientRect();
+  if(!r.height || !s.height) return;
+  var act = bsSheetPrep(sh), foot = 0;
+  if(act && !act.contains(t)){ var a = act.getBoundingClientRect(); if(a.height && a.top < s.bottom) foot = Math.max(0, s.bottom - a.top); }
+  var lo = s.top + 8, hi = s.bottom - foot - 8, d = 0;
+  if(r.bottom > hi) d = Math.min(r.bottom - hi, r.top - lo);
+  else if(r.top < lo) d = r.top - lo;
+  if(d) sh.scrollTop += d;
+}
+function bsSheetSync(){
+  bsSheetVV();
+  var a = document.activeElement;
+  if(a && bsSheetOf(a)) setTimeout(function(){ bsSheetReveal(a); }, 30);
+}
+(function(){
+  try{ if(window.visualViewport){ visualViewport.addEventListener('resize', bsSheetSync); visualViewport.addEventListener('scroll', function(){ bsSheetVV(); }); } }catch(e){}
+  window.addEventListener('resize', bsSheetSync);
+  document.addEventListener('focusin', function(e){
+    var t = e.target, sh = bsSheetOf(t);
+    if(!sh) return;
+    bsSheetVV(); bsSheetPrep(sh);
+    setTimeout(function(){ bsSheetReveal(t); }, 60);
+    setTimeout(function(){ bsSheetVV(); bsSheetReveal(t); }, 380);
+  }, true);
+  document.addEventListener('focusout', function(){ setTimeout(bsSheetVV, 60); setTimeout(bsSheetVV, 420); }, true);
+  // Шторки разметки стоят прямо в body, вне листаемого #bsScroll (как и шторки из кода)
+  try{ document.querySelectorAll('.modal-bg').forEach(function(m){ if(m.parentNode !== document.body) document.body.appendChild(m); }); }catch(e){}
+  // Шторки из кода (add-menu-overlay): кнопка формы готова сразу, до первого фокуса
+  try{
+    new MutationObserver(function(ms){
+      ms.forEach(function(m){ [].forEach.call(m.addedNodes, function(n){
+        if(n.nodeType !== 1 || !n.classList) return;
+        var sh = n.matches(BS_SHEET) ? n : n.querySelector(BS_SHEET);
+        if(sh){ bsSheetVV(); bsSheetPrep(sh); }
+      }); });
+    }).observe(document.body, {childList: true});
+  }catch(e){}
+  bsSheetVV();
+})();
 window.addEventListener('scroll', function(){
   // документ не листается: если iOS всё же сдвинул его (не при наборе), возвращаем, чтобы меню не уезжало
   if(!document.documentElement.classList.contains('bs-typing') && (window.scrollY || window.pageYOffset)){ try{ window.scrollTo(0, 0); }catch(e){} }
@@ -5765,32 +5862,8 @@ function init(){
       }
     }catch(e){}
 
-  // Telegram Mini App: при открытии клавиатуры скроллим к активному инпуту в модалке
-  // Это решает проблему когда клавиатура закрывает поле ввода или кнопки
-  if(window.visualViewport){
-    window.visualViewport.addEventListener('resize', function(){
-      var active = document.activeElement;
-      if(!active) return;
-      var modal = active.closest('.modal');
-      if(modal){
-        // Скроллим инпут в видимую область с отступом
-        setTimeout(function(){
-          active.scrollIntoView({block:'center', behavior:'smooth'});
-        }, 100);
-      }
-    });
-  }
-  
-  // При фокусе на input/textarea внутри модалки - скроллим к нему
-  document.addEventListener('focusin', function(e){
-    var t = e.target;
-    if(!t || !t.tagName) return;
-    if(t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA' && t.tagName !== 'SELECT') return;
-    if(!t.closest('.modal')) return;
-    setTimeout(function(){
-      try{ t.scrollIntoView({block:'center', behavior:'smooth'}); }catch(e){}
-    }, 300);
-  });
+  // R107: клавиатура и поле в шторке: bsSheetVV и bsSheetReveal (ниже, «шторки над клавиатурой»)
+  if(tg.onEvent) tg.onEvent('viewportChanged', function(){ bsSheetSync(); });
 
       // Header/Background color. hex поддерживается с API 6.9+, иначе используем bg_color
       try {
@@ -8484,10 +8557,8 @@ function renderScheduleCalendar(list){
 }
 
 function meetKind(ev){
-  var link = String(ev.link || ev.meet || '').toLowerCase();
-  if(link.indexOf('meet.google') >= 0 || link.indexOf('zoom') >= 0) return 'online';
-  if(link && link.indexOf('http') < 0) return 'offline';
-  return 'other';
+  var f = v107fmt(ev);   // R107: созвон на платформе онлайн, формат резидента учитывается
+  return f.online ? 'online' : (f.offline ? 'offline' : 'other');
 }
 
 function meetDotClass(ev){
@@ -8577,34 +8648,29 @@ function showDayMeetings(dateStr){
   window._v94day = list;
   var adm = isRealAdmin && viewAs === 'admin';
   list.forEach(function(ev, i){
-    var link = String(ev.link || ev.meet || '');
-    var isEvent = String(ev.res || '').indexOf('🎬') === 0;
-    var isOnline = link.indexOf('meet.google') >= 0 || link.indexOf('zoom') >= 0;
-    var isOffline = link && !isOnline && link.indexOf('http') < 0;
-    var color = isEvent ? '#ab8fd4' : (isOnline ? '#64b5f6' : (isOffline ? '#e57373' : '#D9D9D9'));
-    var fmtLabel = isEvent ? 'Событие' : (isOnline ? 'Онлайн' : (isOffline ? 'Офлайн' : 'Прочее'));
+    // R107: формат как в списке и в листе действий (созвон на платформе: ev.call, без ссылки Meet)
+    var f = v107fmt(ev);
+    var color = f.event ? '#ab8fd4' : (f.online ? '#64b5f6' : (f.offline ? '#e57373' : '#D9D9D9'));
 
-    h += '<div class="v94-dm" role="button" tabindex="0" onclick="v94dayOpen(' + i + ')" style="padding:14px;margin-bottom:10px;background:var(--card2);border-radius:12px;border-left:3px solid ' + color + ';cursor:pointer">';
+    h += '<div class="v94-dm" role="button" tabindex="0" data-dm="' + i + '" onclick="v94dayOpen(' + i + ')" style="padding:14px;margin-bottom:10px;background:var(--card2);border-radius:12px;border-left:3px solid ' + color + ';cursor:pointer">';
     h += '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px">';
-    h += '<div style="min-width:0"><div style="font-size:15px;font-weight:800;color:#fff">' + v2esc(ev.res||'Без имени') + '</div>';
-    h += '<div style="font-size:12px;color:' + color + ';font-weight:700;margin-top:2px">' + fmtLabel + '</div></div>';
+    h += '<div style="min-width:0"><div style="font-size:15px;font-weight:800;color:#fff">' + v2esc(String(ev.res || 'Без имени').replace(/^🎬\s*/, '')) + '</div>';
+    h += '<div style="font-size:12px;color:' + color + ';font-weight:700;margin-top:2px">' + v2esc(f.label) + '</div></div>';
     h += '<div style="font-size:17px;font-weight:800;color:#FFFFFF;flex-shrink:0">' + v2esc(ev.time||'') + '</div>';
     h += '</div>';
+    if(f.place) h += '<div style="font-size:12px;color:#888;word-break:break-all;margin-bottom:4px">' + v2esc(f.place) + '</div>';
+    else if(!f.call) h += '<div style="font-size:12px;color:#888">Ссылка или адрес не указаны</div>';
 
-    if(isOnline){
-      h += '<div style="font-size:12px;color:#888;word-break:break-all;margin-bottom:10px">' + v2esc(link) + '</div>';
-      h += '<a href="' + v2esc(link) + '" target="_blank" onclick="event.stopPropagation()"><button class="btn btn-primary" style="width:100%;margin:0;padding:10px;font-size:13px">Открыть Google Meet</button></a>';
-    } else if(isOffline || (isEvent && link)){
-      h += '<div style="font-size:13px;color:#ccc;margin-bottom:4px">' + v2esc(link) + '</div>';
-    } else {
-      h += '<div style="font-size:12px;color:#888">Ссылка или адрес не указаны</div>';
-    }
-
-    var bs = 'flex:1;padding:10px 8px;border-radius:9px;font-size:12.5px;font-weight:800;font-family:inherit;cursor:pointer;';
-    h += '<div style="display:flex;gap:8px;margin-top:10px">';
-    if(adm) h += '<button type="button" onclick="event.stopPropagation();v94dayMove(' + i + ')" style="' + bs + 'background:#fff;border:1px solid #fff;color:#000">Перенести</button>';
-    h += '<button type="button" onclick="event.stopPropagation();v94dayOpen(' + i + ')" style="' + bs + 'background:transparent;border:1px solid #3a3a3a;color:#fff">' + (adm ? 'Все действия ›' : 'Подробнее ›') + '</button>';
-    h += '</div>';
+    // Те же действия, что в листе встречи (showMeetingDetail): прошла, перенести, войти; остальное в «Все действия»
+    var bs = 'flex:1;min-height:44px;padding:10px 8px;border-radius:10px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;';
+    var go = f.call || (f.online ? f.link : '');
+    h += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">';
+    if(adm) h += '<button type="button" data-dm-act="done" onclick="event.stopPropagation();v107dayDone(' + i + ')" style="' + bs + 'background:#fff;border:1px solid #fff;color:#000">' + (f.event ? 'Мероприятие прошло' : 'Встреча прошла') + '</button>';
+    if(go) h += '<button type="button" data-dm-act="go" onclick="event.stopPropagation();v107dayGo(' + i + ')" style="' + bs + 'background:transparent;border:1px solid #3a3a3a;color:#fff">' + (f.call ? 'Войти в созвон' : 'Открыть Google Meet') + '</button>';
+    h += '<div style="display:flex;gap:8px">';
+    if(adm) h += '<button type="button" data-dm-act="move" onclick="event.stopPropagation();v94dayMove(' + i + ')" style="' + bs + 'background:transparent;border:1px solid #3a3a3a;color:#fff">Перенести</button>';
+    h += '<button type="button" data-dm-act="all" onclick="event.stopPropagation();v94dayOpen(' + i + ')" style="' + bs + 'background:transparent;border:1px solid #3a3a3a;color:#fff">' + (adm ? 'Все действия ›' : 'Подробнее ›') + '</button>';
+    h += '</div></div>';
     h += '</div>';
   });
 
@@ -8618,6 +8684,34 @@ function v94dayOpen(i){
   if(!ev) return;
   closeModal('dayMeetsModal');
   showMeetingDetail(ev);
+}
+// R107: формат встречи одним правилом для календаря, списка и листа действий.
+// Созвон на платформе (ev.call, R75) онлайн, даже без ссылки Meet; раньше в календаре он был «Прочее» без кнопок
+function v107fmt(ev){
+  var link = String((ev && (ev.link || ev.meet)) || ''), call = String((ev && ev.call) || '');
+  var event = String((ev && ev.res) || '').indexOf('🎬') === 0, day = !!ev && ev.res === 'Офлайн день';
+  var meet = /meet\.google|zoom/i.test(link);
+  var online = !event && (!!call || meet || /^онлайн/i.test(String((ev && ev.format) || '')));
+  var offline = !event && !online && (day || (!!link && link.indexOf('http') < 0) || /^офлайн/i.test(String((ev && ev.format) || '')));
+  var label = event ? 'Мероприятие' : (day ? 'Офлайн день' : (online ? (call ? 'Онлайн · созвон на платформе' : 'Онлайн · Google Meet') : (offline ? 'Офлайн' : 'Прочее')));
+  var place = event ? link : (online ? (meet ? link : '') : (link && link.indexOf('http') < 0 ? link : String((ev && ev.place) || '')));
+  return {event: event, day: day, online: online, offline: offline, call: call, link: link, label: label, place: place};
+}
+function v107dayDone(i){
+  var ev = (window._v94day || [])[i];
+  if(!ev) return;
+  closeModal('dayMeetsModal');
+  window._v94ev = ev;
+  // как кнопка в листе встречи (showMeetingDetail): онлайн сразу, офлайн через список присутствующих
+  onMeetingDoneClick(ev.res, ev.date, ev.time, !!ev.call || String(ev.link || '').indexOf('meet') >= 0);
+}
+function v107dayGo(i){
+  var ev = (window._v94day || [])[i];
+  if(!ev) return;
+  var f = v107fmt(ev), u = f.call || f.link;
+  if(!u) return;
+  if(f.call){ try{ v9open(u); return; }catch(e){} }
+  window.open(u, '_blank');
 }
 function v94dayMove(i){
   var ev = (window._v94day || [])[i];
@@ -8663,9 +8757,10 @@ async function markAttendanceFromDay(resName, dateStr){
 
 function meetingCard(ev, idx){
   const link = String(ev.link || '');
-  const isOnline = link.indexOf('meet') >= 0 || link.indexOf('zoom') >= 0;
-  const isEvent = (ev.res || '').indexOf('🎬') === 0;
-  const isOffline = !isEvent && link && !isOnline;
+  const f107 = v107fmt(ev);   // R107: как в календаре и в листе действий
+  const isOnline = f107.online;
+  const isEvent = f107.event;
+  const isOffline = f107.offline;
   const cd = countdownText(ev.date, ev.time);
   const title = isEvent ? ev.res : ev.res;
 
@@ -8673,7 +8768,7 @@ function meetingCard(ev, idx){
   var accent = isEvent ? '#ab8fd4' : (isOnline ? '#64b5f6' : (isOffline ? '#e57373' : '#777777'));
   var badge = isEvent ? 'СОБЫТИЕ' : (isOnline ? 'ОНЛАЙН' : (isOffline ? 'ОФЛАЙН' : '?'));
   var place = isEvent ? (link || 'Мероприятие')
-            : (isOnline ? 'Google Meet' : (isOffline ? link : 'Место не указано'));
+            : (isOnline ? (f107.call ? 'Созвон на платформе' : 'Google Meet') : (isOffline ? (f107.place || (f107.day ? 'Офис BS' : 'Офлайн')) : 'Место не указано'));
 
   return `
     <div class="meeting ${cd.urgent?'upcoming':''}" data-meetidx="${idx}" onclick="openMeetByIdx(${idx})"
@@ -8688,7 +8783,7 @@ function meetingCard(ev, idx){
               color:${accent};background:${accent}1f;border:1px solid ${accent}55;
               padding:4px 9px;border-radius:11px">${badge}</span>
       </div>
-      <div class="meeting-row" style="margin-top:6px;${!link && !isEvent ? 'opacity:0.5' : ''}">${place}</div>
+      <div class="meeting-row" style="margin-top:6px;${!isOnline && !isOffline && !isEvent ? 'opacity:0.5' : ''}">${place}</div>
     </div>
   `;
 }
@@ -12489,7 +12584,8 @@ function lockPayHeight(reset){
   if(reset){ m._maxH = 0; m.style.minHeight = ''; }
   requestAnimationFrame(function(){
     var h = m.offsetHeight;
-    if(h > (m._maxH||0)){ m._maxH = h; m.style.minHeight = h + 'px'; }
+    // R107: не выше видимой части (min-height сильнее max-height, иначе кнопка «Записать» уходила под клавиатуру)
+    if(h > (m._maxH||0)){ m._maxH = h; m.style.minHeight = 'min(' + h + 'px, calc(100% - var(--tg-safe-top, 0px) - 12px))'; }
   });
 }
 
@@ -12747,7 +12843,7 @@ function openModal(id){
   var am = document.querySelector('.add-menu-overlay');
   if(am && id === 'schedModal'){ /* меню закроется своим обработчиком */ }
   var mb = document.getElementById(id); mb.classList.add('show');
-  try{ mb.scrollTop = 0; var mm = mb.querySelector('.modal'); if(mm) mm.scrollTop = 0; }catch(e){}
+  try{ mb.scrollTop = 0; var mm = mb.querySelector('.modal'); if(mm) mm.scrollTop = 0; bsSheetVV(); bsSheetPrep(mm); }catch(e){}
 }
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 function showToast(text){
@@ -14233,7 +14329,7 @@ function _showLeadmagnetSentModal(key, fileName){
   if(existing) existing.remove();
   
   var modal = document.createElement('div');
-  modal.id = 'lmSentModal';
+  modal.id = 'lmSentModal'; modal.className = 'bs-ov';
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(8px);';
   
   modal.innerHTML = 
@@ -14933,7 +15029,7 @@ function _openEditLeadmagnet(item){
   }).join('');
   
   var modal = document.createElement('div');
-  modal.id = 'lmEditModal';
+  modal.id = 'lmEditModal'; modal.className = 'bs-ov';
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);';
   
   modal.innerHTML = 
@@ -14963,7 +15059,7 @@ function _openEditLeadmagnet(item){
       '</div>' +
       
       '<div style="display:flex;gap:10px;">' +
-        '<button id="lmEditSave" style="flex:1;padding:14px;background:#FFFFFF;color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;">Сохранить</button>' +
+        '<button id="lmEditSave" data-s="1" style="flex:1;padding:14px;background:#FFFFFF;color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;">Сохранить</button>' +
         '<button id="lmEditCancel" style="padding:14px 18px;background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.15);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">Отмена</button>' +
       '</div>' +
     '</div>';
