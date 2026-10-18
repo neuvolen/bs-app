@@ -4476,7 +4476,7 @@
   .v16 .v14-epl .ba { margin-top: 8px; }
   .v16-skr { display: flex; flex-direction: column; gap: 12px; margin-top: 26px; }
 
-  /* ═══ R15: запись на экспресс-разбор и приглашения ═══ */
+  /* ═══ R15: запись на диагностику бизнеса и приглашения ═══ */
   .v15-head { margin: 2px 4px 0; }
   .v15-head .k { font-size: 11px; font-weight: 800; letter-spacing: 1.8px; color: #8C8C8C; }
   .v15-head .t { font-size: 30px; font-weight: 800; letter-spacing: -0.9px; line-height: 1.05; margin-top: 6px; }
@@ -4796,7 +4796,7 @@ const APP_SERVER = 'https://bs-platform-production.up.railway.app/api/v1/app/';
     return orig(input, init);
   };
 })();
-// ══════════ R15: ЗАПИСЬ НА ЭКСПРЕСС-РАЗБОР ══════════
+// ══════════ R15: ЗАПИСЬ НА ДИАГНОСТИКУ БИЗНЕСА ══════════
 // GET slots → окна; POST book → запись; POST book/cancel → отмена. Время окон всегда по Алматы (+05:00)
 var V15_WD = ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'];
 var V15_WDL = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
@@ -5016,7 +5016,7 @@ function v15submit(){
 function v15gcal(s){
   var t = v15t(s.start); if(!t) return '';
   var z = function(ms){ return new Date(ms).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); };
-  var q = new URLSearchParams({action: 'TEMPLATE', text: 'Экспресс-разбор BS', dates: z(t.ms) + '/' + z(t.ms + (Number(s.dur) || 60) * 60000),
+  var q = new URLSearchParams({action: 'TEMPLATE', text: 'Диагностика бизнеса BS', dates: z(t.ms) + '/' + z(t.ms + (Number(s.dur) || 60) * 60000),
     details: 'Рустам и Береке, 60 минут. Возьмите цифры за последние 3 месяца.' + (s.link ? '\n' + s.link : ''), location: v15online(s) ? (s.link || 'Онлайн') : (s.place || '')});
   return 'https://calendar.google.com/calendar/render?' + q.toString();
 }
@@ -5088,13 +5088,13 @@ function v15ask(kind){
 }
 function v15request(){
   var f = v15form();
-  openDiagnosticModal({title: 'Заявка на экспресс-разбор', request: f.question || window._bk.q || '', phone: f.phone, niche: f.niche});
+  openDiagnosticModal({title: 'Заявка на диагностику бизнеса', request: f.question || window._bk.q || '', phone: f.phone, niche: f.niche});
 }
 function renderLeadRazbor(){
   var el = document.getElementById('leadrazborContent');
   if(!el || typeof V4_TEAM === 'undefined' || !window._bk) return;
   var b = window._bk, d = b.data || {};
-  var h = '<div class="v15-head"><div class="k">60 МИНУТ · РУСТАМ И БЕРЕКЕ ВДВОЁМ</div><div class="t">Экспресс-разбор</div></div>';
+  var h = '<div class="v15-head"><div class="k">60 МИНУТ · РУСТАМ И БЕРЕКЕ ВДВОЁМ</div><div class="t">Диагностика бизнеса</div></div>';
   if(d.mine && d.mine.slot){
     h += v15mineHTML() + v15teamHTML();
     el.innerHTML = h; return;
@@ -5128,7 +5128,7 @@ var V15_BONUS = 100000;
 function v15refFallback(){
   var id = user && user.id ? String(user.id) : '';
   var link = 'https://t.me/bsurgery_bot?start=ref_' + id;
-  return {link: link, text: 'Привет! Я в Business Surgery: каждые 10 дней разбираем бизнес с трекерами и считаем цифры. Это не курс. Начни с экспресс-разбора своего бизнеса, ссылка ниже', invited: [], bonusTotal: 0, bonusPaid: 0, local: true};
+  return {link: link, text: 'Привет! Я в Business Surgery: каждые 10 дней разбираем бизнес с трекерами и считаем цифры. Это не курс. Начни с диагностики своего бизнеса, ссылка ниже', invited: [], bonusTotal: 0, bonusPaid: 0, local: true};
 }
 function v15ref(){ var r = window._ref; return r.data || v15refFallback(); }
 function v15refLoad(force){
@@ -5178,7 +5178,7 @@ function v15renderRef(){
     '<div class="t">за каждого приглашённого, который стал резидентом клуба</div>' +
     '<div class="v15-steps">' +
       '<div class="r"><div class="n">1</div><div class="m"><b>Отправьте ссылку</b> знакомому предпринимателю</div></div>' +
-      '<div class="r"><div class="n">2</div><div class="m">Он проходит <b>экспресс-разбор</b> с Рустамом и Береке</div></div>' +
+      '<div class="r"><div class="n">2</div><div class="m">Он проходит <b>диагностику бизнеса</b> с Рустамом и Береке</div></div>' +
       '<div class="r"><div class="n">3</div><div class="m">Становится резидентом: <b>' + v15nb(V15_BONUS) + ' ₸ вам</b></div></div>' +
     '</div>' +
     '<button class="b1" id="refShare" onclick="v15share()">' + V14_SEND_ICON + 'Поделиться в Telegram</button>' +
@@ -5300,7 +5300,7 @@ function v20platCard(role){
   if(role === 'resident' && v20get('bs_onb_hide') !== '1') return '';
   var what = role === 'admin'
     ? 'Доски резидентов, задачи, заявки и финансы клуба в мобильной версии. Вход через ваш Telegram.'
-    : (role === 'lead' ? 'Мобильная версия платформы: диагностика, бизнес-идеи и запись на разбор. Вход через ваш Telegram.'
+    : (role === 'lead' ? 'Мобильная версия платформы: бесплатная проверка бизнеса, бизнес-идеи и запись на диагностику. Вход через ваш Telegram.'
       : 'Мобильная версия платформы: разбор, задачи, отчёты и замеры. Вход через ваш Telegram.');
   return '<div class="v2-card v20-plat" id="v20plat"><div class="hd"><div class="ic">' + v20ico(20) + '</div>' +
     '<div class="m"><div class="k">В TELEGRAM</div><div class="t">Платформа BS</div></div></div>' +
@@ -5595,7 +5595,7 @@ const NAV = {
     {id:'plus', plus:true},
     {id:'res',  label:'Резиденты', icon:'club', pages:[{id:'residents', label:'Резиденты'},{id:'reports', label:'Отчёты'},{id:'visits', label:'Посещения'},{id:'fines', label:'Штрафы'},{id:'restasks', label:'Задачи'}]},
     {id:'plat', label:'Платформа', icon:'plat', ext:true},
-    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'leadrazbor', label:'Экспресс-разбор', hidden:true},{id:'ideas', label:'Бизнес-идеи'}]}
+    {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'leadrazbor', label:'Диагностика бизнеса', hidden:true},{id:'ideas', label:'Бизнес-идеи'}]}
   ],
   resident: [
     {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'},{id:'ideas', label:'Бизнес-идеи'},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true}]},
@@ -6002,7 +6002,7 @@ function init(){
       // У лида «Материалы» слились с гайдами: старые ссылки ведут в каталог
       'leadmagnets':  {admin:'leadmagnets', resident:'leadmagnets', lead:'guides'},
       'materials':    {admin:'leadmagnets', resident:'leadmagnets', lead:'guides'},
-      // Запись на экспресс-разбор
+      // Запись на диагностику бизнеса
       'book':         {admin:'leadrazbor',  resident:'myboard',     lead:'leadrazbor'},
       'booking':      {admin:'leadrazbor',  resident:'myboard',     lead:'leadrazbor'},
       'leadrazbor':   {admin:'leadrazbor',  resident:'myboard',     lead:'leadrazbor'},
@@ -13756,7 +13756,7 @@ function renderAbout(){
   var role = navRole();
   var h = '';
   if(isLead){
-    // Главная лида: логотип, диагностика, экспресс-разбор, материалы
+    // Главная лида: логотип, диагностика, диагностика бизнеса, материалы
     var dr = null; try{ dr = JSON.parse(localStorage.getItem('bs_diagnostic_result') || 'null'); }catch(e){}
     // Список областей объявлен ниже по скрипту: при самом первом рисовании его ещё нет
     var AREAS = [], ds = null;
@@ -13776,9 +13776,9 @@ function renderAbout(){
       '<div class="v3-row-sb" style="align-items:baseline"><div style="font-size:16px;font-weight:800">Диагностика бизнеса</div><div class="num" style="font-size:13px;color:#9A9A9A">' + ready + '/' + areas + '</div></div>' +
       '<div class="v3-dseg" style="margin-top:12px;grid-template-columns:repeat(' + areas + ',minmax(0,1fr))">' + Array.apply(null, Array(areas)).map(function(a, i){ return '<i' + (i < ready ? ' class="on"' : '') + '></i>'; }).join('') + '</div>' +
       '<div class="v3-row-sb" style="margin-top:12px"><div style="font-size:13px;color:#9A9A9A;line-height:1.45">' + v2esc(diagText) + '</div><div style="flex-shrink:0;font-size:13px;font-weight:800">' + (ready >= areas ? 'Результат →' : (ready ? 'Дальше →' : 'Начать →')) + '</div></div></div>';
-    h += '<div class="v3-hero" style="margin-top:12px"><div class="k">ЭКСПРЕСС-РАЗБОР</div><div class="t">Разберём одну проблему до причины</div>' +
+    h += '<div class="v3-hero" style="margin-top:12px"><div class="k">ДИАГНОСТИКА БИЗНЕСА</div><div class="t">Разберём одну проблему до причины</div>' +
       '<div class="s">60 минут с Рустамом и Береке. Уходите с диагнозом и планом на 10 дней.</div>' +
-      '<button id="ctaDiagnostic">Записаться на разбор</button></div>';
+      '<button id="ctaDiagnostic">Записаться на диагностику</button></div>';
     h += '<div class="v13-brand"><div class="hero-logo-real" style="width:auto">' + (logo ? '<img class="v3-logo" src="' + logo + '" alt="business surgery">' : '') + '<div class="v3-gold">БИЗНЕС-ТРЕКИНГ</div></div>' +
       '<div class="v3-h1" style="font-size:30px;line-height:1.05;letter-spacing:-1px;margin-top:14px">Бизнес как организм</div>' +
       '<p class="v3-p" style="font-size:14px;max-width:310px;margin-top:10px">Находим причину, а не симптом. Каждые 10 дней: диагноз, стратегия, задачи.</p></div>';
@@ -13817,7 +13817,7 @@ function renderAbout(){
   }
 }
 
-// ═══ ЛИД: экспресс-разбор, запись и контакты команды ═══
+// ═══ ЛИД: диагностика бизнеса, запись и контакты команды ═══
 var V4_TEAM = [
   {id:'453800951', name:'Рустам', re:/рустам/i, role:'Трекер · разборы'},
   {id:'1285596249', name:'Береке', re:/берек/i, role:'Трекер · материалы'}
@@ -13935,7 +13935,7 @@ function V11_MENU(leads, res, unpaid, met, closed, libN){
       pg('club', 'CRM лидов', (leads ? leads + ' · ' : '') + 'кто прошёл диагностику и не записался', "showPage('crm')"),
       pg('msg', 'Подписчики бота', 'Рассылки и дожимы', "showPage('subscribers')"),
       pg('board', 'Диагностика', 'Тест здоровья бизнеса', "showPage('diagnostic')"),
-      pg('cal', 'Экспресс-разбор', 'Запись лида: окна, оплата Kaspi', "showPage('leadrazbor')"),
+      pg('cal', 'Диагностика бизнеса', 'Запись лида: окна, оплата Kaspi', "showPage('leadrazbor')"),
       pg('doc', 'Материалы', 'PDF и подкасты для лидов', "showPage('leadmagnets')"),
       ext('sum', 'Конверсии', 'Воронка CRM', 'crmFunnel'),
       ext('sum', 'План продаж', 'План и факт', 'salesPlan'),
@@ -14962,7 +14962,7 @@ function renderDiagnosticResult(){
   }
   var isLeadView = viewAs !== 'resident';
   if(!isLeadView){
-    // Резидент: без записи на экспресс-разбор, результат уходит трекеру в разбор
+    // Резидент: без записи на диагностику бизнеса, результат уходит трекеру в разбор
     h += '<div class="v2-card v9-card" style="margin-top:16px"><div class="tag">Инструменты под слабые органы</div>' +
       '<div class="v9-tools">' + tools.map(function(t, i){
         return '<div class="v9-tool"><div class="n">' + String(i + 1).padStart(2, '0') + '</div><div style="min-width:0"><b>' + v2esc(t[0]) + '</b><span>' + v2esc(t[1]) + ' · ' + v2esc(t[2].toLowerCase()) + '</span></div></div>';
@@ -14973,14 +14973,14 @@ function renderDiagnosticResult(){
       '<button class="v3-outline" id="diagRestartBtn">Пройти заново</button></div>';
   } else {
   h += '<div class="v2-card v9-card" style="margin-top:16px;background:#FFFFFF;color:#000;border-color:#FFFFFF">' +
-    '<div class="tag" style="color:#6E6E6E">Экспресс-разбор · 60 минут</div>' +
-    '<div class="ttl" style="font-size:20px">На экспресс-разборе разберём точные инструменты для вашего бизнеса</div>' +
+    '<div class="tag" style="color:#6E6E6E">Диагностика бизнеса · 60 минут</div>' +
+    '<div class="ttl" style="font-size:20px">На диагностике бизнеса разберём точные инструменты для вашего бизнеса</div>' +
     '<div class="v9-tools">' + tools.map(function(t, i){
       return '<div class="v9-tool" style="background:#F3F3F3;border-color:#E2E2E2"><div class="n">' + String(i + 1).padStart(2, '0') + '</div><div style="min-width:0"><b>' + v2esc(t[0]) + '</b><span style="color:#555">' + v2esc(t[1]) + ' · ' + v2esc(t[2].toLowerCase()) + '</span></div></div>';
     }).join('') + '</div>' +
     '<div class="txt" style="color:#333">Рустам и Береке найдут причину, а не симптом. Уйдёте с планом задач на 10 дней.</div></div>';
   h += '<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">' +
-    (isLeadView ? '<button class="v3-primary" id="diagCtaBtn">Записаться на разбор</button>' : '') +
+    (isLeadView ? '<button class="v3-primary" id="diagCtaBtn">Записаться на диагностику</button>' : '') +
     '<button class="v3-outline" id="diagRestartBtn">Пройти заново</button></div>';
   }
   el.innerHTML = h;
@@ -16149,7 +16149,7 @@ function r46aOpen(id){
     '<div><div class="r46a-l">Что нужно для старта</div><ul class="r46a-ul">' + li(x.need) + '</ul></div>' +
     '<div><div class="r46a-l">Первые шаги на неделю</div><ol class="r46a-ol">' + (x.first_steps || []).map(function(t, i){ return '<li><i>' + (i + 1) + '</i><span>' + v2esc(t) + '</span></li>'; }).join('') + '</ol></div>' +
     '<div><div class="r46a-l">Главные риски</div><ul class="r46a-ul">' + li(x.risks) + '</ul></div>' +
-    (lead ? '<button class="v3-outline" onclick="r46aClose();showPage(\'leadrazbor\')">Записаться на экспресс-разбор</button>' : '') +
+    (lead ? '<button class="v3-outline" onclick="r46aClose();showPage(\'leadrazbor\')">Записаться на диагностику бизнеса</button>' : '') +
     '<div class="v3-cap">Цифры ориентировочные: перед стартом проверьте спрос и цены в своём городе</div></div>';
   o.classList.add('on'); o.scrollTop = 0;
 }
@@ -16330,7 +16330,7 @@ function v14cta(x, hide){
       '<button onclick="showPage(\'myboard\')">Обсудить на разборе с трекером</button>';
   } else {
     h += '<div class="s">60 минут с трекером: найдём, где этот чек-лист даст деньги первым, и соберём план на 10 дней.</div>' +
-      '<button onclick="v13book()">Записаться на разбор</button>';
+      '<button onclick="v13book()">Записаться на диагностику</button>';
   }
   return h + '</div>';
 }
@@ -16789,7 +16789,7 @@ function v13leadDoneHTML(x){
   return '<div class="v13-done" id="gdConv"><div class="k"><span class="ic">' + (V3_CHECK || '') + '</span>Чек-лист пройден.</div>' +
     '<div class="t">Следующий шаг: разобрать, как внедрить это в вашем бизнесе</div>' +
     '<div class="s">60 минут с трекером: найдём, где этот чек-лист даст деньги первым, и соберём план на 10 дней.</div>' +
-    '<button class="b1" onclick="v13book()">Записаться на разбор</button>' +
+    '<button class="b1" onclick="v13book()">Записаться на диагностику</button>' +
     '<button class="b2" onclick="v13clNext()"><span class="l">Следующий чек-лист</span>' + (y ? '<span class="n">' + gE(y.title) + '</span>' : '<span class="n">Все чек-листы: ' + v2esc(x.organ) + '</span>') + '</button></div>';
 }
 function v13resDoneHTML(x){
