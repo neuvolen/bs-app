@@ -6,10 +6,12 @@
   "scripts": {
     "build": "node build.mjs",
     "leakcheck": "node tools/leakcheck.mjs",
-    "navcheck": "node tools/navcheck.mjs"
+    "navcheck": "node tools/navcheck.mjs",
+    "sheetcheck": "node tools/sheetcheck.mjs"
   },
   "devDependencies": {
     "acorn": "8.15.0",
-    "esbuild": "0.25.10"
+    "esbuild": "0.25.10",
+    "playwright": "1.56.0"
   }
 }
