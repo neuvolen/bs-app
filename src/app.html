@@ -760,6 +760,13 @@
   .bnav-i { display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 48px; padding-top: 4px;
     background: none; border: none; color: #6E6E6E; font-family: inherit; font-size: 10.5px; font-weight: 700; cursor: pointer; }
   .bnav-i svg { width: 23px; height: 23px; }
+  /* R114: «Профиль» резидента: буква имени в шапке, как «Я» на платформе */
+  #v114Me { display: none; width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.3); background: transparent; color: #FFFFFF;
+    font: 800 15px/1 'Manrope', sans-serif; align-items: center; justify-content: center; padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  #v114Me.show { display: inline-flex; }
+  .v114-me { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.3); background: transparent; color: #FFFFFF;
+    font: 800 15px/1 'Manrope', sans-serif; display: inline-flex; align-items: center; justify-content: center; padding: 0; cursor: pointer; flex: 0 0 36px; -webkit-tap-highlight-color: transparent; }
+  #v114Me.on { background: #FFFFFF; color: #000000; border-color: transparent; }
   .bnav-i.on { color: #FFFFFF; font-weight: 800; }
   .v97ev-dt { display: flex; gap: 10px; }
   .v97ev-dt > div { flex: 1 1 0; min-width: 0; }
@@ -809,6 +816,7 @@
       <img src="data:image/webp;base64,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" onerror="this.onerror=null;this.src='i/logo.png'" alt="BS" class="logo-img">
     </div>
     <div class="user-bar">
+      <button type="button" id="v114Me" aria-label="Профиль" onclick="navGo('me')">Я</button>
       <div class="role-toggle" id="roleToggle">
         <button id="roleAdmin" class="active" data-role="admin">Админ</button>
         <button id="roleResident" data-role="resident">Резидент</button>
@@ -5268,6 +5276,42 @@ function v96fwMark(d){
   }catch(e){}
 }
 function v96fwBack(){ try{ localStorage.removeItem('bs_fw96'); }catch(e){} }
+// R114: «Переработай приложение у Резидента, слишком путает и платформа и все остальное». У резидента одно приложение:
+// запуск из Telegram сразу открывает платформу на «Сегодня» (те же разделы, что здесь: Сегодня, Задачи, Разбор, Замеры, Клуб).
+// Ссылка бота на раздел (?p=…) открывает тот же раздел на платформе; ссылка, которой там нет, остаётся здесь.
+// Без перехода: Telegram Web (окно внутри страницы), выключатель «Открывать там, где закончили», запасной запуск после
+// 20 секунд без ответа платформы (prelude.js) и админ в режиме «Резидент»
+var V114_GO = {home: 'mb93Today', dashboard: 'mb93Today', main: 'mb93Today', platform: '', board: 'board', myboard: 'board', razbor: 'board',
+  schedule: 'rsched', meetings: 'rsched', mymeetings: 'rsched', reports: 'rreport', report: 'rreport', fines: 'rFines', mystatus: 'rpHub',
+  myprofile: 'rprofile', profile: 'rprofile', wheel: 'rwheel', diagnostic: 'rDiag', residents: 'rFiveList', events: 'events', rules: 'rRules',
+  about: 'rAbout', mytasks: 'rtasks', tasks: 'rtasks', referral: 'rInvite', invite: 'rInvite', ref: 'rInvite', guides: 'guides', checklists: 'guides',
+  ideas: 'ideas', library: 'rKit', leadmagnets: 'rKit', materials: 'rKit'};
+function v114deep(){
+  var p = '';
+  try{ p = (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) || ''; }catch(e){}
+  if(p) return {raw: String(p), start: true};
+  try{ var q = new URLSearchParams(location.search); p = q.get('p') || q.get('page') || q.get('tab') || ''; }catch(e){}
+  return {raw: String(p || ''), start: false};
+}
+function v114auto(){
+  if(window.__bsFw || window._v114done) return;
+  if(isRealAdmin || viewAs !== 'resident') return;
+  if(v20get('bs_fw96off') === '1') return;
+  var framed = false; try{ framed = window.top !== window.self; }catch(e){ framed = true; }
+  if(framed) return;
+  try{ if(sessionStorage.getItem('bs_fw114x')) return; }catch(e){}
+  var w = null; try{ w = window.Telegram && Telegram.WebApp; }catch(e){}
+  if(!((w && w.initData) || bsInitData())) return;
+  var d = v114deep(), go = '';
+  if(d.raw){
+    if(d.start) return;
+    var k = d.raw.toLowerCase();
+    if(!Object.prototype.hasOwnProperty.call(V114_GO, k)) return;
+    go = V114_GO[k];
+  }
+  window._v114done = 1;
+  v20openPlat(go);
+}
 function v96fwToggle(){
   var off = v20get('bs_fw96off') === '1';
   v20set('bs_fw96off', off ? '0' : '1');
@@ -5583,7 +5627,11 @@ const NAV_ICONS = {
   check:'<path d="M5 12l5 5 9-10"/>',
   book:'<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19"/><path d="M9 7.5h6M9 11h4"/>',
   plat:'<rect x="3.5" y="5" width="17" height="11" rx="1.5"/><path d="M1.5 19h21"/>',
-  cl:'<rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M8 8.5l1.5 1.5 2.5-2.8M8 14.5l1.5 1.5 2.5-2.8M14.5 9h2M14.5 15h2"/>'
+  cl:'<rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M8 8.5l1.5 1.5 2.5-2.8M8 14.5l1.5 1.5 2.5-2.8M14.5 9h2M14.5 15h2"/>',
+  // R114: значки резидента те же, что на платформе (Сегодня, Задачи, Разбор, Замеры, Клуб)
+  today:'<path d="M6 3h8l4 4v14H6z"/><path d="M9 12h6M9 16h6M9 8h3"/>',
+  checklist:'<path d="M10 7h10M10 12h10M10 17h10"/><path d="M3.5 7l1.5 1.5 2.5-3M3.5 12.5h4v4h-4z"/>',
+  ruler:'<rect x="3" y="8" width="18" height="8" rx="1.5"/><path d="M7 8v3M10.5 8v4M14 8v3M17.5 8v4"/>'
 };
 function navIcon(k, size, w){
   return '<svg width="'+(size||24)+'" height="'+(size||24)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="'+(w||1.8)+'" stroke-linecap="round" stroke-linejoin="round">'+(NAV_ICONS[k]||'')+'</svg>';
@@ -5597,13 +5645,15 @@ const NAV = {
     {id:'plat', label:'Платформа', icon:'plat', ext:true},
     {id:'more', label:'Меню',      icon:'more', pages:[{id:'more', label:'Ещё'},{id:'about', label:'О проекте'},{id:'crm', label:'CRM'},{id:'subscribers', label:'Подписчики'},{id:'custdev', label:'CustDev'},{id:'content', label:'Полезное'},{id:'leadmagnets', label:'Материалы'},{id:'wheeladmin', label:'Колесо'},{id:'rules', label:'Правила', hidden:true},{id:'diagnostic', label:'Диагностика'},{id:'myprofile', label:'Профиль'},{id:'todos', label:'Задачи команды'},{id:'library', label:'Библиотека'},{id:'wheel', label:'Мои замеры', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'leadrazbor', label:'Диагностика бизнеса', hidden:true},{id:'ideas', label:'Бизнес-идеи'}]}
   ],
+  // R114: у резидента те же разделы, названия, порядок и значки, что на платформе: Сегодня, Задачи, Разбор, Замеры, Клуб;
+  // «Профиль» в шапке (кнопка с буквой имени), как «Я» на платформе. Обычно приложение резидента сразу открывает платформу (v114auto)
   resident: [
-    {id:'home',  label:'Главная', icon:'home',  pages:[{id:'home', label:'Главная'},{id:'library', label:'Библиотека'},{id:'ideas', label:'Бизнес-идеи'},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true}]},
-    {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Мой разбор'},{id:'wheel', label:'Колесо'},{id:'diagnostic', label:'Диагностика'}]},
-    {id:'tasks', label:'Задачи',  icon:'tasks', pages:[{id:'mytasks', label:'Задачи'},{id:'mymeetings', label:'Встречи'}]},
-    {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'residents', label:'Резиденты'},{id:'events', label:'Мероприятия'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О проекте'},{id:'rules', label:'Правила', hidden:true}]},
-    {id:'plat',  label:'Платформа', icon:'plat', ext:true},
-    {id:'me',    label:'Профиль', icon:'me',    pages:[{id:'mystatus', label:'Статус'},{id:'myprofile', label:'Данные'}]}
+    {id:'home',  label:'Сегодня', icon:'today', pages:[{id:'home', label:'Сегодня'},{id:'library', label:'Библиотека'},{id:'ideas', label:'Бизнес-идеи'},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true}]},
+    {id:'tasks', label:'Задачи',  icon:'checklist', pages:[{id:'mytasks', label:'Задачи'}]},
+    {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Разбор'}]},
+    {id:'meas',  label:'Замеры',  icon:'ruler', pages:[{id:'wheel', label:'Колесо баланса'},{id:'diagnostic', label:'Диагностика'}]},
+    {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'mymeetings', label:'Расписание'},{id:'events', label:'Мероприятия'},{id:'residents', label:'Участники'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О клубе'},{id:'rules', label:'Правила', hidden:true}]},
+    {id:'me',    label:'Профиль', icon:'me', nobar:true, pages:[{id:'mystatus', label:'Статус'},{id:'myprofile', label:'Данные'}]}
   ],
   lead: [
     {id:'home', label:'Главная',     icon:'home',  pages:[{id:'about', label:'Главная'}]},
@@ -5912,6 +5962,7 @@ function init(){
               var oldRole = viewAs;
               viewAs = res.role;
               try{ localStorage.setItem('bs_view_as', viewAs); }catch(e){}
+              v114auto();
               if(oldRole !== viewAs){
                 renderTabs();
                 renderAllPages();
@@ -6090,6 +6141,7 @@ function init(){
       }
     }
     
+    v114auto();
     loadAllData().then(v95roleGo, v95roleGo);
     setupAutoRefresh();
     try{ if(window.bsBooted) bsBooted(); }catch(e){}
@@ -6158,6 +6210,7 @@ function renderTabs(){
   var bn = document.getElementById('bnav');
   if(bn){
     bn.innerHTML = NAV[role].map(function(g){
+      if(g.nobar) return ''; // R114: «Профиль» резидента в шапке
       if(g.plus) return '<button class="bnav-plus" aria-label="Быстрый ввод" onclick="openQuickMenu()"><span>'+navIcon('plus',22,2.2)+'</span></button>';
       // R94: «Платформа» в нижнем меню у всех ролей: одно нажатие с любого экрана
       if(g.ext) return '<button class="bnav-i bnav-plat" data-ap94plat="1" aria-label="Открыть платформу BS" onclick="v94plat(this)">'+navIcon(g.icon)+'<span>'+g.label+'</span></button>';
@@ -6167,6 +6220,13 @@ function renderTabs(){
   }
   var back = document.getElementById('v4BackAdmin');
   if(back) back.classList.toggle('show', !!(isRealAdmin && viewAs !== 'admin'));
+  var meB = document.getElementById('v114Me');
+  if(meB){
+    meB.classList.toggle('show', role === 'resident');
+    meB.classList.toggle('on', !!(window._navGroup && window._navGroup.id === 'me'));
+    var ini = ''; try{ ini = String((user && user.first_name) || '').trim().charAt(0).toUpperCase(); }catch(e){}
+    if(meB.textContent !== (ini || 'Я')) meB.textContent = ini || 'Я';
+  }
   var grp = window._navGroup && NAV[role].indexOf(window._navGroup) >= 0 ? window._navGroup : NAV[role][0];
   var el = document.getElementById('tabs');
   var wrap = el ? el.parentNode : null;
@@ -6175,7 +6235,7 @@ function renderTabs(){
   var act = document.querySelector('.page.active');
   var actId = act ? act.id.replace('page-','') : '';
   var hideChips = pages.filter(function(t){ return !t.hidden; }).length < 2 ||
-    (role === 'resident' && (grp.id === 'tasks' || actId === 'residents' || actId === 'mystatus' || actId === 'about')) ||
+    (role === 'resident' && (grp.id === 'tasks' || grp.id === 'board')) || // R114: у резидента вкладки раздела видны всегда
     (role === 'admin' && actId === 'more');
   if(wrap) wrap.classList.toggle('single', hideChips);
   var hdr = document.querySelector('.header');
@@ -6563,6 +6623,7 @@ async function loadAllData(opts){
         v11openDeep(dl || (viewAs === 'lead' ? 'diagnostic' : 'home'));
       }
     }
+    v114auto();
     
     renderAllPages();
   } catch(e){
@@ -6975,6 +7036,8 @@ function renderResHome(){
   var pill = '';
   if(b && b.cycle) pill = '<div class="v3-pill">ЦИКЛ ' + v2esc(b.cycle) + '</div>';
   else if(me.reportStreak > 0) pill = '<div class="v3-pill gold">СЕРИЯ ' + me.reportStreak + '</div>';
+  // R114: «Профиль» резидента: буква имени справа в шапке, как «Я» на платформе (раздел ушёл с нижней панели)
+  pill = '<div style="display:flex;align-items:center;gap:10px">' + pill + '<button type="button" class="v114-me" aria-label="Профиль" onclick="navGo(\'me\')">' + v2esc(String(me.name || 'Я').trim().charAt(0).toUpperCase()) + '</button></div>';
   var h = v3headMark('', v2esc(String(me.name).split(' ')[0]), pill);
   if(sent){
     h += '<div class="v2-card" style="margin-top:18px;padding:16px 18px;display:flex;align-items:center;gap:12px">' +
@@ -11638,6 +11701,7 @@ function renderMyStatus(){
     v3row('doc', 'Рассказать о BS в Stories', 'Готовая картинка с вашим фото', 'shareStory()') +
   '</div>';
   h += '<div class="v2-h">Приложение</div><div class="v2-card">' +
+    v3row('plat', 'Открыть платформу', 'Те же разделы: Сегодня, Задачи, Разбор, Замеры, Клуб', 'v20openPlat()') + // R114
     v3row('', 'BS на экране «Домой»', 'Иконка на телефоне: одно окно, вход сохраняется', 'addToHomeScreen()') +
     v96fwRow() +
   '</div>';

@@ -9,19 +9,34 @@
 //    запуск сразу уходит туда (форма на app.bxclub.kz/tg, как кнопка «Платформа»), приложение не рисуется и
 //    данные не просит. «Назад» из платформы возвращает сюда (bs_fw96s в этом окне), и следующий запуск снова
 //    открывает приложение. Ссылка на раздел (start_param), окно внутри страницы и выключатель в «Профиле»: без перехода.
+// 4. R114: у резидента одно приложение: запуск всегда открывает платформу («Назад» сюда не ведёт), ссылка бота на раздел
+//    (?p=schedule и т. п.) открывает тот же раздел там; ссылка, которой на платформе нет, остаётся здесь. Таблица разделов та же,
+//    что V114_GO в app.html. Запасной запуск (платформа молчит 20 секунд) ставит bs_fw114x: дальше в этом окне без перехода
 (function(){
   try{
     var ss = window.sessionStorage, ls = window.localStorage;
-    if(ss.getItem('bs_fw96s')){ ls.removeItem('bs_fw96'); return; }
+    var f = JSON.parse(ls.getItem('bs_fw96') || 'null'), res = !!(f && f.r === 'resident');
+    if(ss.getItem('bs_fw114x')) return;
+    if(!res && ss.getItem('bs_fw96s')){ ls.removeItem('bs_fw96'); return; }
     if(ls.getItem('bs_fw96off') === '1' || window.top !== window.self || !window.URLSearchParams) return;
-    var f = JSON.parse(ls.getItem('bs_fw96') || 'null');
     if(!f || !f.u || Date.now() - (f.at || 0) > 30 * 864e5 || (f.r !== 'resident' && f.r !== 'admin')) return;
     var hp = new URLSearchParams(location.hash.slice(1)), init = hp.get('tgWebAppData') || '';
     var ip = new URLSearchParams(init), u = JSON.parse(ip.get('user') || 'null');
     if(!u || String(u.id) !== String(f.u) || ip.get('start_param') || hp.get('tgWebAppStartParam')) return;
+    var go = '', sp = new URLSearchParams(location.search), pg = String(sp.get('p') || sp.get('page') || sp.get('tab') || '').toLowerCase();
+    if(pg){
+      if(!res) return;
+      var GO = {home: 'mb93Today', dashboard: 'mb93Today', main: 'mb93Today', platform: '', board: 'board', myboard: 'board', razbor: 'board',
+        schedule: 'rsched', meetings: 'rsched', mymeetings: 'rsched', reports: 'rreport', report: 'rreport', fines: 'rFines', mystatus: 'rpHub',
+        myprofile: 'rprofile', profile: 'rprofile', wheel: 'rwheel', diagnostic: 'rDiag', residents: 'rFiveList', events: 'events', rules: 'rRules',
+        about: 'rAbout', mytasks: 'rtasks', tasks: 'rtasks', referral: 'rInvite', invite: 'rInvite', ref: 'rInvite', guides: 'guides', checklists: 'guides',
+        ideas: 'ideas', library: 'rKit', leadmagnets: 'rKit', materials: 'rKit'};
+      if(!Object.prototype.hasOwnProperty.call(GO, pg)) return;
+      go = GO[pg];
+    }
     var F = document.createElement('form');
     F.method = 'post'; F.action = 'https://app.bxclub.kz/tg'; F.style.display = 'none';
-    [['initData', init], ['v', hp.get('tgWebAppVersion')], ['pf', hp.get('tgWebAppPlatform')], ['th', hp.get('tgWebAppThemeParams')]].forEach(function(a){
+    [['initData', init], ['v', hp.get('tgWebAppVersion')], ['pf', hp.get('tgWebAppPlatform')], ['th', hp.get('tgWebAppThemeParams')], ['go', go]].forEach(function(a){
       if(!a[1]) return;
       var i = document.createElement('input'); i.type = 'hidden'; i.name = a[0]; i.value = a[1]; F.appendChild(i);
     });
@@ -33,11 +48,11 @@
     document.documentElement.appendChild(st);
     document.documentElement.appendChild(F);
     // переход до конца загрузки страницы браузер записывает поверх текущего шага истории: свой шаг сначала,
-    // чтобы «Назад» из платформы вернул в приложение
-    try{ history.pushState({bsfw: 1}, '', location.href); }catch(e){}
+    // чтобы «Назад» из платформы вернул в приложение (у резидента не нужно: приложение и есть платформа)
+    if(!res) try{ history.pushState({bsfw: 1}, '', location.href); }catch(e){}
     F.submit();
     // платформа не ответила за 20 секунд: открыть приложение (bs_fw96s уже стоит, перехода не будет)
-    setTimeout(function(){ location.reload(); }, 20000);
+    setTimeout(function(){ try{ ss.setItem('bs_fw114x', '1'); }catch(e){} location.reload(); }, 20000);
   }catch(e){}
 })();
 (function(){
