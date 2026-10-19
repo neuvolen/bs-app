@@ -15510,7 +15510,7 @@ function v17titleFit(title, perLine){
 function v17cover(x){
   var lab = V17_ORG_LBL[x.organ];
   var t = v12clean(x.title);
-  return '<div class="cv16 tool"><div class="cv-glow"></div>' + coverArt(t, x.organ) + '<div class="cv-shade"></div></div>' +
+  return cv113Tile('guide', x.title, x.organ) + // R113: обложка как на платформе
     '<div class="bt"><div class="cv-org">' + v2esc((lab ? lab + ' · ' : '') + x.organ) + '</div>' +
     '<div class="cv-title t' + (t.length > 44 ? ' xl' : (t.length > 30 ? ' long' : '')) + '"' + v17titleFit(t, t.length > 44 ? 17 : (t.length > 30 ? 15 : 13)) + '>' + gE(x.title) + '</div></div>';
 }
@@ -15828,6 +15828,51 @@ function coverKey(title){
   var s = String(title || '').toLowerCase().replace(/ё/g, 'е');
   for(var i = 0; i < CV_RULES.length; i++) if(CV_RULES[i][0].test(s)) return CV_RULES[i][1];
   return '';
+}
+// ═══ R113: обложки библиотеки как на платформе ═══
+// Владелец: «каждая обложка библиотеки новая, уникальная». Код обложек (CV92) приходит с сервера платформы
+// (GET app/cv92.js), списки те же, что у платформы (bs_diag, bs_tools, чек-листы): у карточки та же обложка, что на платформе.
+// Пока код грузится, на месте обложки тёмная плашка (старая картинка не показывается).
+var CV113 = {st: '', sig: ''};
+function cv113Lists(){
+  var items = (window._lib && window._lib.items) || [], sig = items.length + ':' + ((window._gd && window._gd.items) || []).length;
+  if(sig === CV113.sig) return;
+  CV113.sig = sig;
+  window.DIAG = items.filter(function(x){ return x && x.kind === 'diag'; }).map(function(x){ return {title: x.title, organ: x.organ || '', desc: x.short || ''}; });
+  window.TOOLS = items.filter(function(x){ return x && x.kind === 'tool'; }).map(function(x){ return {title: x.title, organ: x.organ || '', short: x.short || ''}; });
+  window.gdIdx = function(){ return ((window._gd && window._gd.items) || []).filter(function(x){ return x && x.id && x.title; }); };
+}
+function cv113Load(){
+  if(CV113.st) return;
+  CV113.st = 'loading';
+  try{
+    var sc = document.createElement('script');
+    sc.src = APP_SERVER + 'cv92.js'; sc.async = true;
+    sc.onload = function(){ CV113.st = window.CV92 ? 'ok' : 'err'; cv113Fill(); };
+    sc.onerror = function(){ CV113.st = 'err'; };
+    document.head.appendChild(sc);
+  }catch(e){ CV113.st = 'err'; }
+}
+// плашки, нарисованные до загрузки кода, становятся обложками
+function cv113Fill(){
+  if(CV113.st !== 'ok') return;
+  document.querySelectorAll('[data-cv113]').forEach(function(el){
+    var p = String(el.getAttribute('data-cv113') || '').split('\u0001');
+    var h = cv113Tile(p[0], p[1], p[2]); if(h.indexOf('data-cv113') < 0) el.outerHTML = h;
+  });
+}
+function cv113Tile(kind, title, organ){
+  var org = String(organ || '').replace(/^[^А-Яа-яA-Za-z]+/, '').trim();
+  if(CV113.st === 'ok' && window.CV92){
+    try{
+      cv113Lists();
+      var g = kind === 'guide', s = CV92.spec(g ? 'tool' : kind, String(title || ''), org, g ? 'ЧЕК-ЛИСТ' : ''); // чек-лист: как на платформе
+      return '<div class="cv16 cv92 ' + (kind === 'diag' ? 'diag' : 'tool') + (s.loss ? ' loss' : '') + ' L' + s.lay + ' cv92p-' + s.pat + '" data-cv="' + v2esc(s.sym + '/' + s.lay) + '" style="' + CV92.bg(s) + '">' +
+        CV92.compose(s).replace('xMidYMid slice', 'xMaxYMid slice') + '<div class="cv-shade"></div></div>'; // плитка выше, чем обложка: символ справа виден целиком
+    }catch(e){}
+  }
+  cv113Load();
+  return '<div class="cv16" data-cv113="' + v2esc([kind, String(title || ''), org].join('\u0001')) + '"><div class="cv-shade"></div></div>';
 }
 function coverArt(title, organ){
   var k = coverKey(title);
@@ -16238,7 +16283,7 @@ function r46aAct(a){
 function r46aLibTile(x, i){
   var k = v9libKind(x), org = String(x.organ || '').replace(/^[^А-Яа-яA-Za-z]+/, '').trim(), t = v12clean(x.title), lab = V17_ORG_LBL[org];
   return '<div class="v14-card v16-tile v17-cvt r46t" data-o="' + v2esc(org) + '" role="button" tabindex="0" onclick="openLibItem(window._libShown[' + i + '])">' +
-    '<div class="cv16' + (k === 'diag' ? ' r46d' : '') + '"><div class="cv-glow"></div>' + coverArt(t, org) + '<div class="cv-shade"></div></div>' +
+    (k === 'diag' || k === 'tool' ? cv113Tile(k, x.title, org) : '<div class="cv16"><div class="cv-glow"></div>' + coverArt(t, org) + '<div class="cv-shade"></div></div>') + // R113: обложка как на платформе
     '<div class="bt"><div class="cv-org">' + v2esc((lab ? lab + ' · ' : '') + org) + '</div><div class="cv-title t' + (t.length > 44 ? ' xl' : (t.length > 30 ? ' long' : '')) + '"' + v17titleFit(t, t.length > 44 ? 17 : (t.length > 30 ? 15 : 13)) + '>' + v2esc(t) + '</div></div>' +
     '<div class="tp"><span class="no' + (k === 'diag' ? ' dx' : '') + '">' + (k === 'diag' ? 'ДИАГНОЗ' : 'ИНСТРУМЕНТ') + '</span><span class="rt"></span></div></div>';
 }
