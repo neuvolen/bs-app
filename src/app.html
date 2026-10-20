@@ -5294,6 +5294,7 @@ function v114deep(){
   return {raw: String(p || ''), start: false};
 }
 function v114auto(){
+  return; // R118: запуск всегда открывает приложение, платформа только кнопкой
   if(window.__bsFw || window._v114done) return;
   if(isRealAdmin || viewAs !== 'resident') return;
   if(v20get('bs_fw96off') === '1') return;
@@ -5320,6 +5321,7 @@ function v96fwToggle(){
   try{ if(v9activeId() === 'more') renderAdminMore(); else if(v9activeId() === 'mystatus') renderMyStatus(); }catch(e){}
 }
 function v96fwRow(){
+  return ''; // R118: запуск всегда открывает приложение, выключатель больше не нужен
   try{ if(navRole() === 'lead') return ''; }catch(e){}
   var on = v20get('bs_fw96off') !== '1';
   return v3row('', 'Открывать там, где закончили', 'Закрыли Telegram на платформе: в следующий раз сразу откроется она', 'v96fwToggle()',
