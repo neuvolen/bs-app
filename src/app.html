@@ -744,6 +744,12 @@
   .team-h { font-size: 11px; font-weight: 800; letter-spacing: 1.6px; color: #8C8C8C; margin: 4px 4px 10px; }
   #payModal .modal { display: flex; flex-direction: column; }
   #payModal .modal-actions { margin-top: auto; }
+  /* R127: пока открыта клавиатура, полоса «Записать / Отмена» тоньше и не закрывает способ оплаты: шторка листается так,
+     что способ и сумма стоят над ней (payKbSync). tools/sheetcheck.mjs проверяет способ оплаты над клавиатурой */
+  #payModal .modal.pay-kb .modal-actions { padding-top: 8px; padding-bottom: 8px; margin-top: 10px; margin-bottom: -20px; box-shadow: 0 -6px 10px rgba(0,0,0,0.25); }
+  #payModal .modal.pay-kb .modal-actions .btn { min-height: 42px; padding-top: 10px; padding-bottom: 10px; }
+  #payModal .modal.pay-kb { min-height: 0 !important; }
+  #payModal .modal.pay-kb .modal-handle, #payModal .modal.pay-kb .modal-title { display: none; }
   /* ═══ НИЖНЕЕ МЕНЮ И РАЗДЕЛЫ (дизайн v2) ═══ */
   a:has(> .btn), a:has(> button) { text-decoration: none; color: inherit; }
   .btn-primary { color: #000 !important; }
@@ -1311,16 +1317,17 @@
       <label class="form-label">Резидент (от кого)</label>
       <select class="form-select" id="payResident"></select>
     </div>
-    <div class="form-group">
-      <label class="form-label">Сумма (₸)</label>
-      <input class="form-input money-input" type="text" inputmode="numeric" id="payAmount" placeholder="150 000">
-    </div>
+    <!-- R127 (28.10): способ оплаты над суммой: клавиатура и кнопки «Записать / Отмена» его больше не закрывают -->
     <div class="form-group" id="payMethodGroup">
       <label class="form-label">Способ</label>
       <div class="picker" style="grid-template-columns:1fr 1fr">
         <button class="pick-btn selected" id="payCash" onclick="setPayMethod('cash')">Наличные</button>
         <button class="pick-btn" id="payBank" onclick="setPayMethod('bank')">Банк −4%</button>
       </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Сумма (₸)</label>
+      <input class="form-input money-input" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off" id="payAmount" placeholder="150 000" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">
     </div>
     <div style="height:22px"></div>
     <div class="modal-actions"><button class="btn btn-primary" onclick="submitPayment()">Записать</button><button class="btn btn-secondary" onclick="closeModal('payModal')">Отмена</button></div>
@@ -10372,12 +10379,12 @@ function showMeetingDetail(ev){
       ${place?`<div class="meeting-row" style="word-break:break-all">${v2esc(place)}</div>`:''}
     </div>
     ${ev.call?`<a class="btn btn-primary" href="${v2esc(ev.call)}" target="_blank" onclick="event.preventDefault();v9open(this.href)">Войти в созвон</a>`:''}
-    ${isOnline&&ev.link&&ev.link.includes('meet')?`<a class="btn btn-secondary" href="${v2esc(ev.link)}" target="_blank">${ev.call?'Google Meet (запасной)':'Подключиться к Meet'}</a>`:''}
+    ${isOnline&&ev.link&&ev.link.includes('meet')&&(canEdit||!ev.call)?`<a class="btn btn-secondary" href="${v2esc(ev.link)}" target="_blank">${ev.call?'Google Meet (запасной)':'Подключиться к Meet'}</a>`:''}
     ${!canEdit?`<button class="btn btn-success" onclick="confirmMeeting(${A})" ${alreadyConfirmed?'disabled style="opacity:0.6"':''}>${alreadyConfirmed?'✓ Подтверждено':'Подтвердить участие'}</button>`:''}
     ${canEdit?`<button class="btn btn-success" onclick="onMeetingDoneClick(${A},${isOnline?'true':'false'})">${isEvent ? 'Мероприятие прошло' : 'Встреча прошла'}</button>`:''}
     ${canEdit?`<button class="btn btn-secondary" onclick="openEditMeeting(${A})">Перенести</button>`:''}
     ${canWrite?`<button class="btn btn-secondary" onclick="closeDetail();v11write(resByName(${E}.res))">Написать резиденту</button>`:''}
-    <button class="btn btn-secondary" onclick="addToCalendar(${E}.date,${E}.time,${E}.res,${E}.link||'')">В Google Calendar</button>
+    <button class="btn btn-secondary" onclick="addToCalendar(${E}.date,${E}.time,${E}.res,${E}.call||${E}.link||'')">В Google Calendar</button>
     ${canEdit&&!isEvent&&!isDay&&ev.res?`<button class="btn btn-danger" onclick="meetingMissed(${A})">Не пришёл без предупреждения</button>`:''}
     ${canEdit?`<button class="btn btn-danger" onclick="deleteMeetingConfirm(${A})">Отменить встречу</button>`:''}
   `;
@@ -12654,6 +12661,31 @@ function lockPayHeight(reset){
     if(h > (m._maxH||0)){ m._maxH = h; m.style.minHeight = 'min(' + h + 'px, calc(100% - var(--tg-safe-top, 0px) - 12px))'; }
   });
 }
+
+// R127 (28.10): клавиатура в шторке оплаты. «Клавиатура и кнопки закрывают способ оплаты»: способ стоит над суммой,
+// пока поле в фокусе полоса кнопок тоньше, заголовок скрыт, и шторка листается так, чтобы способ и сумма были над полосой
+function payKbSync(){
+  var m = document.querySelector('#payModal .modal'); if(!m) return;
+  var a = document.activeElement, inForm = !!(a && m.contains(a) && /^(INPUT|TEXTAREA)$/.test(a.tagName));
+  m.classList.toggle('pay-kb', inForm);
+  if(!inForm) return;
+  setTimeout(function(){
+    try{ bsSheetVV(); }catch(e){}
+    var s = m.getBoundingClientRect(), act = m.querySelector('.modal-actions'), foot = 0;
+    if(act){ var r0 = act.getBoundingClientRect(); if(r0.height && r0.top < s.bottom) foot = Math.max(0, s.bottom - r0.top); }
+    var hi = s.bottom - foot - 8, lo = s.top + 8, f = a.getBoundingClientRect(), mg = document.getElementById('payMethodGroup');
+    var g = (a.id === 'payAmount' && mg && mg.offsetParent) ? mg.getBoundingClientRect() : null;
+    var top = g && (f.bottom - g.top) <= (hi - lo) ? g.top : f.top;
+    var d = top - lo; if(f.bottom - d > hi) d = f.bottom - hi;
+    if(Math.abs(d) > 1) m.scrollTop += d;
+  }, 90);
+}
+(function(){
+  document.addEventListener('focusin', function(e){ if(e.target && e.target.closest && e.target.closest('#payModal')) payKbSync(); });
+  document.addEventListener('focusout', function(e){ if(e.target && e.target.closest && e.target.closest('#payModal')) setTimeout(payKbSync, 120); });
+  try{ if(window.visualViewport) visualViewport.addEventListener('resize', function(){ var m = document.getElementById('payModal'); if(m && m.classList.contains('show')) setTimeout(payKbSync, 40); }); }catch(e){}
+  window.addEventListener('resize', function(){ var m = document.getElementById('payModal'); if(m && m.classList.contains('show')) setTimeout(payKbSync, 40); });
+})();
 
 function updatePayResidentVisibility(){
   var src = document.getElementById('paySource').value || '';

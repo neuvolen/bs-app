@@ -271,6 +271,17 @@ async function sheetsPass(b, w, h) {
         }, [s.top, s.bot]);
         check(L2 + ': шторка долистала до поля, оно не закрыто кнопкой', f.ok, Object.assign(f, { top: s.top, bot: s.bot }));
         if (!f.ok) await shot(p, L2 + ' поле');
+        // R127: сумма в фокусе, клавиатура открыта: способ оплаты («Наличные», «Банк») виден над кнопками и нажимается
+        if (/^payAmount/.test(fl)) {
+          const pm = await p.evaluate(a => {
+            const g = document.getElementById('payMethodGroup'); if (!g || !g.offsetParent) return { ok: true, skip: 'расход: способа нет' };
+            const act = document.querySelector('#payModal .modal-actions'), ab = act ? act.getBoundingClientRect().top : a[1];
+            return { ok: ['payCash', 'payBank'].every(id => { const el = document.getElementById(id), r = el.getBoundingClientRect(), y = r.top + r.height / 2, e = document.elementFromPoint(r.left + r.width / 2, y);
+              return y >= a[0] && y <= Math.min(a[1], ab) && !!e && (e === el || el.contains(e)); }), actTop: Math.round(ab) };
+          }, [s.top, s.bot]);
+          check(L2 + ': способ оплаты виден над клавиатурой и кнопками', pm.ok, pm);
+          if (!pm.ok) await shot(p, L2 + ' способ');
+        }
         // клавиатура убрана
         if (kb === 'iPhone') await p.evaluate(() => window.__kbSet(0));
         else if (kb === 'Android') await p.setViewportSize({ width: w, height: h });
