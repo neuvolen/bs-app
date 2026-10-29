@@ -16172,14 +16172,26 @@ function r81schedEvents(el){
     v78load(!!(S.d && S.d.error)).then(function(){ if(v9activeId() === 'schedule') r81schedEvents(el); });
     return;
   }
-  var items = (S.d.items || []).filter(function(x){ return x.kind !== 'возможность'; }).slice(0, 6);
+  // R129 (30.10): не только сегодня: ближайшие 7 дней по дням, до 3 событий в дне, внизу «Все мероприятия»
+  var lim = new Date(); lim.setDate(lim.getDate() + 7);
+  var limS = lim.getFullYear() + '-' + String(lim.getMonth() + 1).padStart(2, '0') + '-' + String(lim.getDate()).padStart(2, '0');
+  var all = (S.d.items || []).filter(function(x){ return x.kind !== 'возможность' && x.date && x.date <= limS; });
+  var perDay = {}, items = all.filter(function(x){ perDay[x.date] = (perDay[x.date] || 0) + 1; return perDay[x.date] <= 3; });
   if(S.d.error || !items.length){
-    box.innerHTML = head + '<div class="v2-card v2-empty">' + (S.d.error ? 'Лента не загрузилась' : 'Ближайших мероприятий нет') + '</div>';
+    box.innerHTML = head + '<div class="v2-card v2-empty">' + (S.d.error ? 'Лента не загрузилась' : 'На неделе мероприятий нет') + '</div>';
     return;
   }
-  box.innerHTML = head + '<div class="v2-card">' + items.map(function(x){
-    return '<div class="v3-cap" style="padding:12px 16px 0;font-weight:800">' + v2esc(v78day(x.date)) + '</div>' + v78row(x);
-  }).join('') + '</div>';
+  var last = null, out = '';
+  items.forEach(function(x){
+    if(x.date !== last){
+      if(last !== null) out += '</div>';
+      var more = (perDay[x.date] || 0) - 3;
+      out += '<div class="v3-cap" style="margin:14px 4px 6px;font-weight:800;text-transform:uppercase;letter-spacing:.6px">' + v2esc(v78day(x.date)) + (more > 0 ? ' · ещё ' + more : '') + '</div><div class="v2-card">';
+      last = x.date;
+    }
+    out += v78row(x);
+  });
+  box.innerHTML = head + out + '</div><button class="v3-outline" style="margin-top:12px;width:100%" onclick="showPage(\'events\')">Все мероприятия</button>';
 }
 function r81toggleEvents(hide){
   r81prefSet('hide_events', !!hide);
@@ -16201,9 +16213,32 @@ function v78load(force){
   if(!init){ S.d = {error: 'noinit', items: []}; return Promise.resolve(S.d); }
   S.busy = fetch(APP_SERVER + 'events?' + new URLSearchParams({_tg: init}).toString())
     .then(function(r){ if(!r.ok) throw new Error('http ' + r.status); return r.json(); })
-    .then(function(j){ if(!j || !Array.isArray(j.items)) throw new Error('bad'); j.items.sort(function(a, b){ return (a.kind === 'возможность') - (b.kind === 'возможность'); }); S.d = j; S.at = Date.now(); S.busy = null; return j; })
+    .then(function(j){ if(!j || !Array.isArray(j.items)) throw new Error('bad'); j.items = v78dedupe(j.items); j.items.sort(function(a, b){ return (a.kind === 'возможность') - (b.kind === 'возможность'); }); S.d = j; S.at = Date.now(); S.busy = null; return j; })
     .catch(function(){ S.busy = null; if(!S.d || S.d.error) S.d = {error: 'net', items: []}; return S.d; });
   return S.busy;
+}
+// R129: одно событие из нескольких каналов приходило 2-3 раза: склеиваем по дню, времени и словам названия
+function v78words(t){ return (String(t || '').toLowerCase().replace(/ё/g, 'е').match(/[a-zа-я0-9әғқңөұүһі]+/gi) || []).filter(function(w){ return w.length >= 3 || /\d/.test(w); }); }
+function v78same(a, b){
+  var opp = function(x){ return x.kind === 'возможность'; };
+  if(opp(a) !== opp(b)) return false;
+  if((opp(a) ? a.deadline || a.date : a.date) !== (opp(b) ? b.deadline || b.date : b.date)) return false;
+  if(a.time && b.time && a.time !== b.time) return false;
+  var wa = v78words(a.title), wb = v78words(b.title); if(!wa.length || !wb.length) return false;
+  var ja = wa.join(' '), jb = wb.join(' ');
+  if(ja === jb || ja.indexOf(jb) === 0 || jb.indexOf(ja) === 0) return true;
+  var A = {}, B = {}, c = 0; wa.forEach(function(w){ A[w] = 1; }); wb.forEach(function(w){ B[w] = 1; });
+  Object.keys(B).forEach(function(w){ if(A[w]) c++; });
+  var small = Math.min(Object.keys(A).length, Object.keys(B).length);
+  return small >= 2 && c / small >= 0.75;
+}
+function v78dedupe(items){
+  var out = [];
+  items.forEach(function(x){
+    for(var i = 0; i < out.length; i++) if(v78same(out[i], x)){ if(x.ours && !out[i].ours) out[i] = x; return; }
+    out.push(x);
+  });
+  return out;
 }
 function v78fit(x, f){
   var opp = x.kind === 'возможность';
