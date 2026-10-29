@@ -11718,90 +11718,115 @@ function renderMyStatus(){
 }
 
 function onMeetingDoneClick(res, date, time, isOnline){
-  // Если онлайн. сразу как раньше через meetingDone
+  // Онлайн: сразу подтверждение. Офлайн: список присутствующих, он открывается сразу из данных приложения
   if(isOnline){
     meetingDone(res, date, time);
     return;
   }
-  // Если офлайн. открываем модал со списком офлайн-резидентов + галочки
-  openAttendanceModal(date, time);
+  openAttendanceModal(date, time, res);
 }
 
-async function openAttendanceModal(date, time){
-  showToast('Загружаем список...');
-  // Получаем список офлайн-резидентов
-  var r = await callAction('getOfflineResidents', {});
-  var list = (r && r.residents) || [];
-  if(!list.length){
-    showToast('Нет офлайн-резидентов');
-    return;
-  }
-  window._attendDate = date;
-  window._attendTime = time;
-  // Заранее отмечены те, кто записан на этот офлайн-слот. Остальных можно добавить
-  var booked = {};
-  (cache.schedule||[]).forEach(function(e){
-    if(e.date === date && (!time || !e.time || e.time === time)) booked[e.res] = 1;
+// R128 (29.10): «Встреча прошла» у офлайн-встречи. Раньше окно ждало ответа сервера без срока и без ошибки:
+// «Загружаем список...» и тишина. Теперь список собирается из данных приложения мгновенно, резидент встречи
+// уже отмечен, сервер только дополняет список в фоне. Отметка с ожиданием до 15 секунд, ошибка видна в окне
+function v128people(){
+  return (cache.residents || []).filter(function(r){
+    return r && r.name && !r.isFired && !r.isAdmin && !r.isTeam && !r.isArchived && r.name !== 'Тест' && r.name !== 'Тест2';
+  }).map(function(r){ return {name: String(r.name), format: /^онлайн/i.test(String(r.format || '')) ? 'Онлайн' : 'Офлайн'}; });
+}
+function v128withTimeout(p, ms){
+  return Promise.race([p, new Promise(function(res){ setTimeout(function(){ res({error: 'Сервер не ответил за ' + Math.round(ms / 1000) + ' секунд'}); }, ms); })]);
+}
+function v128attendRender(){
+  var a = window._attend; if(!a) return;
+  var box = document.getElementById('attendList'); if(!box) return;
+  var on = a.checked, html = '', first = a.people.filter(function(p){ return on[p.name]; }), rest = a.people.filter(function(p){ return !on[p.name]; });
+  var row = function(p){
+    return '<label class="attend-item"><input type="checkbox" data-n="' + v2esc(p.name) + '"' + (on[p.name] ? ' checked' : '') +
+      ' onchange="v128attendTick(this)"><span>' + v2esc(p.name) + '</span>' + (p.format === 'Онлайн' ? '<span class="attend-tag">онлайн</span>' : '') + '</label>';
+  };
+  first.forEach(function(p){ html += row(p); });
+  if(rest.length) html += '<div class="attend-sep"><span>' + (first.length ? 'Ещё кто был' : 'Кто был') + '</span></div>';
+  rest.sort(function(x, y){ return (x.format === y.format ? 0 : (x.format === 'Офлайн' ? -1 : 1)) || x.name.localeCompare(y.name, 'ru'); }).forEach(function(p){ html += row(p); });
+  box.innerHTML = html;
+  v128attendBtn();
+}
+function v128attendTick(el){
+  var a = window._attend; if(!a) return;
+  var n = el.getAttribute('data-n');
+  if(el.checked) a.checked[n] = 1; else delete a.checked[n];
+  v128attendBtn();
+}
+function v128attendBtn(){
+  var a = window._attend, b = document.querySelector('#attendModal .btn-primary'), err = document.getElementById('attendErr');
+  if(!a || !b) return;
+  var n = Object.keys(a.checked).length;
+  if(!a.busy){ b.disabled = !n; b.textContent = n ? 'Отметить: ' + n : 'Отметьте, кто был'; b.style.opacity = n ? '' : '0.5'; }
+  if(err && !a.err) err.style.display = 'none';
+}
+async function openAttendanceModal(date, time, res){
+  var day = !res || res === 'Офлайн день';
+  var people = v128people(), have = {};
+  people.forEach(function(p){ have[p.name] = 1; });
+  if(res && !day && !have[res]){ people.unshift({name: res, format: 'Офлайн'}); have[res] = 1; }
+  var checked = {};
+  (cache.schedule || []).forEach(function(e){
+    if(e && e.date === date && (!time || !e.time || e.time === time) && have[e.res]) checked[e.res] = 1;
   });
-  var anyBooked = Object.keys(booked).length > 0;
-  // Заполняем checkboxes
-  var box = document.getElementById('attendList');
-  if(!box) return;
-  box.innerHTML = (function(){
-    var html = '', prevFmt = null;
-    list.forEach(function(item, i){
-      var name = (typeof item === 'string') ? item : item.name;
-      var fmt = (typeof item === 'string') ? 'Офлайн' : (item.format || 'Офлайн');
-      if(prevFmt !== null && fmt !== prevFmt){
-        html += '<div class="attend-sep"><span>' + fmt + '</span></div>';
-      }
-      prevFmt = fmt;
-      html += '<label class="attend-item">' +
-        '<input type="checkbox" value="' + name + '" id="att_' + i + '"' +
-        ((anyBooked ? booked[name] : fmt === 'Офлайн') ? ' checked' : '') + '>' +
-        '<span>' + name + '</span>' +
-        (fmt === 'Онлайн' ? '<span class="attend-tag">онлайн</span>' : '') +
-        '</label>';
-    });
-    return html;
-  })();
-  closeDetail();
+  if(res && !day) checked[res] = 1;
+  if(!Object.keys(checked).length) people.forEach(function(p){ if(p.format === 'Офлайн') checked[p.name] = 1; });
+  window._attendDate = date; window._attendTime = time;
+  window._attend = {date: date, time: time, res: day ? '' : res, people: people, checked: checked, busy: false, err: ''};
+  var t = document.querySelector('#attendModal .modal-title');
+  if(t) t.textContent = day ? 'Кто был на офлайн дне?' : 'Встреча с ' + res + ' прошла?';
+  if(!document.getElementById('attendErr')){
+    var list = document.getElementById('attendList');
+    if(list){ var e = document.createElement('div'); e.id = 'attendErr'; e.style.cssText = 'display:none;margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(229,115,115,.12);color:#e57373;font-size:13px;line-height:1.4'; list.parentNode.insertBefore(e, list.nextSibling); }
+  }
+  v128attendRender();
+  try{ closeDetail(); }catch(e){}
   openModal('attendModal');
+  // Фон: сервер знает резидентов, которых ещё нет в копии приложения
+  v128withTimeout(callAction('getOfflineResidents', {}), 8000).then(function(r){
+    var a = window._attend; if(!a || a.date !== date || !r || !r.residents) return;
+    var add = 0;
+    r.residents.forEach(function(it){
+      var n = String((typeof it === 'string') ? it : (it.name || '')); if(!n) return;
+      if(a.people.some(function(p){ return p.name === n; })) return;
+      a.people.push({name: n, format: (it && it.format) === 'Онлайн' ? 'Онлайн' : 'Офлайн'}); add++;
+    });
+    if(add && document.getElementById('attendModal').classList.contains('show')) v128attendRender();
+  }).catch(function(){});
 }
 
 async function submitAttendance(){
-  if(window._submittingAttend){return;}
-  window._submittingAttend = true;
-  setTimeout(function(){window._submittingAttend = false;}, 5000);
-  var checks = document.querySelectorAll('#attendList input[type=checkbox]:checked');
-  var names = Array.from(checks).map(function(c){return c.value;});
-  if(!names.length){
-    showToast('Выберите хотя бы одного');
-    window._submittingAttend = false;
+  var a = window._attend;
+  if(!a || a.busy) return;
+  var names = Object.keys(a.checked);
+  if(!names.length){ showToast('Отметьте, кто был'); return; }
+  var b = document.querySelector('#attendModal .btn-primary'), err = document.getElementById('attendErr');
+  a.busy = true; a.err = '';
+  if(err) err.style.display = 'none';
+  if(b){ b.disabled = true; b.textContent = 'Отмечаем...'; }
+  var result = null;
+  try{ result = await v128withTimeout(callAction('markAttendance', {names: names.join('|'), date: a.date, time: a.time || ''}), 15000); }
+  catch(e){ result = {error: String(e && e.message || e)}; }
+  a.busy = false;
+  if(result && result.ok){
+    closeModal('attendModal');
+    if(cache.schedule){
+      cache.schedule = cache.schedule.filter(function(e){ return !(e.date === a.date && names.indexOf(e.res) >= 0); });
+      bsSaveCache();
+    }
+    renderAllPages();
+    showToast(names.length === 1 ? 'Встреча прошла, галочка у ' + names[0] : 'Отмечено: ' + names.length);
+    window._attend = null;
+    setTimeout(loadAllData, 2500);
     return;
   }
-  closeModal('attendModal');
-  showToast('Отмечаем...');
-  // Оптимистично удаляем из cache.schedule встречи этих резидентов на дату
-  if(cache.schedule){
-    cache.schedule = cache.schedule.filter(function(e){
-      if(e.date !== window._attendDate) return true;
-      return names.indexOf(e.res) < 0;
-    });
-    bsSaveCache();
-  }
-  renderAllPages();
-  var result = await callAction('markAttendance', {
-    names: names.join('|'),
-    date: window._attendDate,
-    time: window._attendTime||''
-  });
-  if(result && result.ok){
-    showToast('Отмечено: '+result.marked.length);
-  } else {
-    showToast('Ошибка');
-  }
-  setTimeout(loadAllData, 3000);
+  a.err = (result && result.error) || 'Нет ответа сервера';
+  if(err){ err.textContent = 'Не отмечено: ' + a.err + '. Проверьте связь и нажмите ещё раз'; err.style.display = 'block'; }
+  if(b){ b.disabled = false; b.style.opacity = ''; b.textContent = 'Повторить'; }
 }
 
 function shareStoryInvite(){
