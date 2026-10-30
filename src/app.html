@@ -932,6 +932,13 @@
 <div class="page" id="page-about"></div>
 <div class="page" id="page-more"><div id="moreContent"></div></div>
 <div class="page" id="page-home"><div id="homeContent"></div></div>
+<div class="page" id="page-rhome"><div id="rhomeContent"></div></div>
+<div class="page" id="page-rsched"><div id="rschedContent"></div></div>
+<div class="page" id="page-rtasks"><div id="rtasksContent"></div></div>
+<div class="page" id="page-rmeas"><div id="rmeasContent"></div></div>
+<div class="page" id="page-rclub"><div id="rclubContent"></div></div>
+<div class="page" id="page-rset"><div id="rsetContent"></div></div>
+<div class="page" id="page-rreport"><div id="rreportContent"></div></div>
 <div class="page" id="page-library"><div id="libraryContent"></div></div>
 <div class="page" id="page-guides"><div id="guidesContent"></div></div>
 <div class="page" id="page-ideas"><div id="ideasContent"></div></div>
@@ -4782,6 +4789,107 @@
 </div><!-- /bsScroll -->
 <nav class="bnav" id="bnav"></nav>
 
+<style id="r130">
+/* ═══ R130: приложение резидента по утверждённому концепту (30.10): Главная, Расписание, Задачи, Замеры, Клуб ═══ */
+.r130{display:flex;flex-direction:column;gap:12px;padding-bottom:18px;font-family:Inter,system-ui,sans-serif;color:#fff}
+.r130-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.r130-top .d{font-size:13px;color:#B9B9B9}
+.r130-top h1{margin:2px 0 0;font-size:24px;font-weight:700;line-height:1.2}
+.r130-ibtn{width:44px;height:44px;border-radius:10px;background:#1E1E1E;border:0;color:#fff;display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer}
+.r130-ibtns{display:flex;gap:8px}
+.r130-card{background:#171717;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.r130-card.w{background:#fff;color:#000}
+.r130-card.w .s{color:#555}
+.r130-lbl{font-size:12px;color:#B9B9B9;text-transform:uppercase;letter-spacing:.04em}
+.r130-card.w .r130-lbl{color:#000;font-weight:600}
+.r130-sb{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.r130-bar{height:6px;background:#EEEEEE;border-radius:3px;overflow:hidden}
+.r130-bar i{display:block;height:6px;background:#000;border-radius:3px}
+.r130-bar.k{background:#1E1E1E}.r130-bar.k i{background:#fff}
+.r130-nums{display:flex;gap:18px}
+.r130-nums b{display:block;font-size:26px;font-weight:700;line-height:1.1}
+.r130-nums span{font-size:12px;color:#555}
+.r130-h{font-size:17px;font-weight:700;margin-top:4px}
+.r130-sec{font-size:12px;color:#B9B9B9;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.r130-btns{display:flex;gap:8px}
+.r130-btn{flex:1;min-height:44px;border-radius:10px;background:#fff;color:#000;border:0;font:600 13px Inter,system-ui,sans-serif;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;padding:0 12px;text-decoration:none}
+.r130-btn.o{background:transparent;color:#fff;border:2px solid #fff}
+.r130-btn.g{background:transparent;color:#fff;border:1px solid #555;text-transform:none;font-size:12px}
+.r130-chip{font-size:12px;background:#1E1E1E;border-radius:6px;padding:6px 8px;white-space:nowrap}
+.r130-task{background:#171717;border-radius:10px;padding:14px;display:flex;gap:12px;align-items:flex-start}
+.r130-task.done{background:#0B0B0B;border:1px solid #1E1E1E}
+.r130-task .t{font-size:15px;font-weight:600;line-height:1.35}
+.r130-task.done .t{color:#9A9A9A;text-decoration:line-through;font-weight:500}
+.r130-task .m{font-size:12px;color:#B9B9B9;margin-top:3px}
+.r130-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.r130-tags span{font-size:11px;border:1px solid #555;border-radius:6px;padding:3px 6px}
+.r130-ck{width:22px;height:22px;border-radius:6px;border:2px solid #fff;flex:none;display:flex;align-items:center;justify-content:center;background:transparent;padding:0;cursor:pointer;color:#000}
+.r130-ck.on{background:#fff}
+.r130-ck.ro{border-color:#555;cursor:default}
+.r130-ck.ro.on{background:#9A9A9A;border-color:#9A9A9A}
+.r130-seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));background:#171717;border-radius:10px;padding:4px;gap:4px}
+.r130-seg.s4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.r130-seg button{height:40px;border:0;border-radius:8px;background:transparent;color:#B9B9B9;font:600 13px Inter,system-ui,sans-serif;cursor:pointer}
+.r130-seg.s4 button{font-size:12px;height:38px}
+.r130-seg button.on{background:#fff;color:#000}
+.r130-ev{background:#171717;border-radius:10px;padding:14px;display:flex;gap:14px;align-items:center;cursor:pointer}
+.r130-time{width:64px;min-height:48px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid #555;border-radius:8px;font-size:17px;font-weight:800}
+.r130-time.w{background:#fff;color:#000;border-color:#fff}
+.r130-ev .t{font-size:16px;font-weight:700;line-height:1.3}
+.r130-ev .s{font-size:13px;color:#B9B9B9;margin-top:3px}
+.r130-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.r130-dg{background:#171717;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;border:0;padding:0;text-align:left;color:#fff}
+.r130-dg .cv{height:96px;position:relative;overflow:hidden;background:#333}
+.r130-dg .cv .cv16{position:absolute;inset:0;height:100%;border-radius:0}
+.r130-dg .b{padding:10px;display:flex;flex-direction:column;gap:3px}
+.r130-dg .b b{font-size:14px;line-height:1.3}
+.r130-dg .b span{font-size:11px;color:#B9B9B9}
+.r130-row{background:#171717;border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;border:0;width:100%;text-align:left;color:#fff;font-family:inherit}
+.r130-row .t{font-size:15px;font-weight:600}
+.r130-row .s{font-size:12px;color:#B9B9B9;margin-top:3px}
+.r130-row .c{color:#9A9A9A;font-size:18px}
+.r130-list{background:#171717;border-radius:10px;display:flex;flex-direction:column;overflow:hidden}
+.r130-li{min-height:56px;padding:8px 14px;display:flex;gap:12px;align-items:center;border:0;border-bottom:1px solid #1E1E1E;background:transparent;color:#fff;width:100%;text-align:left;cursor:pointer;font-family:inherit}
+.r130-li:last-child{border-bottom:0}
+.r130-li .av{width:40px;height:40px;border-radius:20px;background:#1E1E1E;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;background-size:cover;background-position:center}
+.r130-li .x{flex:1;min-width:0}
+.r130-li .x b{display:block;font-size:15px;font-weight:600}
+.r130-li .x span{display:block;font-size:12px;color:#B9B9B9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r130-li .r{font-size:13px;color:#B9B9B9;white-space:nowrap}
+.r130-me{background:#fff;color:#000;border-radius:10px;padding:14px;display:flex;gap:12px;align-items:center;border:0;width:100%;text-align:left;cursor:pointer;font-family:inherit}
+.r130-me .av{width:48px;height:48px;border-radius:24px;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex:none;background-size:cover;background-position:center}
+.r130-me .x{flex:1}
+.r130-me .x b{display:block;font-size:16px}
+.r130-me .x span{font-size:12px;color:#555}
+.r130-me .go{font-size:12px;font-weight:600;text-transform:uppercase}
+.r130-field{background:#171717;border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:12px;color:#B9B9B9}
+.r130-field input,.r130-field textarea{background:transparent;border:0;color:#fff;font:400 15px Inter,system-ui,sans-serif;padding:0;outline:none;width:100%;resize:none}
+.r130-field input{font-weight:700;font-size:20px}
+.r130-sum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
+.r130-sum b{display:block;font-size:21px;font-weight:800;line-height:1.15}
+.r130-sum span{font-size:12px;color:#555}
+.r130-dom{height:8px;display:flex;border-radius:4px;overflow:hidden}
+.r130-tal{display:flex;flex-wrap:wrap;gap:6px}
+.r130-tal span{font-size:12px;border:1px solid #555;border-radius:6px;padding:5px 8px}
+.r130-tal span.on{background:#fff;color:#000;border-color:#fff;font-weight:600}
+.r130-whl{display:flex;gap:14px;align-items:center}
+.r130-whl svg{flex:none}
+.r130-empty{font-size:13px;color:#9A9A9A;line-height:1.45}
+.r130-sw{width:44px;height:26px;border-radius:13px;background:#333;position:relative;flex:none;border:0;cursor:pointer;padding:0}
+.r130-sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:10px;background:#9A9A9A;transition:left .15s}
+.r130-sw.on{background:#fff}.r130-sw.on i{left:21px;background:#000}
+.r130-read h2{margin:6px 0 0;font-size:24px;font-weight:700;line-height:1.25}
+.r130-read p{margin:0;font-size:16px;line-height:1.5}
+.r130-read ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.45}
+.r130-read .cvb{height:190px;position:relative;border-radius:10px;overflow:hidden;background:#333}
+.r130-read .cvb .cv16{position:absolute;inset:0;height:100%;border-radius:0}
+body.r130on #v114Me{display:none!important}
+@media print{
+  body.r130print > *:not(#r130printArea){display:none!important}
+  #r130printArea{display:block!important;color:#000;background:#fff;font-family:Inter,system-ui,sans-serif;padding:0}
+}
+#r130printArea{display:none}
+</style>
 <script>
 // Сервер платформы: единственный источник данных (R32c, таблица отключена). Он проверяет
 // по подписи Telegram, кто открыл приложение, и держит готовые данные, чтобы экран открывался сразу
@@ -5656,13 +5764,15 @@ const NAV = {
   ],
   // R114: у резидента те же разделы, названия, порядок и значки, что на платформе: Сегодня, Задачи, Разбор, Замеры, Клуб;
   // «Профиль» в шапке (кнопка с буквой имени), как «Я» на платформе. Обычно приложение резидента сразу открывает платформу (v114auto)
+  // R130 (30.10): приложение резидента по утверждённому концепту: Главная, Расписание, Задачи, Замеры, Клуб.
+  // Настройки и переход на доску в шапке Главной. Прежние экраны остались скрытыми: глубокие ссылки и кнопки работают
   resident: [
-    {id:'home',  label:'Сегодня', icon:'today', pages:[{id:'home', label:'Сегодня'},{id:'library', label:'Библиотека'},{id:'ideas', label:'Бизнес-идеи'},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true}]},
-    {id:'tasks', label:'Задачи',  icon:'checklist', pages:[{id:'mytasks', label:'Задачи'}]},
-    {id:'board', label:'Разбор',  icon:'board', pages:[{id:'myboard', label:'Разбор'}]},
-    {id:'meas',  label:'Замеры',  icon:'ruler', pages:[{id:'wheel', label:'Колесо баланса'},{id:'diagnostic', label:'Диагностика'}]},
-    {id:'club',  label:'Клуб',    icon:'club',  pages:[{id:'mymeetings', label:'Расписание'},{id:'events', label:'Мероприятия'},{id:'residents', label:'Участники'},{id:'leadmagnets', label:'Материалы'},{id:'about', label:'О клубе'},{id:'rules', label:'Правила', hidden:true}]},
-    {id:'me',    label:'Профиль', icon:'me', nobar:true, pages:[{id:'mystatus', label:'Статус'},{id:'myprofile', label:'Данные'}]}
+    {id:'rhome',  label:'Главная',    icon:'home', pages:[{id:'rhome', label:'Главная'},{id:'rreport', label:'Отчёт', hidden:true},{id:'home', label:'Сегодня', hidden:true},{id:'library', label:'Библиотека', hidden:true},{id:'ideas', label:'Бизнес-идеи', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'myboard', label:'Разбор', hidden:true}]},
+    {id:'rsched', label:'Расписание', icon:'cal',  pages:[{id:'rsched', label:'Расписание'},{id:'mymeetings', label:'Встречи', hidden:true},{id:'events', label:'Мероприятия', hidden:true}]},
+    {id:'rtasks', label:'Задачи',     icon:'checklist', pages:[{id:'rtasks', label:'Задачи'},{id:'mytasks', label:'Задачи', hidden:true}]},
+    {id:'rmeas',  label:'Замеры',     icon:'ruler', pages:[{id:'rmeas', label:'Замеры'},{id:'wheel', label:'Колесо баланса', hidden:true},{id:'diagnostic', label:'Диагностика', hidden:true}]},
+    {id:'rclub',  label:'Клуб',       icon:'club', pages:[{id:'rclub', label:'Клуб'},{id:'residents', label:'Участники', hidden:true},{id:'leadmagnets', label:'Материалы', hidden:true},{id:'about', label:'О клубе', hidden:true},{id:'rules', label:'Правила', hidden:true},{id:'myprofile', label:'Мои данные', hidden:true}]},
+    {id:'me',     label:'Настройки',  icon:'me', nobar:true, pages:[{id:'rset', label:'Настройки'},{id:'mystatus', label:'Статус', hidden:true}]}
   ],
   lead: [
     {id:'home', label:'Главная',     icon:'home',  pages:[{id:'about', label:'Главная'}]},
@@ -6224,7 +6334,7 @@ function renderTabs(){
       // R94: «Платформа» в нижнем меню у всех ролей: одно нажатие с любого экрана
       if(g.ext) return '<button class="bnav-i bnav-plat" data-ap94plat="1" aria-label="Открыть платформу BS" onclick="v94plat(this)">'+navIcon(g.icon)+'<span>'+g.label+'</span></button>';
       var on = window._navGroup && window._navGroup.id === g.id;
-      return '<button class="bnav-i'+(on?' on':'')+'" data-group="'+g.id+'" onclick="navGo(\''+g.id+'\')">'+navIcon(g.icon)+'<span>'+g.label+'</span></button>';
+      return '<button class="bnav-i'+(on?' on':'')+'" data-group="'+g.id+'" onclick="navGo(\''+g.id+'\')">'+navIcon(g.icon)+'<span>'+(role === 'resident' ? r130t(g.label) : g.label)+'</span></button>';
     }).join('');
   }
   var back = document.getElementById('v4BackAdmin');
@@ -6336,6 +6446,7 @@ function _showPageCore(id){
   if(t){ try{ t.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'}); }catch(e){} }
   r44show(id);
   try{ r81onOpen(id); }catch(e){}
+  if(R130_PAGES[id]) r130render(id); else document.body.classList.remove('r130on');
   if(id === 'home'){ try{ renderResHome(); }catch(e){ console.error('home:', e); } }
   if(id === 'myboard'){ try{ renderMyBoard(); }catch(e){ console.error('myboard:', e); } }
   if(id === 'residents'){ try{ renderResidents(); }catch(e){ console.error('residents:', e); } }
@@ -6369,6 +6480,7 @@ function v9rootPages(role){
   return out;
 }
 function v9title(id){
+  if(R130_TITLE[id]) return r130t(R130_TITLE[id]);
   var role = navRole();
   if(role === 'lead' && id === 'about') return 'Главная';
   if(role !== 'admin' && id === 'residents') return 'Клуб';
@@ -6397,6 +6509,8 @@ function v9scrollTop(){
 }
 function showPage(id, opts){
   opts = opts || {};
+  // R130: у резидента прежние главные экраны ведут на новые
+  try{ if(navRole() === 'resident' && R130_OLD[id]) id = R130_OLD[id]; }catch(e){}
   // R44: код раздела догружается при первом открытии (bsNeedPage есть только в собранной версии)
   if(window.bsNeedPage && bsNeedPage(id, function(){ showPage(id, opts); })) return;
   // Лид: отдельной страницы «Материалы» больше нет, PDF из бота живут в гайдах
@@ -6678,6 +6792,7 @@ function renderAllPages(){
   r44page('myprofile', function(){ try{renderMyProfile();}catch(e){console.error('myprofile:',e);} });
   r44page('mymeetings', function(){ try{renderMyMeetings();}catch(e){console.error('mymeetings:',e);} });
   r44page('home', function(){ try{ if(navRole() !== 'admin') renderResHome(); }catch(e){console.error('home:',e);} });
+  try{ r130refresh(); }catch(e){}
   try{ ensureAboutCard(); }catch(e){}
 
   // Всё приходит одним запросом и рисуется из кеша. дополнительных загрузок нет
@@ -12987,6 +13102,568 @@ document.querySelectorAll('.modal-bg').forEach(m=>{
 });
 
 try{ bsLsClean(); }catch(e){}
+// ═══ R130: приложение резидента по утверждённому концепту (Рустам, 30.10) ═══
+// 5 вкладок: Главная, Расписание, Задачи, Замеры, Клуб. Настройки и переход на доску в шапке Главной.
+// Данные те же, что у остального приложения: пакет клуба (cache), разбор с платформы (myboard), библиотека, мероприятия.
+var R130 = {sched: 'my', readTab: 'sut'};
+var R130_MONTHS = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+var R130_WD = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+var R130_WDS = ['вс','пн','вт','ср','чт','пт','сб'];
+var R130_KZ = {
+  'Главная':'Басты', 'Расписание':'Кесте', 'Задачи':'Тапсырма', 'Замеры':'Өлшеулер', 'Клуб':'Клуб',
+  'Мои встречи':'Кездесулерім', 'Мероприятия':'Іс-шаралар', 'Настройки':'Баптаулар', 'Задачи цикла':'Цикл тапсырмалары',
+  'Задачи на сегодня':'Бүгінгі тапсырмалар', 'Все задачи':'Барлық тапсырмалар', 'Ближайшая встреча':'Жақын кездесу',
+  'Войти в созвон':'Қоңырауға кіру', 'Перенести':'Ауыстыру', 'В календарь':'Күнтізбеге', 'Отправить отчёт за сегодня':'Бүгінгі есепті жіберу',
+  'Сегодня':'Бүгін', 'На неделе':'Осы аптада', 'Постоянные':'Тұрақты', 'Сделано':'Орындалды', 'Без срока':'Мерзімсіз',
+  'Диагнозы':'Диагноздар', 'Инструменты':'Құралдар', 'Сводка':'Қорытынды', 'Колесо баланса бизнеса':'Бизнес теңгерім дөңгелегі',
+  'Колесо баланса общее':'Жалпы теңгерім дөңгелегі', 'Анализы':'Талдаулар', 'Резиденты':'Резиденттер', 'Язык':'Тіл',
+  'Напоминания бота':'Бот еске салулары', 'Оплата':'Төлем', 'Правила клуба':'Клуб ережелері', 'Отчёт':'Есеп',
+  'Суть':'Мәні', 'Позже':'Кейінірек', 'Симптомы':'Белгілері', 'Последствия':'Салдары', 'Лечение':'Емі', 'Заполнить':'Толтыру'
+};
+function r130lang(){ try{ return localStorage.getItem('bs_lang') === 'kk' ? 'kk' : 'ru'; }catch(e){ return 'ru'; } }
+function r130t(s){ return r130lang() === 'kk' && R130_KZ[s] ? R130_KZ[s] : s; }
+function r130on(){ try{ return navRole() === 'resident'; }catch(e){ return false; } }
+function r130icon(k, s){
+  var P = {
+    gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+    board: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><path d="M10 6.5h4a3 3 0 0 1 3 3V14M6.5 10v4a3 3 0 0 0 3 3H14"/>',
+    print: '<path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M8 14h8v7H8z"/>',
+    check: '<path d="M5 12l5 5 9-10"/>'
+  };
+  return '<svg width="' + (s || 22) + '" height="' + (s || 22) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (P[k] || '') + '</svg>';
+}
+function r130board(){ return (window._myBoard && window._myBoard.board) || null; }
+// разбор с платформы грузится один раз, экран перерисовывается, когда он пришёл
+function r130needBoard(page){
+  if(window._myBoard || R130.boardBusy) return;
+  R130.boardBusy = 1;
+  try{
+    loadMyBoard(false).then(function(){ R130.boardBusy = 0; if(v9activeId() === page) r130render(page); }, function(){ R130.boardBusy = 0; });
+  }catch(e){ R130.boardBusy = 0; }
+}
+function r130needLib(page){
+  if(window._lib && window._lib.items && window._lib.items.length) return;
+  if(R130.libBusy) return;
+  R130.libBusy = 1;
+  try{ loadLibrary(false).then(function(){ R130.libBusy = 0; if(v9activeId() === page) r130render(page); }, function(){ R130.libBusy = 0; }); }catch(e){ R130.libBusy = 0; }
+}
+function r130date(s){
+  s = String(s || '').trim(); if(!s) return null;
+  var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); if(m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  m = s.match(/^(\d{1,2})\.(\d{1,2})(?:\.(\d{2,4}))?/);
+  if(m){ var y = m[3] ? (m[3].length === 2 ? 2000 + +m[3] : +m[3]) : new Date().getFullYear(); return new Date(y, +m[2] - 1, +m[1]); }
+  var t = Date.parse(s); return isFinite(t) ? new Date(t) : null;
+}
+function r130daysWith(me){
+  var d = r130date(me && (me.startDate || me.dateIn || me.start || me.joined));
+  if(!d) return 0;
+  return Math.max(1, Math.floor((Date.now() - d.getTime()) / 86400000) + 1);
+}
+function r130plural(n, a, b, c){ try{ return v3plural(n, a, b, c); }catch(e){ return c; } }
+function r130cycle(me){
+  var g = Number(me && me.meetingsGranted) || 0, d = Number(me && me.meetingsDone) || 0;
+  if(g > 0) return {cur: Math.min(g, d + 1), of: g, done: d};
+  var b = r130board();
+  return {cur: (b && b.cycle) || 1, of: 0, done: d};
+}
+function r130myMeets(me){
+  var now = Date.now();
+  return (cache.schedule || []).filter(function(ev){ return ev && me && ev.res === me.name && parseScheduleKey(ev) >= now - 3600000; })
+    .sort(function(a, b){ return parseScheduleKey(a) - parseScheduleKey(b); });
+}
+function r130dayTitle(ts){
+  var d = new Date(ts), t = new Date(); t.setHours(0, 0, 0, 0);
+  var x = new Date(d); x.setHours(0, 0, 0, 0);
+  var diff = Math.round((x - t) / 86400000);
+  var base = d.getDate() + ' ' + R130_MONTHS[d.getMonth()];
+  if(diff === 0) return r130t('Сегодня') + ', ' + base;
+  if(diff === 1) return 'Завтра, ' + base;
+  return R130_WD[d.getDay()] + ', ' + base;
+}
+function r130in(ts){
+  var t = new Date(); t.setHours(0, 0, 0, 0);
+  var x = new Date(ts); x.setHours(0, 0, 0, 0);
+  var n = Math.round((x - t) / 86400000);
+  if(n <= 0) return 'сегодня';
+  if(n === 1) return 'завтра';
+  return 'через ' + n + ' ' + r130plural(n, 'день', 'дня', 'дней');
+}
+// ── задачи: доска цикла (с платформы) и задачи от трекера / свои (пакет клуба) ──
+function r130tasks(me){
+  var out = [], today = new Date(); today.setHours(0, 0, 0, 0);
+  var b = r130board();
+  ((b && b.tasks) || []).forEach(function(t, i){
+    var d = r130date(t.due);
+    out.push({src: 'board', i: i, text: t.title, desc: t.desc || '', organ: t.organ || '', due: d, done: !!t.done, kind: t.kind || ''});
+  });
+  ((cache.resTasks && cache.resTasks.tasks) || []).filter(function(t){ return me && t.name === me.name; }).forEach(function(t){
+    var d = r130date(t.due || t.deadline || '');
+    out.push({src: 'res', row: t.row, text: t.task, desc: '', organ: '', due: d, done: t.status === 'Выполнена', kind: '', own: !!t.isOwn});
+  });
+  out.forEach(function(x){
+    x.always = x.kind === 'always' || x.kind === 'repeat';
+    x.days = x.due ? Math.round((x.due - today) / 86400000) : null;
+  });
+  return out;
+}
+function r130group(list){
+  var G = {today: [], week: [], always: [], later: [], nodue: [], done: []};
+  list.forEach(function(x){
+    if(x.done && !x.always){ G.done.push(x); return; }
+    if(x.always){ G.always.push(x); return; }
+    if(x.days !== null && x.days <= 0) G.today.push(x);
+    else if(x.days !== null && x.days <= 7) G.week.push(x);
+    else if(x.days !== null) G.later.push(x);
+    else G.nodue.push(x);
+  });
+  var by = function(a, b){ return (a.days == null ? 999 : a.days) - (b.days == null ? 999 : b.days); };
+  G.today.sort(by); G.week.sort(by); G.later.sort(by);
+  return G;
+}
+function r130dueText(x){
+  if(!x.due) return '';
+  var s = x.due.getDate() + '.' + String(x.due.getMonth() + 1).padStart(2, '0');
+  if(x.days < 0) return 'срок был ' + s;
+  if(x.days === 0) return 'до сегодня';
+  return 'до ' + s;
+}
+function r130taskHTML(x, k){
+  var can = x.src === 'res';
+  var ck = '<button type="button" class="r130-ck' + (x.done ? ' on' : '') + (can ? '' : ' ro') + '" aria-label="' + (x.done ? 'Сделано' : 'Отметить') + '"' +
+    (can ? ' onclick="r130tick(' + k + ')"' : ' onclick="showToast(\'Задачи с доски отмечает трекер на встрече\')"') + '>' + (x.done ? r130icon('check', 14) : '') + '</button>';
+  var tags = [];
+  var dt = r130dueText(x); if(dt) tags.push(dt);
+  if(x.always) tags.push(x.kind === 'repeat' ? 'повтор' : 'постоянная');
+  if(x.src === 'res') tags.push(x.own ? 'своя' : 'от трекера');
+  return '<div class="r130-task' + (x.done && !x.always ? ' done' : '') + '">' + ck + '<div style="min-width:0;flex:1"><div class="t">' + v2esc(x.text) + '</div>' +
+    (tags.length && !(x.done && !x.always) ? '<div class="r130-tags">' + tags.map(function(t){ return '<span>' + v2esc(t) + '</span>'; }).join('') + '</div>' : '') + '</div></div>';
+}
+function r130tick(k){
+  var x = (R130.taskList || [])[k]; if(!x || x.src !== 'res') return;
+  var to = x.done ? 'В работе' : 'Выполнена';
+  x.done = !x.done;
+  ((cache.resTasks && cache.resTasks.tasks) || []).forEach(function(t){ if(t.row === x.row) t.status = to; });
+  r130render(v9activeId());
+  try{ callAction('setResTaskStatus', {row: x.row, status: to}); }catch(e){}
+}
+
+// ── Главная ──
+function r130home(el){
+  var me = getMyData();
+  if(!me){ el.innerHTML = '<div class="r130"><div class="r130-card"><div class="r130-empty">Данные ещё загружаются. Если это надолго, напишите Рустаму или Береке</div></div></div>'; return; }
+  r130needBoard('rhome');
+  var now = new Date();
+  var cyc = r130cycle(me), days = r130daysWith(me);
+  var tl = r130tasks(me), G = r130group(tl);
+  var done = tl.filter(function(x){ return x.done && !x.always; }).length, all = tl.filter(function(x){ return !x.always; }).length;
+  var pct = all ? Math.round(done / all * 100) : 0;
+  var h = '<div class="r130">';
+  h += '<div class="r130-top"><div><div class="d">' + R130_WD[now.getDay()] + ', ' + now.getDate() + ' ' + R130_MONTHS[now.getMonth()] + '</div>' +
+    '<h1>Добрый день, ' + v2esc(String(me.name || '').split(' ')[0]) + '</h1></div>' +
+    '<div class="r130-ibtns"><button type="button" class="r130-ibtn" aria-label="Мой разбор на платформе" onclick="r130openBoard()">' + r130icon('board') + '</button>' +
+    '<button type="button" class="r130-ibtn" aria-label="' + r130t('Настройки') + '" onclick="showPage(\'rset\')">' + r130icon('gear') + '</button></div></div>';
+  h += '<div class="r130-card w"><div class="r130-sb"><span class="r130-lbl">Цикл ' + cyc.cur + (cyc.of ? ' из ' + cyc.of : '') + '</span>' +
+    '<span class="s" style="font-size:13px">' + (days ? 'с нами ' + days + ' ' + r130plural(days, 'день', 'дня', 'дней') : '') + '</span></div>' +
+    '<div class="r130-bar"><i style="width:' + pct + '%"></i></div>' +
+    '<div class="r130-nums"><div><b>' + done + '/' + all + '</b><span>задач сделано</span></div><div><b>' + G.today.length + '</b><span>на сегодня</span></div>' +
+    '<div><b>' + (v3reportSent(me) ? 'сдан' : 'до 23:59') + '</b><span>отчёт сегодня</span></div></div></div>';
+  var next = r130myMeets(me)[0];
+  h += '<div class="r130-card"><span class="r130-lbl">' + r130t('Ближайшая встреча') + '</span>';
+  if(next){
+    var ts = parseScheduleKey(next), f = v107fmt(next), d = new Date(ts);
+    R130.next = next;
+    h += '<div class="r130-sb" style="align-items:center"><div><div style="font-size:18px;font-weight:700">' + R130_WDS[d.getDay()].replace(/^./, function(c){ return c.toUpperCase(); }) + ', ' + d.getDate() + ' ' + R130_MONTHS[d.getMonth()] + (next.time ? ' · ' + v2esc(next.time) : '') + '</div>' +
+      '<div style="font-size:13px;color:#B9B9B9;margin-top:2px">' + v2esc(f.online ? 'Онлайн' : (f.offline ? (f.place || 'Офлайн') : f.label)) + '</div></div><span class="r130-chip">' + r130in(ts) + '</span></div>' +
+      '<div class="r130-btns">' + (next.call ? '<button type="button" class="r130-btn" onclick="r130join()">' + r130t('Войти в созвон') + '</button>' : '<button type="button" class="r130-btn" onclick="r130cal()">' + r130t('В календарь') + '</button>') +
+      '<button type="button" class="r130-btn o" onclick="r130resched()">' + r130t('Перенести') + '</button></div>';
+  } else {
+    h += '<div class="r130-empty">Встреч пока нет. Напишите трекеру, чтобы записаться</div><div class="r130-btns"><button type="button" class="r130-btn o" onclick="r130writeTeam(\'\')">Написать трекеру</button></div>';
+  }
+  h += '</div>';
+  var td = G.today.concat(G.always).slice(0, 4);
+  R130.taskList = td;
+  h += '<div class="r130-sb"><span class="r130-h">' + r130t('Задачи на сегодня') + '</span><button type="button" class="r130-btn g" style="flex:none;min-height:32px;border:0;color:#B9B9B9" onclick="showPage(\'rtasks\')">' + r130t('Все задачи') + '</button></div>';
+  if(td.length) h += td.map(r130taskHTML).join('');
+  else h += '<div class="r130-card"><div class="r130-empty">' + (window._myBoard ? 'На сегодня задач нет' : 'Загружаем задачи...') + '</div></div>';
+  h += '<button type="button" class="r130-btn o" style="min-height:52px" onclick="showPage(\'rreport\')">' + (v3reportSent(me) ? 'Отчёт сдан · дополнить' : r130t('Отправить отчёт за сегодня')) + ' ↗</button>';
+  h += '</div>';
+  el.innerHTML = h;
+}
+function r130openBoard(){ try{ v20openPlat(''); }catch(e){ showToast('Платформа не открылась'); } }
+function r130join(){ var ev = R130.next; if(ev && ev.call){ try{ v9open(ev.call); }catch(e){ window.open(ev.call, '_blank'); } } }
+function r130cal(){ var ev = R130.next; if(ev){ try{ addToCalendar(ev.date, ev.time, ev.res, ev.call || ev.link || ''); }catch(e){} } }
+function r130teamMember(){ return {name: 'Рустам', chatId: '453800951'}; }
+function r130writeTeam(text){
+  try{
+    v11compose(r130teamMember());
+    if(text) setTimeout(function(){ var t = document.getElementById('v11text'); if(t){ t.value = text; t.focus(); } }, 120);
+  }catch(e){ showToast('Не получилось открыть сообщение'); }
+}
+function r130resched(ev){
+  ev = ev || R130.next; if(!ev) return;
+  r130writeTeam('Прошу перенести встречу ' + ev.date + (ev.time ? ' в ' + ev.time : '') + '. Мне удобно: ');
+}
+
+// ── Расписание: мои встречи и мероприятия города по дням ──
+function r130sched(el){
+  var me = getMyData();
+  var h = '<div class="r130"><div class="r130-top"><h1>' + r130t('Расписание') + '</h1></div>' +
+    '<div class="r130-seg" role="tablist"><button type="button" role="tab" class="' + (R130.sched === 'my' ? 'on' : '') + '" onclick="R130.sched=\'my\';r130render(\'rsched\')">' + r130t('Мои встречи') + '</button>' +
+    '<button type="button" role="tab" class="' + (R130.sched === 'ev' ? 'on' : '') + '" onclick="R130.sched=\'ev\';r130render(\'rsched\')">' + r130t('Мероприятия') + '</button></div>';
+  if(R130.sched === 'my'){
+    var list = me ? r130myMeets(me) : [];
+    R130.meets = list;
+    if(!list.length) h += '<div class="r130-card"><div class="r130-empty">Встреч пока нет. Напишите трекеру, чтобы записаться</div><div class="r130-btns"><button type="button" class="r130-btn o" onclick="r130writeTeam(\'\')">Написать трекеру</button></div></div>';
+    var last = '';
+    list.forEach(function(ev, i){
+      var ts = parseScheduleKey(ev), dt = r130dayTitle(ts), f = v107fmt(ev);
+      if(dt !== last){ h += '<div class="r130-sec">' + v2esc(dt) + '</div>'; last = dt; }
+      var title = f.day ? 'Офлайн-день клуба' : (f.event ? String(ev.res || '').replace(/^🎬\s*/, '') : 'Трекинг-встреча');
+      var sub = f.online ? 'Онлайн' + (f.call ? ' · созвон на платформе' : '') : (f.offline ? (f.place || 'Офлайн') : (f.place || ''));
+      h += '<div class="r130-card"><div style="display:flex;gap:14px;align-items:center"><div class="r130-time' + (i === 0 ? ' w' : '') + '">' + v2esc(ev.time || '·') + '</div>' +
+        '<div><div style="font-size:16px;font-weight:700">' + v2esc(title) + '</div><div style="font-size:13px;color:#B9B9B9;margin-top:3px">' + v2esc(sub) + '</div></div></div>' +
+        '<div class="r130-btns">' + (ev.call ? '<button type="button" class="r130-btn" style="min-height:40px;font-size:12px" onclick="R130.next=R130.meets[' + i + '];r130join()">Войти</button>' : '') +
+        '<button type="button" class="r130-btn g" onclick="r130resched(R130.meets[' + i + '])">Перенести</button>' +
+        '<button type="button" class="r130-btn g" onclick="R130.next=R130.meets[' + i + '];r130cal()">В календарь</button></div></div>';
+    });
+  } else {
+    var S = window._v78;
+    if(!S || !S.d){
+      h += '<div class="loading"><div class="spinner"></div></div>';
+      try{ v78load().then(function(){ if(v9activeId() === 'rsched') r130render('rsched'); }); }catch(e){}
+    } else if(S.d.error){
+      h += '<div class="r130-card"><div class="r130-empty">Лента мероприятий не загрузилась</div><div class="r130-btns"><button type="button" class="r130-btn o" onclick="window._v78.d=null;r130render(\'rsched\')">Повторить</button></div></div>';
+    } else {
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      var items = (S.d.items || []).filter(function(x){ var d = r130date(x.date); return d && d >= today && x.kind !== 'возможность'; });
+      try{ items = v78dedupe(items); }catch(e){}
+      items.sort(function(a, b){ return (r130date(a.date) - r130date(b.date)) || String(a.time || '').localeCompare(String(b.time || '')); });
+      R130.events = items;
+      h += '<div class="r130-empty" style="padding:0 2px">Бизнес-события города на каждый день. Ниже следующие дни</div>';
+      if(!items.length) h += '<div class="r130-card"><div class="r130-empty">Ближайших мероприятий пока нет</div></div>';
+      var lastd = '';
+      items.slice(0, 60).forEach(function(x, i){
+        var d = r130date(x.date), dt = r130dayTitle(d.getTime());
+        if(dt !== lastd){ h += '<div class="r130-sec">' + v2esc(dt) + '</div>'; lastd = dt; }
+        h += '<div class="r130-ev" role="button" tabindex="0" onclick="r130event(' + i + ')"><span style="width:56px;flex:none;font-size:16px;font-weight:800">' + v2esc(x.time || '·') + '</span>' +
+          '<div style="min-width:0"><div style="font-size:15px;font-weight:600;line-height:1.3">' + v2esc(x.title || '') + '</div><div class="s">' + v2esc([x.place || (x.online ? 'онлайн' : ''), x.price || ''].filter(Boolean).join(' · ')) + '</div></div></div>';
+      });
+    }
+  }
+  h += '</div>';
+  el.innerHTML = h;
+}
+function r130event(i){
+  var x = (R130.events || [])[i]; if(!x) return;
+  var url = x.url || x.link || '';
+  if(url){ try{ v9open(url); }catch(e){ window.open(url, '_blank'); } return; }
+  showToast(x.title || 'Мероприятие');
+}
+
+// ── Задачи цикла, диагнозы, инструменты ──
+function r130libFind(kind, title){
+  var t = String(title || '').toLowerCase().trim();
+  var items = (window._lib && window._lib.items) || [];
+  return items.filter(function(x){ return x && x.kind === kind && String(x.title || '').toLowerCase().trim() === t; })[0] || null;
+}
+function r130tasksPage(el){
+  var me = getMyData();
+  r130needBoard('rtasks'); r130needLib('rtasks');
+  var b = r130board(), tl = r130tasks(me), G = r130group(tl);
+  var done = tl.filter(function(x){ return x.done && !x.always; }).length, all = tl.filter(function(x){ return !x.always; }).length;
+  var pct = all ? Math.round(done / all * 100) : 0;
+  var list = []; R130.taskList = list;
+  var sec = function(name, arr){
+    if(!arr.length) return '';
+    return '<div class="r130-sec">' + r130t(name) + (name === 'Сделано' ? ' · ' + arr.length : '') + '</div>' + arr.map(function(x){ list.push(x); return r130taskHTML(x, list.length - 1); }).join('');
+  };
+  var h = '<div class="r130"><div class="r130-top"><h1>' + r130t('Задачи цикла') + '</h1><button type="button" class="r130-ibtn" aria-label="Распечатать задачи" onclick="r130print()">' + r130icon('print', 20) + '</button></div>';
+  h += '<div style="display:flex;flex-direction:column;gap:6px"><div class="r130-sb" style="font-size:13px;color:#B9B9B9"><span>Цикл ' + r130cycle(me).cur + ' · сделано ' + done + ' из ' + all + '</span><span>' + pct + '%</span></div>' +
+    '<div class="r130-bar k"><i style="width:' + pct + '%"></i></div></div>';
+  if(!tl.length) h += '<div class="r130-card"><div class="r130-empty">' + (window._myBoard ? 'Задач цикла пока нет. Их ставит трекер на встрече' : 'Загружаем задачи...') + '</div></div>';
+  h += sec('Сегодня', G.today) + sec('На неделе', G.week) + sec('Позже', G.later) + sec('Без срока', G.nodue) + sec('Постоянные', G.always) + sec('Сделано', G.done);
+  var dg = (b && b.diagnoses) || [], tools = (b && b.tools) || [];
+  if(dg.length){
+    h += '<div class="r130-h" style="margin-top:8px">' + r130t('Диагнозы') + '</div><div class="r130-grid2">' + dg.map(function(x, i){
+      return '<button type="button" class="r130-dg" onclick="r130read(\'diag\',' + i + ')"><div class="cv">' + cv113Tile('diag', x.title, x.organ) + '</div>' +
+        '<div class="b"><b>' + v2esc(x.title) + '</b><span>' + v2esc(x.organ ? String(x.organ).replace(/^[^А-Яа-яA-Za-z]+/, '') + ' · ' : '') + 'читать</span></div></button>';
+    }).join('') + '</div>';
+  }
+  if(tools.length){
+    h += '<div class="r130-h" style="margin-top:8px">' + r130t('Инструменты') + '</div>' + tools.map(function(x, i){
+      var L = r130libFind('tool', x.title);
+      var sub = [x.organ ? String(x.organ).replace(/^[^А-Яа-яA-Za-z]+/, '') : '', L && L.short ? L.short : ''].filter(Boolean).join(' · ');
+      return '<button type="button" class="r130-row" onclick="r130read(\'tool\',' + i + ')"><div style="min-width:0"><div class="t">' + v2esc(x.title) + '</div>' + (sub ? '<div class="s">' + v2esc(sub) + '</div>' : '') + '</div><span class="c">›</span></button>';
+    }).join('');
+  }
+  h += '</div>';
+  el.innerHTML = h;
+}
+// Чтение диагноза или инструмента: обложка и вкладки, как на доске
+function r130read(kind, i, tab){
+  var b = r130board(); if(!b) return;
+  var x = ((kind === 'diag' ? b.diagnoses : b.tools) || [])[i]; if(!x) return;
+  var L = r130libFind(kind, x.title) || {};
+  var list = function(v){ try{ return v9list(v); }catch(e){ return []; } };
+  var T = kind === 'diag'
+    ? [['sut', 'Суть', L.short || x.desc || ''], ['sym', 'Симптомы', list(L.signs)], ['risk', 'Последствия', L.risk || ''], ['cure', 'Лечение', list(L.how).concat(list(L.check))]]
+    : [['sut', 'Суть', L.short || x.desc || ''], ['why', 'Зачем', L.why || ''], ['how', 'Как', list(L.how)], ['ex', 'Пример', L.example || '']];
+  var cur = tab || 'sut';
+  var row = T.filter(function(t){ return t[0] === cur; })[0] || T[0];
+  var body = row[2];
+  var bodyHTML = Array.isArray(body) ? (body.length ? '<ul>' + body.map(function(s){ return '<li>' + v2esc(s) + '</li>'; }).join('') + '</ul>' : '') : (body ? '<p>' + v2esc(body) + '</p>' : '');
+  if(!bodyHTML) bodyHTML = '<div class="r130-empty">Этот раздел трекер разберёт с вами на встрече</div>';
+  var organ = String(x.organ || L.organ || '').replace(/^[^А-Яа-яA-Za-z]+/, '');
+  var h = '<div class="r130 r130-read"><div class="cvb">' + cv113Tile(kind === 'diag' ? 'diag' : 'tool', x.title, x.organ || L.organ || '') + '</div>' +
+    '<div><div class="r130-lbl">' + (kind === 'diag' ? 'Диагноз' : 'Инструмент') + (organ ? ' · ' + v2esc(organ) : '') + '</div><h2>' + v2esc(x.title) + '</h2></div>' +
+    '<div class="r130-seg s4" role="tablist">' + T.map(function(t){ return '<button type="button" role="tab" class="' + (t[0] === row[0] ? 'on' : '') + '" onclick="r130read(\'' + kind + '\',' + i + ',\'' + t[0] + '\')">' + r130t(t[1]) + '</button>'; }).join('') + '</div>' +
+    bodyHTML;
+  var tasks = ((b && b.tasks) || []).filter(function(t){ return t.title && (t.organ && t.organ === x.organ); }).slice(0, 3);
+  if(tasks.length) h += '<div class="r130-card"><span class="r130-lbl">Задачи по этой теме</span>' + tasks.map(function(t){ return '<div style="font-size:14px">' + v2esc(t.title) + '</div>'; }).join('') + '</div>';
+  h += '</div>';
+  document.getElementById('detailTitle').textContent = kind === 'diag' ? r130t('Диагнозы') : r130t('Инструменты');
+  document.getElementById('detailContent').innerHTML = h;
+  if(!tab) showDetail();
+}
+// Печать задач: чистый лист А4
+function r130print(){
+  var me = getMyData() || {}, tl = r130tasks(me), G = r130group(tl);
+  var now = new Date();
+  var rows = function(name, arr){
+    if(!arr.length) return '';
+    return '<h3 style="margin:18px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:#555">' + name + '</h3>' + arr.map(function(x){
+      return '<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #D4D4D4"><span style="width:14px;height:14px;border:1.5px solid #000;border-radius:3px;flex:none;margin-top:2px;' + (x.done ? 'background:#000' : '') + '"></span>' +
+        '<span style="flex:1;font-size:14px;line-height:1.4">' + v2esc(x.text) + '</span><span style="font-size:12px;color:#555;white-space:nowrap">' + v2esc(r130dueText(x) || (x.always ? 'постоянная' : '')) + '</span></div>';
+    }).join('');
+  };
+  var area = document.getElementById('r130printArea');
+  if(!area){ area = document.createElement('div'); area.id = 'r130printArea'; document.body.appendChild(area); }
+  area.innerHTML = '<div style="padding:24px 28px"><div style="font-size:12px;color:#555">Business Surgery · ' + now.toLocaleDateString('ru-RU') + '</div>' +
+    '<h1 style="margin:6px 0 2px;font-size:24px">Задачи цикла ' + r130cycle(me).cur + '</h1><div style="font-size:14px">' + v2esc(me.name || '') + '</div>' +
+    rows('Сегодня', G.today) + rows('На неделе', G.week) + rows('Позже', G.later) + rows('Без срока', G.nodue) + rows('Постоянные', G.always) + rows('Сделано', G.done) + '</div>';
+  document.body.classList.add('r130print');
+  setTimeout(function(){
+    try{ window.print(); }catch(e){ showToast('Печать недоступна в этом окне: откройте задачи на платформе'); }
+    setTimeout(function(){ document.body.classList.remove('r130print'); }, 500);
+  }, 60);
+}
+
+// ── Отчёт за сегодня: свободный текст без ограничений, уходит трекерам через бота ──
+function r130report(el){
+  var me = getMyData() || {};
+  var d = ''; try{ d = localStorage.getItem('bs_r130_report') || ''; }catch(e){}
+  var D = {}; try{ D = JSON.parse(d || '{}') || {}; }catch(e){ D = {}; }
+  var f = function(id, label, ph, rows, num){
+    return '<label class="r130-field">' + label + (num ? '<input id="' + id + '" inputmode="numeric" placeholder="' + ph + '" value="' + v2esc(D[id] || '') + '" oninput="r130draft()">'
+      : '<textarea id="' + id + '" rows="' + rows + '" placeholder="' + ph + '" oninput="r130draft()">' + v2esc(D[id] || '') + '</textarea>') + '</label>';
+  };
+  el.innerHTML = '<div class="r130"><div class="r130-top"><div><h1>' + r130t('Отчёт') + ' за сегодня</h1><div class="d">' + (v3reportSent(me) ? 'Сегодняшний отчёт уже есть, можно дополнить' : 'Сдать до 23:59') + '</div></div></div>' +
+    '<div class="r130-grid2">' + f('r130rv', 'Выручка, ₸', '0', 1, 1) + f('r130pr', 'Чистая прибыль, ₸', '0', 1, 1) + '</div>' +
+    f('r130do', 'Что сделал по задачам', 'Коротко, по пунктам', 3) + f('r130st', 'Где застрял', 'Что мешает двигаться', 2) +
+    f('r130cm', 'Свободный комментарий', 'Пишите что угодно: мысли, вопросы, идеи. Без ограничений по длине', 6) +
+    '<button type="button" class="r130-btn" style="min-height:52px" id="r130send" onclick="r130sendReport()">Отправить трекеру</button>' +
+    '<div class="r130-empty" style="text-align:center">Черновик сохраняется сам. Отчёт видит только команда BS</div></div>';
+}
+function r130draft(){
+  var D = {}; ['r130rv', 'r130pr', 'r130do', 'r130st', 'r130cm'].forEach(function(id){ var e = document.getElementById(id); if(e) D[id] = e.value; });
+  try{ localStorage.setItem('bs_r130_report', JSON.stringify(D)); }catch(e){}
+  return D;
+}
+function r130sendReport(){
+  var D = r130draft(), me = getMyData() || {};
+  var parts = [];
+  if(D.r130rv) parts.push('Выручка: ' + D.r130rv + ' ₸');
+  if(D.r130pr) parts.push('Чистая прибыль: ' + D.r130pr + ' ₸');
+  if(D.r130do) parts.push('Сделал:\n' + D.r130do);
+  if(D.r130st) parts.push('Где застрял:\n' + D.r130st);
+  if(D.r130cm) parts.push('Комментарий:\n' + D.r130cm);
+  if(!parts.length){ showToast('Заполните хотя бы одно поле'); return; }
+  var text = 'Отчёт за ' + new Date().toLocaleDateString('ru-RU') + ' · ' + (me.name || '') + '\n\n' + parts.join('\n\n');
+  var init = bsInitData();
+  if(!init){ showToast('Откройте приложение из Telegram'); return; }
+  var btn = document.getElementById('r130send'); if(btn){ btn.disabled = true; btn.textContent = 'Отправляем...'; }
+  // длинный текст делится на части: бот доставляет до 3 500 знаков за раз
+  var chunks = [], s = text; while(s.length){ chunks.push(s.slice(0, 3400)); s = s.slice(3400); }
+  var send = function(id){
+    return chunks.reduce(function(p, c, k){
+      return p.then(function(){
+        return fetch(APP_SERVER + 'message?' + new URLSearchParams({_tg: init}).toString(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'},
+          body: JSON.stringify({chatId: id, text: (chunks.length > 1 ? '(' + (k + 1) + '/' + chunks.length + ') ' : '') + c})})
+          .then(function(r){ return r.json().catch(function(){ return {error: 'http ' + r.status}; }); })
+          .then(function(j){ if(!(j && j.ok)) throw new Error((j && j.error) || 'ошибка'); });
+      });
+    }, Promise.resolve());
+  };
+  Promise.all(Object.keys(V11_TEAM_IDS).map(send)).then(function(){
+    try{ localStorage.removeItem('bs_r130_report'); }catch(e){}
+    showToast('Отчёт отправлен трекерам');
+    showPage('rhome', {root: true});
+  }).catch(function(e){
+    if(btn){ btn.disabled = false; btn.textContent = 'Отправить трекеру'; }
+    showToast('Не отправлено: ' + String((e && e.message) || 'нет связи') + '. Черновик сохранён');
+  });
+}
+
+// ── Замеры: сводка, Gallup, колёса баланса, анализы ──
+function r130avg(obj){
+  if(!obj || typeof obj !== 'object') return null;
+  var vs = (Array.isArray(obj) ? obj : Object.keys(obj).map(function(k){ return obj[k]; })).map(function(v){ return v9num(v); }).filter(function(v){ return v !== null; });
+  if(!vs.length) return null;
+  return Math.round(vs.reduce(function(a, b){ return a + b; }, 0) / vs.length * 10) / 10;
+}
+function r130wheels(me){
+  var PT = v9tests().tests || {}, w = (cache.wheelAll && me && cache.wheelAll[me.name]) || {};
+  var bizNow = null, bizPrev = null, lifeNow = null, lifePrev = null, bizVals = null, lifeVals = null;
+  if(PT.diag && typeof PT.diag === 'object' && (('Продукт' in PT.diag) || ('Делегирование' in PT.diag))){ bizNow = r130avg(PT.diag); bizVals = PT.diag; }
+  else if(w.dna && w.dna[0]){ bizNow = wheelAvg(w.dna[0].values); bizPrev = w.dna[1] ? wheelAvg(w.dna[1].values) : null; bizVals = w.dna[0].values; }
+  if(PT.wheel && typeof PT.wheel === 'object'){ lifeNow = r130avg(PT.wheel); lifeVals = PT.wheel; }
+  else if(w.life && w.life[0]){ lifeNow = wheelAvg(w.life[0].values); lifePrev = w.life[1] ? wheelAvg(w.life[1].values) : null; lifeVals = w.life[0].values; }
+  return {bizNow: bizNow, bizPrev: bizPrev, lifeNow: lifeNow, lifePrev: lifePrev, bizVals: bizVals, lifeVals: lifeVals};
+}
+function r130spark(vals, fill){
+  var v = Array.isArray(vals) ? vals : (vals && typeof vals === 'object' ? Object.keys(vals).map(function(k){ return vals[k]; }) : []);
+  v = v.map(function(x){ return Math.max(0, Math.min(10, v9num(x) || 0)); });
+  if(v.length < 3) v = [5, 5, 5, 5, 5, 5, 5, 5];
+  var n = v.length, pts = v.map(function(x, i){ var a = Math.PI * 2 * i / n - Math.PI / 2, r = 44 * x / 10; return (52 + r * Math.cos(a)).toFixed(1) + ',' + (52 + r * Math.sin(a)).toFixed(1); }).join(' ');
+  return '<svg width="88" height="88" viewBox="0 0 104 104" aria-hidden="true"><circle cx="52" cy="52" r="46" fill="none" stroke="#333"/><circle cx="52" cy="52" r="30" fill="none" stroke="#333"/>' +
+    '<polygon points="' + pts + '" fill="' + fill + '" fill-opacity="0.85"/></svg>';
+}
+function r130n1(v){ return v === null || v === undefined ? '·' : String(v).replace('.', ','); }
+function r130meas(el){
+  var me = getMyData();
+  r130needBoard('rmeas');
+  var T = v9tests(), tests = T.tests || {}, health = T.health;
+  var W = r130wheels(me);
+  var g = tests.gallup || null;
+  var tal = g ? (Array.isArray(g) ? g : (g.talents || g.ranked || [])) : [];
+  tal = tal.map(function(t){ return typeof t === 'string' ? t : (t && (t.name || t.title)) || ''; }).filter(Boolean);
+  var hAvg = r130avg(health), dAvg = tests.diag && !(('Продукт' in tests.diag) || ('Делегирование' in tests.diag)) ? r130avg(tests.diag.axes || tests.diag) : null;
+  var h = '<div class="r130"><div class="r130-top"><h1>' + r130t('Замеры') + '</h1></div>';
+  // сводка
+  var dl = function(now, prev){ return prev === null || prev === undefined ? r130n1(now) : r130n1(prev) + ' → ' + r130n1(now); };
+  var weak = '';
+  try{
+    var arr = W.bizVals && !Array.isArray(W.bizVals) ? Object.keys(W.bizVals).map(function(k){ return [k, v9num(W.bizVals[k])]; }).filter(function(x){ return x[1] !== null; }) : [];
+    arr.sort(function(a, b){ return a[1] - b[1]; });
+    if(arr.length) weak = 'Слабее всего: ' + arr.slice(0, 2).map(function(x){ return x[0].toLowerCase(); }).join(' и ') + '. Это тема ближайшей встречи';
+  }catch(e){}
+  h += '<div class="r130-card w"><span class="r130-lbl">' + r130t('Сводка') + '</span><div class="r130-sum">' +
+    '<div><b>' + (W.bizNow === null ? '·' : dl(W.bizNow, W.bizPrev)) + '</b><span>баланс бизнеса</span></div>' +
+    '<div><b>' + (W.lifeNow === null ? '·' : dl(W.lifeNow, W.lifePrev)) + '</b><span>баланс жизни</span></div>' +
+    '<div><b>' + (hAvg === null ? (dAvg === null ? '·' : r130n1(dAvg)) : r130n1(hAvg)) + '</b><span>здоровье бизнеса</span></div>' +
+    '<div><b>' + v2esc(tal[0] || '·') + '</b><span>талант №1 Gallup</span></div></div>' + (weak ? '<span class="s" style="font-size:13px">' + v2esc(weak) + '</span>' : '') + '</div>';
+  // Gallup
+  h += '<div class="r130-card"><div class="r130-sb"><span style="font-size:16px;font-weight:700">Gallup</span><span style="font-size:12px;color:#B9B9B9">' + (tal.length ? 'топ-5' : 'CliftonStrengths') + '</span></div>';
+  if(tal.length){
+    var dom = g && g.domains && typeof g.domains === 'object' ? g.domains : null;
+    if(dom){
+      var dk = Object.keys(dom), tot = dk.reduce(function(a, k){ return a + (v9num(dom[k]) || 0); }, 0) || 1, cols = ['#FFFFFF', '#B9B9B9', '#555555', '#333333'];
+      h += '<div class="r130-dom">' + dk.map(function(k, i){ return '<span title="' + v2esc(k) + '" style="width:' + ((v9num(dom[k]) || 0) / tot * 100) + '%;background:' + cols[i % 4] + '"></span>'; }).join('') + '</div>';
+    }
+    h += '<div class="r130-tal">' + tal.slice(0, 5).map(function(t, i){ return '<span class="' + (i === 0 ? 'on' : '') + '">' + (i + 1) + ' ' + v2esc(t) + '</span>'; }).join('') + '</div>' +
+      '<button type="button" class="r130-btn g" onclick="r130openBoard()">Полный анализ на платформе ↗</button>';
+  } else h += '<div class="r130-empty">' + (window._myBoard ? 'Тест пока не загружен. Загрузите отчёт Gallup на платформе' : 'Загружаем...') + '</div>';
+  h += '</div>';
+  // колёса
+  var wheel = function(name, now, prev, vals, fill){
+    return '<button type="button" class="r130-row r130-whl" onclick="showPage(\'wheel\')">' + r130spark(vals, fill) +
+      '<div style="flex:1;min-width:0"><div class="t" style="font-size:16px;font-weight:700">' + r130t(name) + '</div><div class="s">' + (now === null ? 'Сделайте первый замер' : r130n1(now) + ' из 10' + (prev !== null && prev !== undefined ? ' · было ' + r130n1(prev) : '')) + '</div>' +
+      '<div style="font-size:12px;margin-top:4px">Открыть ↗</div></div></button>';
+  };
+  h += wheel('Колесо баланса бизнеса', W.bizNow, W.bizPrev, W.bizVals, '#FFFFFF');
+  h += wheel('Колесо баланса общее', W.lifeNow, W.lifePrev, W.lifeVals, '#B9B9B9');
+  // анализы: здоровье бизнеса и диагностика по органам
+  var bars = '';
+  try{ if(health && typeof health === 'object') bars = v9barsHTML(health); }catch(e){}
+  if(!bars){ try{ if(tests.diag && typeof tests.diag === 'object') bars = v9barsHTML(tests.diag.axes || tests.diag); }catch(e){} }
+  h += '<div class="r130-card"><span style="font-size:16px;font-weight:700">' + r130t('Анализы') + '</span>' +
+    (bars ? '<div class="v9-bars">' + bars + '</div>' : '<div class="r130-empty">' + (window._myBoard ? 'Анализов пока нет: трекер проведёт их на разборе' : 'Загружаем...') + '</div>') +
+    '<button type="button" class="r130-btn g" onclick="showPage(\'diagnostic\')">Пройти диагностику бизнеса</button></div>';
+  h += '</div>';
+  el.innerHTML = h;
+}
+
+// ── Клуб: резиденты, вы закреплены сверху ──
+function r130club(el){
+  var me = getMyData();
+  var list = (cache.residents || []).filter(function(r){ return r && r.name && !r.isFired && !r.isAdmin && !r.isTeam && !r.isArchived && r.name !== 'Тест' && r.name !== 'Тест2' && (!me || r.name !== me.name); })
+    .sort(function(a, b){ return String(a.name).localeCompare(String(b.name), 'ru'); });
+  R130.club = list;
+  var av = function(r){ var u = ''; try{ u = r.avatar || ''; }catch(e){} return u ? ' style="background-image:url(\'' + v2esc(u) + '\')"' : ''; };
+  var ini = function(r){ return v2esc(String(r.name || '?').trim().charAt(0).toUpperCase()); };
+  var fill = 0;
+  if(me){ var f = ['niche', 'gives', 'about', 'city', 'instagram', 'site', 'phone']; fill = Math.round(f.filter(function(k){ return String(me[k] || '').trim(); }).length / f.length * 100); }
+  var h = '<div class="r130"><div class="r130-top"><h1>' + r130t('Клуб') + '</h1><span style="font-size:13px;color:#B9B9B9">' + (list.length + (me ? 1 : 0)) + ' ' + r130plural(list.length + 1, 'резидент', 'резидента', 'резидентов') + '</span></div>';
+  h += '<label class="r130-field" style="flex-direction:row;align-items:center;gap:10px;min-height:20px">' + navIcon('search', 18) + '<input id="r130q" type="search" placeholder="Имя или ниша" aria-label="Поиск по клубу" style="font-size:15px;font-weight:400" oninput="r130clubFilter(this.value)"></label>';
+  if(me){
+    h += '<button type="button" class="r130-me" onclick="showPage(\'myprofile\')"><span class="av"' + av(me) + '>' + (me.avatar ? '' : ini(me)) + '</span>' +
+      '<span class="x"><b>' + v2esc(me.name) + ' · это вы</b><span>Профиль заполнен на ' + fill + '%</span></span><span class="go">' + r130t('Заполнить') + '</span></button>';
+  }
+  h += '<div class="r130-sec">' + r130t('Резиденты') + '</div><div class="r130-list" id="r130clubList">' + r130clubRows(list) + '</div></div>';
+  el.innerHTML = h;
+}
+function r130clubRows(list){
+  if(!list.length) return '<div class="r130-li" style="cursor:default"><span class="x"><span>Никого не нашли</span></span></div>';
+  return list.map(function(r){
+    var i = R130.club.indexOf(r);
+    var sub = [r.niche || '', r.gives ? 'может помочь: ' + r.gives : ''].filter(Boolean).join(' · ') || (r.format || 'Резидент');
+    return '<button type="button" class="r130-li" onclick="openResidentProfile(R130.club[' + i + '])"><span class="av"' + (r.avatar ? ' style="background-image:url(\'' + v2esc(r.avatar) + '\')"' : '') + '>' + (r.avatar ? '' : v2esc(String(r.name).charAt(0).toUpperCase())) + '</span>' +
+      '<span class="x"><b>' + v2esc(r.name) + '</b><span>' + v2esc(sub) + '</span></span><span class="r">›</span></button>';
+  }).join('');
+}
+function r130clubFilter(q){
+  q = String(q || '').toLowerCase().trim();
+  var l = (R130.club || []).filter(function(r){ return !q || [r.name, r.niche, r.gives, r.city].join(' ').toLowerCase().indexOf(q) >= 0; });
+  var box = document.getElementById('r130clubList'); if(box) box.innerHTML = r130clubRows(l);
+}
+
+// ── Настройки: язык, напоминания, оплата, правила ──
+function r130set(el){
+  var me = getMyData() || {};
+  var P = {}; try{ P = r81prefs() || {}; }catch(e){}
+  var lang = r130lang();
+  var sw = function(key, label, def){
+    var on = P[key] === undefined ? def : !P[key];
+    return '<div class="r130-li" style="cursor:default"><span class="x"><b style="font-weight:500">' + v2esc(label) + '</b></span><button type="button" class="r130-sw' + (on ? ' on' : '') + '" role="switch" aria-checked="' + on + '" aria-label="' + v2esc(label) + '" onclick="r130pref(\'' + key + '\')"><i></i></button></div>';
+  };
+  var debt = Number(me.debt) || 0, fines = 0;
+  try{ fines = v3unpaidFines(me.name).length; }catch(e){}
+  var h = '<div class="r130"><div class="r130-top" style="justify-content:flex-start"><button type="button" class="r130-ibtn" aria-label="Назад" onclick="showPage(\'rhome\', {root: true})">' + navIcon('back', 20, 2) + '</button><h1 style="margin:0">' + r130t('Настройки') + '</h1></div>' +
+    '<div class="r130-sec">' + r130t('Язык') + '</div><div class="r130-seg"><button type="button" class="' + (lang === 'ru' ? 'on' : '') + '" onclick="r130setLang(\'ru\')">Русский</button><button type="button" class="' + (lang === 'kk' ? 'on' : '') + '" onclick="r130setLang(\'kk\')">Қазақша</button></div>' +
+    '<div class="r130-sec">' + r130t('Напоминания бота') + '</div><div class="r130-list">' + sw('mute_tasks', 'Задачи утром, 9:00', true) + '</div><div class="r130-empty" style="padding:0 2px">Напоминания о встречах и отчёте приходят всегда</div>' +
+    '<div class="r130-sec">' + r130t('Оплата') + '</div><div class="r130-list">' +
+      '<button type="button" class="r130-li" onclick="showPage(\'mystatus\')"><span class="x"><b style="font-weight:500">Оплачено до</b></span><span class="r">' + v2esc(me.nextRenewal ? (function(d){ return d ? String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear() : String(me.nextRenewal); })(r130date(me.nextRenewal)) : '·') + ' ›</span></button>' +
+      '<button type="button" class="r130-li" onclick="showPage(\'mystatus\')"><span class="x"><b style="font-weight:500">Долги</b></span><span class="r">' + (debt > 0 ? v2money(debt) + ' ₸' : 'нет') + ' ›</span></button>' +
+      '<button type="button" class="r130-li" onclick="showPage(\'mystatus\')"><span class="x"><b style="font-weight:500">Штрафы</b></span><span class="r">' + (fines ? fines + ' к оплате' : '0 ₸') + ' ›</span></button></div>' +
+    '<button type="button" class="r130-row" onclick="showPage(\'rules\')"><span class="t" style="font-weight:500">' + r130t('Правила клуба') + '</span><span class="c">›</span></button>' +
+    '<button type="button" class="r130-row" onclick="showPage(\'library\')"><span class="t" style="font-weight:500">Библиотека BS</span><span class="c">›</span></button>' +
+    '<button type="button" class="r130-btn o" style="min-height:52px" onclick="r130writeTeam(\'\')">Написать трекеру</button></div>';
+  el.innerHTML = h;
+}
+function r130pref(key){
+  var P = {}; try{ P = r81prefs() || {}; }catch(e){}
+  try{ r81prefSet(key, !P[key]); }catch(e){}
+  r130render('rset');
+}
+function r130setLang(l){
+  try{ localStorage.setItem('bs_lang', l); }catch(e){}
+  try{ r81prefSet('lang', l); }catch(e){}
+  try{ renderTabs(); }catch(e){}
+  r130render('rset');
+}
+var R130_PAGES = {rhome: ['rhomeContent', r130home], rsched: ['rschedContent', r130sched], rtasks: ['rtasksContent', r130tasksPage],
+  rmeas: ['rmeasContent', r130meas], rclub: ['rclubContent', r130club], rset: ['rsetContent', r130set], rreport: ['rreportContent', r130report]};
+function r130render(id){
+  var p = R130_PAGES[id]; if(!p) return;
+  var el = document.getElementById(p[0]); if(!el) return;
+  document.body.classList.toggle('r130on', r130on());
+  try{ p[1](el); }catch(e){ console.error('r130 ' + id + ':', e); el.innerHTML = '<div class="r130"><div class="r130-card"><div class="r130-empty">Экран не открылся. Потяните вниз, чтобы обновить</div></div></div>'; }
+}
+// После загрузки данных клуба открытый экран резидента перерисовывается
+function r130refresh(){ var id = ''; try{ id = v9activeId(); }catch(e){} if(R130_PAGES[id]) r130render(id); }
+var R130_OLD = {home: 'rhome', mytasks: 'rtasks', mymeetings: 'rsched'};
+var R130_TITLE = {rhome: 'Главная', rsched: 'Расписание', rtasks: 'Задачи', rmeas: 'Замеры', rclub: 'Клуб', rset: 'Настройки', rreport: 'Отчёт'};
+
 init();
 
 function openAddMenu(){
