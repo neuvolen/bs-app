@@ -6155,6 +6155,7 @@ function init(){
       'mymeetings':   {admin:'schedule',    resident:'mymeetings',  lead:'about'},
       // Отчёты
       'reports':      {admin:'reports',     resident:'mystatus',    lead:'about'},
+      'report':       {admin:'reports',     resident:'rreport',     lead:'about'},
       // Штрафы
       'fines':        {admin:'fines',       resident:'mystatus',    lead:'about'},
       // Резиденты
@@ -13461,8 +13462,8 @@ function r130report(el){
     '<div class="r130-grid2">' + f('r130rv', 'Выручка, ₸', '0', 1, 1) + f('r130pr', 'Чистая прибыль, ₸', '0', 1, 1) + '</div>' +
     f('r130do', 'Что сделал по задачам', 'Коротко, по пунктам', 3) + f('r130st', 'Где застрял', 'Что мешает двигаться', 2) +
     f('r130cm', 'Свободный комментарий', 'Пишите что угодно: мысли, вопросы, идеи. Без ограничений по длине', 6) +
-    '<button type="button" class="r130-btn" style="min-height:52px" id="r130send" onclick="r130sendReport()">Отправить трекеру</button>' +
-    '<div class="r130-empty" style="text-align:center">Черновик сохраняется сам. Отчёт видит только команда BS</div></div>';
+    '<button type="button" class="r130-btn" style="min-height:52px" id="r130send" onclick="r130sendReport()">Сдать отчёт в группе</button>' +
+    '<div class="r130-empty" style="text-align:center">Черновик сохраняется сам. Отчёт сдаётся в группе клуба, в теме «ОТЧЁТЫ»</div></div>';
 }
 function r130draft(){
   var D = {}; ['r130rv', 'r130pr', 'r130do', 'r130st', 'r130cm'].forEach(function(id){ var e = document.getElementById(id); if(e) D[id] = e.value; });
@@ -13479,39 +13480,13 @@ function r130sendReport(){
   if(D.r130cm) parts.push('Комментарий:\n' + D.r130cm);
   if(!parts.length){ showToast('Заполните хотя бы одно поле'); return; }
   var text = 'Отчёт за ' + new Date().toLocaleDateString('ru-RU') + ' · ' + (me.name || '') + '\n\n' + parts.join('\n\n');
-  var init = bsInitData();
-  if(!init){ showToast('Откройте приложение из Telegram'); return; }
-  var btn = document.getElementById('r130send'); if(btn){ btn.disabled = true; btn.textContent = 'Отправляем...'; }
-  // длинный текст делится на части: бот доставляет до 3 500 знаков за раз
-  var chunks = [], s = text; while(s.length){ chunks.push(s.slice(0, 3400)); s = s.slice(3400); }
-  // один трекер: шлём кусками по порядку, промис не падает, а возвращает true/false
-  var sendOne = function(id){
-    return chunks.reduce(function(p, c, k){
-      return p.then(function(ok){
-        if(!ok) return false;
-        return fetch(APP_SERVER + 'message?' + new URLSearchParams({_tg: init}).toString(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'},
-          body: JSON.stringify({chatId: id, text: (chunks.length > 1 ? '(' + (k + 1) + '/' + chunks.length + ') ' : '') + c})})
-          .then(function(r){ return r.json().catch(function(){ return null; }); })
-          .then(function(j){ return !!(j && j.ok); })
-          .catch(function(){ return false; });
-      });
-    }, Promise.resolve(true));
-  };
-  // отчёт уходит, даже если один трекер недоступен (не запускал бота, нет связи):
-  // достаточно одного. Если не дошёл никто, открываем тему «ОТЧЁТЫ» и копируем текст
-  Promise.all(Object.keys(V11_TEAM_IDS).map(sendOne)).then(function(res){
-    if(res.filter(Boolean).length){
-      try{ localStorage.removeItem('bs_r130_report'); }catch(e){}
-      showToast('Отчёт отправлен трекерам');
-      showPage('rhome', {root: true});
-      return;
-    }
-    if(btn){ btn.disabled = false; btn.textContent = 'Отправить трекеру'; }
-    try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text); }catch(e){}
-    showToast('Трекеры недоступны. Открываю тему «ОТЧЁТЫ», текст скопирован, черновик сохранён');
-    try{ if(tg && tg.openTelegramLink){ tg.openTelegramLink(V10_REPORT_URL); return; } }catch(e){}
-    try{ window.open(V10_REPORT_URL, '_blank'); }catch(e){}
-  });
+  // Отчёт сдаётся только в группе клуба, в теме «ОТЧЁТЫ», и только самим резидентом,
+  // никогда не в личку трекеру и не от его имени. Копируем текст и открываем тему:
+  // резидент вставляет его и отправляет сам, там отчёт и засчитывается.
+  try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text); }catch(e){}
+  showToast('Текст скопирован. Вставьте его в тему «ОТЧЁТЫ» и отправьте, черновик сохранён');
+  try{ if(tg && tg.openTelegramLink){ tg.openTelegramLink(V10_REPORT_URL); return; } }catch(e){}
+  try{ window.open(V10_REPORT_URL, '_blank'); }catch(e){}
 }
 
 // ── Замеры: сводка, Gallup, колёса баланса, анализы ──
