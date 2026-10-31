@@ -13484,23 +13484,33 @@ function r130sendReport(){
   var btn = document.getElementById('r130send'); if(btn){ btn.disabled = true; btn.textContent = 'Отправляем...'; }
   // длинный текст делится на части: бот доставляет до 3 500 знаков за раз
   var chunks = [], s = text; while(s.length){ chunks.push(s.slice(0, 3400)); s = s.slice(3400); }
-  var send = function(id){
+  // один трекер: шлём кусками по порядку, промис не падает, а возвращает true/false
+  var sendOne = function(id){
     return chunks.reduce(function(p, c, k){
-      return p.then(function(){
+      return p.then(function(ok){
+        if(!ok) return false;
         return fetch(APP_SERVER + 'message?' + new URLSearchParams({_tg: init}).toString(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'},
           body: JSON.stringify({chatId: id, text: (chunks.length > 1 ? '(' + (k + 1) + '/' + chunks.length + ') ' : '') + c})})
-          .then(function(r){ return r.json().catch(function(){ return {error: 'http ' + r.status}; }); })
-          .then(function(j){ if(!(j && j.ok)) throw new Error((j && j.error) || 'ошибка'); });
+          .then(function(r){ return r.json().catch(function(){ return null; }); })
+          .then(function(j){ return !!(j && j.ok); })
+          .catch(function(){ return false; });
       });
-    }, Promise.resolve());
+    }, Promise.resolve(true));
   };
-  Promise.all(Object.keys(V11_TEAM_IDS).map(send)).then(function(){
-    try{ localStorage.removeItem('bs_r130_report'); }catch(e){}
-    showToast('Отчёт отправлен трекерам');
-    showPage('rhome', {root: true});
-  }).catch(function(e){
+  // отчёт уходит, даже если один трекер недоступен (не запускал бота, нет связи):
+  // достаточно одного. Если не дошёл никто, открываем тему «ОТЧЁТЫ» и копируем текст
+  Promise.all(Object.keys(V11_TEAM_IDS).map(sendOne)).then(function(res){
+    if(res.filter(Boolean).length){
+      try{ localStorage.removeItem('bs_r130_report'); }catch(e){}
+      showToast('Отчёт отправлен трекерам');
+      showPage('rhome', {root: true});
+      return;
+    }
     if(btn){ btn.disabled = false; btn.textContent = 'Отправить трекеру'; }
-    showToast('Не отправлено: ' + String((e && e.message) || 'нет связи') + '. Черновик сохранён');
+    try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text); }catch(e){}
+    showToast('Трекеры недоступны. Открываю тему «ОТЧЁТЫ», текст скопирован, черновик сохранён');
+    try{ if(tg && tg.openTelegramLink){ tg.openTelegramLink(V10_REPORT_URL); return; } }catch(e){}
+    try{ window.open(V10_REPORT_URL, '_blank'); }catch(e){}
   });
 }
 
