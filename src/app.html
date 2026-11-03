@@ -4991,7 +4991,7 @@ function v15offerHTML(){
     '<div class="s">Рустам и Береке вдвоём смотрят ваши цифры и находят, где на самом деле болит. Уходите с диагнозом и планом на 10 дней.</div>' +
     '<div class="v15-facts"><div><b>60 мин</b><span>онлайн или офлайн</span></div><div><b>2 трекера</b><span>Рустам и Береке</span></div><div><b>' + v15nb(v15price()) + ' ₸</b><span>оплата через Kaspi</span></div></div></div>' +
     '<div class="v2-h">Что получите</div><div class="v2-card v15-get">' +
-    [['Диагноз', 'Причину, а не симптом: какой орган бизнеса тянет вниз остальные'],
+    [['Диагноз', 'Находим причину: какой орган бизнеса тянет вниз остальные'],
      ['План на 10 дней', 'Конкретные задачи с цифрами, которые можно начать завтра'],
      ['Взгляд двух трекеров', '700+ разборов: сразу видно, что сработает именно у вас']].map(function(x, i){
       return '<div class="r"><div class="n num">0' + (i + 1) + '</div><div><b>' + x[0] + '</b><span>' + x[1] + '</span></div></div>';
@@ -14566,10 +14566,10 @@ function renderAbout(){
       '<button id="ctaDiagnostic">Записаться на диагностику</button></div>';
     h += '<div class="v13-brand"><div class="hero-logo-real" style="width:auto">' + (logo ? '<img class="v3-logo" src="' + logo + '" alt="business surgery">' : '') + '<div class="v3-gold">БИЗНЕС-ТРЕКИНГ</div></div>' +
       '<div class="v3-h1" style="font-size:30px;line-height:1.05;letter-spacing:-1px;margin-top:14px">Бизнес как организм</div>' +
-      '<p class="v3-p" style="font-size:14px;max-width:310px;margin-top:10px">Находим причину, а не симптом. Каждые 10 дней: диагноз, стратегия, задачи.</p></div>';
+      '<p class="v3-p" style="font-size:14px;max-width:310px;margin-top:10px">Находим причину и даём план на 10 дней: диагноз, стратегия, задачи.</p></div>';
     h += '<div class="v2-card" style="padding:16px;margin-top:14px"><div style="font-size:14px;color:#9A9A9A;line-height:1.45">Акселератор и трекинг-платформа с миссией укрепить здоровье бизнеса и энергию роста.</div>' +
       '<div style="margin-top:12px">' + v3numrow([['700+', 'разборов проведено'], ['20', 'резидентов в клубе'], ['×3', 'средний рост']]) + '</div></div>';
-    h += '<div class="v3-quote" style="margin-top:10px">Работаем с причиной на уровне ДНК, а не с симптомами.</div>';
+    h += '<div class="v3-quote" style="margin-top:10px">Работаем с причиной на уровне ДНК бизнеса.</div>';
     h += v3socials();
     h += '<div class="v2-card" style="margin-top:10px">' + v3row('msg', 'WhatsApp', '+7 702 403 50 36', "window.open('https://wa.me/77024035036','_blank')") + '</div>';
   } else {
@@ -15763,7 +15763,7 @@ function renderDiagnosticResult(){
     '<div class="v9-tools">' + tools.map(function(t, i){
       return '<div class="v9-tool" style="background:#F3F3F3;border-color:#E2E2E2"><div class="n">' + String(i + 1).padStart(2, '0') + '</div><div style="min-width:0"><b>' + v2esc(t[0]) + '</b><span style="color:#555">' + v2esc(t[1]) + ' · ' + v2esc(t[2].toLowerCase()) + '</span></div></div>';
     }).join('') + '</div>' +
-    '<div class="txt" style="color:#333">Рустам и Береке найдут причину, а не симптом. Уйдёте с планом задач на 10 дней.</div></div>';
+    '<div class="txt" style="color:#333">Рустам и Береке найдут причину и дадут план задач на 10 дней.</div></div>';
   h += '<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">' +
     (isLeadView ? '<button class="v3-primary" id="diagCtaBtn">Записаться на диагностику</button>' : '') +
     '<button class="v3-outline" id="diagRestartBtn">Пройти заново</button></div>';
