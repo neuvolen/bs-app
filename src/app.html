@@ -4894,6 +4894,15 @@ body.r130on #v114Me{display:none!important}
 // Сервер платформы: единственный источник данных (R32c, таблица отключена). Он проверяет
 // по подписи Telegram, кто открыл приложение, и держит готовые данные, чтобы экран открывался сразу
 const APP_SERVER = 'https://bs-platform-production.up.railway.app/api/v1/app/';
+// M2 (решение владельца 26.10): цифры бесплатной проверки бизнеса везде из самого теста:
+// органов и вопросов столько, сколько в DIAGNOSTIC_AREAS, минут по 6 секунд на утверждение.
+function diagFacts(){
+  var a = [], q = 0; try{ a = DIAGNOSTIC_AREAS; }catch(e){}
+  a.forEach(function(x){ q += (x.questions || []).length; });
+  var o = a.length || 8, m = Math.max(1, Math.round(q * 6 / 60)) || 7;
+  var w = function(n, f1, f2, f5){ var d = n % 10, h = n % 100; return (h > 10 && h < 20) ? f5 : d === 1 ? f1 : (d > 1 && d < 5) ? f2 : f5; };
+  return {organs: o, questions: q, minutes: m, organsW: w(o, 'орган', 'органа', 'органов'), questionsW: w(q, 'вопрос', 'вопроса', 'вопросов'), minutesW: w(m, 'минута', 'минуты', 'минут'), organsDat: w(o, 'органу', 'органам', 'органам')};
+}
 // R70: данные входа Telegram (initData) уходят на сервер заголовком X-Tg-Init, а не в адресе:
 // адреса попадают в журналы запросов. Все запросы к серверу приложения идут через fetch,
 // поэтому _tg переносится из адреса в заголовок здесь, в одном месте
@@ -5770,15 +5779,15 @@ const NAV = {
     {id:'rhome',  label:'Главная',    icon:'home', pages:[{id:'rhome', label:'Главная'},{id:'rreport', label:'Отчёт', hidden:true},{id:'home', label:'Сегодня', hidden:true},{id:'library', label:'Библиотека', hidden:true},{id:'ideas', label:'Бизнес-идеи', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'myboard', label:'Разбор', hidden:true}]},
     {id:'rsched', label:'Расписание', icon:'cal',  pages:[{id:'rsched', label:'Расписание'},{id:'mymeetings', label:'Встречи', hidden:true},{id:'events', label:'Мероприятия', hidden:true}]},
     {id:'rtasks', label:'Задачи',     icon:'checklist', pages:[{id:'rtasks', label:'Задачи'},{id:'mytasks', label:'Задачи', hidden:true}]},
-    {id:'rmeas',  label:'Замеры',     icon:'ruler', pages:[{id:'rmeas', label:'Замеры'},{id:'wheel', label:'Колесо баланса', hidden:true},{id:'diagnostic', label:'Диагностика', hidden:true}]},
+    {id:'rmeas',  label:'Замеры',     icon:'ruler', pages:[{id:'rmeas', label:'Замеры'},{id:'wheel', label:'Колесо баланса', hidden:true},{id:'diagnostic', label:'Проверка бизнеса', hidden:true}]},
     {id:'rclub',  label:'Клуб',       icon:'club', pages:[{id:'rclub', label:'Клуб'},{id:'residents', label:'Участники', hidden:true},{id:'leadmagnets', label:'Материалы', hidden:true},{id:'about', label:'О клубе', hidden:true},{id:'rules', label:'Правила', hidden:true},{id:'myprofile', label:'Мои данные', hidden:true}]},
     {id:'me',     label:'Настройки',  icon:'me', nobar:true, pages:[{id:'rset', label:'Настройки'},{id:'mystatus', label:'Статус', hidden:true}]}
   ],
   lead: [
     {id:'home', label:'Главная',     icon:'home',  pages:[{id:'about', label:'Главная'}]},
     {id:'cl',   label:'Чек-листы',   icon:'book',  pages:[{id:'guides', label:'Интерактивные чек-листы'},{id:'ideas', label:'Бизнес-идеи'},{id:'guide', label:'Чек-лист', hidden:true}]},
-    {id:'diag', label:'Диагностика', icon:'board', pages:[{id:'diagnostic', label:'Диагностика'}]},
-    {id:'razbor', label:'Разбор',    icon:'cal',   pages:[{id:'leadrazbor', label:'Разбор'}]},
+    {id:'diag', label:'Проверка', icon:'board', pages:[{id:'diagnostic', label:'Проверка бизнеса'}]},
+    {id:'razbor', label:'Диагностика', icon:'cal',   pages:[{id:'leadrazbor', label:'Диагностика бизнеса'}]},
     {id:'plat', label:'Платформа',   icon:'plat', ext:true}
   ]
 };
@@ -6410,15 +6419,15 @@ function showLockedPage(pageId, tab){
     el.innerHTML = `
       <div class="locked-page">
         <div class="locked-page-icon"></div>
-        <div class="locked-page-title">Сначала диагностика</div>
-        <div class="locked-page-text">Эта страница откроется после прохождения диагностики бизнеса. Это займёт 5 минут.</div>
+        <div class="locked-page-title">Сначала проверка бизнеса</div>
+        <div class="locked-page-text">Эта страница откроется после бесплатной проверки бизнеса. Это займёт ${diagFacts().minutes} ${diagFacts().minutesW}.</div>
         <button class="cta-button" onclick="showPage('diagnostic')">
           <div class="cta-button-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
           <div class="cta-button-text">
-            <div class="cta-button-title">Пройти диагностику</div>
-            <div class="cta-button-sub">5 минут, 35 вопросов</div>
+            <div class="cta-button-title">Пройти проверку бизнеса</div>
+            <div class="cta-button-sub">${diagFacts().minutes} ${diagFacts().minutesW}, ${diagFacts().questions} ${diagFacts().questionsW}</div>
           </div>
           <div class="cta-button-arrow">→</div>
         </button>
@@ -7107,7 +7116,7 @@ function v3debtCaption(r){
   return 'долг';
 }
 function v3catLabel(c){
-  return ({brain:'СТРАТЕГИЯ', heart:'МАРКЕТИНГ', hands:'ПРОДАЖИ', spine:'КОМАНДА', blood:'ФИНАНСЫ', dna:'ПРОЦЕССЫ', eyes:'АНАЛИТИКА'})[c] || 'МАТЕРИАЛ';
+  return ({brain:'СТРАТЕГИЯ', heart:'МАРКЕТИНГ', hands:'ПРОДАЖИ', spine:'КОМАНДА', blood:'ФИНАНСЫ', dna:'ПРОЦЕССЫ', eyes:'АНАЛИТИКА', gut:'ПРОДУКТ'})[c] || 'МАТЕРИАЛ';
 }
 // Действия из карточки резидента: открываем прежние шторки с выбранным резидентом
 function v3payFor(){
@@ -7218,8 +7227,8 @@ function renderResHome(){
 }
 
 // ═══ ОРГАНЫ: подписи для ключей с платформы (бывают русские названия, английские и наши id) ═══
-var V9_ORGAN_ORDER = ['brain', 'heart', 'hands', 'spine', 'blood', 'dna', 'eyes'];
-var V9_ORGAN_LABEL = {brain:'Стратегия', heart:'Маркетинг', hands:'Продажи', spine:'Команда', blood:'Финансы', dna:'Процессы', eyes:'Аналитика'};
+var V9_ORGAN_ORDER = ['brain', 'heart', 'hands', 'gut', 'spine', 'blood', 'dna', 'eyes'];
+var V9_ORGAN_LABEL = {brain:'Стратегия', heart:'Маркетинг', hands:'Продажи', gut:'Продукт', spine:'Команда', blood:'Финансы', dna:'Процессы', eyes:'Аналитика'};
 var V9_ORGAN_ALIAS = {
   brain:'brain', strategy:'brain', 'стратегия':'brain', 'мозг':'brain',
   heart:'heart', marketing:'heart', 'маркетинг':'heart', 'сердце':'heart',
@@ -7227,7 +7236,8 @@ var V9_ORGAN_ALIAS = {
   spine:'spine', team:'spine', 'команда':'spine', 'костяк':'spine', 'скелет':'spine',
   blood:'blood', finance:'blood', finances:'blood', 'финансы':'blood', 'кровь':'blood',
   dna:'dna', process:'dna', processes:'dna', 'процессы':'dna', 'днк':'dna',
-  eyes:'eyes', eye:'eyes', analytics:'eyes', 'аналитика':'eyes', 'зрение':'eyes', 'глаза':'eyes'
+  eyes:'eyes', eye:'eyes', analytics:'eyes', 'аналитика':'eyes', 'зрение':'eyes', 'глаза':'eyes',
+  gut:'gut', product:'gut', 'продукт':'gut', 'желудок':'gut'
 };
 function v9organId(k){ return V9_ORGAN_ALIAS[String(k || '').trim().toLowerCase()] || ''; }
 function v9organLabel(k){
@@ -7528,7 +7538,7 @@ function v9measuresHTML(){
     (hb ? '<div class="v9-bars">' + hb + v19legend() + '</div>' : (loading ? '<div class="v9-none">Загружаем...</div>' : none)) + '</div>';
   // Диагностика по 7 органам
   var dg = tests.diag && typeof tests.diag === 'object' ? v9barsHTML(tests.diag.axes || tests.diag) : '';
-  h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>' + (tests.diag && (('Продукт' in tests.diag) || ('Делегирование' in tests.diag)) ? 'Диагностика по зонам' : 'Диагностика по 7 органам') + '</b><span>с платформы</span></div>' +
+  h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>' + (tests.diag && (('Продукт' in tests.diag) || ('Делегирование' in tests.diag)) ? 'Проверка бизнеса по зонам' : 'Проверка бизнеса по органам') + '</b><span>с платформы</span></div>' +
     (dg ? '<div class="v9-bars">' + dg + '</div>' : (loading ? '<div class="v9-none">Загружаем...</div>' : none)) + '</div>';
   // Gallup
   var g = tests.gallup || null;
@@ -7731,7 +7741,7 @@ function v10diagTests(){
 }
 function v10saveDiag(btn){
   var t = v10diagTests();
-  if(!t){ showToast('Нет результата диагностики'); return; }
+  if(!t){ showToast('Нет результата проверки'); return; }
   if(btn){ btn.disabled = true; btn.textContent = 'Сохраняем...'; }
   v10postTests(t).then(function(ok){
     if(ok) window._v10diagSaved = 1;
@@ -14552,13 +14562,13 @@ function renderAbout(){
       AREAS.forEach(function(a){ var ans = ds.answers[a.id] || []; if(ans.length && ans.every(function(v){ return v !== null && v !== undefined; })) ready++; });
     }
     if(ready < areas) nextArea = AREAS[ready] || null;
-    var diagText = ready >= areas ? 'Диагностика пройдена. Результат: ' + (dr && dr.totalPct != null ? dr.totalPct + ' из 100' : 'готов') + '.'
-      : (ready && nextArea ? 'Готово органов: ' + ready + '. Дальше ' + nextArea.organ + ': ' + String(nextArea.label).toLowerCase() + '.' : 'Семь органов бизнеса, 5 минут. Покажем слабые места.');
+    var diagText = ready >= areas ? 'Проверка пройдена. Результат: ' + (dr && dr.totalPct != null ? dr.totalPct + ' из 100' : 'готов') + '.'
+      : (ready && nextArea ? 'Готово органов: ' + ready + '. Дальше ' + nextArea.organ + ': ' + String(nextArea.label).toLowerCase() + '.' : (function(f){ return f.organs + ' ' + f.organsW + ' бизнеса, ' + f.minutes + ' ' + f.minutesW + '. Покажем слабые места.'; })(diagFacts()));
     // Главный бесплатный оффер: 99 гайдов, сразу на первом экране
     h += v13leadHero();
     h += v20platCard('lead'); // R93: «Платформа BS» и у лида
     h += '<div class="v2-card" style="margin-top:12px;padding:16px 18px;cursor:pointer" onclick="showPage(\'diagnostic\')">' +
-      '<div class="v3-row-sb" style="align-items:baseline"><div style="font-size:16px;font-weight:800">Диагностика бизнеса</div><div class="num" style="font-size:13px;color:#9A9A9A">' + ready + '/' + areas + '</div></div>' +
+      '<div class="v3-row-sb" style="align-items:baseline"><div style="font-size:16px;font-weight:800">Проверка бизнеса</div><div class="num" style="font-size:13px;color:#9A9A9A">' + ready + '/' + areas + '</div></div>' +
       '<div class="v3-dseg" style="margin-top:12px;grid-template-columns:repeat(' + areas + ',minmax(0,1fr))">' + Array.apply(null, Array(areas)).map(function(a, i){ return '<i' + (i < ready ? ' class="on"' : '') + '></i>'; }).join('') + '</div>' +
       '<div class="v3-row-sb" style="margin-top:12px"><div style="font-size:13px;color:#9A9A9A;line-height:1.45">' + v2esc(diagText) + '</div><div style="flex-shrink:0;font-size:13px;font-weight:800">' + (ready >= areas ? 'Результат →' : (ready ? 'Дальше →' : 'Начать →')) + '</div></div></div>';
     h += '<div class="v3-hero" style="margin-top:12px"><div class="k">ДИАГНОСТИКА БИЗНЕСА</div><div class="t">Разберём одну проблему до причины</div>' +
@@ -15265,6 +15275,24 @@ const DIAGNOSTIC_AREAS = [
       { q: 'Команда видит свои KPI в реальном времени и сама за них отвечает' },
       { q: 'Я знаю топ-5 метрик от которых зависит здоровье моего бизнеса' }
     ]
+  }  ,
+  {
+    id: 'gut',
+    organ: 'Желудок',
+    label: 'Продукт',
+    icon: '',
+    color: '#FFFFFF',
+    questions: [
+      { q: 'Я могу одной фразой объяснить, какую задачу клиента решает мой продукт и чем он лучше альтернатив' },
+      { q: 'Я знаю, какие позиции ассортимента приносят основную прибыль, и регулярно убираю слабые' },
+      { q: 'У каждого продукта в линейке есть роль: вход, основной продукт, допродажа' },
+      { q: 'Качество измеряется: есть стандарт, проверка и доля возвратов или жалоб' },
+      { q: 'Жалобы клиентов разбираются, и по ним меняется продукт' },
+      { q: 'Цены пересматриваются хотя бы раз в полгода с учётом себестоимости, конкурентов и ценности для клиента' },
+      { q: 'Я знаю долю повторных покупок и сколько клиент в среднем покупает за год' },
+      { q: 'Есть механики, которые возвращают клиента: напоминания, подписка, программа лояльности' },
+      { q: 'Я регулярно измеряю NPS: готовы ли клиенты рекомендовать продукт' }
+    ]
   }
 ];
 
@@ -15321,9 +15349,9 @@ function renderDiagnostic(){
     el.innerHTML = `
       <div class="diag-page">
         <div class="diag-hero">
-          <div class="hero-label">Диагностика бизнеса</div>
-          <h1 class="hero-title">Узнай слабые<br>органы за 8 минут</h1>
-          <div class="hero-sub">Точный замер по 7 органам бизнеса. В результате: главная проблема, сильная сторона и что сделать уже на этой неделе.</div>
+          <div class="hero-label">Проверка бизнеса, бесплатно</div>
+          <h1 class="hero-title">Узнай слабые<br>органы за ${diagFacts().minutes} ${diagFacts().minutesW}</h1>
+          <div class="hero-sub">Точный замер по ${diagFacts().organs} ${diagFacts().organsDat} бизнеса. В результате: главная проблема, сильная сторона и что сделать уже на этой неделе.</div>
         </div>
         
         <div class="diag-orgs-preview">
@@ -15334,6 +15362,7 @@ function renderDiagnostic(){
           <div class="diag-org-preview"><span>${v9organIcon('blood', 18)}</span><span>Финансы</span></div>
           <div class="diag-org-preview"><span>${v9organIcon('dna', 18)}</span><span>Процессы</span></div>
           <div class="diag-org-preview"><span>${v9organIcon('eyes', 18)}</span><span>Аналитика</span></div>
+          <div class="diag-org-preview"><span>${v9organIcon('gut', 18)}</span><span>Продукт</span></div>
         </div>
         
         <div class="diag-meta">
@@ -15342,11 +15371,11 @@ function renderDiagnostic(){
             <div class="diag-meta-label">вопросов всего</div>
           </div>
           <div class="diag-meta-item">
-            <div class="diag-meta-num">7</div>
-            <div class="diag-meta-label">областей бизнеса</div>
+            <div class="diag-meta-num">${diagFacts().organs}</div>
+            <div class="diag-meta-label">органов бизнеса</div>
           </div>
           <div class="diag-meta-item">
-            <div class="diag-meta-num">8</div>
+            <div class="diag-meta-num">${diagFacts().minutes}</div>
             <div class="diag-meta-label">минут пройти</div>
           </div>
         </div>
@@ -15356,8 +15385,8 @@ function renderDiagnostic(){
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
           <div class="cta-button-text">
-            <div class="cta-button-title">Начать диагностику</div>
-            <div class="cta-button-sub">7 областей бизнеса. 9 вопросов на каждую</div>
+            <div class="cta-button-title">Начать проверку</div>
+            <div class="cta-button-sub">${diagFacts().organs} ${diagFacts().organsW} бизнеса. 9 вопросов на каждый</div>
           </div>
           <div class="cta-button-arrow">→</div>
         </button>
@@ -15536,7 +15565,8 @@ var V9_ORGAN_ICONS = {
   spine:'<rect x="8.5" y="2.5" width="7" height="3.5" rx="1.5"/><rect x="7.5" y="8" width="9" height="3.5" rx="1.5"/><rect x="7.5" y="13.5" width="9" height="3.5" rx="1.5"/><rect x="8.5" y="19" width="7" height="2.5" rx="1.2"/><path d="M12 6v2M12 11.5v2M12 17v2"/>',
   blood:'<path d="M12 3s6.5 7 6.5 11.5a6.5 6.5 0 0 1-13 0C5.5 10 12 3 12 3z"/><path d="M9 15a3 3 0 0 0 3 3"/>',
   dna:'<path d="M7 2.5c0 4.8 10 5.2 10 9.5s-10 4.7-10 9.5"/><path d="M17 2.5c0 4.8-10 5.2-10 9.5s10 4.7 10 9.5"/><path d="M8.6 6h6.8M10.2 9h3.6M10.2 15h3.6M8.6 18h6.8"/>',
-  eyes:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3.2"/><circle cx="13.2" cy="10.8" r=".6" fill="currentColor"/>'
+  eyes:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3.2"/><circle cx="13.2" cy="10.8" r=".6" fill="currentColor"/>',
+  gut:'<path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5"/><path d="M12 12v9"/><path d="M7.8 5.3l8.5 4.5"/>'
 };
 function v9organIcon(id, size, w){
   return '<svg width="' + (size || 24) + '" height="' + (size || 24) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 1.8) + '" stroke-linecap="round" stroke-linejoin="round">' + (V9_ORGAN_ICONS[id] || '') + '</svg>';
@@ -15634,6 +15664,18 @@ var V9_DIAG = {
     use: 'Хорошая аналитика ускоряет все остальные органы. Ставьте команде цели в цифрах и разбирайте их каждую неделю.',
     week: ['Выберите 5 цифр, которые показывают здоровье бизнеса', 'Соберите их в одну таблицу за последние 4 недели', 'Назначьте 20 минут в понедельник на разбор цифр с командой'],
     tools: [['Дашборд 5 цифр', 'Главные показатели бизнеса на одном экране'], ['Еженедельный отчёт', 'Короткий разбор цифр недели с командой'], ['Юнит-экономика', 'Сколько приносит и стоит один клиент']]
+  }  ,
+  gut: {
+    state: {
+      low: 'Продукт продаётся, но непонятно, что именно приносит прибыль. Цены и ассортимент давно не пересматривались.',
+      mid: 'Ядро продукта понятно, но слабые позиции живут годами, а повторные покупки никто не считает.',
+      high: 'Вы знаете, какой продукт кормит бизнес, следите за качеством и возвращаете клиентов.'
+    },
+    symptoms: ['Клиент не может сказать, чем вы лучше соседа', 'Ассортимент растёт, прибыль нет', 'Цены не менялись больше полугода', 'О жалобах узнаёте случайно'],
+    cost: 'Деньги и внимание команды уходят в позиции, которые не окупаются. Клиент покупает один раз и уходит к тому, кто объяснил ценность понятнее.',
+    use: 'Сильный продукт продаёт себя сам: держит цену, даёт повторные покупки и рекомендации. Опирайтесь на него в маркетинге и продажах.',
+    week: ['Выпишите позиции и отметьте, какие дают основную прибыль', 'Спросите 5 клиентов, за что они вас выбрали', 'Пересчитайте цену самой продаваемой позиции по себестоимости и рынку'],
+    tools: [['Продуктовая матрица ABC', 'Что кормит бизнес, а что лишнее'], ['CustDev', 'Где у клиента болит на самом деле'], ['Поднять средний чек', 'Способы увеличить сумму сделки']]
   }
 };
 
@@ -15697,7 +15739,7 @@ function renderDiagnosticResult(){
   var vd = v9verdict(totalPct);
   var W = V9_DIAG[worst.id], B = V9_DIAG[best.id];
   var h = '<div style="display:flex;justify-content:flex-end;margin:0 2px">' + v3mark() + '</div>';
-  h += '<div style="margin:8px 2px 0"><div class="v3-lbl" style="color:#8C8C8C">РЕЗУЛЬТАТ ДИАГНОСТИКИ</div>' +
+  h += '<div style="margin:8px 2px 0"><div class="v3-lbl" style="color:#8C8C8C">РЕЗУЛЬТАТ ПРОВЕРКИ БИЗНЕСА</div>' +
     '<h1 class="v3-h1" style="margin-top:6px;font-size:28px">Здоровье бизнеса</h1></div>';
   // Общий балл и вердикт
   h += '<div class="v2-card v9-score" style="margin-top:14px"><div class="big num" style="color:' + v19col(totalPct / 10) + '">' + totalPct + '<small>/100</small></div>' +
@@ -17629,7 +17671,7 @@ function v13softBanner(started){
   if(navRole() !== 'lead' || started < 3) return '';
   var done = v13diagDone();
   return '<div class="v13-soft" onclick="showPage(\'diagnostic\')"><div class="m"><b>' + (done ? 'Сверьте чек-листы с вашей диагностикой' : 'Вы начали ' + started + ' ' + v3plural(started, 'чек-лист', 'чек-листа', 'чек-листов') + '. Пора увидеть картину целиком') + '</b>' +
-    '<span>' + (done ? 'Результат покажет, какой орган тянет остальные и что внедрять первым' : 'Диагностика: семь органов за 5 минут. Покажем, какой орган тянет остальные и с чего начать') + '</span>' +
+    '<span>' + (done ? 'Результат покажет, какой орган тянет остальные и что внедрять первым' : (function(f){ return 'Проверка бизнеса: ' + f.organs + ' ' + f.organsW + ' за ' + f.minutes + ' ' + f.minutesW + '. Покажем, какой орган тянет остальные и с чего начать'; })(diagFacts())) + '</span>' +
     '<em>' + (done ? 'Мой результат' : 'Пройти диагностику') + '</em></div><div class="go">' + v3icon('chev', 18, 2.2) + '</div></div>';
 }
 // Следующий гайд: сначала тот же орган, затем остальные, пройденные пропускаем
