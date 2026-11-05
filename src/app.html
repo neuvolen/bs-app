@@ -7141,14 +7141,38 @@ function v3meetFor(){
   try{ document.getElementById('schedResident').value = r.name; }catch(e){}
 }
 
-// R146 (05.11): ссылка вида t.me/c/<чат>/<тема> в Telegram открывала общий чат («Основное»). Формат с темой:
-// t.me/c/<чат>/<id темы>/<сообщение>; id темы = id служебного сообщения, которым она создана, поэтому /9/9 открывает саму тему «ОТЧЁТЫ».
-var V10_REPORT_URL = 'https://t.me/c/2494126345/9/9?thread=9';
-function v3sendReport(){
-  // Отчёт пишется в группе клуба, тема «ОТЧЁТЫ» (чат -1002494126345, тема 9)
+// R147 (06.11, аудит): /9/9?thread=9 открывал «Общение»: сообщение 9 это служебное создание темы, а thread в Telegram
+// значит комментарии канала. Надёжный формат тот, что даёт «Копировать ссылку» внутри темы: t.me/c/<чат>/<тема>/<сообщение>.
+// Сервер отдаёт ссылку на последнее сообщение в теме «ОТЧЁТЫ» (GET /api/v1/report-link), запасная: ссылка на саму тему.
+var V10_REPORT_URL = 'https://t.me/c/2494126345/9';
+var V147_RE = /^https:\/\/t\.me\/c\/2494126345\/9(\/\d+)?$/;
+function v147link(){
+  try{
+    fetch(V20_PLAT + '/api/v1/report-link', {cache: 'no-store'}).then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){ if(j && V147_RE.test(j.url || '')) V10_REPORT_URL = j.url; }).catch(function(){});
+  }catch(e){}
+}
+v147link(); setInterval(v147link, 5 * 60 * 1000);
+// Копирование, которое работает и в Telegram: navigator.clipboard там часто запрещён и молча отказывает
+function v147copy(text){
+  var ok = false;
+  try{
+    var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;font-size:16px'; document.body.appendChild(ta);
+    ta.focus(); ta.select(); try{ ta.setSelectionRange(0, text.length); }catch(e){}
+    ok = document.execCommand('copy'); ta.remove();
+  }catch(e){}
+  try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(function(){}); }catch(e){}
+  return ok;
+}
+function v147open(){
   var url = V10_REPORT_URL;
   try{ if(tg && tg.openTelegramLink){ tg.openTelegramLink(url); return; } }catch(e){}
-  window.open(url, '_blank');
+  try{ window.open(url, '_blank'); }catch(e){}
+}
+function v3sendReport(){
+  // Отчёт пишется в группе клуба, тема «ОТЧЁТЫ» (чат -1002494126345, тема 9)
+  v147open();
 }
 function renderResHome(){
   var el = document.getElementById('homeContent');
@@ -13495,10 +13519,9 @@ function r130sendReport(){
   // Отчёт сдаётся только в группе клуба, в теме «ОТЧЁТЫ», и только самим резидентом,
   // никогда не в личку трекеру и не от его имени. Копируем текст и открываем тему:
   // резидент вставляет его и отправляет сам, там отчёт и засчитывается.
-  try{ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text); }catch(e){}
-  showToast('Текст скопирован. Вставьте его в тему «ОТЧЁТЫ» и отправьте, черновик сохранён');
-  try{ if(tg && tg.openTelegramLink){ tg.openTelegramLink(V10_REPORT_URL); return; } }catch(e){}
-  try{ window.open(V10_REPORT_URL, '_blank'); }catch(e){}
+  v147copy(text);
+  showToast('Текст скопирован. Откроется тема «ОТЧЁТЫ»: вставьте и отправьте. Черновик сохранён');
+  setTimeout(v147open, 700);
 }
 
 // ── Замеры: сводка, Gallup, колёса баланса, анализы ──
