@@ -7141,7 +7141,9 @@ function v3meetFor(){
   try{ document.getElementById('schedResident').value = r.name; }catch(e){}
 }
 
-var V10_REPORT_URL = 'https://t.me/c/2494126345/9';
+// R146 (05.11): ссылка вида t.me/c/<чат>/<тема> в Telegram открывала общий чат («Основное»). Формат с темой:
+// t.me/c/<чат>/<id темы>/<сообщение>; id темы = id служебного сообщения, которым она создана, поэтому /9/9 открывает саму тему «ОТЧЁТЫ».
+var V10_REPORT_URL = 'https://t.me/c/2494126345/9/9?thread=9';
 function v3sendReport(){
   // Отчёт пишется в группе клуба, тема «ОТЧЁТЫ» (чат -1002494126345, тема 9)
   var url = V10_REPORT_URL;
