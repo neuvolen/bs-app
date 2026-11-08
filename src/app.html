@@ -7272,9 +7272,28 @@ function v9organLabel(k){
   var s = String(k || '').replace(/[_-]+/g, ' ').trim();
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : '';
 }
+// R148: ссылка на созвон платформы (/call/<id>) открывается в браузере без входа на платформу: резидент попадал
+// гостем в лобби. Перед открытием Mini App берёт одноразовый ключ входа (как «На экран Домой»), сервер по нему
+// впускает резидента сразу на его доску и в созвон. Нет ключа или ошибка: ссылка открывается как раньше
+function v148callUrl(url, done){
+  var d = (typeof bsInitData === 'function') ? bsInitData() : '';
+  if(!d || !/\/call\/[a-z2-7]{16}(?:$|[?#])/.test(url)){ done(url); return; }
+  var fin = false, t = setTimeout(function(){ if(!fin){ fin = true; done(url); } }, 4000);
+  fetch(V20_PLAT + '/api/v1/platform/auth/handoff', {method: 'POST', body: 'tg=' + encodeURIComponent(d)})
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(j){
+      var k = j && j.url ? (String(j.url).match(/[?&]k=([A-Za-z0-9_-]+)/) || [])[1] : '';
+      if(fin) return; fin = true; clearTimeout(t);
+      done(k ? url.split('#')[0] + (url.indexOf('?') >= 0 ? '&' : '?') + 'k=' + k : url);
+    }).catch(function(){ if(!fin){ fin = true; clearTimeout(t); done(url); } });
+}
 function v9open(url){
   if(!url) return;
   url = String(url);
+  if(/\/call\/[a-z2-7]{16}(?:$|[?#])/.test(url) && url.indexOf('k=') < 0){ v148callUrl(url, v9openNow); return; }
+  v9openNow(url);
+}
+function v9openNow(url){
   try{
     if(/^https?:\/\/t\.me\//i.test(url) && tg && tg.openTelegramLink){ tg.openTelegramLink(url); return; }
     if(tg && tg.openLink){ tg.openLink(url); return; }
