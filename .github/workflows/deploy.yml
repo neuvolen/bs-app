@@ -52,7 +52,14 @@ jobs:
       # Chromium opens each one, focuses every field, the primary button must be visible and clickable
       - name: Sheet check
         run: |
-          npx playwright install --with-deps chromium
+          # 11.11: зеркало пакетов Ubuntu у GitHub не отвечало, выкладка падала на установке шрифтов.
+          # Три попытки с системными пакетами, затем браузер без них: проверке шрифты не нужны
+          ok=0
+          for i in 1 2 3; do
+            if npx playwright install --with-deps chromium; then ok=1; break; fi
+            sleep 20
+          done
+          if [ "$ok" = "0" ]; then npx playwright install chromium; fi
           node tools/sheetcheck.mjs
 
       - name: Generate version
