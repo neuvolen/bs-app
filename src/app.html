@@ -13311,7 +13311,8 @@ function r130tasks(me){
   var b = r130board();
   ((b && b.tasks) || []).forEach(function(t, i){
     var d = r130date(t.due);
-    out.push({src: 'board', i: i, text: t.title, desc: t.desc || '', organ: t.organ || '', due: d, done: !!t.done, kind: t.kind || ''});
+    // R156: id узла доски (резидент отмечает задачу сам) и check: выполнена в прошлом цикле, ждёт «Принято» трекера
+    out.push({src: 'board', i: i, id: t.id || '', check: !!t.check, text: t.title, desc: t.desc || '', organ: t.organ || '', due: d, done: !!t.done, kind: t.kind || ''});
   });
   ((cache.resTasks && cache.resTasks.tasks) || []).filter(function(t){ return me && t.name === me.name; }).forEach(function(t){
     var d = r130date(t.due || t.deadline || '');
@@ -13324,8 +13325,9 @@ function r130tasks(me){
   return out;
 }
 function r130group(list){
-  var G = {today: [], week: [], always: [], later: [], nodue: [], done: []};
+  var G = {today: [], week: [], always: [], later: [], nodue: [], done: [], check: []};
   list.forEach(function(x){
+    if(x.check && x.done){ G.check.push(x); return; }
     if(x.done && !x.always){ G.done.push(x); return; }
     if(x.always){ G.always.push(x); return; }
     if(x.days !== null && x.days <= 0) G.today.push(x);
@@ -13345,23 +13347,47 @@ function r130dueText(x){
   return 'до ' + s;
 }
 function r130taskHTML(x, k){
-  var can = x.src === 'res';
-  var ck = '<button type="button" class="r130-ck' + (x.done ? ' on' : '') + (can ? '' : ' ro') + '" aria-label="' + (x.done ? 'Сделано' : 'Отметить') + '"' +
-    (can ? ' onclick="r130tick(' + k + ')"' : ' onclick="showToast(\'Задачи с доски отмечает трекер на встрече\')"') + '>' + (x.done ? r130icon('check', 14) : '') + '</button>';
+  // R156 (владелец 11.11: «Разреши резиденту это делать»): задачи доски резидент отмечает сам
+  var can = x.src === 'res' || (x.src === 'board' && !!x.id);
+  var ck = '<button type="button" class="r130-ck' + (x.done ? ' on' : '') + (can ? '' : ' ro') + '" aria-pressed="' + (x.done ? 'true' : 'false') + '" aria-label="' + (x.done ? 'Сделано. Нажмите, чтобы снять отметку' : 'Отметить выполненной') + '"' +
+    (can ? ' onclick="r130tick(' + k + ')"' : ' onclick="showToast(\'Обновите приложение: задача пока без отметки\')"') + '>' + (x.done ? r130icon('check', 14) : '') + '</button>';
   var tags = [];
+  if(x.check && x.done) tags.push('ждёт проверки трекера');
   var dt = r130dueText(x); if(dt) tags.push(dt);
   if(x.always) tags.push(x.kind === 'repeat' ? 'повтор' : 'постоянная');
   if(x.src === 'res') tags.push(x.own ? 'своя' : 'от трекера');
   return '<div class="r130-task' + (x.done && !x.always ? ' done' : '') + '">' + ck + '<div style="min-width:0;flex:1"><div class="t">' + v2esc(x.text) + '</div>' +
-    (tags.length && !(x.done && !x.always) ? '<div class="r130-tags">' + tags.map(function(t){ return '<span>' + v2esc(t) + '</span>'; }).join('') + '</div>' : '') + '</div></div>';
+    (tags.length && (!(x.done && !x.always) || x.check) ? '<div class="r130-tags">' + tags.map(function(t){ return '<span>' + v2esc(t) + '</span>'; }).join('') + '</div>' : '') + '</div></div>';
 }
 function r130tick(k){
-  var x = (R130.taskList || [])[k]; if(!x || x.src !== 'res') return;
+  var x = (R130.taskList || [])[k]; if(!x) return;
+  if(x.src === 'board'){ r156tick(x); return; }
+  if(x.src !== 'res') return;
   var to = x.done ? 'В работе' : 'Выполнена';
   x.done = !x.done;
   ((cache.resTasks && cache.resTasks.tasks) || []).forEach(function(t){ if(t.row === x.row) t.status = to; });
   r130render(v9activeId());
   try{ callAction('setResTaskStatus', {row: x.row, status: to}); }catch(e){}
+}
+// R156: отметка задачи доски: сразу на экране, сервер ставит ту же отметку, что и платформа (кто и когда)
+function r156tick(x){
+  var b = r130board(); if(!b || !x.id) return;
+  var t = (b.tasks || []).filter(function(y){ return String(y.id) === String(x.id); })[0]; if(!t) return;
+  var to = !t.done, was = {done: t.done, check: t.check};
+  if(t.kind === 'repeat' && !to){ /* снять отметку: счётчик повторов обнуляется */ }
+  t.done = to; if(!to) t.check = false;
+  try{ if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); }catch(e){}
+  r130render(v9activeId());
+  var init = bsInitData(); if(!init) return;
+  var q = {_tg: init}; try{ if(isRealAdmin){ var me0 = getMyData(); if(me0) q.name = me0.name; } }catch(e){}
+  fetch(APP_SERVER + 'myboard/task?' + new URLSearchParams(q).toString(), {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({id: String(x.id), done: to})})
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ return {ok: r.ok, j: j}; }); })
+    .then(function(r){
+      if(r.ok && r.j && r.j.board){ window._myBoard = Object.assign({}, window._myBoard, {board: r.j.board}); window._myBoardAt = Date.now(); if(to) showToast(t.kind === 'repeat' && !r.j.board.tasks.some(function(y){ return String(y.id) === String(x.id) && y.done; }) ? 'Засчитано. Отметьте ещё раз, когда повторите' : 'Отмечено. Трекер увидит на платформе'); }
+      else { t.done = was.done; t.check = was.check; showToast((r.j && r.j.detail) || 'Не сохранилось, попробуйте ещё раз'); if(r.j && r.j.error === 'no_task'){ window._myBoardAt = 0; loadMyBoard(true).then(function(){ r130render(v9activeId()); }); } }
+      r130render(v9activeId());
+    })
+    .catch(function(){ t.done = was.done; t.check = was.check; showToast('Нет связи, отметка не сохранилась'); r130render(v9activeId()); });
 }
 
 // ── Главная ──
@@ -13372,7 +13398,7 @@ function r130home(el){
   var now = new Date();
   var cyc = r130cycle(me), days = r130daysWith(me);
   var tl = r130tasks(me), G = r130group(tl);
-  var done = tl.filter(function(x){ return x.done && !x.always; }).length, all = tl.filter(function(x){ return !x.always; }).length;
+  var done = tl.filter(function(x){ return x.done && !x.always && !x.check; }).length, all = tl.filter(function(x){ return !x.always && !x.check; }).length;
   var pct = all ? Math.round(done / all * 100) : 0;
   var h = '<div class="r130">';
   h += '<div class="r130-top"><div><div class="d">' + R130_WD[now.getDay()] + ', ' + now.getDate() + ' ' + R130_MONTHS[now.getMonth()] + '</div>' +
@@ -13524,7 +13550,7 @@ function r130tasksPage(el){
   var me = getMyData();
   r130needBoard('rtasks'); r130needLib('rtasks');
   var b = r130board(), tl = r130tasks(me), G = r130group(tl);
-  var done = tl.filter(function(x){ return x.done && !x.always; }).length, all = tl.filter(function(x){ return !x.always; }).length;
+  var done = tl.filter(function(x){ return x.done && !x.always && !x.check; }).length, all = tl.filter(function(x){ return !x.always && !x.check; }).length;
   var pct = all ? Math.round(done / all * 100) : 0;
   var list = []; R130.taskList = list;
   var sec = function(name, arr){
@@ -13536,7 +13562,8 @@ function r130tasksPage(el){
   h += '<div style="display:flex;flex-direction:column;gap:6px"><div class="r130-sb" style="font-size:13px;color:#B9B9B9"><span>Цикл ' + r130cycle(me).cur + ' · сделано ' + done + ' из ' + all + '</span><span>' + pct + '%</span></div>' +
     '<div class="r130-bar k"><i style="width:' + pct + '%"></i></div></div>';
   if(!tl.length) h += '<div class="r130-card"><div class="r130-empty">' + (window._myBoard ? 'Задач цикла пока нет. Их ставит трекер на встрече' : 'Загружаем задачи...') + '</div></div>';
-  h += sec('Сегодня', G.today) + sec('На неделе', G.week) + sec('Позже', G.later) + sec('Без срока', G.nodue) + sec('Постоянные', G.always) + sec('Сделано', G.done);
+  if(b && b.accepted) h += '<div class="r130-tags" style="margin:-4px 0 0"><span>Принято трекером за всё время: ' + b.accepted + '</span></div>';
+  h += sec('Сегодня', G.today) + sec('На неделе', G.week) + sec('Позже', G.later) + sec('Без срока', G.nodue) + sec('Постоянные', G.always) + sec('Сделано', G.done) + sec('Ждут проверки трекера', G.check);
   var dg = (b && b.diagnoses) || [], tools = (b && b.tools) || [];
   if(dg.length){
     h += '<div class="r130-h" style="margin-top:8px">' + r130t('Диагнозы') + '</div><div class="r130-grid2">' + dg.map(function(x, i){
@@ -13595,7 +13622,7 @@ function r130print(){
   if(!area){ area = document.createElement('div'); area.id = 'r130printArea'; document.body.appendChild(area); }
   area.innerHTML = '<div style="padding:24px 28px"><div style="font-size:12px;color:#555">Business Surgery · ' + now.toLocaleDateString('ru-RU') + '</div>' +
     '<h1 style="margin:6px 0 2px;font-size:24px">Задачи цикла ' + r130cycle(me).cur + '</h1><div style="font-size:14px">' + v2esc(me.name || '') + '</div>' +
-    rows('Сегодня', G.today) + rows('На неделе', G.week) + rows('Позже', G.later) + rows('Без срока', G.nodue) + rows('Постоянные', G.always) + rows('Сделано', G.done) + '</div>';
+    rows('Сегодня', G.today) + rows('На неделе', G.week) + rows('Позже', G.later) + rows('Без срока', G.nodue) + rows('Постоянные', G.always) + rows('Сделано', G.done) + rows('Ждут проверки трекера', G.check) + '</div>';
   document.body.classList.add('r130print');
   setTimeout(function(){
     try{ window.print(); }catch(e){ showToast('Печать недоступна в этом окне: откройте задачи на платформе'); }
