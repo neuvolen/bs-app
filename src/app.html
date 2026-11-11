@@ -935,6 +935,7 @@
 <div class="page" id="page-rhome"><div id="rhomeContent"></div></div>
 <div class="page" id="page-rsched"><div id="rschedContent"></div></div>
 <div class="page" id="page-rtasks"><div id="rtasksContent"></div></div>
+<div class="page" id="page-rhabits"><div id="rhabitsContent"></div></div>
 <div class="page" id="page-rmeas"><div id="rmeasContent"></div></div>
 <div class="page" id="page-rclub"><div id="rclubContent"></div></div>
 <div class="page" id="page-rset"><div id="rsetContent"></div></div>
@@ -1379,12 +1380,12 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="form-label">Партнёр (одна Meet ссылка на двоих)</label>
+      <label class="form-label">Партнёр (одна ссылка на созвон на двоих)</label>
       <select class="form-select" id="arPartner">
         <option value="">- нет -</option>
       </select>
       <div style="font-size:11px;color:var(--text-muted);margin-top:6px;line-height:1.4">
-        Если резидент работает в паре - выберите второго. Тогда у обоих будет одна ссылка Meet.
+        Если резидент работает в паре - выберите второго. Тогда у обоих будет одна ссылка на созвон.
       </div>
     </div>
     <div class="modal-actions"><button class="btn btn-primary" onclick="submitAddResident()">Добавить</button><button class="btn btn-secondary" onclick="closeModal('addResidentModal')">Отмена</button></div>
@@ -4837,6 +4838,64 @@
 .r130-time.w{background:#fff;color:#000;border-color:#fff}
 .r130-ev .t{font-size:16px;font-weight:700;line-height:1.3}
 .r130-ev .s{font-size:13px;color:#B9B9B9;margin-top:3px}
+/* R155: календарь привычек */
+.h155-nav{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.h155-nav b{font-size:14px;font-weight:700;text-align:center;flex:1}
+.h155-nav button{width:44px;height:44px;border-radius:10px;background:#171717;border:0;color:#fff;font-size:24px;line-height:1;cursor:pointer;flex:none}
+.h155-nav button:disabled{opacity:.3}
+.h155-wd{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:0 16px;font-size:11px;color:#9A9A9A;text-align:center;text-transform:uppercase;letter-spacing:.04em}
+.h155-wd.m{padding:0}
+.h155-wd .td{color:#fff;font-weight:800}
+.h155-h{gap:12px}
+.h155-h .nm{font-size:16px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.h155-h .mt{font-size:12px;color:#9A9A9A;margin-top:3px;line-height:1.4}
+.h155-more{width:40px;height:40px;border-radius:10px;border:0;background:#1E1E1E;color:#fff;font-size:16px;font-weight:800;letter-spacing:1px;flex:none;cursor:pointer}
+.h155-row{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;justify-items:center}
+.h155-c{width:100%;max-width:44px;aspect-ratio:1;min-height:38px;border-radius:50%;border:1.5px solid #444;background:transparent;color:#B9B9B9;font:600 13px Inter,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.h155-c.td{border-color:#fff;color:#fff;border-width:2px}
+.h155-c.on{background:#fff;border-color:#fff;color:#000}
+.h155-c.free:not(.on){border-style:dashed;border-color:#333;color:#666}
+.h155-c.no{opacity:.28;cursor:default}
+.h155-c.big{width:40px;height:40px;min-height:40px;max-width:40px;flex:none;border-radius:12px;border-color:#fff;border-width:2px}
+.h155-c.big.no{border-color:#555}
+.h155-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.h155-d{aspect-ratio:1;border:0;background:transparent;padding:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:12px}
+.h155-d i{font-style:normal;width:100%;height:100%;max-width:40px;max-height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 13px Inter,system-ui,sans-serif;color:#B9B9B9;border:1.5px solid #333}
+.h155-d.part i{border-color:transparent;color:#fff;background:conic-gradient(#fff var(--p),#3a3a3a 0);position:relative;z-index:0}
+.h155-d.part i:before{content:"";position:absolute;inset:3px;border-radius:50%;background:#171717;z-index:-1}
+.h155-d.full i{background:#fff;border-color:#fff;color:#000}
+.h155-d.fut i{border-color:#222;color:#555}
+.h155-d.td i{box-shadow:0 0 0 2px #171717,0 0 0 3.5px #fff}
+.h155-d.sel{background:#262626}
+.h155-leg{display:flex;gap:14px;justify-content:center;font-size:11px;color:#9A9A9A;margin-top:2px}
+.h155-leg span{display:flex;align-items:center;gap:5px}
+.h155-leg i{width:12px;height:12px;border-radius:50%;border:1.5px solid #333;display:block}
+.h155-leg i.p{border-color:transparent;background:conic-gradient(#fff 50%,#3a3a3a 0)}
+.h155-leg i.f{background:#fff;border-color:#fff}
+.h155-pre{display:flex;flex-wrap:wrap;gap:8px}
+.h155-pre button{min-height:38px;padding:0 12px;border-radius:19px;border:1px solid #555;background:transparent;color:#fff;font:500 13px Inter,system-ui,sans-serif;cursor:pointer}
+.h155-pre button:disabled{opacity:.4}
+.h155-lb{display:flex;flex-direction:column;gap:6px;font-size:12px;color:#B9B9B9;text-transform:uppercase;letter-spacing:.04em}
+.h155-in{height:48px;border-radius:10px;border:1px solid #333;background:#0F0F0F;color:#fff;-webkit-text-fill-color:#fff;font:500 16px Inter,system-ui,sans-serif;padding:0 14px;outline:none;text-transform:none;letter-spacing:0}
+.h155-in:focus{border-color:#fff}
+.h155-in::placeholder{color:#777;-webkit-text-fill-color:#777}
+.h155-s3{grid-template-columns:repeat(3,minmax(0,1fr));background:#0F0F0F;text-transform:none;letter-spacing:0}
+.h155-s3 button{font-size:12px}
+.h155-step{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
+.h155-step div{display:flex;align-items:center;gap:14px}
+.h155-step button{width:44px;height:44px;border-radius:10px;border:1px solid #555;background:transparent;color:#fff;font-size:20px;cursor:pointer}
+.h155-step b{font-size:20px;min-width:16px;text-align:center}
+.h155-sel{height:36px;border-radius:8px;border:1px solid #444;background:#0F0F0F;color:#fff;font:600 14px Inter,system-ui,sans-serif;padding:0 6px;flex:none}
+.r155-ev{align-items:flex-start}
+.r155-ev.open{border-radius:10px 10px 0 0}
+.r155-more{font-size:12px;font-weight:700;color:#fff;margin-top:8px;text-decoration:underline;text-underline-offset:3px}
+.r155-evd{background:#171717;border-radius:0 0 10px 10px;margin-top:-8px;padding:0 14px 14px;border-top:1px solid #2a2a2a}
+.r155-evd .d{font-size:14px;line-height:1.5;color:#E6E6E6;padding-top:12px;white-space:pre-line;overflow-wrap:anywhere}
+.r155-evd .m{font-size:12px;color:#9a9a9a;margin-top:8px}
+.r155-evb{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.r155-evb .r130-btn{min-height:44px}
+.r155-evb .r130-btn:first-child:not(.g){grid-column:1 / -1}
+.r155-evb .r130-btn.on{background:#fff;color:#000;border-color:#fff}
 .r130-grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .r130-dg{background:#171717;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;border:0;padding:0;text-align:left;color:#fff}
 .r130-dg .cv{height:96px;position:relative;overflow:hidden;background:#333}
@@ -5036,7 +5095,7 @@ function v15selHTML(){
   if(!s) return '<div class="v3-cap" style="margin:10px 4px 0;font-size:12px">Нажмите на время, чтобы выбрать окно</div>';
   var t = v15t(s.start);
   return '<div class="v2-card v15-sel">' + v15badge(s, 'w') + '<div class="m"><b>' + v15dateLong(t) + ', ' + t.hm + '–' + v15end(s) + '</b><span>' +
-    (v15online(s) ? 'Google Meet. Ссылка будет в подтверждении' : v2esc(s.place || 'Офлайн, адрес пришлём в Telegram')) + '</span></div></div>';
+    (v15online(s) ? 'Онлайн. Ссылка будет в подтверждении' : v2esc(s.place || 'Офлайн, адрес пришлём в Telegram')) + '</span></div></div>';
 }
 function v15formHTML(){
   var f = v15form(), b = window._bk, s = v15free().filter(function(x){ return String(x.id) === b.slotId; })[0];
@@ -5159,7 +5218,7 @@ function v15mineHTML(){
     h += '<div class="dt">' + v15dateLong(t) + '</div><div class="tm num">' + V15_WDL[t.wd] + ', ' + t.hm + '–' + v15end(s) + ' по Алматы</div>';
   } else h += '<div class="dt" style="font-size:24px">Время уточним</div>';
   if(v15online(s)){
-    h += '<div class="pl"><div class="ic" style="color:#000">' + navIcon('cal', 18) + '</div><div class="m">Онлайн, Google Meet. ' + (s.link ? '<a href="#" onclick="event.preventDefault();v9open(\'' + v2esc(String(s.link).replace(/'/g, '')) + '\')">Открыть ссылку на встречу</a>' : 'Ссылку пришлём в Telegram за час до начала') + '</div></div>';
+    h += '<div class="pl"><div class="ic" style="color:#000">' + navIcon('cal', 18) + '</div><div class="m">Онлайн. ' + (s.link ? '<a href="#" onclick="event.preventDefault();v9open(\'' + v2esc(String(s.link).replace(/'/g, '')) + '\')">Открыть ссылку на встречу</a>' : 'Ссылку пришлём в Telegram за час до начала') + '</div></div>';
   } else {
     h += '<div class="pl"><div class="ic" style="color:#000">' + navIcon('home', 18) + '</div><div class="m">' + v2esc(s.place || 'Офлайн. Адрес пришлём в Telegram') + '</div></div>';
   }
@@ -5778,7 +5837,7 @@ const NAV = {
   resident: [
     {id:'rhome',  label:'Главная',    icon:'home', pages:[{id:'rhome', label:'Главная'},{id:'rreport', label:'Отчёт', hidden:true},{id:'home', label:'Сегодня', hidden:true},{id:'library', label:'Библиотека', hidden:true},{id:'ideas', label:'Бизнес-идеи', hidden:true},{id:'guides', label:'Чек-листы', hidden:true},{id:'guide', label:'Чек-лист', hidden:true},{id:'referral', label:'Приглашение', hidden:true},{id:'myboard', label:'Разбор', hidden:true}]},
     {id:'rsched', label:'Расписание', icon:'cal',  pages:[{id:'rsched', label:'Расписание'},{id:'mymeetings', label:'Встречи', hidden:true},{id:'events', label:'Мероприятия', hidden:true}]},
-    {id:'rtasks', label:'Задачи',     icon:'checklist', pages:[{id:'rtasks', label:'Задачи'},{id:'mytasks', label:'Задачи', hidden:true}]},
+    {id:'rtasks', label:'Задачи',     icon:'checklist', pages:[{id:'rtasks', label:'Задачи'},{id:'rhabits', label:'Привычки', hidden:true},{id:'mytasks', label:'Задачи', hidden:true}]},
     {id:'rmeas',  label:'Замеры',     icon:'ruler', pages:[{id:'rmeas', label:'Замеры'},{id:'wheel', label:'Колесо баланса', hidden:true},{id:'diagnostic', label:'Проверка бизнеса', hidden:true}]},
     {id:'rclub',  label:'Клуб',       icon:'club', pages:[{id:'rclub', label:'Клуб'},{id:'residents', label:'Участники', hidden:true},{id:'leadmagnets', label:'Материалы', hidden:true},{id:'about', label:'О клубе', hidden:true},{id:'rules', label:'Правила', hidden:true},{id:'myprofile', label:'Мои данные', hidden:true}]},
     {id:'me',     label:'Настройки',  icon:'me', nobar:true, pages:[{id:'rset', label:'Настройки'},{id:'mystatus', label:'Статус', hidden:true}]}
@@ -6967,8 +7026,11 @@ function v3dateTs(d, time){
 }
 function v3isEvent(ev){ return String((ev && ev.res) || '').indexOf('🎬') === 0; }
 function v3isOnline(ev){ var l = String((ev && ev.link) || ''); return !!(ev && ev.call) || l.indexOf('meet') >= 0 || l.indexOf('zoom') >= 0; }
-// R75 call: онлайн-встреча идёт на платформе (ev.call), Google Meet только запасной
-function v3callUrl(ev){ return String((ev && (ev.call || ev.link)) || ''); }
+// R75 call: онлайн-встреча идёт на платформе (ev.call).
+// R155 (владелец 11.11: «отправляет ссылку на гугл мит… некоторые туда заходили, а я их ждал на платформе»):
+// ссылка Google Meet не открывается нигде: вход только в созвон платформы
+function v155noMeet(u){ u = String(u || ''); return /meet\.google|zoom\.us/i.test(u) ? '' : u; }
+function v3callUrl(ev){ return String((ev && (ev.call || v155noMeet(ev.link))) || ''); }
 // Чат в Telegram: по нику, если он есть, иначе по chatId
 function v3chatUrl(r){
   var u = v11tgUser(r);
@@ -7234,8 +7296,8 @@ function renderResHome(){
     window._v22Next = v22m.ev;
     h += v22nextCard(v22m, {
       title: v3isEvent(v22m.ev) ? v2esc(String(v22m.ev.res).replace(/^🎬\s*/, '')) : (online ? 'Онлайн-трекинг' : 'Офлайн-встреча'),
-      extra: online ? (v22m.ev.call ? 'Созвон на платформе' : 'Google Meet') : v2esc(v22m.ev.link || 'место уточняется'),
-      right: online && v3callUrl(v22m.ev) ? '<a href="' + v2esc(v3callUrl(v22m.ev)) + '" target="_blank" class="v3-btn w" style="text-decoration:none" onclick="event.stopPropagation();event.preventDefault();v9open(this.href)">' + (v22m.ev.call ? 'Войти' : 'Meet') + '</a>' : (g ? '<div class="cnt num">' + dn + ' из ' + g + '</div>' : ''),
+      extra: online ? 'Созвон на платформе' : v2esc(v22m.ev.link || 'место уточняется'),
+      right: online && v3callUrl(v22m.ev) ? '<a href="' + v2esc(v3callUrl(v22m.ev)) + '" target="_blank" class="v3-btn w" style="text-decoration:none" onclick="event.stopPropagation();event.preventDefault();v9open(this.href)">' + 'Войти</a>' : (g ? '<div class="cnt num">' + dn + ' из ' + g + '</div>' : ''),
       onclick: "showPage('mymeetings')"
     });
   } else {
@@ -8906,10 +8968,10 @@ function showDayMeetings(dateStr){
 
     // Те же действия, что в листе встречи (showMeetingDetail): прошла, перенести, войти; остальное в «Все действия»
     var bs = 'flex:1;min-height:44px;padding:10px 8px;border-radius:10px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;';
-    var go = f.call || (f.online ? f.link : '');
+    var go = f.call || (f.online ? v155noMeet(f.link) : '');
     h += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">';
     if(adm) h += '<button type="button" data-dm-act="done" onclick="event.stopPropagation();v107dayDone(' + i + ')" style="' + bs + 'background:#fff;border:1px solid #fff;color:#000">' + (f.event ? 'Мероприятие прошло' : 'Встреча прошла') + '</button>';
-    if(go) h += '<button type="button" data-dm-act="go" onclick="event.stopPropagation();v107dayGo(' + i + ')" style="' + bs + 'background:transparent;border:1px solid #3a3a3a;color:#fff">' + (f.call ? 'Войти в созвон' : 'Открыть Google Meet') + '</button>';
+    if(go) h += '<button type="button" data-dm-act="go" onclick="event.stopPropagation();v107dayGo(' + i + ')" style="' + bs + 'background:transparent;border:1px solid #3a3a3a;color:#fff">Войти в созвон</button>';
     h += '<div style="display:flex;gap:8px">';
     if(adm) h += '<button type="button" data-dm-act="move" onclick="event.stopPropagation();v94dayMove(' + i + ')" style="' + bs + 'background:transparent;border:1px solid #3a3a3a;color:#fff">Перенести</button>';
     h += '<button type="button" data-dm-act="all" onclick="event.stopPropagation();v94dayOpen(' + i + ')" style="' + bs + 'background:transparent;border:1px solid #3a3a3a;color:#fff">' + (adm ? 'Все действия ›' : 'Подробнее ›') + '</button>';
@@ -8936,8 +8998,8 @@ function v107fmt(ev){
   var meet = /meet\.google|zoom/i.test(link);
   var online = !event && (!!call || meet || /^онлайн/i.test(String((ev && ev.format) || '')));
   var offline = !event && !online && (day || (!!link && link.indexOf('http') < 0) || /^офлайн/i.test(String((ev && ev.format) || '')));
-  var label = event ? 'Мероприятие' : (day ? 'Офлайн день' : (online ? (call ? 'Онлайн · созвон на платформе' : 'Онлайн · Google Meet') : (offline ? 'Офлайн' : 'Прочее')));
-  var place = event ? link : (online ? (meet ? link : '') : (link && link.indexOf('http') < 0 ? link : String((ev && ev.place) || '')));
+  var label = event ? 'Мероприятие' : (day ? 'Офлайн день' : (online ? 'Онлайн · созвон на платформе' : (offline ? 'Офлайн' : 'Прочее')));
+  var place = event ? link : (online ? '' : (link && link.indexOf('http') < 0 ? link : String((ev && ev.place) || '')));
   return {event: event, day: day, online: online, offline: offline, call: call, link: link, label: label, place: place};
 }
 function v107dayDone(i){
@@ -8951,7 +9013,7 @@ function v107dayDone(i){
 function v107dayGo(i){
   var ev = (window._v94day || [])[i];
   if(!ev) return;
-  var f = v107fmt(ev), u = f.call || f.link;
+  var f = v107fmt(ev), u = f.call || v155noMeet(f.link);
   if(!u) return;
   if(f.call){ try{ v9open(u); return; }catch(e){} }
   window.open(u, '_blank');
@@ -9011,7 +9073,7 @@ function meetingCard(ev, idx){
   var accent = isEvent ? '#ab8fd4' : (isOnline ? '#64b5f6' : (isOffline ? '#e57373' : '#777777'));
   var badge = isEvent ? 'СОБЫТИЕ' : (isOnline ? 'ОНЛАЙН' : (isOffline ? 'ОФЛАЙН' : '?'));
   var place = isEvent ? (link || 'Мероприятие')
-            : (isOnline ? (f107.call ? 'Созвон на платформе' : 'Google Meet') : (isOffline ? (f107.place || (f107.day ? 'Офис BS' : 'Офлайн')) : 'Место не указано'));
+            : (isOnline ? 'Созвон на платформе' : (isOffline ? (f107.place || (f107.day ? 'Офис BS' : 'Офлайн')) : 'Место не указано'));
 
   return `
     <div class="meeting ${cd.urgent?'upcoming':''}" data-meetidx="${idx}" onclick="openMeetByIdx(${idx})"
@@ -10538,7 +10600,7 @@ function showMeetingDetail(ev){
   var canWrite = canEdit && who && v11canWrite(who);
   var E = 'window._v94ev';
   var A = E + '.res,' + E + '.date,' + E + '.time';
-  var place = isEvent ? (ev.link || '') : (ev.call || ev.link || '');
+  var place = isEvent ? (ev.link || '') : (ev.call || v155noMeet(ev.link) || (isOnline ? 'Созвон на платформе: ссылка придёт в Telegram' : ''));
   document.getElementById('detailContent').innerHTML = `
     <div class="meeting upcoming">
       ${cd.text?`<div class="meeting-countdown">${cd.text}</div>`:''}
@@ -10550,7 +10612,6 @@ function showMeetingDetail(ev){
       ${place?`<div class="meeting-row" style="word-break:break-all">${v2esc(place)}</div>`:''}
     </div>
     ${ev.call?`<a class="btn btn-primary" href="${v2esc(ev.call)}" target="_blank" onclick="event.preventDefault();v9open(this.href)">Войти в созвон</a>`:''}
-    ${isOnline&&ev.link&&ev.link.includes('meet')&&(canEdit||!ev.call)?`<a class="btn btn-secondary" href="${v2esc(ev.link)}" target="_blank">${ev.call?'Google Meet (запасной)':'Подключиться к Meet'}</a>`:''}
     ${!canEdit?`<button class="btn btn-success" onclick="confirmMeeting(${A})" ${alreadyConfirmed?'disabled style="opacity:0.6"':''}>${alreadyConfirmed?'✓ Подтверждено':'Подтвердить участие'}</button>`:''}
     ${canEdit?`<button class="btn btn-success" onclick="onMeetingDoneClick(${A},${isOnline?'true':'false'})">${isEvent ? 'Мероприятие прошло' : 'Встреча прошла'}</button>`:''}
     ${canEdit?`<button class="btn btn-secondary" onclick="openEditMeeting(${A})">Перенести</button>`:''}
@@ -11871,8 +11932,8 @@ function renderMyStatus(){
   if(next){
     var onl = v3isOnline(next);
     h += '<div class="v2-h">Ближайшая встреча</div><div class="v2-card v3-row-sb" style="padding:14px 16px"><div style="min-width:0"><div class="num" style="font-size:16px;font-weight:800">' + v2esc(next.date) + ' ' + v2esc(next.time || '') + '</div>' +
-      '<div class="v3-cap" style="font-size:12px;margin-top:2px">' + (onl ? (next.call ? 'Онлайн · созвон на платформе' : 'Онлайн · Google Meet') : 'Офлайн · ' + v2esc(next.link || 'место уточняется')) + '</div></div>' +
-      (onl ? '<a href="' + v2esc(v3callUrl(next)) + '" target="_blank" class="v3-btn w" style="text-decoration:none" onclick="event.preventDefault();v9open(this.href)">' + (next.call ? 'Войти' : 'Meet') + '</a>' : '') + '</div>';
+      '<div class="v3-cap" style="font-size:12px;margin-top:2px">' + (onl ? 'Онлайн · созвон на платформе' : 'Офлайн · ' + v2esc(next.link || 'место уточняется')) + '</div></div>' +
+      (onl && v3callUrl(next) ? '<a href="' + v2esc(v3callUrl(next)) + '" target="_blank" class="v3-btn w" style="text-decoration:none" onclick="event.preventDefault();v9open(this.href)">Войти</a>' : '') + '</div>';
   }
   if(me.partner) h += '<div class="v2-card v3-text v70-prt" style="margin-top:10px;color:#9A9A9A;cursor:pointer" role="button" tabindex="0" onclick="v70partner(' + v2esc(JSON.stringify(me.partner)) + ')">' + v70sw + ' Партнёр: <b style="color:#fff">' + v2esc(me.partner) + '</b> · одна встреча на двоих <span style="float:right;color:#fff">›</span></div>';
   h += '<div class="v2-h">Ещё</div><div class="v2-card">' +
@@ -13341,6 +13402,7 @@ function r130home(el){
   h += '<div class="r130-sb"><span class="r130-h">' + r130t('Задачи на сегодня') + '</span><button type="button" class="r130-btn g" style="flex:none;min-height:32px;border:0;color:#B9B9B9" onclick="showPage(\'rtasks\')">' + r130t('Все задачи') + '</button></div>';
   if(td.length) h += td.map(r130taskHTML).join('');
   else h += '<div class="r130-card"><div class="r130-empty">' + (window._myBoard ? 'На сегодня задач нет' : 'Загружаем задачи...') + '</div></div>';
+  try{ h += h155homeHTML(); }catch(e){} // R155: привычки на сегодня
   h += '<button type="button" class="r130-btn o" style="min-height:52px" onclick="showPage(\'rreport\')">' + (v3reportSent(me) ? 'Отчёт сдан · дополнить' : r130t('Отправить отчёт за сегодня')) + ' ↗</button>';
   h += '</div>';
   el.innerHTML = h;
@@ -13401,8 +13463,25 @@ function r130sched(el){
       items.slice(0, 60).forEach(function(x, i){
         var d = r130date(x.date), dt = r130dayTitle(d.getTime());
         if(dt !== lastd){ h += '<div class="r130-sec">' + v2esc(dt) + '</div>'; lastd = dt; }
-        h += '<div class="r130-ev" role="button" tabindex="0" onclick="r130event(' + i + ')"><span style="width:56px;flex:none;font-size:16px;font-weight:800">' + v2esc(x.time || '·') + '</span>' +
-          '<div style="min-width:0"><div style="font-size:15px;font-weight:600;line-height:1.3">' + v2esc(x.title || '') + '</div><div class="s">' + v2esc([x.place || (x.online ? 'онлайн' : ''), x.price || ''].filter(Boolean).join(' · ')) + '</div></div></div>';
+        // R155 (владелец 11.11: «у резидентов нет кнопки подробнее о мероприятии и ссылки, у админа есть»):
+        // карточка раскрывается: описание, место, организатор, цена, «Иду», календарь, ссылка на источник и пост
+        var open = R130.evOpen === (x.key || ('i' + i));
+        var price = x.price ? (/^\d[\d\s]*$/.test(String(x.price)) ? v2money(String(x.price).replace(/\s/g, '')) + ' ₸' : x.price) : '';
+        h += '<div class="r130-ev r155-ev' + (open ? ' open' : '') + '" role="button" tabindex="0" aria-expanded="' + (open ? 'true' : 'false') + '" onclick="r130event(' + i + ')"><span style="width:56px;flex:none;font-size:16px;font-weight:800">' + v2esc(x.time || '·') + '</span>' +
+          '<div style="min-width:0;flex:1"><div style="font-size:15px;font-weight:600;line-height:1.3">' + v2esc(x.title || '') + '</div><div class="s">' + v2esc([x.place || (x.online ? 'онлайн' : ''), price].filter(Boolean).join(' · ')) + '</div>' +
+          (open ? '' : '<div class="r155-more">Подробнее</div>') + '</div></div>';
+        if(open){
+          var go = !!v78going()[x.key], meta = [x.ours ? 'Клуб Business Surgery' : '', x.org || '', x.ours ? '' : (x.source || '')].filter(Boolean).join(' · ');
+          var u1 = x.url || x.link || '', u2 = x.post && x.post !== u1 ? x.post : '';
+          h += '<div class="r155-evd">' + (x.desc ? '<div class="d">' + v2esc(x.desc) + '</div>' : '<div class="d m">Описания нет' + (u1 || u2 ? ': подробности по ссылке ниже' : '') + '</div>') +
+            (meta ? '<div class="m">' + v2esc(meta) + '</div>' : '') +
+            '<div class="r155-evb">' +
+            (u1 ? '<button type="button" class="r130-btn" onclick="event.stopPropagation();r155evOpen(' + i + ',0)">Открыть ссылку</button>' : '') +
+            (u2 ? '<button type="button" class="r130-btn' + (u1 ? ' g' : '') + '" onclick="event.stopPropagation();r155evOpen(' + i + ',1)">Пост в Telegram</button>' : '') +
+            '<button type="button" class="r130-btn g' + (go ? ' on' : '') + '" onclick="event.stopPropagation();r155evGo(' + i + ')">' + (go ? '✓ Иду' : 'Иду') + '</button>' +
+            '<button type="button" class="r130-btn g" onclick="event.stopPropagation();r155evCal(' + i + ')">В календарь</button>' +
+            '</div></div>';
+        }
       });
     }
   }
@@ -13411,9 +13490,28 @@ function r130sched(el){
 }
 function r130event(i){
   var x = (R130.events || [])[i]; if(!x) return;
-  var url = x.url || x.link || '';
-  if(url){ try{ v9open(url); }catch(e){ window.open(url, '_blank'); } return; }
-  showToast(x.title || 'Мероприятие');
+  var k = x.key || ('i' + i);
+  R130.evOpen = R130.evOpen === k ? '' : k;
+  r130render('rsched');
+}
+function r155evOpen(i, post){
+  var x = (R130.events || [])[i]; if(!x) return;
+  var url = post ? x.post : (x.url || x.link || '');
+  if(!url) return;
+  try{ v9open(url); }catch(e){ window.open(url, '_blank'); }
+}
+function r155evGo(i){
+  var x = (R130.events || [])[i]; if(!x || !x.key) return;
+  var g = v78going();
+  if(g[x.key]) delete g[x.key]; else g[x.key] = Date.now();
+  try{ localStorage.setItem('bs_r78_going', JSON.stringify(g)); }catch(e){}
+  showToast(g[x.key] ? 'Отмечено: вы идёте' : 'Отметка снята');
+  r130render('rsched');
+}
+function r155evCal(i){
+  var x = (R130.events || [])[i]; if(!x) return;
+  var g = ''; try{ g = v78gcal(x); }catch(e){}
+  if(g){ try{ v9open(g); }catch(e){ window.open(g, '_blank'); } } else showToast('У мероприятия нет даты');
 }
 
 // ── Задачи цикла, диагнозы, инструменты ──
@@ -13434,6 +13532,7 @@ function r130tasksPage(el){
     return '<div class="r130-sec">' + r130t(name) + (name === 'Сделано' ? ' · ' + arr.length : '') + '</div>' + arr.map(function(x){ list.push(x); return r130taskHTML(x, list.length - 1); }).join('');
   };
   var h = '<div class="r130"><div class="r130-top"><h1>' + r130t('Задачи цикла') + '</h1><button type="button" class="r130-ibtn" aria-label="Распечатать задачи" onclick="r130print()">' + r130icon('print', 20) + '</button></div>';
+  try{ h += h155segHTML('tasks'); }catch(e){} // R155: «Задачи | Привычки»
   h += '<div style="display:flex;flex-direction:column;gap:6px"><div class="r130-sb" style="font-size:13px;color:#B9B9B9"><span>Цикл ' + r130cycle(me).cur + ' · сделано ' + done + ' из ' + all + '</span><span>' + pct + '%</span></div>' +
     '<div class="r130-bar k"><i style="width:' + pct + '%"></i></div></div>';
   if(!tl.length) h += '<div class="r130-card"><div class="r130-empty">' + (window._myBoard ? 'Задач цикла пока нет. Их ставит трекер на встрече' : 'Загружаем задачи...') + '</div></div>';
@@ -13690,7 +13789,234 @@ function r130setLang(l){
   try{ renderTabs(); }catch(e){}
   r130render('rset');
 }
-var R130_PAGES = {rhome: ['rhomeContent', r130home], rsched: ['rschedContent', r130sched], rtasks: ['rtasksContent', r130tasksPage],
+
+// ═══ R155: «Календарь привычек» ═══
+// Владелец 11.11: «Сделай Календарь привычек в приложении, чтобы было удобно отмечать и трекерить».
+// Данные общие с «Трекером привычек» платформы (GET/POST /api/v1/app/habits, сервер считает серии и проценты).
+// Неделя: у каждой привычки 7 кружков, нажатие отмечает день. Месяц: календарь, день показывает долю выполненного,
+// нажатие на день открывает список привычек этого дня. Отмечать можно сегодня и до 60 дней назад.
+var H155 = {d: null, at: 0, busy: null, view: 'week', off: 0, mon: 0, day: '', form: null, err: ''};
+var H155_WD = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+var H155_PRESET = ['Спорт', 'Чтение 20 минут', 'Сон до 23:00', 'План на день', 'Вода 2 литра', 'Утро без телефона'];
+function h155ymd(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function h155date(s){ var p = String(s || '').split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
+function h155today(){ return (H155.d && H155.d.today) || h155ymd(new Date()); }
+function h155add(s, n){ var d = h155date(s); d.setDate(d.getDate() + n); return h155ymd(d); }
+function h155monday(s){ var d = h155date(s); return h155add(s, -((d.getDay() + 6) % 7)); }
+function h155api(method, path, body){
+  var init = bsInitData();
+  if(!init) return Promise.resolve({error: 'Откройте приложение из бота'});
+  var o = {method: method};
+  if(body){ o.headers = {'Content-Type': 'application/json'}; o.body = JSON.stringify(body); }
+  return fetch(APP_SERVER + 'habits' + path + '?' + new URLSearchParams({_tg: init}).toString(), o)
+    .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(j){ if(!r.ok && !j.error) j.error = r.status === 403 ? 'Привычки доступны резидентам клуба' : 'Не получилось, попробуйте ещё раз'; return j; }); })
+    .catch(function(){ return {error: 'Нет связи, попробуйте ещё раз'}; });
+}
+function h155load(force){
+  if(!force && H155.d && Date.now() - H155.at < 60000) return Promise.resolve(H155.d);
+  if(H155.busy) return H155.busy;
+  H155.busy = h155api('GET', '').then(function(j){
+    H155.busy = null;
+    if(j && Array.isArray(j.habits)){ H155.d = j; H155.at = Date.now(); H155.err = ''; }
+    else H155.err = (j && j.error) || 'Не получилось открыть привычки';
+    return H155.d;
+  });
+  return H155.busy;
+}
+function h155got(j){
+  if(j && Array.isArray(j.habits)){ H155.d = j; H155.at = Date.now(); return true; }
+  showToast((j && j.error) || 'Не сохранилось, попробуйте ещё раз');
+  return false;
+}
+function h155list(){ return ((H155.d && H155.d.habits) || []).filter(function(h){ return !h.archived; }); }
+function h155isDone(h, ds){ return (h.done || []).indexOf(ds) >= 0; }
+// можно ли отметить день: не будущее и не дальше 60 дней назад
+function h155can(ds){ var t = h155today(); return ds <= t && ds >= h155add(t, -60); }
+// привычка «по будням» в выходные не ждёт отметки
+function h155due(h, ds){ if(h.freq !== 'weekdays') return true; var w = h155date(ds).getDay(); return w !== 0 && w !== 6; }
+function h155freq(h){ return h.freq === 'weekdays' ? 'по будням' : (h.freq === 'week' ? (h.n || 1) + ' ' + r130plural(h.n || 1, 'раз', 'раза', 'раз') + ' в неделю' : 'каждый день'); }
+function h155streak(h){
+  var s = h.stats || {}; if(!s.streak) return '';
+  return 'серия ' + s.streak + ' ' + (s.unit === 'week' ? r130plural(s.streak, 'неделя', 'недели', 'недель') : r130plural(s.streak, 'день', 'дня', 'дней'));
+}
+function h155toggle(id, ds){
+  var h = h155list().filter(function(x){ return x.id === id; })[0];
+  if(!h) return;
+  if(!h155can(ds)){ showToast(ds > h155today() ? 'Этот день ещё не наступил' : 'Отметить можно до 60 дней назад'); return; }
+  var was = h155isDone(h, ds);
+  // сразу на экране, сервер догоняет
+  h.done = (h.done || []).filter(function(x){ return x !== ds; });
+  if(!was) h.done.push(ds);
+  if(ds === h155today() && h.stats){ h.stats.doneToday = !was; if(H155.d.summary && h.stats.dueToday) H155.d.summary.done += was ? -1 : 1; }
+  try{ if(tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); }catch(e){}
+  h155paint();
+  h155api('POST', '/check', {id: id, date: ds, done: !was}).then(function(j){
+    if(!h155got(j)){ h.done = (h.done || []).filter(function(x){ return x !== ds; }); if(was) h.done.push(ds); }
+    h155paint();
+  });
+}
+function h155paint(){
+  var id = ''; try{ id = v9activeId(); }catch(e){}
+  if(id === 'rhabits') r130render('rhabits');
+  else if(id === 'rhome') r130render('rhome');
+}
+function h155ck(h, ds, big){
+  var done = h155isDone(h, ds), can = h155can(ds), due = h155due(h, ds), today = ds === h155today();
+  return '<button type="button" class="h155-c' + (done ? ' on' : '') + (can ? '' : ' no') + (due ? '' : ' free') + (today ? ' td' : '') + (big ? ' big' : '') + '" aria-pressed="' + done + '" aria-label="' + v2esc(h.name) + ', ' + h155date(ds).getDate() + '.' + String(h155date(ds).getMonth() + 1).padStart(2, '0') + (done ? ', отмечено' : '') + '"' +
+    ' onclick="event.stopPropagation();h155toggle(\'' + v2esc(h.id) + '\',\'' + ds + '\')">' + (done ? r130icon('check', big ? 18 : 15) : (big ? '' : h155date(ds).getDate())) + '</button>';
+}
+function h155segHTML(on){
+  return '<div class="r130-seg" role="tablist"><button type="button" role="tab" class="' + (on === 'tasks' ? 'on' : '') + '" onclick="showPage(\'rtasks\')">' + r130t('Задачи') + '</button>' +
+    '<button type="button" role="tab" class="' + (on === 'habits' ? 'on' : '') + '" onclick="showPage(\'rhabits\')">Привычки</button></div>';
+}
+function h155page(el){
+  var h = '<div class="r130 h155"><div class="r130-top"><h1>Привычки</h1><button type="button" class="r130-ibtn" aria-label="Добавить привычку" onclick="h155form(\'\')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>';
+  if(r130on()) h += h155segHTML('habits');
+  if(!H155.d){
+    if(H155.err) h += '<div class="r130-card"><div class="r130-empty">' + v2esc(H155.err) + '</div><div class="r130-btns"><button type="button" class="r130-btn o" onclick="H155.err=\'\';r130render(\'rhabits\')">Повторить</button></div></div>';
+    else { h += '<div class="loading"><div class="spinner"></div></div>'; h155load().then(function(){ if(v9activeId() === 'rhabits') r130render('rhabits'); }); }
+    el.innerHTML = h + '</div>'; return;
+  }
+  if(Date.now() - H155.at > 60000) h155load(true).then(function(){ if(v9activeId() === 'rhabits' && !H155.form) r130render('rhabits'); });
+  var list = h155list(), sum = H155.d.summary || {}, t = h155today();
+  if(H155.form){ el.innerHTML = h + h155formHTML() + '</div>'; return; }
+  if(!list.length){
+    h += '<div class="r130-card"><div style="font-size:17px;font-weight:700">С чего начать</div><div class="r130-empty" style="padding:0">Выберите 2 или 3 привычки, которые двигают вас и бизнес. Отмечайте каждый день одним нажатием: серия и процент считаются сами.</div>' +
+      '<div class="h155-pre">' + H155_PRESET.map(function(p){ return '<button type="button" onclick="h155quick(this)">' + v2esc(p) + '</button>'; }).join('') + '</div>' +
+      '<div class="r130-btns"><button type="button" class="r130-btn" onclick="h155form(\'\')">Своя привычка</button></div></div>';
+    el.innerHTML = h + '</div>'; return;
+  }
+  var best = 0; list.forEach(function(x){ if(x.stats && x.stats.unit === 'day' && x.stats.streak > best) best = x.stats.streak; });
+  h += '<div class="r130-card w"><div class="r130-sb"><span class="r130-lbl">Сегодня</span><span class="s" style="font-size:13px">' + h155date(t).getDate() + ' ' + R130_MONTHS[h155date(t).getMonth()] + '</span></div>' +
+    '<div class="r130-bar"><i style="width:' + (sum.due ? Math.round((sum.done || 0) / sum.due * 100) : 0) + '%"></i></div>' +
+    '<div class="r130-nums"><div><b>' + (sum.done || 0) + '/' + (sum.due || 0) + '</b><span>отмечено</span></div><div><b>' + best + '</b><span>' + r130plural(best, 'день', 'дня', 'дней') + ' подряд</span></div>' +
+    '<div><b>' + (sum.pct >= 0 ? sum.pct + '%' : '·') + '</b><span>за 30 дней</span></div></div></div>';
+  h += '<div class="r130-seg" role="tablist"><button type="button" role="tab" class="' + (H155.view === 'week' ? 'on' : '') + '" onclick="H155.view=\'week\';r130render(\'rhabits\')">Неделя</button>' +
+    '<button type="button" role="tab" class="' + (H155.view === 'month' ? 'on' : '') + '" onclick="H155.view=\'month\';r130render(\'rhabits\')">Месяц</button></div>';
+  h += H155.view === 'week' ? h155weekHTML(list, t) : h155monthHTML(list, t);
+  // напоминание в боте
+  var on = !!H155.d.remind, at = H155.d.remindAt || '20:00';
+  h += '<div class="r130-sec">Напоминание</div><div class="r130-list"><div class="r130-li" style="cursor:default"><span class="x"><b style="font-weight:500">Напомнить в боте</b><span style="display:block;font-size:12px;color:#9A9A9A;margin-top:2px">Если к этому времени отмечено не всё</span></span>' +
+    (on ? '<select class="h155-sel" aria-label="Время напоминания" onchange="h155remind(true,this.value)">' + ['07:00', '08:00', '09:00', '12:00', '18:00', '19:00', '20:00', '21:00', '22:00'].map(function(x){ return '<option' + (x === at ? ' selected' : '') + '>' + x + '</option>'; }).join('') + '</select>' : '') +
+    '<button type="button" class="r130-sw' + (on ? ' on' : '') + '" role="switch" aria-checked="' + on + '" aria-label="Напомнить в боте" onclick="h155remind(' + (!on) + ',\'' + at + '\')"><i></i></button></div></div>';
+  el.innerHTML = h + '</div>';
+}
+function h155weekHTML(list, t){
+  var mon = h155add(h155monday(t), H155.off * 7), days = [];
+  for(var i = 0; i < 7; i++) days.push(h155add(mon, i));
+  var a = h155date(days[0]), b = h155date(days[6]);
+  var title = a.getMonth() === b.getMonth() ? a.getDate() + '–' + b.getDate() + ' ' + R130_MONTHS[b.getMonth()] : a.getDate() + ' ' + R130_MONTHS[a.getMonth()] + ' – ' + b.getDate() + ' ' + R130_MONTHS[b.getMonth()];
+  var h = '<div class="h155-nav"><button type="button" aria-label="Прошлая неделя"' + (H155.off <= -8 ? ' disabled' : '') + ' onclick="H155.off--;r130render(\'rhabits\')">‹</button><b>' + (H155.off === 0 ? 'Эта неделя · ' : '') + title + '</b>' +
+    '<button type="button" aria-label="Следующая неделя"' + (H155.off >= 0 ? ' disabled' : '') + ' onclick="H155.off++;r130render(\'rhabits\')">›</button></div>';
+  h += '<div class="h155-wd">' + days.map(function(ds, i){ return '<span class="' + (ds === t ? 'td' : '') + '">' + H155_WD[i] + '</span>'; }).join('') + '</div>';
+  list.forEach(function(x){
+    var meta = [h155freq(x), h155streak(x), x.stats && x.stats.pct >= 0 ? x.stats.pct + '% за 30 дней' : ''].filter(Boolean).join(' · ');
+    h += '<div class="r130-card h155-h"><div class="r130-sb" style="align-items:center"><div style="min-width:0"><div class="nm">' + v2esc(x.name) + '</div><div class="mt">' + v2esc((x.target ? x.target + ' · ' : '') + meta) + '</div></div>' +
+      '<button type="button" class="h155-more" aria-label="Изменить привычку" onclick="h155form(\'' + v2esc(x.id) + '\')">···</button></div>' +
+      '<div class="h155-row">' + days.map(function(ds){ return h155ck(x, ds); }).join('') + '</div></div>';
+  });
+  return h;
+}
+function h155monthHTML(list, t){
+  var base = h155date(t); base.setDate(1); base.setMonth(base.getMonth() + H155.mon);
+  var y = base.getFullYear(), m = base.getMonth(), n = new Date(y, m + 1, 0).getDate(), lead = (base.getDay() + 6) % 7;
+  var MN = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+  var h = '<div class="h155-nav"><button type="button" aria-label="Прошлый месяц"' + (H155.mon <= -12 ? ' disabled' : '') + ' onclick="H155.mon--;H155.day=\'\';r130render(\'rhabits\')">‹</button><b>' + MN[m] + ' ' + y + '</b>' +
+    '<button type="button" aria-label="Следующий месяц"' + (H155.mon >= 0 ? ' disabled' : '') + ' onclick="H155.mon++;H155.day=\'\';r130render(\'rhabits\')">›</button></div>';
+  h += '<div class="r130-card" style="gap:8px"><div class="h155-wd m">' + H155_WD.map(function(w){ return '<span>' + w + '</span>'; }).join('') + '</div><div class="h155-cal">';
+  for(var i = 0; i < lead; i++) h += '<span></span>';
+  var sel = H155.day || (H155.mon === 0 ? t : '');
+  for(var d = 1; d <= n; d++){
+    var ds = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    var due = list.filter(function(x){ return h155due(x, ds) && (x.created || '') <= ds; }), got = due.filter(function(x){ return h155isDone(x, ds); }).length;
+    var extra = list.filter(function(x){ return !(h155due(x, ds) && (x.created || '') <= ds) && h155isDone(x, ds); }).length;
+    var all = due.length, share = all ? got / all : (extra ? 1 : 0), fut = ds > t;
+    var cls = fut ? ' fut' : (share >= 1 && (all || extra) ? ' full' : (share > 0 ? ' part' : ''));
+    h += '<button type="button" class="h155-d' + cls + (ds === t ? ' td' : '') + (ds === sel ? ' sel' : '') + '"' + (fut ? ' disabled' : '') + ' aria-label="' + d + ' ' + R130_MONTHS[m] + ': ' + (got + extra) + ' из ' + all + '" onclick="H155.day=\'' + ds + '\';r130render(\'rhabits\')">' +
+      '<i' + (cls === ' part' ? ' style="--p:' + Math.round(share * 100) + '%"' : '') + '>' + d + '</i></button>';
+  }
+  h += '</div><div class="h155-leg"><span><i class="e"></i>ничего</span><span><i class="p"></i>часть</span><span><i class="f"></i>всё</span></div></div>';
+  if(sel){
+    var sd = h155date(sel);
+    h += '<div class="r130-sec">' + (sel === t ? 'Сегодня, ' : '') + sd.getDate() + ' ' + R130_MONTHS[sd.getMonth()] + (h155can(sel) ? '' : ' · только просмотр') + '</div><div class="r130-list">' +
+      list.map(function(x){
+        return '<div class="r130-li" style="cursor:default"><span class="x"><b style="font-weight:500">' + v2esc(x.name) + '</b><span style="display:block;font-size:12px;color:#9A9A9A;margin-top:2px">' + v2esc(h155due(x, sel) ? h155freq(x) : 'в этот день не обязательно') + '</span></span>' + h155ck(x, sel, true) + '</div>';
+      }).join('') + '</div>';
+  }
+  return h;
+}
+function h155form(id){
+  var x = id ? h155list().filter(function(h){ return h.id === id; })[0] : null;
+  H155.form = x ? {id: x.id, name: x.name, freq: x.freq, n: x.n || 3, target: x.target || ''} : {id: '', name: '', freq: 'daily', n: 3, target: ''};
+  if(v9activeId() !== 'rhabits') showPage('rhabits'); else r130render('rhabits');
+  setTimeout(function(){ var i = document.getElementById('h155name'); if(i && !id) try{ i.focus(); }catch(e){} }, 80);
+}
+function h155keep(){ var f = H155.form; if(!f) return; var i = document.getElementById('h155name'), g = document.getElementById('h155target'); if(i) f.name = i.value; if(g) f.target = g.value; }
+function h155setFreq(v){ h155keep(); H155.form.freq = v; r130render('rhabits'); }
+function h155setN(d){ h155keep(); H155.form.n = Math.max(1, Math.min(7, (H155.form.n || 3) + d)); r130render('rhabits'); }
+function h155formHTML(){
+  var f = H155.form, fr = function(v, t){ return '<button type="button" class="' + (f.freq === v ? 'on' : '') + '" onclick="h155setFreq(\'' + v + '\')">' + t + '</button>'; };
+  var h = '<div class="r130-card"><div style="font-size:17px;font-weight:700">' + (f.id ? 'Изменить привычку' : 'Новая привычка') + '</div>' +
+    '<label class="h155-lb">Название<input id="h155name" class="h155-in" maxlength="80" value="' + v2esc(f.name) + '" placeholder="Пример: Спорт" enterkeyhint="done"></label>';
+  if(!f.id) h += '<div class="h155-pre">' + H155_PRESET.map(function(p){ return '<button type="button" onclick="document.getElementById(\'h155name\').value=this.textContent">' + v2esc(p) + '</button>'; }).join('') + '</div>';
+  h += '<div class="h155-lb">Как часто<div class="r130-seg h155-s3">' + fr('daily', 'Каждый день') + fr('weekdays', 'По будням') + fr('week', 'Раз в неделю') + '</div></div>';
+  if(f.freq === 'week') h += '<div class="h155-step"><span>Сколько раз в неделю</span><div><button type="button" aria-label="Меньше" onclick="h155setN(-1)">−</button><b>' + f.n + '</b><button type="button" aria-label="Больше" onclick="h155setN(1)">+</button></div></div>';
+  h += '<label class="h155-lb">Цель, если нужна<input id="h155target" class="h155-in" maxlength="60" value="' + v2esc(f.target) + '" placeholder="Пример: 30 минут"></label>' +
+    '<div class="r130-btns"><button type="button" class="r130-btn" onclick="h155save()">Сохранить</button><button type="button" class="r130-btn o" onclick="H155.form=null;r130render(\'rhabits\')">Отмена</button></div>';
+  if(f.id) h += '<div class="r130-btns"><button type="button" class="r130-btn g" onclick="h155archive()">В архив</button><button type="button" class="r130-btn g" onclick="h155del()">Удалить с отметками</button></div>';
+  return h + '</div>';
+}
+function h155save(){
+  h155keep();
+  var f = H155.form; if(!f) return;
+  var name = String(f.name || '').trim();
+  if(!name){ showToast('Напишите название привычки'); return; }
+  var body = {habit: {id: f.id, name: name, freq: f.freq, n: f.freq === 'week' ? f.n : 0, target: String(f.target || '').trim()}};
+  h155api('POST', '', body).then(function(j){
+    if(h155got(j)){ H155.form = null; showToast(f.id ? 'Сохранено' : 'Привычка добавлена'); }
+    r130render('rhabits');
+  });
+}
+function h155quick(btn){
+  var name = btn.textContent; btn.disabled = true;
+  h155api('POST', '', {habit: {name: name, freq: 'daily'}}).then(function(j){ if(h155got(j)) showToast('Добавлено: ' + name); r130render('rhabits'); });
+}
+function h155archive(){
+  var f = H155.form; if(!f || !f.id) return;
+  var x = h155list().filter(function(h){ return h.id === f.id; })[0]; if(!x) return;
+  h155api('POST', '', {habit: {id: x.id, name: x.name, freq: x.freq, n: x.n || 0, target: x.target || '', archived: true}}).then(function(j){
+    if(h155got(j)){ H155.form = null; showToast('Привычка в архиве. Вернуть можно на платформе'); }
+    r130render('rhabits');
+  });
+}
+function h155del(){
+  var f = H155.form; if(!f || !f.id) return;
+  var go = function(){
+    h155api('POST', '/delete', {id: f.id}).then(function(j){ if(h155got(j)){ H155.form = null; showToast('Привычка удалена'); } r130render('rhabits'); });
+  };
+  try{ if(tg && tg.showConfirm){ tg.showConfirm('Удалить привычку «' + f.name + '» вместе со всеми отметками?', function(ok){ if(ok) go(); }); return; } }catch(e){}
+  if(confirm('Удалить привычку вместе со всеми отметками?')) go();
+}
+function h155remind(on, at){
+  if(H155.d){ H155.d.remind = on; H155.d.remindAt = at; }
+  r130render('rhabits');
+  h155api('POST', '/remind', {on: on, at: at}).then(function(j){ if(h155got(j)) showToast(on ? 'Бот напомнит в ' + at + ' по Алматы' : 'Напоминание выключено'); r130render('rhabits'); });
+}
+// карточка на Главной: привычки на сегодня одним нажатием
+function h155homeHTML(){
+  if(!H155.d){ if(!H155.err) h155load().then(function(){ try{ if(v9activeId() === 'rhome') r130render('rhome'); }catch(e){} }); return ''; }
+  var list = h155list(), t = h155today();
+  var head = '<div class="r130-sb"><span class="r130-h">Привычки сегодня</span><button type="button" class="r130-btn g" style="flex:none;min-height:32px;border:0;color:#B9B9B9" onclick="showPage(\'rhabits\')">Календарь</button></div>';
+  if(!list.length) return head + '<div class="r130-card"><div class="r130-empty" style="padding:0">Заведите 2 или 3 привычки и отмечайте их каждый день</div><div class="r130-btns"><button type="button" class="r130-btn o" onclick="showPage(\'rhabits\')">Выбрать привычки</button></div></div>';
+  var due = list.filter(function(x){ return h155due(x, t); });
+  if(!due.length) return head + '<div class="r130-card"><div class="r130-empty" style="padding:0">На сегодня привычек нет</div></div>';
+  return head + '<div class="r130-list">' + due.slice(0, 6).map(function(x){
+    var st = h155streak(x);
+    return '<div class="r130-li" style="cursor:default"><span class="x"><b style="font-weight:500' + (h155isDone(x, t) ? ';color:#9A9A9A;text-decoration:line-through' : '') + '">' + v2esc(x.name) + '</b>' + (st ? '<span style="display:block;font-size:12px;color:#9A9A9A;margin-top:2px">' + v2esc(st) + '</span>' : '') + '</span>' + h155ck(x, t, true) + '</div>';
+  }).join('') + '</div>';
+}
+
+var R130_PAGES = {rhome: ['rhomeContent', r130home], rsched: ['rschedContent', r130sched], rtasks: ['rtasksContent', r130tasksPage], rhabits: ['rhabitsContent', h155page],
   rmeas: ['rmeasContent', r130meas], rclub: ['rclubContent', r130club], rset: ['rsetContent', r130set], rreport: ['rreportContent', r130report]};
 function r130render(id){
   var p = R130_PAGES[id]; if(!p) return;
@@ -13701,7 +14027,7 @@ function r130render(id){
 // После загрузки данных клуба открытый экран резидента перерисовывается
 function r130refresh(){ var id = ''; try{ id = v9activeId(); }catch(e){} if(R130_PAGES[id]) r130render(id); }
 var R130_OLD = {home: 'rhome', mytasks: 'rtasks', mymeetings: 'rsched'};
-var R130_TITLE = {rhome: 'Главная', rsched: 'Расписание', rtasks: 'Задачи', rmeas: 'Замеры', rclub: 'Клуб', rset: 'Настройки', rreport: 'Отчёт'};
+var R130_TITLE = {rhome: 'Главная', rsched: 'Расписание', rtasks: 'Задачи', rmeas: 'Замеры', rclub: 'Клуб', rset: 'Настройки', rreport: 'Отчёт', rhabits: 'Привычки'};
 
 init();
 
@@ -13717,7 +14043,7 @@ function openAddMenu(){
       '<div class="add-menu-title">Что добавить?</div>' +
       '<button class="add-menu-item" data-action="online">' +
         '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>' +
-        '<div class="add-menu-item-text"><div class="add-menu-item-title">Онлайн встреча</div><div class="add-menu-item-sub">С резидентом, Google Meet</div></div>' +
+        '<div class="add-menu-item-text"><div class="add-menu-item-title">Онлайн встреча</div><div class="add-menu-item-sub">С резидентом, созвон на платформе</div></div>' +
       '</button>' +
       '<button class="add-menu-item" data-action="offline">' +
         '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
