@@ -7890,6 +7890,33 @@ function v10healthData(){
   var worst = keys.slice().sort(function(a, b){ return norm[a] - norm[b]; })[0];
   return {o: norm, avg: avg, worst: worst, src: src};
 }
+// ═══ R158: тело в 3D в «Здоровье бизнеса» (как на платформе) ═══
+// Органы светятся цветом своей оценки, нажатие на орган включает рентген. Сцену рисует тот же файл, что и на
+// платформе (app.bxclub.kz/vendor/bsbody.js на THREE r128), грузится при первом открытии экрана.
+// Нет сети или WebGL: блок с телом скрывается, полосы органов остаются как были.
+var V158 = {load: null, inst: null, bad: false};
+function v158load(){
+  if(V158.load) return V158.load;
+  var add = function(src){ return new Promise(function(ok, no){ var sc = document.createElement('script'); sc.src = src; sc.async = false; sc.onload = function(){ ok(); }; sc.onerror = function(){ no(new Error(src)); }; document.head.appendChild(sc); }); };
+  V158.load = (window.THREE ? Promise.resolve() : add(V20_PLAT + '/vendor/three-0.128.0/three.min.js')).then(function(){ return window.BSBody ? null : add(V20_PLAT + '/vendor/bsbody.js'); });
+  V158.load.catch(function(){ V158.bad = true; });
+  return V158.load;
+}
+function v158body(o){
+  var box = document.getElementById('v158box'); if(!box) return;
+  var h = {}; Object.keys(o || {}).forEach(function(k){ var id = v9organId(k) || k, n = v9num(o[k]); if(n !== null) h[id] = n; });
+  var hide = function(){ var b = document.getElementById('v158box'); if(b) b.style.display = 'none'; };
+  if(V158.bad){ hide(); return; }
+  var put = function(){
+    var b = document.getElementById('v158box'); if(!b) return;
+    if(!V158.inst) V158.inst = window.BSBody ? BSBody.mount(b, {color: function(v){ return v19col(v); }}) : null;
+    if(!V158.inst){ V158.bad = true; hide(); return; }
+    if(V158.inst.root.parentNode !== b) b.appendChild(V158.inst.root);
+    V158.inst.update(h);
+  };
+  if(window.BSBody){ put(); return; }
+  v158load().then(put, hide);
+}
 function v10openHealth(){
   var H = v10healthData();
   document.getElementById('detailTitle').textContent = 'Здоровье бизнеса';
@@ -7901,6 +7928,7 @@ function v10openHealth(){
     var pct = Math.round(H.avg * 10), vd = v9verdict(pct);
     h += '<div class="v2-card v9-score" style="margin-top:14px"><div class="big num" style="color:' + v19col(pct / 10) + '">' + pct + '<small>/100</small></div>' +
       '<div style="min-width:0"><div class="vt">' + v2esc(vd[0]) + '</div><div class="vs">' + v2esc(vd[1]) + '</div></div></div>';
+    h += '<div id="v158box" style="position:relative;aspect-ratio:4/5;margin-top:10px;border-radius:16px;overflow:hidden;background:#000"></div>';
     h += '<div class="v2-card" style="margin-top:10px"><div class="v9-mhead"><b>Органы</b><span>' + v2esc(H.src) + '</span></div><div class="v9-bars">' + v9barsHTML(H.o, {max: 10}) + v19legend() + '</div></div>';
     var wv = H.o[H.worst];
     h += '<div class="v2-card v9-card" style="margin-top:10px;border-color:' + v19edge(wv) + '"><div class="tag" style="color:' + v19col(wv) + '">Слабое место</div>' +
@@ -7915,6 +7943,7 @@ function v10openHealth(){
   }
   document.getElementById('detailContent').innerHTML = h;
   showDetail();
+  if(H) setTimeout(function(){ v158body(H.o); }, 60);
 }
 
 // ═══ РАБОЧИЙ КАЛЕНДАРЬ (= «Мой календарь» на платформе) ═══
