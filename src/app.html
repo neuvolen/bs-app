@@ -7909,6 +7909,7 @@ function v158body(o){
   if(V158.bad){ hide(); return; }
   var put = function(){
     var b = document.getElementById('v158box'); if(!b) return;
+    if(V158.inst && V158.inst.alive && !V158.inst.alive()) V158.inst = null; // R163: сцену, закрытую движком после ухода с экрана, строим заново
     if(!V158.inst) V158.inst = window.BSBody ? BSBody.mount(b, {color: function(v){ return v19col(v); }}) : null;
     if(!V158.inst){ V158.bad = true; hide(); return; }
     if(V158.inst.root.parentNode !== b) b.appendChild(V158.inst.root);
